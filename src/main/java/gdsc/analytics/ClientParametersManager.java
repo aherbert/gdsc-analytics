@@ -78,7 +78,7 @@ public class ClientParametersManager
 		data.setHostName(hostName);
 
 		final String os_name = System.getProperty("os.name");
-		
+
 		final Dimension d = getScreenSize(os_name);
 		data.setScreenResolution(d.width + "x" + d.height);
 
@@ -91,8 +91,7 @@ public class ClientParametersManager
 
 		StringBuilder sb = new StringBuilder();
 		sb.append("Java/").append(System.getProperty("java.version"));
-		sb.append(" (").append(getPlatform(os_name))
-				.append(")");
+		sb.append(" (").append(getPlatform(os_name)).append(")");
 		data.setUserAgent(sb.toString());
 
 		// Note: Adding the OS does not currently work within Google Analytics.
@@ -121,45 +120,61 @@ public class ClientParametersManager
 		if (lc_os_name.contains("windows"))
 		{
 			//@formatter:off
-			if (lc_os_name.contains("8.1"))           return "Windows NT 6.3";
-			if (lc_os_name.contains("8"))             return "Windows NT 6.2";
-			if (lc_os_name.contains("7"))             return "Windows NT 6.1";
-			if (lc_os_name.contains("vista"))         return "Windows NT 6.0";
-			if (lc_os_name.contains("server 2003"))   return "Windows NT 5.2";
-			if (lc_os_name.contains("xp x64"))        return "Windows NT 5.2";
-			if (lc_os_name.contains("xp"))            return "Windows NT 5.1";
-			if (lc_os_name.contains("2000, service")) return "Windows NT 5.01";
-			if (lc_os_name.contains("2000"))          return "Windows NT 5.0";
-			if (lc_os_name.contains("nt 4"))          return "Windows NT 4.0";
-			if (lc_os_name.contains("mw"))            return "Windows 98; Win 9x 4.90";
-			if (lc_os_name.contains("98"))            return "Windows 98";
-			if (lc_os_name.contains("95"))            return "Windows 95";
-			if (lc_os_name.contains("ce"))            return "Windows CE";
-			                                          return "Windows NT 6.1"; // Default to Windows 7
+			if (lc_os_name.contains("8.1"))
+				return "Windows NT 6.3";
+			if (lc_os_name.contains("8"))
+				return "Windows NT 6.2";
+			if (lc_os_name.contains("7"))
+				return "Windows NT 6.1";
+			if (lc_os_name.contains("vista"))
+				return "Windows NT 6.0";
+			if (lc_os_name.contains("server 2003"))
+				return "Windows NT 5.2";
+			if (lc_os_name.contains("xp x64"))
+				return "Windows NT 5.2";
+			if (lc_os_name.contains("xp"))
+				return "Windows NT 5.1";
+			if (lc_os_name.contains("2000, service"))
+				return "Windows NT 5.01";
+			if (lc_os_name.contains("2000"))
+				return "Windows NT 5.0";
+			if (lc_os_name.contains("nt 4"))
+				return "Windows NT 4.0";
+			if (lc_os_name.contains("mw"))
+				return "Windows 98; Win 9x 4.90";
+			if (lc_os_name.contains("98"))
+				return "Windows 98";
+			if (lc_os_name.contains("95"))
+				return "Windows 95";
+			if (lc_os_name.contains("ce"))
+				return "Windows CE";
+			return "Windows NT 6.1"; // Default to Windows 7
 			//@formatter:on
 		}
-		
+
 		// Mac - Note sure what to put here.
 		// E.g. Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_3) AppleWebKit/537.75.14 (KHTML, like Gecko) Version/7.0.3 Safari/7046A194A
 		if (lc_os_name.startsWith("mac"))
 			// Just pick a recent valid platform from a valid Mac User-Agent string
 			return "Macintosh; Intel Mac OS X 10_9_3";
-		
+
 		// Linux variants will just return 'Linux'. 
 		// This is apparently detected by Google Analytics so we leave this as is.
-		
+
 		// Other - Just leave it
 
-		final String os_version = System.getProperty("os.version");		
+		final String os_version = System.getProperty("os.version");
 		return os_name + " " + os_version;
 	}
 
 	/**
 	 * Get the screen size
 	 * <p>
-	 * Taken from ImageJ.getScreenSize();
-	 * @param os_name 
+	 * Adapted from ij.IJ.getScreenSize() in the ImageJ code.
+	 * @see http://imagej.nih.gov/ij/
 	 * 
+	 * @param os_name
+	 *            The os.name system property
 	 * @return The dimension of the primary screen
 	 */
 	public static Dimension getScreenSize(String os_name)
