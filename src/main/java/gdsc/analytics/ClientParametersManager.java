@@ -35,8 +35,6 @@ import java.awt.Toolkit;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-import ij.IJ;
-
 /**
  * Populates the client with information from the system
  */
@@ -79,7 +77,9 @@ public class ClientParametersManager
 		}
 		data.setHostName(hostName);
 
-		final Dimension d = getScreenSize();
+		final String os_name = System.getProperty("os.name");
+		
+		final Dimension d = getScreenSize(os_name);
 		data.setScreenResolution(d.width + "x" + d.height);
 
 		// The browser and operating system are taken from the User-Agent property.
@@ -91,7 +91,7 @@ public class ClientParametersManager
 
 		StringBuilder sb = new StringBuilder();
 		sb.append("Java/").append(System.getProperty("java.version"));
-		sb.append(" (").append(getPlatform())
+		sb.append(" (").append(getPlatform(os_name))
 				.append(")");
 		data.setUserAgent(sb.toString());
 
@@ -109,10 +109,12 @@ public class ClientParametersManager
 	 * 
 	 * @return The platform
 	 */
-	private static String getPlatform()
+	/**
+	 * @param os_name
+	 * @return
+	 */
+	private static String getPlatform(String os_name)
 	{
-		final String os_name = System.getProperty("os.name");
-		
 		// Note that on Windows the os.version property does not directly translate into the user agent platform token:
 		// https://msdn.microsoft.com/en-gb/library/ms537503(v=vs.85).aspx
 		final String lc_os_name = os_name.toLowerCase();
@@ -156,12 +158,13 @@ public class ClientParametersManager
 	 * Get the screen size
 	 * <p>
 	 * Taken from ImageJ.getScreenSize();
+	 * @param os_name 
 	 * 
 	 * @return The dimension of the primary screen
 	 */
-	public static Dimension getScreenSize()
+	public static Dimension getScreenSize(String os_name)
 	{
-		if (IJ.isWindows()) // GraphicsEnvironment.getConfigurations is *very* slow on Windows
+		if (isWindows(os_name)) // GraphicsEnvironment.getConfigurations is *very* slow on Windows
 			return Toolkit.getDefaultToolkit().getScreenSize();
 		if (GraphicsEnvironment.isHeadless())
 			return new Dimension(0, 0);
@@ -171,9 +174,19 @@ public class ClientParametersManager
 		GraphicsDevice[] gd = ge.getScreenDevices();
 		GraphicsConfiguration[] gc = gd[0].getConfigurations();
 		Rectangle bounds = gc[0].getBounds();
-		if ((bounds.x == 0 && bounds.y == 0) || (IJ.isLinux() && gc.length > 1))
+		if ((bounds.x == 0 && bounds.y == 0) || (isLinux(os_name) && gc.length > 1))
 			return new Dimension(bounds.width, bounds.height);
 		else
 			return Toolkit.getDefaultToolkit().getScreenSize();
+	}
+
+	private static boolean isWindows(String os_name)
+	{
+		return os_name.startsWith("Windows");
+	}
+
+	private static boolean isLinux(String os_name)
+	{
+		return os_name.startsWith("Linux");
 	}
 }
