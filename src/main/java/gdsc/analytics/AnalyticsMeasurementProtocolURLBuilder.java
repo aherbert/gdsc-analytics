@@ -78,14 +78,14 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 
 		sb.append("v=1"); // version
 
+		// Flag to state that session level custom dimensions and metrics should be built
+		boolean buildSessionLevelCustomParams = false;
+
 		// Check if this is a new session
 		if (clientParameters.isNewSession())
 		{
 			sb.append("&sc=start");
-			
-			// Add the client custom dimensions and metrics at the session level
-			buildCustomDimensionsURL(sb, clientParameters.getCustomDimensions());
-			buildCustomMetricsURL(sb, clientParameters.getCustomMetrics());
+			buildSessionLevelCustomParams = true;
 		}
 
 		// Build the client data.
@@ -94,8 +94,19 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 		// just send it with every hit.
 		String url = clientParameters.getUrl();
 		if (url == null)
+		{
 			url = buildClientURL(clientParameters);
+			buildSessionLevelCustomParams = true;
+		}
 		sb.append(url);
+
+		// Add the client custom dimensions and metrics at the session level, so we only 
+		// build this when a new session or when the client parameters have changed.
+		if (buildSessionLevelCustomParams)
+		{
+			buildCustomDimensionsURL(sb, clientParameters.getCustomDimensions());
+			buildCustomMetricsURL(sb, clientParameters.getCustomMetrics());
+		}
 
 		// Build the request data
 
@@ -208,7 +219,7 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 	{
 		sb.append("&cm").append(index).append('=').append(value);
 	}
-	
+
 	/**
 	 * Add the key value pair if the value is not null
 	 * 
