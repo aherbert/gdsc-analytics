@@ -21,8 +21,8 @@ on it.
         cd GDSC-Analytics
         mvn install
 
-This will produce a gdsc-analytics-[VERSION].jar file in the local Maven repository. 
-You can now build the other packages that depend on this code.
+	This will produce a gdsc-analytics-[VERSION].jar file in the local Maven
+	repository.	You can now build the other packages that depend on this code.
 
 
 Legal
