@@ -116,38 +116,32 @@ public class ClientParametersManager
 	{
 		// Note that on Windows the os.version property does not directly translate into the user agent platform token:
 		// https://msdn.microsoft.com/en-gb/library/ms537503(v=vs.85).aspx
+		// https://en.wikipedia.org/wiki/Windows_NT#Releases
 		final String lc_os_name = os_name.toLowerCase();
 		if (lc_os_name.contains("windows"))
 		{
 			//@formatter:off
-			if (lc_os_name.contains("8.1"))
-				return "Windows NT 6.3";
-			if (lc_os_name.contains("8"))
-				return "Windows NT 6.2";
-			if (lc_os_name.contains("7"))
-				return "Windows NT 6.1";
-			if (lc_os_name.contains("vista"))
-				return "Windows NT 6.0";
-			if (lc_os_name.contains("server 2003"))
-				return "Windows NT 5.2";
-			if (lc_os_name.contains("xp x64"))
-				return "Windows NT 5.2";
-			if (lc_os_name.contains("xp"))
-				return "Windows NT 5.1";
-			if (lc_os_name.contains("2000, service"))
-				return "Windows NT 5.01";
-			if (lc_os_name.contains("2000"))
-				return "Windows NT 5.0";
-			if (lc_os_name.contains("nt 4"))
-				return "Windows NT 4.0";
-			if (lc_os_name.contains("mw"))
-				return "Windows 98; Win 9x 4.90";
-			if (lc_os_name.contains("98"))
-				return "Windows 98";
-			if (lc_os_name.contains("95"))
-				return "Windows 95";
-			if (lc_os_name.contains("ce"))
-				return "Windows CE";
+            if (lc_os_name.contains("10"))              return "Windows NT 10.0";
+            if (lc_os_name.contains("server 2016"))     return "Windows NT 10.0";
+            if (lc_os_name.contains("8.1"))             return "Windows NT 6.3";
+            if (lc_os_name.contains("server 2012 r2"))  return "Windows NT 6.3";
+            if (lc_os_name.contains("8"))               return "Windows NT 6.2";
+            if (lc_os_name.contains("server 2012"))     return "Windows NT 6.2";
+            if (lc_os_name.contains("7"))               return "Windows NT 6.1";
+            if (lc_os_name.contains("server 2011"))     return "Windows NT 6.1";
+            if (lc_os_name.contains("server 2008 r2"))  return "Windows NT 6.1";
+            if (lc_os_name.contains("vista"))           return "Windows NT 6.0";
+            if (lc_os_name.contains("server 2008"))     return "Windows NT 6.0";
+            if (lc_os_name.contains("server 2003"))     return "Windows NT 5.2";
+            if (lc_os_name.contains("xp x64"))          return "Windows NT 5.2";
+            if (lc_os_name.contains("xp"))              return "Windows NT 5.1";
+            if (lc_os_name.contains("2000, service"))   return "Windows NT 5.01";
+            if (lc_os_name.contains("2000"))            return "Windows NT 5.0";
+            if (lc_os_name.contains("nt 4"))            return "Windows NT 4.0";
+            if (lc_os_name.contains("mw"))              return "Windows 98; Win 9x 4.90";
+            if (lc_os_name.contains("98"))              return "Windows 98";
+            if (lc_os_name.contains("95"))              return "Windows 95";
+            if (lc_os_name.contains("ce"))              return "Windows CE";
 			return "Windows NT 6.1"; // Default to Windows 7
 			//@formatter:on
 		}
@@ -171,6 +165,7 @@ public class ClientParametersManager
 	 * Get the screen size
 	 * <p>
 	 * Adapted from ij.IJ.getScreenSize() in the ImageJ code.
+	 * 
 	 * @see http://imagej.nih.gov/ij/
 	 * 
 	 * @param os_name
