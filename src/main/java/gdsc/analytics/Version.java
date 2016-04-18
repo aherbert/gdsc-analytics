@@ -30,7 +30,7 @@ package gdsc.analytics;
  * when significant functionality has changed. Otherwise release the version
  * will be incremented.
  * <p>
- * Note that this is the version of the gdsc.core.analytics package. It may be
+ * Note that this is the version of the gdsc.analytics package. It may be
  * different from the Maven version for the gdsc-core artifact.
  */
 public class Version
