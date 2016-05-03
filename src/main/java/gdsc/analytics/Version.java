@@ -26,15 +26,17 @@ package gdsc.analytics;
  */
 
 /**
- * Store the version of the code. The major/minor release number will be updated
- * when significant functionality has changed. Otherwise release the version
- * will be incremented.
+ * Store the version of the code using Semantic Versioning.
+ * <p>
+ * The major/minor version number will be updated when significant functionality
+ * has changed. Otherwise the patch version will be incremented.
  * <p>
  * Note that this is the version of the gdsc.analytics package. It may be
  * different from the Maven version for the gdsc-core artifact.
+ * 
+ * @see http://semver.org/
  */
-public class Version
-{
+public class Version {
 	/**
 	 * The major version
 	 */
@@ -44,9 +46,9 @@ public class Version
 	 */
 	public static final int MINOR = 0;
 	/**
-	 * The release version
+	 * The patch version
 	 */
-	public static final int RELEASE = 0;
+	public static final int PATCH = 0;
 
 	/**
 	 * The major version string
@@ -57,32 +59,30 @@ public class Version
 	 */
 	public static final String VERSION_X_X;
 	/**
-	 * The major.minor.release version string
+	 * The major.minor.patch version string
 	 */
 	public static final String VERSION_X_X_X;
 
-	static
-	{
+	static {
 		VERSION_X = getVersion(1);
 		VERSION_X_X = getVersion(2);
 		VERSION_X_X_X = getVersion(3);
 	}
 
 	/**
-	 * Get the version as a string. The string is built as major.minor.release
+	 * Get the version as a string. The string is built as major.minor.patch
 	 * using the specified number of levels.
 	 * 
 	 * @param levels
 	 *            The number of levels (1-3).
 	 * @return The version
 	 */
-	public static String getVersion(int levels)
-	{
+	public static String getVersion(int levels) {
 		String version = Integer.toString(MAJOR);
 		if (levels > 1)
 			version += '.' + Integer.toString(MINOR);
 		if (levels > 2)
-			version += '.' + Integer.toString(RELEASE);
+			version += '.' + Integer.toString(PATCH);
 		return version;
 	}
 }
