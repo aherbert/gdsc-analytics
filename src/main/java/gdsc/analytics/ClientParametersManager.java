@@ -34,6 +34,13 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Populates the client with information from the system
@@ -55,26 +62,55 @@ public class ClientParametersManager
 		}
 		data.setUserLanguage((System.getProperty("user.language") + "-" + region).toLowerCase());
 
+		// This can wait for a long time (e.g. if the DNS is not working). 
+		// Write so that it can timeout without causing a delay to the calling program.
+		ExecutorService executor = Executors.newSingleThreadExecutor();
+		Future<String> future = executor.submit(new Callable<String>()
+		{
+			public String call() throws Exception
+			{
+				String hostName = "localhost";
+				try
+				{
+					final InetAddress iAddress = InetAddress.getLocalHost();
+					// This performs a lookup of the name service as well
+					// e.g. host.domain.com
+					hostName = iAddress.getCanonicalHostName();
+
+					// This only retrieves the bare hostname
+					// e.g. host
+					// hostName = iAddress.getHostName();
+
+					// This retrieves the IP address as a string
+					// e.g. 192.168.0.1 
+					//hostName = iAddress.getHostAddress();
+				}
+				catch (UnknownHostException e)
+				{
+					//ignore this
+				}
+				return hostName;
+			}
+		});
 		String hostName = "localhost";
 		try
 		{
-			final InetAddress iAddress = InetAddress.getLocalHost();
-			// This performs a lookup of the name service as well
-			// e.g. host.domain.com
-			hostName = iAddress.getCanonicalHostName();
-
-			// This only retrieves the bare hostname
-			// e.g. host
-			// hostName = iAddress.getHostName();
-
-			// This retrieves the IP address as a string
-			// e.g. 192.168.0.1 
-			//hostName = iAddress.getHostAddress();
+			hostName = future.get(2, TimeUnit.SECONDS); //timeout is in 2 seconds
 		}
-		catch (UnknownHostException e)
+		catch (TimeoutException e)
+		{
+			System.err.println("GDSC Analytics: Timeout when resolving hostname");
+		}
+		catch (InterruptedException e)
 		{
 			//ignore this
 		}
+		catch (ExecutionException e)
+		{
+			//ignore this
+		}
+		executor.shutdownNow();
+
 		data.setHostName(hostName);
 
 		final String os_name = System.getProperty("os.name");
