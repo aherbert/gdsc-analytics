@@ -32,7 +32,7 @@ package gdsc.analytics;
  * has changed. Otherwise the patch version will be incremented.
  * <p>
  * Note that this is the version of the gdsc.analytics package. It may be
- * different from the Maven version for the gdsc-core artifact.
+ * different from the Maven version for the gdsc-analytics artifact.
  * 
  * @see http://semver.org/
  */
