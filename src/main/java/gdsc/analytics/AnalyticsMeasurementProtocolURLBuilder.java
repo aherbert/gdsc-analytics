@@ -265,7 +265,7 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 		if (client.isAnonymized())
 		{
 			sb.append("&aip=1"); // Anonymize IP
-			sb.append("&dh=localhost");
+			//sb.append("&dh=localhost");
 		}
 		else
 		{
