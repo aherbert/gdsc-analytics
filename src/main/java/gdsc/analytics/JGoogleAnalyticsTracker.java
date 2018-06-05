@@ -154,6 +154,7 @@ public class JGoogleAnalyticsTracker
 	private final IAnalyticsMeasurementProtocolURLBuilder builder;
 	private DispatchMode mode;
 	private boolean enabled;
+	private boolean secure;
 
 	/**
 	 * Create an instance
@@ -268,6 +269,27 @@ public class JGoogleAnalyticsTracker
 	public boolean isEnabled()
 	{
 		return enabled;
+	}
+
+	/**
+	 * Checks if is using HTTPS.
+	 *
+	 * @return true, if is secure
+	 */
+	public boolean isSecure()
+	{
+		return secure;
+	}
+
+	/**
+	 * Sets to true to use HTTPS.
+	 *
+	 * @param secure
+	 *            the new secure
+	 */
+	public void setSecure(boolean secure)
+	{
+		this.secure = secure;
 	}
 
 	/**
@@ -423,7 +445,7 @@ public class JGoogleAnalyticsTracker
 						}
 						try
 						{
-							dispatchRequest(builder, clientParameters, requestParameters, timestamp, logger);
+							dispatchRequest(builder, clientParameters, requestParameters, timestamp, logger, secure);
 						}
 						finally
 						{
@@ -439,7 +461,7 @@ public class JGoogleAnalyticsTracker
 				break;
 
 			case SYNCHRONOUS:
-				dispatchRequest(builder, clientParameters, requestParameters, timestamp, logger);
+				dispatchRequest(builder, clientParameters, requestParameters, timestamp, logger, secure);
 				break;
 
 			case SINGLE_THREAD:
@@ -460,7 +482,7 @@ public class JGoogleAnalyticsTracker
 
 	/**
 	 * Send the parameters to Google Analytics using the Measurement Protocol. This uses the HTTP POST method.
-	 * 
+	 *
 	 * @param builder
 	 *            The URL builder for Google Analytics Measurement Protocol
 	 * @param clientParameters
@@ -471,15 +493,21 @@ public class JGoogleAnalyticsTracker
 	 *            The timestamp when the hit was reported (in milliseconds)
 	 * @param logger
 	 *            The logger used for status messages
+	 * @param secure
+	 *            the secure
 	 */
 	private static void dispatchRequest(IAnalyticsMeasurementProtocolURLBuilder builder,
-			ClientParameters clientParameters, RequestParameters requestParameters, long timestamp, Logger logger)
+			ClientParameters clientParameters, RequestParameters requestParameters, long timestamp, Logger logger,
+			boolean secure)
 	{
 		HttpURLConnection connection = null;
 		try
 		{
+			// TODO - change this to HTTPS. Make it an option enabled by default.
+
 			String parameters = builder.buildURL(clientParameters, requestParameters, timestamp);
-			final URL url = new URL("http://www.google-analytics.com/collect");
+			final URL url = new URL(
+					(secure) ? "https://www.google-analytics.com/collect" : "http://www.google-analytics.com/collect");
 			if (proxy == null)
 				// Use the system default mechanism for connecting
 				connection = (HttpURLConnection) url.openConnection();
@@ -567,7 +595,8 @@ public class JGoogleAnalyticsTracker
 								try
 								{
 									dispatchRequest(data.tracker.builder, data.tracker.clientParameters,
-											data.requestParameters, data.timestamp, data.tracker.logger);
+											data.requestParameters, data.timestamp, data.tracker.logger,
+											data.tracker.secure);
 								}
 								finally
 								{
