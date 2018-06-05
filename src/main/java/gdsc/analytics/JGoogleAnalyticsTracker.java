@@ -503,8 +503,6 @@ public class JGoogleAnalyticsTracker
 		HttpURLConnection connection = null;
 		try
 		{
-			// TODO - change this to HTTPS. Make it an option enabled by default.
-
 			String parameters = builder.buildURL(clientParameters, requestParameters, timestamp);
 			final URL url = new URL(
 					(secure) ? "https://www.google-analytics.com/collect" : "http://www.google-analytics.com/collect");
@@ -726,7 +724,7 @@ public class JGoogleAnalyticsTracker
 	/**
 	 * Set the state of IP anonymization
 	 * 
-	 * @param anonymize
+	 * @param anonymized
 	 *            True if the IP address of the sender will be anonymized
 	 */
 	public void setAnonymised(boolean anonymized)
