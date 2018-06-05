@@ -48,7 +48,7 @@ public class Version {
 	/**
 	 * The patch version
 	 */
-	public static final int PATCH = 0;
+	public static final int PATCH = 1;
 
 	/**
 	 * The major version string
