@@ -32,6 +32,7 @@ import java.net.Proxy;
 import java.net.Proxy.Type;
 import java.net.SocketAddress;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
@@ -126,6 +127,10 @@ public class JGoogleAnalyticsTracker
 	private static Queue<RequestData> fifo = new LinkedList<RequestData>();
 	private static Thread backgroundThread = null; // the thread used in 'queued' mode.
 	private static boolean backgroundThreadMayRun = false;
+	// Java 1.6
+	private static Charset cs = Charset.forName("UTF-8");
+	// Java 1.7. Not yet used by this library.
+	//private static Charset cs = StandardCharsets.UTF_8;
 
 	static
 	{
@@ -513,7 +518,10 @@ public class JGoogleAnalyticsTracker
 			connection.setRequestMethod("POST");
 			connection.setDoOutput(true);
 			connection.setUseCaches(false);
-			final byte[] out = parameters.getBytes("UTF-8");
+			// Java 1.5 method
+			//final byte[] out = parameters.getBytes("UTF-8");
+			// Java 1.6 method
+			final byte[] out = parameters.getBytes(cs);
 			final int length = out.length;
 			connection.setFixedLengthStreamingMode(length);
 			connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");

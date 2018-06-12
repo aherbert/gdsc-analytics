@@ -54,6 +54,7 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 	 * 
 	 * @see gdsc.analytics.IAnalyticsMeasurementProtocolURLBuilder#getVersion()
 	 */
+	@Override
 	public String getVersion()
 	{
 		return "1";
@@ -65,6 +66,7 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 	 * @see gdsc.core.analytics.IAnalyticsMeasurementProtocolURLBuilder#buildURL(gdsc.core.analytics.ClientParameters,
 	 * gdsc.core.analytics.RequestParameters, long)
 	 */
+	@Override
 	public String buildURL(ClientParameters clientParameters, RequestParameters requestParameters, long timestamp)
 	{
 		// Details of how to build a URL are given here:
@@ -148,6 +150,7 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 	 * gdsc.core.analytics.IAnalyticsMeasurementProtocolURLBuilder#buildGetURL(gdsc.core.analytics.ClientParameters,
 	 * gdsc.core.analytics.RequestParameters, long)
 	 */
+	@Override
 	public String buildGetURL(ClientParameters clientParameters, RequestParameters requestParameters, long timestamp)
 	{
 		// Cache buster.  

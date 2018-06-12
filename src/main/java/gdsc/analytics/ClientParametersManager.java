@@ -68,6 +68,7 @@ public class ClientParametersManager
 		ExecutorService executor = Executors.newSingleThreadExecutor();
 		Future<String> future = executor.submit(new Callable<String>()
 		{
+			@Override
 			public String call() throws Exception
 			{
 				String hostName = "localhost";
