@@ -22,7 +22,7 @@ on it.
         mvn install
 
 	This will produce a gdsc-analytics-[VERSION].jar file in the local Maven
-	repository.	You can now build the other packages that depend on this code.
+	repository. You can now build the other packages that depend on this code.
 
 
 Legal

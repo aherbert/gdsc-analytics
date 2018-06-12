@@ -1,43 +1,41 @@
+/*-
+ * #%L
+ * GDSC Analytics
+ * %%
+ * Copyright (C) 2010 - 2018 Alex Herbert, Daniel Murphy
+ * %%
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ * #L%
+ */
 package gdsc.analytics;
 
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.Proxy.Type;
 import java.net.SocketAddress;
+import java.net.URL;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Scanner;
 import java.util.regex.MatchResult;
-/*
- * <ul>
- * <li>Copyright (c) 2010 Daniel Murphy, Stefan Brozinski
- * <li>Copyright (c) 2016 Alex Herbert
- * </ul>
- * 
- * Permission is hereby granted, free of charge, to any person obtaining
- * a copy of this software and associated documentation files (the
- * "Software"), to deal in the Software without restriction, including
- * without limitation the rights to use, copy, modify, merge, publish,
- * distribute, sublicense, and/or sell copies of the Software, and to
- * permit persons to whom the Software is furnished to do so, subject to
- * the following conditions:
- * <p>
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
- * <p>
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
- * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
- * LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
- * OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
- * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- *
- * @see https://code.google.com/archive/p/jgoogleanalyticstracker/
- */
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 /**
  * Common tracking calls are implemented as methods, but if you want to control
@@ -69,7 +67,7 @@ import java.net.URL;
  * with).
  * </p>
  * <p>
- * Note: This class has been forked from the JGoogleAnalyticsTracker project and modified by Alex Herbert to:
+ * Note: This class has been copied from the JGoogleAnalyticsTracker project and modified by Alex Herbert to:
  * <ul>
  * <li>Alter the data sent to Google Analytics to use the POST method for the Measurement Protocol
  * <li>Remove the slfj dependency
@@ -437,6 +435,7 @@ public class JGoogleAnalyticsTracker
 			case MULTI_THREAD:
 				Thread t = new Thread(asyncThreadGroup, "AnalyticsThread-" + asyncThreadGroup.activeCount())
 				{
+					@Override
 					public void run()
 					{
 						synchronized (JGoogleAnalyticsTracker.class)
@@ -565,6 +564,7 @@ public class JGoogleAnalyticsTracker
 			backgroundThreadMayRun = true;
 			backgroundThread = new Thread(asyncThreadGroup, "AnalyticsBackgroundThread")
 			{
+				@Override
 				public void run()
 				{
 					logger.debug("AnalyticsBackgroundThread started");
