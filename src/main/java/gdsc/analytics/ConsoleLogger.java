@@ -1,6 +1,9 @@
 /*-
  * #%L
- * GDSC Analytics
+ * Genome Damage and Stability Centre Analytics Package
+ * 
+ * The GDSC Analytics package contains code to use the Google Analytics Measurement
+ * protocol to collect usage information about a Java application.
  * %%
  * Copyright (C) 2010 - 2018 Alex Herbert, Daniel Murphy
  * %%

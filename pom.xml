@@ -67,6 +67,7 @@ protocol to collect usage information about a Java application.
 		<build.date>${maven.build.timestamp}</build.date>
 		<license.licenseName>mit</license.licenseName>
 		<license.copyrightOwners>Alex Herbert, Daniel Murphy</license.copyrightOwners>
+    	<license.projectName>${project.description}</license.projectName>
 	</properties>
 
 	<build>
