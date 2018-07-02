@@ -52,8 +52,8 @@ import java.util.concurrent.TimeoutException;
 public class ClientParametersManager
 {
 	/**
-	 * Populates the client parameters with information from the system
-	 * 
+	 * Populates the client parameters with information from the system.
+	 *
 	 * @param data
 	 *            The data
 	 */
@@ -65,6 +65,47 @@ public class ClientParametersManager
 			region = System.getProperty("user.country");
 		}
 		data.setUserLanguage((System.getProperty("user.language") + "-" + region).toLowerCase());
+
+		// Do not collect the hostname be default
+		data.setHostName("localhost");
+
+		final String os_name = System.getProperty("os.name");
+
+		final Dimension d = getScreenSize(os_name);
+		data.setScreenResolution(d.width + "x" + d.height);
+
+		// The browser and operating system are taken from the User-Agent property.
+
+		//data.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"); // To simulate Chrome
+
+		// The Java URLConnection User-Agent property will default to 'Java/1.6.0.19' where the 
+		// last part is the JRE version. Add the operating system to this, e.g. Java/1.6.0.19 (Windows NT 6.1)
+
+		StringBuilder sb = new StringBuilder();
+		sb.append("Java/").append(System.getProperty("java.version"));
+		sb.append(" (").append(getPlatform(os_name)).append(")");
+		data.setUserAgent(sb.toString());
+
+		// Note: Adding the OS does not currently work within Google Analytics.
+		//
+		// https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#ua
+		// "The User Agent of the browser. Note that Google has libraries to identify real user agents. 
+		// Hand crafting your own agent could break at any time."
+
+		// A better option is to pass in custom dimension so this data can be used in reports.
+	}
+
+	/**
+	 * Populates the client parameters with the system hostname.
+	 * <p>
+	 * The call will timeout after 2 seconds (e.g. if the DNS is not working) and the hostname will be set to localhost.
+	 *
+	 * @param data
+	 *            The data
+	 */
+	public static final void populateHostname(ClientParameters data)
+	{
+		String hostName = "localhost";
 
 		// This can wait for a long time (e.g. if the DNS is not working). 
 		// Write so that it can timeout without causing a delay to the calling program.
@@ -97,7 +138,6 @@ public class ClientParametersManager
 				return hostName;
 			}
 		});
-		String hostName = "localhost";
 		try
 		{
 			hostName = future.get(2, TimeUnit.SECONDS); //timeout is in 2 seconds
@@ -117,41 +157,14 @@ public class ClientParametersManager
 		executor.shutdownNow();
 
 		data.setHostName(hostName);
-
-		final String os_name = System.getProperty("os.name");
-
-		final Dimension d = getScreenSize(os_name);
-		data.setScreenResolution(d.width + "x" + d.height);
-
-		// The browser and operating system are taken from the User-Agent property.
-
-		//data.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"); // To simulate Chrome
-
-		// The Java URLConnection User-Agent property will default to 'Java/1.6.0.19' where the 
-		// last part is the JRE version. Add the operating system to this, e.g. Java/1.6.0.19 (Windows NT 6.1)
-
-		StringBuilder sb = new StringBuilder();
-		sb.append("Java/").append(System.getProperty("java.version"));
-		sb.append(" (").append(getPlatform(os_name)).append(")");
-		data.setUserAgent(sb.toString());
-
-		// Note: Adding the OS does not currently work within Google Analytics.
-		//
-		// https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#ua
-		// "The User Agent of the browser. Note that Google has libraries to identify real user agents. 
-		// Hand crafting your own agent could break at any time."
-
-		// A better option is to pass in custom dimension so this data can be used in reports.
 	}
 
 	/**
-	 * Get the platform for the User-Agent string
-	 * 
-	 * @return The platform
-	 */
-	/**
+	 * Get the platform for the User-Agent string.
+	 *
 	 * @param os_name
-	 * @return
+	 *            the os name
+	 * @return The platform
 	 */
 	private static String getPlatform(String os_name)
 	{
