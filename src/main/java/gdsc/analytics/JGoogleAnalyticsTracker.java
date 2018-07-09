@@ -46,7 +46,7 @@ import java.util.regex.MatchResult;
  * what data to send, then use {@link #makeCustomRequest(RequestParameters)}.
  * If you are making custom calls, the only requirements are:
  * <ul>
- * <li>{@link RequestParameters#setPageURL(String)} must be populated</li>
+ * <li>{@link RequestParameters#setDocumentPath(String)} must be populated</li>
  * </ul>
  * See the <a
  * href=http://code.google.com/intl/en-US/apis/analytics/docs/tracking/gaTrackingTroubleshooting.html#gifParameters>
@@ -67,7 +67,7 @@ import java.util.regex.MatchResult;
  * To halt the background thread safely, use the call {@link #stopBackgroundThread(long)}, where the parameter is the
  * timeout to wait for any remaining queued tracking calls to be made. Keep in mind that if new tracking requests are
  * made after the thread is stopped, they will just be stored in the queue, and will not be sent to GA until the thread
- * is started again with {@link #startBackgroundThread()} (This is assuming you are in single-threaded mode to begin
+ * is started again with {@link #startBackgroundThread(Logger)} (This is assuming you are in single-threaded mode to begin
  * with).
  * </p>
  * <p>
@@ -84,6 +84,9 @@ import java.util.regex.MatchResult;
  */
 public class JGoogleAnalyticsTracker
 {
+	/**
+	 * The dispatch mode
+	 */
 	public static enum DispatchMode
 	{
 		/**
@@ -218,9 +221,9 @@ public class JGoogleAnalyticsTracker
 
 	/**
 	 * Gets the current dispatch mode. Default is {@link DispatchMode#SINGLE_THREAD}.
-	 * 
+	 *
+	 * @return the dispatch mode
 	 * @see DispatchMode
-	 * @return
 	 */
 	public DispatchMode getDispatchMode()
 	{
@@ -229,8 +232,8 @@ public class JGoogleAnalyticsTracker
 
 	/**
 	 * Convenience method to check if the tracker is in synchronous mode.
-	 * 
-	 * @return
+	 *
+	 * @return true, if is synchronous
 	 */
 	public boolean isSynchronous()
 	{
@@ -238,9 +241,9 @@ public class JGoogleAnalyticsTracker
 	}
 
 	/**
-	 * Convenience method to check if the tracker is in single-thread mode
-	 * 
-	 * @return
+	 * Convenience method to check if the tracker is in single-thread mode.
+	 *
+	 * @return true, if is single threaded
 	 */
 	public boolean isSingleThreaded()
 	{
@@ -248,9 +251,9 @@ public class JGoogleAnalyticsTracker
 	}
 
 	/**
-	 * Convenience method to check if the tracker is in multi-thread mode
-	 * 
-	 * @return
+	 * Convenience method to check if the tracker is in multi-thread mode.
+	 *
+	 * @return true, if is multi threaded
 	 */
 	public boolean isMultiThreaded()
 	{
@@ -269,8 +272,8 @@ public class JGoogleAnalyticsTracker
 
 	/**
 	 * If the api is dispatching tracking requests (default of true).
-	 * 
-	 * @return
+	 *
+	 * @return true, if is enabled
 	 */
 	public boolean isEnabled()
 	{
@@ -421,10 +424,10 @@ public class JGoogleAnalyticsTracker
 	 * 
 	 * @param requestParameters
 	 *            The request parameters
-	 * @throws NullPointerException
-	 *             if requestData is null
 	 * @param timestamp
 	 *            The timestamp when the hit was reported (in milliseconds)
+	 * @throws NullPointerException
+	 *             if requestData is null
 	 */
 	public void makeCustomRequest(final RequestParameters requestParameters, final long timestamp)
 	{

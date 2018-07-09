@@ -39,18 +39,17 @@ import gdsc.analytics.Parameters.CustomMetric;
  * <p>
  * This class only supports the pageview and event hit type.
  * 
- * @see https://developers.google.com/analytics/devguides/collection/protocol/v1/
+ * @see "https://developers.google.com/analytics/devguides/collection/protocol/v1/"
  * @author Alex Herbert
  */
 public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasurementProtocolURLBuilder
 {
+	/**
+	 * The URL for the Google Analytics Measurement Protocol.
+	 */
 	public static final String URL_PREFIX = "http://www.google-analytics.com/collect";
 
 	private final Random random = new Random();
-
-	public AnalyticsMeasurementProtocolURLBuilder()
-	{
-	}
 
 	/*
 	 * (non-Javadoc)

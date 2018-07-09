@@ -37,7 +37,7 @@ package gdsc.analytics;
  * Note that this is the version of the gdsc.analytics package. It may be
  * different from the Maven version for the gdsc-analytics artifact.
  * 
- * @see http://semver.org/
+ * @see "http://semver.org/"
  * @author Alex Herbert
  */
 public class Version

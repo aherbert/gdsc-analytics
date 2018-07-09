@@ -31,7 +31,7 @@ package gdsc.analytics;
 /**
  * Google Analytics request data
  * 
- * @see https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters
+ * @see "https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters"
  * @author Alex Herbert
  */
 public class RequestParameters extends Parameters
@@ -45,6 +45,12 @@ public class RequestParameters extends Parameters
 	private String label;
 	private Integer value;
 
+	/**
+	 * Instantiates a new request parameters.
+	 *
+	 * @param hitType
+	 *            the hit type
+	 */
 	public RequestParameters(HitType hitType)
 	{
 		this.hitType = hitType;

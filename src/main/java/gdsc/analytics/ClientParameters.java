@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
 /**
  * Common client data. Allows caching of the client component of the Google Analytics URL.
  * 
- * @see https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters
+ * @see "https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters"
  * @author Alex Herbert
  */
 public class ClientParameters extends Parameters
@@ -257,7 +257,7 @@ public class ClientParameters extends Parameters
 	/**
 	 * Set the state of IP anonymization
 	 * 
-	 * @param anonymize
+	 * @param anonymized
 	 *            True if the IP address of the sender will be anonymized
 	 */
 	public void setAnonymized(boolean anonymized)

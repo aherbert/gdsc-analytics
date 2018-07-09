@@ -220,7 +220,7 @@ public class ClientParametersManager
 	 * <p>
 	 * Adapted from ij.IJ.getScreenSize() in the ImageJ code.
 	 * 
-	 * @see http://imagej.nih.gov/ij/
+	 * @see "http://imagej.nih.gov/ij/"
 	 * 
 	 * @param os_name
 	 *            The os.name system property
