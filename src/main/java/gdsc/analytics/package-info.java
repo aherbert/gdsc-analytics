@@ -1,7 +1,7 @@
 /*-
  * #%L
  * Genome Damage and Stability Centre Analytics Package
- * 
+ *
  * The GDSC Analytics package contains code to use the Google Analytics Measurement
  * protocol to collect usage information about a Java application.
  * %%
@@ -13,10 +13,10 @@
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -46,10 +46,10 @@ package gdsc.analytics;
  * constructed analytics URL. The code is redistributed under the
  * original MIT licence and maintains the copyright of Daniel Murphey
  * through the applicable original code with the addition of Alex Herbert.
- * 
+ *
  * @see https://developers.google.com/analytics/devguides/collection/protocol/v1/
- * 
+ *
  * @see https://code.google.com/archive/p/jgoogleanalyticstracker/
- * 
+ *
  * @see https://github.com/siddii/jgoogleanalytics
  */

@@ -1,7 +1,7 @@
 /*-
  * #%L
  * Genome Damage and Stability Centre Analytics Package
- * 
+ *
  * The GDSC Analytics package contains code to use the Google Analytics Measurement
  * protocol to collect usage information about a Java application.
  * %%
@@ -13,10 +13,10 @@
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -34,7 +34,7 @@ import java.util.List;
 /**
  * Base class for parameters to allow storing custom dimensions and metrics.
  * Note that custom dimensions have to be created for your site before they can be used in analytics reports.
- * 
+ *
  * @see "https://support.google.com/analytics/answer/2709829"
  * @see "https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters"
  * @author Alex Herbert
@@ -102,9 +102,9 @@ public class Parameters
 	 * <p>
 	 * Note that custom dimensions have to be created for your site before they can be used in analytics reports.
 	 * Dimensions should be used for segregation of data into categories.
-	 * 
+	 *
 	 * @see "https://support.google.com/analytics/answer/2709829"
-	 * 
+	 *
 	 * @param index
 	 *            The dimension index (1-20 or 1-200 for premium accounts)
 	 * @param value
@@ -150,9 +150,9 @@ public class Parameters
 	 * <p>
 	 * Note that custom metrics have to be created for your site before they can be used in analytics reports.
 	 * Metrics should be used for numbers that you want to accumulate.
-	 * 
+	 *
 	 * @see "https://support.google.com/analytics/answer/2709829"
-	 * 
+	 *
 	 * @param index
 	 *            The dimension index (1-20 or 1-200 for premium accounts)
 	 * @param value

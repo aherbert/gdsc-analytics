@@ -1,7 +1,7 @@
 /*-
  * #%L
  * Genome Damage and Stability Centre Analytics Package
- * 
+ *
  * The GDSC Analytics package contains code to use the Google Analytics Measurement
  * protocol to collect usage information about a Java application.
  * %%
@@ -13,10 +13,10 @@
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -30,21 +30,21 @@ package gdsc.analytics;
 
 /**
  * URL builder for the tracking requests.
- * 
+ *
  * @author Alex Herbert
  */
 public interface IAnalyticsMeasurementProtocolURLBuilder
 {
 	/**
 	 * Gets the version for this builder
-	 * 
+	 *
 	 * @return The version
 	 */
 	public String getVersion();
 
 	/**
 	 * Build the parameters URL request from the data. The parameters are suitable for use in the HTTP POST method.
-	 * 
+	 *
 	 * @param clientParameters
 	 *            The client parameter data
 	 * @param requestParameters
@@ -57,7 +57,7 @@ public interface IAnalyticsMeasurementProtocolURLBuilder
 
 	/**
 	 * Build the parameters URL request from the data. The parameters are suitable for use in the HTTP GET method.
-	 * 
+	 *
 	 * @param clientParameters
 	 *            The client parameter data
 	 * @param requestParameters

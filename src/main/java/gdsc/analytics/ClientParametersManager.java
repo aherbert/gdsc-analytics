@@ -1,7 +1,7 @@
 /*-
  * #%L
  * Genome Damage and Stability Centre Analytics Package
- * 
+ *
  * The GDSC Analytics package contains code to use the Google Analytics Measurement
  * protocol to collect usage information about a Java application.
  * %%
@@ -13,10 +13,10 @@
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -46,7 +46,7 @@ import java.util.concurrent.TimeoutException;
 
 /**
  * Populates the client with information from the system
- * 
+ *
  * @author Alex Herbert
  */
 public class ClientParametersManager
@@ -61,9 +61,7 @@ public class ClientParametersManager
 	{
 		String region = System.getProperty("user.region");
 		if (region == null)
-		{
 			region = System.getProperty("user.country");
-		}
 		data.setUserLanguage((System.getProperty("user.language") + "-" + region).toLowerCase());
 
 		// Do not collect the hostname be default
@@ -78,10 +76,10 @@ public class ClientParametersManager
 
 		//data.addHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36"); // To simulate Chrome
 
-		// The Java URLConnection User-Agent property will default to 'Java/1.6.0.19' where the 
+		// The Java URLConnection User-Agent property will default to 'Java/1.6.0.19' where the
 		// last part is the JRE version. Add the operating system to this, e.g. Java/1.6.0.19 (Windows NT 6.1)
 
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 		sb.append("Java/").append(System.getProperty("java.version"));
 		sb.append(" (").append(getPlatform(os_name)).append(")");
 		data.setUserAgent(sb.toString());
@@ -89,7 +87,7 @@ public class ClientParametersManager
 		// Note: Adding the OS does not currently work within Google Analytics.
 		//
 		// https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#ua
-		// "The User Agent of the browser. Note that Google has libraries to identify real user agents. 
+		// "The User Agent of the browser. Note that Google has libraries to identify real user agents.
 		// Hand crafting your own agent could break at any time."
 
 		// A better option is to pass in custom dimension so this data can be used in reports.
@@ -107,10 +105,10 @@ public class ClientParametersManager
 	{
 		String hostName = "localhost";
 
-		// This can wait for a long time (e.g. if the DNS is not working). 
+		// This can wait for a long time (e.g. if the DNS is not working).
 		// Write so that it can timeout without causing a delay to the calling program.
-		ExecutorService executor = Executors.newSingleThreadExecutor();
-		Future<String> future = executor.submit(new Callable<String>()
+		final ExecutorService executor = Executors.newSingleThreadExecutor();
+		final Future<String> future = executor.submit(new Callable<String>()
 		{
 			@Override
 			public String call() throws Exception
@@ -128,10 +126,10 @@ public class ClientParametersManager
 					// hostName = iAddress.getHostName();
 
 					// This retrieves the IP address as a string
-					// e.g. 192.168.0.1 
+					// e.g. 192.168.0.1
 					//hostName = iAddress.getHostAddress();
 				}
-				catch (UnknownHostException e)
+				catch (final UnknownHostException e)
 				{
 					//ignore this
 				}
@@ -142,15 +140,15 @@ public class ClientParametersManager
 		{
 			hostName = future.get(2, TimeUnit.SECONDS); //timeout is in 2 seconds
 		}
-		catch (TimeoutException e)
+		catch (final TimeoutException e)
 		{
 			System.err.println("GDSC Analytics: Timeout when resolving hostname");
 		}
-		catch (InterruptedException e)
+		catch (final InterruptedException e)
 		{
 			//ignore this
 		}
-		catch (ExecutionException e)
+		catch (final ExecutionException e)
 		{
 			//ignore this
 		}
@@ -206,7 +204,7 @@ public class ClientParametersManager
 			// Just pick a recent valid platform from a valid Mac User-Agent string
 			return "Macintosh; Intel Mac OS X 10_9_3";
 
-		// Linux variants will just return 'Linux'. 
+		// Linux variants will just return 'Linux'.
 		// This is apparently detected by Google Analytics so we leave this as is.
 
 		// Other - Just leave it
@@ -219,9 +217,9 @@ public class ClientParametersManager
 	 * Get the screen size
 	 * <p>
 	 * Adapted from ij.IJ.getScreenSize() in the ImageJ code.
-	 * 
+	 *
 	 * @see "http://imagej.nih.gov/ij/"
-	 * 
+	 *
 	 * @param os_name
 	 *            The os.name system property
 	 * @return The dimension of the primary screen
@@ -232,12 +230,12 @@ public class ClientParametersManager
 			return Toolkit.getDefaultToolkit().getScreenSize();
 		if (GraphicsEnvironment.isHeadless())
 			return new Dimension(0, 0);
-		// Can't use Toolkit.getScreenSize() on Linux because it returns 
+		// Can't use Toolkit.getScreenSize() on Linux because it returns
 		// size of all displays rather than just the primary display.
-		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-		GraphicsDevice[] gd = ge.getScreenDevices();
-		GraphicsConfiguration[] gc = gd[0].getConfigurations();
-		Rectangle bounds = gc[0].getBounds();
+		final GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		final GraphicsDevice[] gd = ge.getScreenDevices();
+		final GraphicsConfiguration[] gc = gd[0].getConfigurations();
+		final Rectangle bounds = gc[0].getBounds();
 		if ((bounds.x == 0 && bounds.y == 0) || (isLinux(os_name) && gc.length > 1))
 			return new Dimension(bounds.width, bounds.height);
 		else

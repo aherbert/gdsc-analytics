@@ -1,7 +1,7 @@
 /*-
  * #%L
  * Genome Damage and Stability Centre Analytics Package
- * 
+ *
  * The GDSC Analytics package contains code to use the Google Analytics Measurement
  * protocol to collect usage information about a Java application.
  * %%
@@ -13,10 +13,10 @@
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -36,7 +36,7 @@ package gdsc.analytics;
  * <p>
  * Note that this is the version of the gdsc.analytics package. It may be
  * different from the Maven version for the gdsc-analytics artifact.
- * 
+ *
  * @see "http://semver.org/"
  * @author Alex Herbert
  */
@@ -78,7 +78,7 @@ public class Version
 	/**
 	 * Get the version as a string. The string is built as major.minor.patch
 	 * using the specified number of levels.
-	 * 
+	 *
 	 * @param levels
 	 *            The number of levels (1-3).
 	 * @return The version

@@ -1,7 +1,7 @@
 /*-
  * #%L
  * Genome Damage and Stability Centre Analytics Package
- * 
+ *
  * The GDSC Analytics package contains code to use the Google Analytics Measurement
  * protocol to collect usage information about a Java application.
  * %%
@@ -13,10 +13,10 @@
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
 
 /**
  * Common client data. Allows caching of the client component of the Google Analytics URL.
- * 
+ *
  * @see "https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters"
  * @author Alex Herbert
  */
@@ -55,7 +55,7 @@ public class ClientParameters extends Parameters
 
 	/**
 	 * Constructs with the tracking Id. If the client Id is null or empty then a new UUID will be created.
-	 * 
+	 *
 	 * @param trackingId
 	 *            Tracking Id (must not be null)
 	 * @param clientId
@@ -105,7 +105,7 @@ public class ClientParameters extends Parameters
 
 	/**
 	 * Check if this is a new session
-	 * 
+	 *
 	 * @return True if the session is new
 	 */
 	public boolean isNewSession()
@@ -179,7 +179,7 @@ public class ClientParameters extends Parameters
 
 	/**
 	 * Sets the screen resolution, like "1280x800".
-	 * 
+	 *
 	 * @param argScreenResolution
 	 *            the screenResolution to set
 	 */
@@ -191,7 +191,7 @@ public class ClientParameters extends Parameters
 
 	/**
 	 * Sets the user language, like "EN-us"
-	 * 
+	 *
 	 * @param argUserLanguage
 	 *            the userLanguage to set
 	 */
@@ -203,7 +203,7 @@ public class ClientParameters extends Parameters
 
 	/**
 	 * Set the hostname
-	 * 
+	 *
 	 * @param hostName
 	 *            the hostname
 	 */
@@ -215,7 +215,7 @@ public class ClientParameters extends Parameters
 
 	/**
 	 * Set the client component of the Google Analytics URL. This can be used to cache part of the URL.
-	 * 
+	 *
 	 * @param url
 	 *            The client component of the URL
 	 */
@@ -256,7 +256,7 @@ public class ClientParameters extends Parameters
 
 	/**
 	 * Set the state of IP anonymization
-	 * 
+	 *
 	 * @param anonymized
 	 *            True if the IP address of the sender will be anonymized
 	 */
@@ -268,7 +268,7 @@ public class ClientParameters extends Parameters
 
 	/**
 	 * Add a session level custom dimension. These will only be sent at the start of the session.
-	 * 
+	 *
 	 * @see gdsc.analytics.Parameters#addCustomDimension(int, java.lang.String)
 	 */
 	@Override
@@ -280,7 +280,7 @@ public class ClientParameters extends Parameters
 
 	/**
 	 * Add a session level custom metric. These will only be sent at the start of the session.
-	 * 
+	 *
 	 * @see gdsc.analytics.Parameters#addCustomMetric(int, int)
 	 */
 	@Override

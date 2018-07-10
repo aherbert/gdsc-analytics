@@ -1,7 +1,7 @@
 /*-
  * #%L
  * Genome Damage and Stability Centre Analytics Package
- * 
+ *
  * The GDSC Analytics package contains code to use the Google Analytics Measurement
  * protocol to collect usage information about a Java application.
  * %%
@@ -13,10 +13,10 @@
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -38,7 +38,7 @@ import gdsc.analytics.Parameters.CustomMetric;
  * Build the parameters used by Google Analytics Measurement Protocol.
  * <p>
  * This class only supports the pageview and event hit type.
- * 
+ *
  * @see "https://developers.google.com/analytics/devguides/collection/protocol/v1/"
  * @author Alex Herbert
  */
@@ -53,7 +53,7 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see gdsc.analytics.IAnalyticsMeasurementProtocolURLBuilder#getVersion()
 	 */
 	@Override
@@ -64,7 +64,7 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see gdsc.core.analytics.IAnalyticsMeasurementProtocolURLBuilder#buildURL(gdsc.core.analytics.ClientParameters,
 	 * gdsc.core.analytics.RequestParameters, long)
 	 */
@@ -75,7 +75,7 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 		// https://developers.google.com/analytics/devguides/collection/protocol/v1/devguide#commonhits
 		// https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters
 
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 
 		sb.append("v=1"); // version
 
@@ -90,7 +90,7 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 		}
 
 		// Build the client data.
-		// Note it is unclear if this can be sent only once at the session level or 
+		// Note it is unclear if this can be sent only once at the session level or
 		// it should be sent with each hit (which is more expensive). At the moment
 		// just send it with every hit.
 		String url = clientParameters.getUrl();
@@ -101,7 +101,7 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 		}
 		sb.append(url);
 
-		// Add the client custom dimensions and metrics at the session level, so we only 
+		// Add the client custom dimensions and metrics at the session level, so we only
 		// build this when a new session or when the client parameters have changed.
 		if (buildSessionLevelCustomParams)
 		{
@@ -137,8 +137,8 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 		}
 
 		// Queue time
-		// Used to collect offline / latent hits. The value represents the time delta (in milliseconds) 
-		// between when the hit being reported occurred and the time the hit was sent. The value must be 
+		// Used to collect offline / latent hits. The value represents the time delta (in milliseconds)
+		// between when the hit being reported occurred and the time the hit was sent. The value must be
 		// greater than or equal to 0. Values greater than four hours may lead to hits not being processed.
 		add(sb, "qt", System.currentTimeMillis() - timestamp);
 
@@ -147,7 +147,7 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * gdsc.core.analytics.IAnalyticsMeasurementProtocolURLBuilder#buildGetURL(gdsc.core.analytics.ClientParameters,
 	 * gdsc.core.analytics.RequestParameters, long)
@@ -155,8 +155,8 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 	@Override
 	public String buildGetURL(ClientParameters clientParameters, RequestParameters requestParameters, long timestamp)
 	{
-		// Cache buster.  
-		// Used to send a random number in GET requests to ensure browsers and proxies don't cache hits. 
+		// Cache buster.
+		// Used to send a random number in GET requests to ensure browsers and proxies don't cache hits.
 		// It should be sent as the final parameter of the request
 		// https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#z
 		return buildURL(clientParameters, requestParameters, timestamp) + "&z=" + random.nextInt();
@@ -164,7 +164,7 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 
 	/**
 	 * Add the key value pair
-	 * 
+	 *
 	 * @param sb
 	 * @param key
 	 * @param value
@@ -176,7 +176,7 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 
 	/**
 	 * Add the key value pair
-	 * 
+	 *
 	 * @param sb
 	 * @param key
 	 * @param value
@@ -188,7 +188,7 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 
 	/**
 	 * Add the key value pair
-	 * 
+	 *
 	 * @param sb
 	 * @param key
 	 * @param value
@@ -200,7 +200,7 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 
 	/**
 	 * Add a custom dimension
-	 * 
+	 *
 	 * @param sb
 	 * @param index
 	 * @param value
@@ -212,7 +212,7 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 
 	/**
 	 * Add a custom metric
-	 * 
+	 *
 	 * @param sb
 	 * @param index
 	 * @param value
@@ -224,7 +224,7 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 
 	/**
 	 * Add the key value pair if the value is not null
-	 * 
+	 *
 	 * @param sb
 	 * @param key
 	 * @param value
@@ -238,7 +238,7 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 
 	/**
 	 * Add the key value pair if the value is not null
-	 * 
+	 *
 	 * @param sb
 	 * @param key
 	 * @param value
@@ -252,7 +252,7 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 
 	private static String buildClientURL(ClientParameters client)
 	{
-		StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 
 		add(sb, "tid", client.getTrackingId());
 		add(sb, "cid", client.getClientId());
@@ -265,14 +265,10 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 		addCheck(sb, "ua", client.getUserAgent());
 
 		if (client.isAnonymized())
-		{
 			sb.append("&aip=1"); // Anonymize IP
 			//sb.append("&dh=localhost");
-		}
 		else
-		{
 			addCheck(sb, "dh", client.getHostName());
-		}
 
 		sb.append("&je=1"); // java enabled
 
@@ -285,7 +281,7 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 	{
 		if (customDimensions == null)
 			return;
-		for (CustomDimension cd : customDimensions)
+		for (final CustomDimension cd : customDimensions)
 			addDimension(sb, cd.index, cd.value);
 	}
 
@@ -293,7 +289,7 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 	{
 		if (customMetrics == null)
 			return;
-		for (CustomMetric cm : customMetrics)
+		for (final CustomMetric cm : customMetrics)
 			addMetric(sb, cm.index, cm.value);
 	}
 }
