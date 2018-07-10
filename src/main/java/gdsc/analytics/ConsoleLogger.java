@@ -49,7 +49,7 @@ public class ConsoleLogger extends Logger
 		addNewLine(format);
 	}
 
-	private void addNewLine(String format)
+	private static void addNewLine(String format)
 	{
 		if (!format.endsWith("\n"))
 			System.out.println();

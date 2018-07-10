@@ -534,6 +534,7 @@ public class JGoogleAnalyticsTracker
 			connection.connect();
 			OutputStream os = connection.getOutputStream();
 			os.write(out);
+			os.close();
 			final int responseCode = connection.getResponseCode();
 			if (responseCode != HttpURLConnection.HTTP_OK)
 			{

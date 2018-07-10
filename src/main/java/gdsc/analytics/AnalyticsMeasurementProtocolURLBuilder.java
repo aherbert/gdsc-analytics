@@ -169,7 +169,7 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 	 * @param key
 	 * @param value
 	 */
-	private void add(StringBuilder sb, String key, String value)
+	private static void add(StringBuilder sb, String key, String value)
 	{
 		sb.append('&').append(key).append('=').append(URIEncoder.encodeURI(value));
 	}
@@ -181,7 +181,7 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 	 * @param key
 	 * @param value
 	 */
-	private void add(StringBuilder sb, String key, int value)
+	private static void add(StringBuilder sb, String key, int value)
 	{
 		sb.append('&').append(key).append('=').append(value);
 	}
@@ -193,7 +193,7 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 	 * @param key
 	 * @param value
 	 */
-	private void add(StringBuilder sb, String key, long value)
+	private static void add(StringBuilder sb, String key, long value)
 	{
 		sb.append('&').append(key).append('=').append(value);
 	}
@@ -205,7 +205,7 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 	 * @param index
 	 * @param value
 	 */
-	private void addDimension(StringBuilder sb, int index, String value)
+	private static void addDimension(StringBuilder sb, int index, String value)
 	{
 		sb.append("&cd").append(index).append('=').append(URIEncoder.encodeURI(value));
 	}
@@ -217,7 +217,7 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 	 * @param index
 	 * @param value
 	 */
-	private void addMetric(StringBuilder sb, int index, int value)
+	private static void addMetric(StringBuilder sb, int index, int value)
 	{
 		sb.append("&cm").append(index).append('=').append(value);
 	}
@@ -229,7 +229,7 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 	 * @param key
 	 * @param value
 	 */
-	private void addCheck(StringBuilder sb, String key, String value)
+	private static void addCheck(StringBuilder sb, String key, String value)
 	{
 		if (value == null)
 			return;
@@ -243,14 +243,14 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 	 * @param key
 	 * @param value
 	 */
-	private void addCheck(StringBuilder sb, String key, Integer value)
+	private static void addCheck(StringBuilder sb, String key, Integer value)
 	{
 		if (value == null)
 			return;
 		add(sb, key, value.intValue());
 	}
 
-	private String buildClientURL(ClientParameters client)
+	private static String buildClientURL(ClientParameters client)
 	{
 		StringBuilder sb = new StringBuilder();
 
@@ -281,7 +281,7 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 		return url;
 	}
 
-	private void buildCustomDimensionsURL(StringBuilder sb, List<CustomDimension> customDimensions)
+	private static void buildCustomDimensionsURL(StringBuilder sb, List<CustomDimension> customDimensions)
 	{
 		if (customDimensions == null)
 			return;
@@ -289,7 +289,7 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 			addDimension(sb, cd.index, cd.value);
 	}
 
-	private void buildCustomMetricsURL(StringBuilder sb, List<CustomMetric> customMetrics)
+	private static void buildCustomMetricsURL(StringBuilder sb, List<CustomMetric> customMetrics)
 	{
 		if (customMetrics == null)
 			return;
