@@ -67,8 +67,7 @@ import java.util.regex.MatchResult;
  * To halt the background thread safely, use the call {@link #stopBackgroundThread(long)}, where the parameter is the
  * timeout to wait for any remaining queued tracking calls to be made. Keep in mind that if new tracking requests are
  * made after the thread is stopped, they will just be stored in the queue, and will not be sent to GA until the thread
- * is started again with {@link #startBackgroundThread(Logger)} (This is assuming you are in single-threaded mode to begin
- * with).
+ * is started again with {@link #setDispatchMode(DispatchMode)} using {@link DispatchMode#SINGLE_THREAD}.
  * </p>
  * <p>
  * Note: This class has been copied from the JGoogleAnalyticsTracker project and modified by Alex Herbert to:
@@ -262,8 +261,9 @@ public class JGoogleAnalyticsTracker
 
 	/**
 	 * Sets if the api dispatches tracking requests.
-	 * 
+	 *
 	 * @param enabled
+	 *            the new enabled
 	 */
 	public void setEnabled(boolean enabled)
 	{

@@ -35,21 +35,26 @@ package gdsc.analytics;
  */
 public class Logger
 {
+
 	/**
-	 * Write an error message
-	 * 
+	 * Write an error message.
+	 *
 	 * @param format
+	 *            the format
 	 * @param args
+	 *            the args
 	 */
 	public void error(String format, Object... args)
 	{
 	}
 
 	/**
-	 * Write an debug message
-	 * 
+	 * Write an debug message.
+	 *
 	 * @param format
+	 *            the format
 	 * @param args
+	 *            the args
 	 */
 	public void debug(String format, Object... args)
 	{
