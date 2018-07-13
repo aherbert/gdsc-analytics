@@ -35,7 +35,6 @@ package gdsc.analytics;
  */
 public class Logger
 {
-
 	/**
 	 * Write an error message.
 	 *
@@ -46,6 +45,7 @@ public class Logger
 	 */
 	public void error(String format, Object... args)
 	{
+		// Do nothing
 	}
 
 	/**
@@ -58,5 +58,6 @@ public class Logger
 	 */
 	public void debug(String format, Object... args)
 	{
+		// Do nothing
 	}
 }

@@ -238,8 +238,7 @@ public class ClientParametersManager
 		final Rectangle bounds = gc[0].getBounds();
 		if ((bounds.x == 0 && bounds.y == 0) || (isLinux(os_name) && gc.length > 1))
 			return new Dimension(bounds.width, bounds.height);
-		else
-			return Toolkit.getDefaultToolkit().getScreenSize();
+		return Toolkit.getDefaultToolkit().getScreenSize();
 	}
 
 	private static boolean isWindows(String os_name)

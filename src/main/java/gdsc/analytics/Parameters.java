@@ -46,7 +46,10 @@ public class Parameters
 	 */
 	public class CustomDimension
 	{
+		/** The index. */
 		final int index;
+		
+		/** The value. */
 		final String value;
 
 		/**
@@ -69,7 +72,10 @@ public class Parameters
 	 */
 	public class CustomMetric
 	{
+		/** The index. */
 		final int index;
+		
+		/** The value. */
 		final int value;
 
 		/**

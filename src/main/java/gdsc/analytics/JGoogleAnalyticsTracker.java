@@ -631,6 +631,7 @@ public class JGoogleAnalyticsTracker
 			}
 			catch (final InterruptedException e)
 			{
+				// Ignore
 			}
 			backgroundThread = null;
 		}
