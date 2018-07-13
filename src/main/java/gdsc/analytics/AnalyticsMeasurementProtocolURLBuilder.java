@@ -163,11 +163,14 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 	}
 
 	/**
-	 * Add the key value pair
+	 * Add the key value pair.
 	 *
 	 * @param sb
+	 *            the string builder
 	 * @param key
+	 *            the key
 	 * @param value
+	 *            the value
 	 */
 	private static void add(StringBuilder sb, String key, String value)
 	{
@@ -175,11 +178,14 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 	}
 
 	/**
-	 * Add the key value pair
+	 * Add the key value pair.
 	 *
 	 * @param sb
+	 *            the string builder
 	 * @param key
+	 *            the key
 	 * @param value
+	 *            the value
 	 */
 	private static void add(StringBuilder sb, String key, int value)
 	{
@@ -187,11 +193,14 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 	}
 
 	/**
-	 * Add the key value pair
+	 * Add the key value pair.
 	 *
 	 * @param sb
+	 *            the string builder
 	 * @param key
+	 *            the key
 	 * @param value
+	 *            the value
 	 */
 	private static void add(StringBuilder sb, String key, long value)
 	{
@@ -199,11 +208,14 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 	}
 
 	/**
-	 * Add a custom dimension
+	 * Add a custom dimension.
 	 *
 	 * @param sb
+	 *            the string builder
 	 * @param index
+	 *            the index
 	 * @param value
+	 *            the value
 	 */
 	private static void addDimension(StringBuilder sb, int index, String value)
 	{
@@ -211,11 +223,14 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 	}
 
 	/**
-	 * Add a custom metric
+	 * Add a custom metric.
 	 *
 	 * @param sb
+	 *            the string builder
 	 * @param index
+	 *            the index
 	 * @param value
+	 *            the value
 	 */
 	private static void addMetric(StringBuilder sb, int index, int value)
 	{
@@ -223,11 +238,14 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 	}
 
 	/**
-	 * Add the key value pair if the value is not null
+	 * Add the key value pair if the value is not null.
 	 *
 	 * @param sb
+	 *            the string builder
 	 * @param key
+	 *            the key
 	 * @param value
+	 *            the value
 	 */
 	private static void addCheck(StringBuilder sb, String key, String value)
 	{
@@ -237,11 +255,14 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 	}
 
 	/**
-	 * Add the key value pair if the value is not null
+	 * Add the key value pair if the value is not null.
 	 *
 	 * @param sb
+	 *            the string builder
 	 * @param key
+	 *            the key
 	 * @param value
+	 *            the value
 	 */
 	private static void addCheck(StringBuilder sb, String key, Integer value)
 	{
