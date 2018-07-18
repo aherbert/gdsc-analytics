@@ -54,6 +54,7 @@ import java.util.regex.MatchResult;
  * updated).
  * <p>
  * The tracker can operate in three modes:
+ * </p>
  * <ul>
  * <li>synchronous mode: The HTTP request is sent to GA immediately, before the track method returns. This may slow your
  * application down if GA doesn't respond fast.
@@ -62,7 +63,6 @@ import java.util.regex.MatchResult;
  * <li>single-thread mode (the default): The track method stores the request in a FIFO and returns immediately. A single
  * long-lived background thread consumes the FIFO content and sends the HTTP requests to GA.
  * </ul>
- * </p>
  * <p>
  * To halt the background thread safely, use the call {@link #stopBackgroundThread(long)}, where the parameter is the
  * timeout to wait for any remaining queued tracking calls to be made. Keep in mind that if new tracking requests are
@@ -71,11 +71,13 @@ import java.util.regex.MatchResult;
  * </p>
  * <p>
  * Note: This class has been copied from the JGoogleAnalyticsTracker project and modified by Alex Herbert to:
+ * </p>
  * <ul>
  * <li>Alter the data sent to Google Analytics to use the POST method for the Measurement Protocol
  * <li>Remove the slfj dependency
  * <li>Make the logger specific to the instance (since each instance may have a different GA tracking ID)
  * </ul>
+ * <p>
  * The architecture for dispatching messages is unchanged.
  * </p>
  *
