@@ -26,51 +26,30 @@
  * THE SOFTWARE.
  * #L%
  */
-package gdsc.analytics;
-
-/**
- * Stores a hit type.
+package uk.ac.sussex.gdsc.analytics;
+/*
+ * This package is based on ideas from JGoogleAnalyticsTracker by Daniel Murphy.
+ * A similar package is JGoogleAnalytics by Siddique Hameed.
+ * <p>
+ * The JGoogleAnalyticsTracker code dummied the GET request sent to Google
+ * Analytics by a browser. This code uses the new Analytics Measurement
+ * Protocol which is designed to allow any web connected device to measure
+ * user interaction via a HTTP POST request.
+ * <p>
+ * As a result all of the classes related to building the analytics URL were
+ * re-written. The URIEncoder and JGoogleAnalyticsTracker classes have been
+ * modified but remain recognisable and so have the same name.
+ * <p>
+ * Since the code will only be used within a Java application
+ * the referral, search referral and campaign functionality has been
+ * removed to simplify the analytics and allow caching most of the
+ * constructed analytics URL. The code is redistributed under the
+ * original MIT licence and maintains the copyright of Daniel Murphey
+ * through the applicable original code with the addition of Alex Herbert.
  *
- * @author Alex Herbert
+ * @see https://developers.google.com/analytics/devguides/collection/protocol/v1/
+ *
+ * @see https://code.google.com/archive/p/jgoogleanalyticstracker/
+ *
+ * @see https://github.com/siddii/jgoogleanalytics
  */
-public enum HitType
-{
-	/** The pageview hit-type. */
-	PAGEVIEW,
-	/** The screenview hit-type. */
-	SCREENVIEW,
-	/** The event hit-type. */
-	EVENT,
-	/** The transaction hit-type. */
-	TRANSACTION,
-	/** The item hit-type. */
-	ITEM,
-	/** The social hit-type. */
-	SOCIAL,
-	/** The exception hit-type. */
-	EXCEPTION,
-	/** The timing hit-type. */
-	TIMING;
-
-	/** The name. */
-	private final String name;
-
-	/**
-	 * Instantiates a new hit type.
-	 */
-	private HitType()
-	{
-		this.name = super.toString().toLowerCase();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see java.lang.Enum#toString()
-	 */
-	@Override
-	public String toString()
-	{
-		return name;
-	}
-}

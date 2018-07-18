@@ -26,45 +26,38 @@
  * THE SOFTWARE.
  * #L%
  */
-package gdsc.analytics;
+package uk.ac.sussex.gdsc.analytics;
 
 /**
- * URL builder for the tracking requests.
+ * Provides a default implementation for logging that does nothing
  *
  * @author Alex Herbert
  */
-public interface IAnalyticsMeasurementProtocolURLBuilder
+public class Logger
 {
 	/**
-	 * Gets the version for this builder
+	 * Write an error message.
 	 *
-	 * @return The version
+	 * @param format
+	 *            the format
+	 * @param args
+	 *            the args
 	 */
-	public String getVersion();
+	public void error(String format, Object... args)
+	{
+		// Do nothing
+	}
 
 	/**
-	 * Build the parameters URL request from the data. The parameters are suitable for use in the HTTP POST method.
+	 * Write an debug message.
 	 *
-	 * @param clientParameters
-	 *            The client parameter data
-	 * @param requestParameters
-	 *            The request parameter data
-	 * @param timestamp
-	 *            The timestamp when the hit was reported (in milliseconds)
-	 * @return The parameters URL
+	 * @param format
+	 *            the format
+	 * @param args
+	 *            the args
 	 */
-	public String buildURL(ClientParameters clientParameters, RequestParameters requestParameters, long timestamp);
-
-	/**
-	 * Build the parameters URL request from the data. The parameters are suitable for use in the HTTP GET method.
-	 *
-	 * @param clientParameters
-	 *            The client parameter data
-	 * @param requestParameters
-	 *            The request parameter data
-	 * @param timestamp
-	 *            The timestamp when the hit was reported (in milliseconds)
-	 * @return The parameters URL
-	 */
-	public String buildGetURL(ClientParameters clientParameters, RequestParameters requestParameters, long timestamp);
+	public void debug(String format, Object... args)
+	{
+		// Do nothing
+	}
 }

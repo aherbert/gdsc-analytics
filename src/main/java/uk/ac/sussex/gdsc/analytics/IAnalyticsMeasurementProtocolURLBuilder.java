@@ -26,80 +26,45 @@
  * THE SOFTWARE.
  * #L%
  */
-package gdsc.analytics;
+package uk.ac.sussex.gdsc.analytics;
 
 /**
- * Represent a session
+ * URL builder for the tracking requests.
  *
  * @author Alex Herbert
  */
-public class Session
+public interface IAnalyticsMeasurementProtocolURLBuilder
 {
 	/**
-	 * Google sessions timeout after 30 minutes of inactivity
-	 */
-	private long timeout = 30 * 60;
-	/**
-	 * Timestamp of the session.
-	 */
-	private long now;
-
-	/**
-	 * Create a new session
-	 */
-	public Session()
-	{
-		now = 0;
-	}
-
-	/**
-	 * Get the number of seconds since the epoch (midnight, January 1, 1970 UTC)
+	 * Gets the version for this builder
 	 *
-	 * @return The timestamp in seconds
+	 * @return The version
 	 */
-	public static long timestamp()
-	{
-		return System.currentTimeMillis() / 1000L;
-	}
+	public String getVersion();
 
 	/**
-	 * Check if the session is new (i.e. has not been initialised, has timed out, or been reset).
-	 * Calling this refreshes the current session to prevent timeout.
+	 * Build the parameters URL request from the data. The parameters are suitable for use in the HTTP POST method.
 	 *
-	 * @return True if the session is new
+	 * @param clientParameters
+	 *            The client parameter data
+	 * @param requestParameters
+	 *            The request parameter data
+	 * @param timestamp
+	 *            The timestamp when the hit was reported (in milliseconds)
+	 * @return The parameters URL
 	 */
-	public boolean isNew()
-	{
-		// Get the current session expire time
-		final long expires = now + timeout;
-		// Get the current time.
-		now = timestamp();
-		// Check if the session has expired
-		return (now > expires);
-	}
+	public String buildURL(ClientParameters clientParameters, RequestParameters requestParameters, long timestamp);
 
 	/**
-	 * Reset and start a new session
+	 * Build the parameters URL request from the data. The parameters are suitable for use in the HTTP GET method.
+	 *
+	 * @param clientParameters
+	 *            The client parameter data
+	 * @param requestParameters
+	 *            The request parameter data
+	 * @param timestamp
+	 *            The timestamp when the hit was reported (in milliseconds)
+	 * @return The parameters URL
 	 */
-	public void reset()
-	{
-		now = 0;
-	}
-
-	/**
-	 * @return the timeout
-	 */
-	public long getTimeout()
-	{
-		return timeout;
-	}
-
-	/**
-	 * @param timeout
-	 *            the timeout to set
-	 */
-	public void setTimeout(long timeout)
-	{
-		this.timeout = timeout;
-	}
+	public String buildGetURL(ClientParameters clientParameters, RequestParameters requestParameters, long timestamp);
 }

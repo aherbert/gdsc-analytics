@@ -26,32 +26,41 @@
  * THE SOFTWARE.
  * #L%
  */
-package gdsc.analytics;
+package uk.ac.sussex.gdsc.analytics;
 
 /**
- * Provides logging to the Java console
+ * Simple uri encoder, made from the spec at:
+ * http://www.ietf.org/rfc/rfc2396.txt
  *
- * @author Alex Herbert
+ * @author Daniel Murphy
  */
-public class ConsoleLogger extends Logger
+public class URIEncoder
 {
-	@Override
-	public void error(String format, Object... args)
-	{
-		System.out.printf(format, args);
-		addNewLine(format);
-	}
+	private static String mark = "-_.!~*'()\"";
 
-	@Override
-	public void debug(String format, Object... args)
+	/**
+	 * Encode the string
+	 *
+	 * @param string
+	 *            The string
+	 * @return The encoded string
+	 */
+	public static String encodeURI(String string)
 	{
-		System.out.printf(format, args);
-		addNewLine(format);
-	}
+		final StringBuffer uri = new StringBuffer(); // Encoded URL
 
-	private static void addNewLine(String format)
-	{
-		if (!format.endsWith("\n"))
-			System.out.println();
+		final char[] chars = string.toCharArray();
+		for (int i = 0; i < chars.length; i++)
+		{
+			final char c = chars[i];
+			if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || mark.indexOf(c) != -1)
+				uri.append(c);
+			else
+			{
+				uri.append("%");
+				uri.append(Integer.toHexString(c));
+			}
+		}
+		return uri.toString();
 	}
 }

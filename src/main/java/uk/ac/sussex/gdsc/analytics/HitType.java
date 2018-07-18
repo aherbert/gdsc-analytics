@@ -26,41 +26,51 @@
  * THE SOFTWARE.
  * #L%
  */
-package gdsc.analytics;
+package uk.ac.sussex.gdsc.analytics;
 
 /**
- * Simple uri encoder, made from the spec at:
- * http://www.ietf.org/rfc/rfc2396.txt
+ * Stores a hit type.
  *
- * @author Daniel Murphy
+ * @author Alex Herbert
  */
-public class URIEncoder
+public enum HitType
 {
-	private static String mark = "-_.!~*'()\"";
+	/** The pageview hit-type. */
+	PAGEVIEW,
+	/** The screenview hit-type. */
+	SCREENVIEW,
+	/** The event hit-type. */
+	EVENT,
+	/** The transaction hit-type. */
+	TRANSACTION,
+	/** The item hit-type. */
+	ITEM,
+	/** The social hit-type. */
+	SOCIAL,
+	/** The exception hit-type. */
+	EXCEPTION,
+	/** The timing hit-type. */
+	TIMING;
+
+	/** The name. */
+	private final String name;
 
 	/**
-	 * Encode the string
-	 *
-	 * @param string
-	 *            The string
-	 * @return The encoded string
+	 * Instantiates a new hit type.
 	 */
-	public static String encodeURI(String string)
+	private HitType()
 	{
-		final StringBuffer uri = new StringBuffer(); // Encoded URL
+		this.name = super.toString().toLowerCase();
+	}
 
-		final char[] chars = string.toCharArray();
-		for (int i = 0; i < chars.length; i++)
-		{
-			final char c = chars[i];
-			if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || mark.indexOf(c) != -1)
-				uri.append(c);
-			else
-			{
-				uri.append("%");
-				uri.append(Integer.toHexString(c));
-			}
-		}
-		return uri.toString();
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see java.lang.Enum#toString()
+	 */
+	@Override
+	public String toString()
+	{
+		return name;
 	}
 }

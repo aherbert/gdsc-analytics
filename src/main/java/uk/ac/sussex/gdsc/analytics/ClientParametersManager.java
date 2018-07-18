@@ -26,7 +26,7 @@
  * THE SOFTWARE.
  * #L%
  */
-package gdsc.analytics;
+package uk.ac.sussex.gdsc.analytics;
 
 import java.awt.Dimension;
 import java.awt.GraphicsConfiguration;

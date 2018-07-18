@@ -26,13 +26,13 @@
  * THE SOFTWARE.
  * #L%
  */
-package gdsc.analytics;
+package uk.ac.sussex.gdsc.analytics;
 
 import java.util.List;
 import java.util.Random;
 
-import gdsc.analytics.Parameters.CustomDimension;
-import gdsc.analytics.Parameters.CustomMetric;
+import uk.ac.sussex.gdsc.analytics.Parameters.CustomDimension;
+import uk.ac.sussex.gdsc.analytics.Parameters.CustomMetric;
 
 /**
  * Build the parameters used by Google Analytics Measurement Protocol.
@@ -54,7 +54,7 @@ public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasure
 	/*
 	 * (non-Javadoc)
 	 *
-	 * @see gdsc.analytics.IAnalyticsMeasurementProtocolURLBuilder#getVersion()
+	 * @see uk.ac.sussex.gdsc.analytics.IAnalyticsMeasurementProtocolURLBuilder#getVersion()
 	 */
 	@Override
 	public String getVersion()

@@ -26,7 +26,7 @@
  * THE SOFTWARE.
  * #L%
  */
-package gdsc.analytics;
+package uk.ac.sussex.gdsc.analytics;
 
 /**
  * Google Analytics request data
@@ -177,7 +177,7 @@ public class RequestParameters extends Parameters
 	/**
 	 * Add a hit level custom dimension
 	 *
-	 * @see gdsc.analytics.Parameters#addCustomDimension(int, java.lang.String)
+	 * @see uk.ac.sussex.gdsc.analytics.Parameters#addCustomDimension(int, java.lang.String)
 	 */
 	@Override
 	public void addCustomDimension(int index, String value)
@@ -188,7 +188,7 @@ public class RequestParameters extends Parameters
 	/**
 	 * Add a hit level custom metric
 	 *
-	 * @see gdsc.analytics.Parameters#addCustomMetric(int, int)
+	 * @see uk.ac.sussex.gdsc.analytics.Parameters#addCustomMetric(int, int)
 	 */
 	@Override
 	public void addCustomMetric(int index, int value)

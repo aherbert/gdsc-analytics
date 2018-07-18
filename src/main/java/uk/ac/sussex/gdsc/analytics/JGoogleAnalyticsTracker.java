@@ -26,7 +26,7 @@
  * THE SOFTWARE.
  * #L%
  */
-package gdsc.analytics;
+package uk.ac.sussex.gdsc.analytics;
 
 import java.io.OutputStream;
 import java.net.HttpURLConnection;

@@ -26,7 +26,7 @@
  * THE SOFTWARE.
  * #L%
  */
-package gdsc.analytics;
+package uk.ac.sussex.gdsc.analytics;
 
 import java.util.ArrayList;
 import java.util.List;

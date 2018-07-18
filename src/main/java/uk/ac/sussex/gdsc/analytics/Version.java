@@ -26,7 +26,7 @@
  * THE SOFTWARE.
  * #L%
  */
-package gdsc.analytics;
+package uk.ac.sussex.gdsc.analytics;
 
 /**
  * Store the version of the code using Semantic Versioning.
@@ -34,7 +34,7 @@ package gdsc.analytics;
  * The major/minor version number will be updated when significant functionality
  * has changed. Otherwise the patch version will be incremented.
  * <p>
- * Note that this is the version of the gdsc.analytics package. It may be
+ * Note that this is the version of the uk.ac.sussex.gdsc.analytics package. It may be
  * different from the Maven version for the gdsc-analytics artifact.
  *
  * @see "http://semver.org/"

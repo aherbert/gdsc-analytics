@@ -26,38 +26,80 @@
  * THE SOFTWARE.
  * #L%
  */
-package gdsc.analytics;
+package uk.ac.sussex.gdsc.analytics;
 
 /**
- * Provides a default implementation for logging that does nothing
+ * Represent a session
  *
  * @author Alex Herbert
  */
-public class Logger
+public class Session
 {
 	/**
-	 * Write an error message.
-	 *
-	 * @param format
-	 *            the format
-	 * @param args
-	 *            the args
+	 * Google sessions timeout after 30 minutes of inactivity
 	 */
-	public void error(String format, Object... args)
+	private long timeout = 30 * 60;
+	/**
+	 * Timestamp of the session.
+	 */
+	private long now;
+
+	/**
+	 * Create a new session
+	 */
+	public Session()
 	{
-		// Do nothing
+		now = 0;
 	}
 
 	/**
-	 * Write an debug message.
+	 * Get the number of seconds since the epoch (midnight, January 1, 1970 UTC)
 	 *
-	 * @param format
-	 *            the format
-	 * @param args
-	 *            the args
+	 * @return The timestamp in seconds
 	 */
-	public void debug(String format, Object... args)
+	public static long timestamp()
 	{
-		// Do nothing
+		return System.currentTimeMillis() / 1000L;
+	}
+
+	/**
+	 * Check if the session is new (i.e. has not been initialised, has timed out, or been reset).
+	 * Calling this refreshes the current session to prevent timeout.
+	 *
+	 * @return True if the session is new
+	 */
+	public boolean isNew()
+	{
+		// Get the current session expire time
+		final long expires = now + timeout;
+		// Get the current time.
+		now = timestamp();
+		// Check if the session has expired
+		return (now > expires);
+	}
+
+	/**
+	 * Reset and start a new session
+	 */
+	public void reset()
+	{
+		now = 0;
+	}
+
+	/**
+	 * @return the timeout
+	 */
+	public long getTimeout()
+	{
+		return timeout;
+	}
+
+	/**
+	 * @param timeout
+	 *            the timeout to set
+	 */
+	public void setTimeout(long timeout)
+	{
+		this.timeout = timeout;
 	}
 }
