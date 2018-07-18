@@ -34,7 +34,8 @@ protocol to collect usage information about a Java application.
 		<url>https://github.com/aherbert/GDSC-Analytics/issues</url>
 	</issueManagement>
 	<ciManagement>
-		<system>None</system>
+		<system>Travis CI</system>
+		<url>https://travis-ci.com/aherbert/GDSC-Analytics</url>
 	</ciManagement>
 	<scm>
 		<connection>scm:git:git://github.com/aherbert/GDSC-Analytics.git</connection>
