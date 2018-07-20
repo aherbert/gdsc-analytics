@@ -26,8 +26,11 @@
  * THE SOFTWARE.
  * #L%
  */
-package uk.ac.sussex.gdsc.analytics;
-/*
+/**
+ * Provide a framework to send raw user interaction data directly to Google Analytics servers via the
+ * <a href="https://developers.google.com/analytics/devguides/collection/protocol/v1/">Google Analytics Measurement
+ * Protocol</a>.
+ * <p>
  * This package is based on ideas from JGoogleAnalyticsTracker by Daniel Murphy.
  * A similar package is JGoogleAnalytics by Siddique Hameed.
  * <p>
@@ -47,9 +50,9 @@ package uk.ac.sussex.gdsc.analytics;
  * original MIT licence and maintains the copyright of Daniel Murphey
  * through the applicable original code with the addition of Alex Herbert.
  *
- * @see https://developers.google.com/analytics/devguides/collection/protocol/v1/
- *
- * @see https://code.google.com/archive/p/jgoogleanalyticstracker/
- *
- * @see https://github.com/siddii/jgoogleanalytics
+ * @see <a href="https://developers.google.com/analytics/devguides/collection/protocol/v1/">Google Analytics Measurement
+ *      Protocol</a>
+ * @see <a href="https://code.google.com/archive/p/jgoogleanalyticstracker/">JGoogleAnalyticsTracker</a>
+ *      <a href="@see https://github.com/siddii/jgoogleanalytics">JGoogleAnalytics</a>
  */
+package uk.ac.sussex.gdsc.analytics;
