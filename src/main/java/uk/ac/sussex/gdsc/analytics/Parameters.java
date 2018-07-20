@@ -48,7 +48,7 @@ public class Parameters
 	{
 		/** The index. */
 		final int index;
-		
+
 		/** The value. */
 		final String value;
 
@@ -74,7 +74,7 @@ public class Parameters
 	{
 		/** The index. */
 		final int index;
-		
+
 		/** The value. */
 		final int value;
 
