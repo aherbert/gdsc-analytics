@@ -111,7 +111,7 @@ public class ClientParametersManager
 		final Future<String> future = executor.submit(new Callable<String>()
 		{
 			@Override
-			public String call() throws Exception
+			public String call()
 			{
 				String hostName = "localhost";
 				try
