@@ -35,23 +35,23 @@ package uk.ac.sussex.gdsc.analytics;
  */
 public class ConsoleLogger extends Logger
 {
-	@Override
-	public void error(String format, Object... args)
-	{
-		System.out.printf(format, args);
-		addNewLine(format);
-	}
+    @Override
+    public void error(String format, Object... args)
+    {
+        System.out.printf(format, args);
+        addNewLine(format);
+    }
 
-	@Override
-	public void debug(String format, Object... args)
-	{
-		System.out.printf(format, args);
-		addNewLine(format);
-	}
+    @Override
+    public void debug(String format, Object... args)
+    {
+        System.out.printf(format, args);
+        addNewLine(format);
+    }
 
-	private static void addNewLine(String format)
-	{
-		if (!format.endsWith("\n"))
-			System.out.println();
-	}
+    private static void addNewLine(String format)
+    {
+        if (!format.endsWith("\n"))
+            System.out.println();
+    }
 }

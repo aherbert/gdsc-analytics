@@ -41,159 +41,159 @@ import java.util.List;
  */
 public class Parameters
 {
-	/**
-	 * Stores a custom dimension
-	 */
-	public class CustomDimension
-	{
-		/** The index. */
-		final int index;
+    /**
+     * Stores a custom dimension
+     */
+    public class CustomDimension
+    {
+        /** The index. */
+        final int index;
 
-		/** The value. */
-		final String value;
+        /** The value. */
+        final String value;
 
-		/**
-		 * Instantiates a new custom dimension.
-		 *
-		 * @param index
-		 *            the index
-		 * @param value
-		 *            the value
-		 */
-		public CustomDimension(int index, String value)
-		{
-			this.index = index;
-			this.value = value;
-		}
-	}
+        /**
+         * Instantiates a new custom dimension.
+         *
+         * @param index
+         *            the index
+         * @param value
+         *            the value
+         */
+        public CustomDimension(int index, String value)
+        {
+            this.index = index;
+            this.value = value;
+        }
+    }
 
-	/**
-	 * Stores a custom metric
-	 */
-	public class CustomMetric
-	{
-		/** The index. */
-		final int index;
+    /**
+     * Stores a custom metric
+     */
+    public class CustomMetric
+    {
+        /** The index. */
+        final int index;
 
-		/** The value. */
-		final int value;
+        /** The value. */
+        final int value;
 
-		/**
-		 * Instantiates a new custom metric.
-		 *
-		 * @param index
-		 *            the index
-		 * @param value
-		 *            the value
-		 */
-		public CustomMetric(int index, int value)
-		{
-			this.index = index;
-			this.value = value;
-		}
-	}
+        /**
+         * Instantiates a new custom metric.
+         *
+         * @param index
+         *            the index
+         * @param value
+         *            the value
+         */
+        public CustomMetric(int index, int value)
+        {
+            this.index = index;
+            this.value = value;
+        }
+    }
 
-	private List<CustomDimension> customDimensions = null;
-	private List<CustomMetric> customMetrics = null;
+    private List<CustomDimension> customDimensions = null;
+    private List<CustomMetric> customMetrics = null;
 
-	/**
-	 * Default constructor
-	 */
-	public Parameters()
-	{
-	}
+    /**
+     * Default constructor
+     */
+    public Parameters()
+    {
+    }
 
-	/**
-	 * Add a custom dimension
-	 * <p>
-	 * Note that custom dimensions have to be created for your site before they can be used in analytics reports.
-	 * Dimensions should be used for segregation of data into categories.
-	 *
-	 * @see "https://support.google.com/analytics/answer/2709829"
-	 *
-	 * @param index
-	 *            The dimension index (1-20 or 1-200 for premium accounts)
-	 * @param value
-	 *            The dimension value (must not be null)
-	 */
-	public void addCustomDimension(int index, String value)
-	{
-		if (index < 1 || index > 200)
-			return;
-		if (value == null)
-			return;
-		if (customDimensions == null)
-			customDimensions = new ArrayList<CustomDimension>(1);
-		customDimensions.add(new CustomDimension(index, value));
-	}
+    /**
+     * Add a custom dimension
+     * <p>
+     * Note that custom dimensions have to be created for your site before they can be used in analytics reports.
+     * Dimensions should be used for segregation of data into categories.
+     *
+     * @see "https://support.google.com/analytics/answer/2709829"
+     *
+     * @param index
+     *            The dimension index (1-20 or 1-200 for premium accounts)
+     * @param value
+     *            The dimension value (must not be null)
+     */
+    public void addCustomDimension(int index, String value)
+    {
+        if (index < 1 || index > 200)
+            return;
+        if (value == null)
+            return;
+        if (customDimensions == null)
+            customDimensions = new ArrayList<CustomDimension>(1);
+        customDimensions.add(new CustomDimension(index, value));
+    }
 
-	/**
-	 * @return The custom dimensions
-	 */
-	public List<CustomDimension> getCustomDimensions()
-	{
-		return customDimensions;
-	}
+    /**
+     * @return The custom dimensions
+     */
+    public List<CustomDimension> getCustomDimensions()
+    {
+        return customDimensions;
+    }
 
-	/**
-	 * @return The number of customer dimensions
-	 */
-	public int getNumberOfCustomDimensions()
-	{
-		return (customDimensions == null) ? 0 : customDimensions.size();
-	}
+    /**
+     * @return The number of customer dimensions
+     */
+    public int getNumberOfCustomDimensions()
+    {
+        return (customDimensions == null) ? 0 : customDimensions.size();
+    }
 
-	/**
-	 * @return True if there are custom dimensions
-	 */
-	public boolean hasCustomDimensions()
-	{
-		return customDimensions != null;
-	}
+    /**
+     * @return True if there are custom dimensions
+     */
+    public boolean hasCustomDimensions()
+    {
+        return customDimensions != null;
+    }
 
-	/**
-	 * Add a custom metric
-	 * <p>
-	 * Note that custom metrics have to be created for your site before they can be used in analytics reports.
-	 * Metrics should be used for numbers that you want to accumulate.
-	 *
-	 * @see "https://support.google.com/analytics/answer/2709829"
-	 *
-	 * @param index
-	 *            The dimension index (1-20 or 1-200 for premium accounts)
-	 * @param value
-	 *            The metric value
-	 */
-	public void addCustomMetric(int index, int value)
-	{
-		if (index < 1 || index > 200)
-			return;
-		if (customMetrics == null)
-			customMetrics = new ArrayList<CustomMetric>(1);
-		customMetrics.add(new CustomMetric(index, value));
-	}
+    /**
+     * Add a custom metric
+     * <p>
+     * Note that custom metrics have to be created for your site before they can be used in analytics reports.
+     * Metrics should be used for numbers that you want to accumulate.
+     *
+     * @see "https://support.google.com/analytics/answer/2709829"
+     *
+     * @param index
+     *            The dimension index (1-20 or 1-200 for premium accounts)
+     * @param value
+     *            The metric value
+     */
+    public void addCustomMetric(int index, int value)
+    {
+        if (index < 1 || index > 200)
+            return;
+        if (customMetrics == null)
+            customMetrics = new ArrayList<CustomMetric>(1);
+        customMetrics.add(new CustomMetric(index, value));
+    }
 
-	/**
-	 * @return The custom metrics
-	 */
-	public List<CustomMetric> getCustomMetrics()
-	{
-		return customMetrics;
-	}
+    /**
+     * @return The custom metrics
+     */
+    public List<CustomMetric> getCustomMetrics()
+    {
+        return customMetrics;
+    }
 
-	/**
-	 * @return The number of customer metrics
-	 */
-	public int getNumberOfCustomMetrics()
-	{
-		return (customMetrics == null) ? 0 : customMetrics.size();
-	}
+    /**
+     * @return The number of customer metrics
+     */
+    public int getNumberOfCustomMetrics()
+    {
+        return (customMetrics == null) ? 0 : customMetrics.size();
+    }
 
-	/**
-	 * @return True if there are custom metrics
-	 */
-	public boolean hasCustomMetrics()
-	{
-		return customMetrics != null;
-	}
+    /**
+     * @return True if there are custom metrics
+     */
+    public boolean hasCustomMetrics()
+    {
+        return customMetrics != null;
+    }
 }

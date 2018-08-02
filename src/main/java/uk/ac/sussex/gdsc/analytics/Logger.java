@@ -35,29 +35,29 @@ package uk.ac.sussex.gdsc.analytics;
  */
 public class Logger
 {
-	/**
-	 * Write an error message.
-	 *
-	 * @param format
-	 *            the format
-	 * @param args
-	 *            the args
-	 */
-	public void error(String format, Object... args)
-	{
-		// Do nothing
-	}
+    /**
+     * Write an error message.
+     *
+     * @param format
+     *            the format
+     * @param args
+     *            the args
+     */
+    public void error(String format, Object... args)
+    {
+        // Do nothing
+    }
 
-	/**
-	 * Write an debug message.
-	 *
-	 * @param format
-	 *            the format
-	 * @param args
-	 *            the args
-	 */
-	public void debug(String format, Object... args)
-	{
-		// Do nothing
-	}
+    /**
+     * Write an debug message.
+     *
+     * @param format
+     *            the format
+     * @param args
+     *            the args
+     */
+    public void debug(String format, Object... args)
+    {
+        // Do nothing
+    }
 }

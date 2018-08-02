@@ -35,36 +35,36 @@ package uk.ac.sussex.gdsc.analytics;
  */
 public interface IAnalyticsMeasurementProtocolURLBuilder
 {
-	/**
-	 * Gets the version for this builder
-	 *
-	 * @return The version
-	 */
-	public String getVersion();
+    /**
+     * Gets the version for this builder
+     *
+     * @return The version
+     */
+    public String getVersion();
 
-	/**
-	 * Build the parameters URL request from the data. The parameters are suitable for use in the HTTP POST method.
-	 *
-	 * @param clientParameters
-	 *            The client parameter data
-	 * @param requestParameters
-	 *            The request parameter data
-	 * @param timestamp
-	 *            The timestamp when the hit was reported (in milliseconds)
-	 * @return The parameters URL
-	 */
-	public String buildURL(ClientParameters clientParameters, RequestParameters requestParameters, long timestamp);
+    /**
+     * Build the parameters URL request from the data. The parameters are suitable for use in the HTTP POST method.
+     *
+     * @param clientParameters
+     *            The client parameter data
+     * @param requestParameters
+     *            The request parameter data
+     * @param timestamp
+     *            The timestamp when the hit was reported (in milliseconds)
+     * @return The parameters URL
+     */
+    public String buildURL(ClientParameters clientParameters, RequestParameters requestParameters, long timestamp);
 
-	/**
-	 * Build the parameters URL request from the data. The parameters are suitable for use in the HTTP GET method.
-	 *
-	 * @param clientParameters
-	 *            The client parameter data
-	 * @param requestParameters
-	 *            The request parameter data
-	 * @param timestamp
-	 *            The timestamp when the hit was reported (in milliseconds)
-	 * @return The parameters URL
-	 */
-	public String buildGetURL(ClientParameters clientParameters, RequestParameters requestParameters, long timestamp);
+    /**
+     * Build the parameters URL request from the data. The parameters are suitable for use in the HTTP GET method.
+     *
+     * @param clientParameters
+     *            The client parameter data
+     * @param requestParameters
+     *            The request parameter data
+     * @param timestamp
+     *            The timestamp when the hit was reported (in milliseconds)
+     * @return The parameters URL
+     */
+    public String buildGetURL(ClientParameters clientParameters, RequestParameters requestParameters, long timestamp);
 }

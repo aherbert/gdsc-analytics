@@ -36,31 +36,31 @@ package uk.ac.sussex.gdsc.analytics;
  */
 public class URIEncoder
 {
-	private static String mark = "-_.!~*'()\"";
+    private static String mark = "-_.!~*'()\"";
 
-	/**
-	 * Encode the string
-	 *
-	 * @param string
-	 *            The string
-	 * @return The encoded string
-	 */
-	public static String encodeURI(String string)
-	{
-		final StringBuffer uri = new StringBuffer(); // Encoded URL
+    /**
+     * Encode the string
+     *
+     * @param string
+     *            The string
+     * @return The encoded string
+     */
+    public static String encodeURI(String string)
+    {
+        final StringBuffer uri = new StringBuffer(); // Encoded URL
 
-		final char[] chars = string.toCharArray();
-		for (int i = 0; i < chars.length; i++)
-		{
-			final char c = chars[i];
-			if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || mark.indexOf(c) != -1)
-				uri.append(c);
-			else
-			{
-				uri.append("%");
-				uri.append(Integer.toHexString(c));
-			}
-		}
-		return uri.toString();
-	}
+        final char[] chars = string.toCharArray();
+        for (int i = 0; i < chars.length; i++)
+        {
+            final char c = chars[i];
+            if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || mark.indexOf(c) != -1)
+                uri.append(c);
+            else
+            {
+                uri.append("%");
+                uri.append(Integer.toHexString(c));
+            }
+        }
+        return uri.toString();
+    }
 }
