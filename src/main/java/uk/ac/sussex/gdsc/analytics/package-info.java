@@ -53,7 +53,7 @@
  * @see <a href="https://developers.google.com/analytics/devguides/collection/protocol/v1/">Google Analytics Measurement
  *      Protocol</a>
  * @see <a href="https://code.google.com/archive/p/jgoogleanalyticstracker/">JGoogleAnalyticsTracker</a>
- * @see <a href="@see https://github.com/siddii/jgoogleanalytics">JGoogleAnalytics</a>
+ * @see <a href="https://github.com/siddii/jgoogleanalytics">JGoogleAnalytics</a>
  * @since 1.0.0
  */
 package uk.ac.sussex.gdsc.analytics;
