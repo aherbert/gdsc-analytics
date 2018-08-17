@@ -9,7 +9,7 @@
 	<packaging>jar</packaging>
 
 	<name>GDSC Analytics</name>
-	<url>http:///github.com/aherbert/GDSC-Analytics</url>
+	<url>http:///github.com/aherbert/gdsc-analytics</url>
 	<organization>
 		<name>Genome Damage and Stability Centre</name>
 		<url>http://www.sussex.ac.uk/gdsc/</url>
@@ -31,16 +31,16 @@ protocol to collect usage information about a Java application.
 	<inceptionYear>2010</inceptionYear>
 	<issueManagement>
 		<system>GitHub Issues</system>
-		<url>https://github.com/aherbert/GDSC-Analytics/issues</url>
+		<url>https://github.com/aherbert/gdsc-analytics/issues</url>
 	</issueManagement>
 	<ciManagement>
 		<system>Travis CI</system>
-		<url>https://travis-ci.com/aherbert/GDSC-Analytics</url>
+		<url>https://travis-ci.com/aherbert/gdsc-analytics</url>
 	</ciManagement>
 	<scm>
-		<connection>scm:git:git://github.com/aherbert/GDSC-Analytics.git</connection>
-		<developerConnection>scm:git:ssh://github.com:aherbert/GDSC-Analytics.git</developerConnection>
-		<url>https://github.com/aherbert/GDSC-Analytics</url>
+		<connection>scm:git:git://github.com/aherbert/gdsc-analytics.git</connection>
+		<developerConnection>scm:git:ssh://github.com:aherbert/gdsc-analytics.git</developerConnection>
+		<url>https://github.com/aherbert/gdsc-analytics</url>
 	</scm>
 
 	<developers>
