@@ -14,11 +14,11 @@ on it.
 
 1. Clone the repository
 
-        git clone https://github.com/aherbert/GDSC-Analytics.git
+        git clone https://github.com/aherbert/gdsc-analytics.git
 
 2. Build the code and install using Maven
 
-        cd GDSC-Analytics
+        cd gdsc-analytics
         mvn install
 
 	This will produce a gdsc-analytics-[VERSION].jar file in the local Maven
