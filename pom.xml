@@ -39,7 +39,7 @@ protocol to collect usage information about a Java application.
 	</ciManagement>
 	<scm>
 		<connection>scm:git:git://github.com/aherbert/gdsc-analytics.git</connection>
-		<developerConnection>scm:git:ssh://github.com:aherbert/gdsc-analytics.git</developerConnection>
+		<developerConnection>scm:git:ssh://github.com/aherbert/gdsc-analytics.git</developerConnection>
 		<url>https://github.com/aherbert/gdsc-analytics</url>
 	</scm>
 
