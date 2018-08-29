@@ -28,39 +28,49 @@
  */
 package uk.ac.sussex.gdsc.analytics;
 
-/**
- * Simple uri encoder, made from the spec at:
- * http://www.ietf.org/rfc/rfc2396.txt
- *
- * @author Daniel Murphy
- */
-public class URIEncoder
+import java.net.URLDecoder;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+@SuppressWarnings("javadoc")
+public class URIEncoderTest
 {
-    private static String mark = "-_.!~*'()\"";
+	@Test
+	public void testEncoder() throws Exception
+	{
+		// Create a string that should not be encoded
+		final StringBuilder sb = new StringBuilder();
+		for (char c = '0'; c <= '9'; c++)
+			sb.append(c);
+		for (char c = 'a'; c <= 'z'; c++)
+			sb.append(c);
+		for (char c = 'A'; c <= 'Z'; c++)
+			sb.append(c);
+		sb.append("-_.!~*'()\"");
+		String unencoded = sb.toString();
+		Assertions.assertTrue(unencoded.length() > 0);
+		Assertions.assertEquals(unencoded, URIEncoder.encodeURI(unencoded));
 
-    /**
-     * Encode the string
-     *
-     * @param string
-     *            The string
-     * @return The encoded string
-     */
-    public static String encodeURI(String string)
-    {
-        final StringBuilder uri = new StringBuilder(); // Encoded URL
+		// Encode others as hex
+		testEncode(" ");
+		testEncode("&");
+		testEncode("@");
+		testEncode("/");
+		testEncode("[]{}%$#");
+	}
 
-        final char[] chars = string.toCharArray();
-        for (int i = 0; i < chars.length; i++)
-        {
-            final char c = chars[i];
-            if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || mark.indexOf(c) != -1)
-                uri.append(c);
-            else
-            {
-                uri.append('%');
-                uri.append(Integer.toHexString(c));
-            }
-        }
-        return uri.toString();
-    }
+	private void testEncode(String string) throws Exception
+	{
+		// The encoding is not standard. It encodes all unsupported 
+		// chars as hex. So encode and test it can be decoded to the 
+		// same string using a standard decoder.
+		String encoded = URIEncoder.encodeURI(string);
+		Assertions.assertEquals(string, decode(encoded));
+	}
+	
+	private String decode(String s) throws Exception
+	{
+		return URLDecoder.decode(s, "UTF-8");
+	}
 }

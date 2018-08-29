@@ -28,39 +28,18 @@
  */
 package uk.ac.sussex.gdsc.analytics;
 
-/**
- * Simple uri encoder, made from the spec at:
- * http://www.ietf.org/rfc/rfc2396.txt
- *
- * @author Daniel Murphy
- */
-public class URIEncoder
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+@SuppressWarnings("javadoc")
+public class VersionTest
 {
-    private static String mark = "-_.!~*'()\"";
-
-    /**
-     * Encode the string
-     *
-     * @param string
-     *            The string
-     * @return The encoded string
-     */
-    public static String encodeURI(String string)
-    {
-        final StringBuilder uri = new StringBuilder(); // Encoded URL
-
-        final char[] chars = string.toCharArray();
-        for (int i = 0; i < chars.length; i++)
-        {
-            final char c = chars[i];
-            if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || mark.indexOf(c) != -1)
-                uri.append(c);
-            else
-            {
-                uri.append('%');
-                uri.append(Integer.toHexString(c));
-            }
-        }
-        return uri.toString();
-    }
+	@Test
+	public void testVersion()
+	{
+		Assertions.assertEquals(String.format("%d", Version.MAJOR), Version.VERSION_X);
+		Assertions.assertEquals(String.format("%d.%d", Version.MAJOR, Version.MINOR), Version.VERSION_X_X);
+		Assertions.assertEquals(String.format("%d.%d.%d", Version.MAJOR, Version.MINOR, Version.PATCH),
+				Version.VERSION_X_X_X);
+	}
 }

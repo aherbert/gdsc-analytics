@@ -42,54 +42,62 @@ package uk.ac.sussex.gdsc.analytics;
  */
 public class Version
 {
-    /**
-     * The major version
-     */
-    public static final int MAJOR = 1;
-    /**
-     * The minor version
-     */
-    public static final int MINOR = 0;
-    /**
-     * The patch version
-     */
-    public static final int PATCH = 1;
+	/**
+	 * The major version
+	 */
+	public static final int MAJOR = 2;
+	/**
+	 * The minor version
+	 */
+	public static final int MINOR = 0;
+	/**
+	 * The patch version
+	 */
+	public static final int PATCH = 0;
 
-    /**
-     * The major version string
-     */
-    public static final String VERSION_X;
-    /**
-     * The major.minor version string
-     */
-    public static final String VERSION_X_X;
-    /**
-     * The major.minor.patch version string
-     */
-    public static final String VERSION_X_X_X;
+	/**
+	 * The major version string
+	 */
+	public static final String VERSION_X;
+	/**
+	 * The major.minor version string
+	 */
+	public static final String VERSION_X_X;
+	/**
+	 * The major.minor.patch version string
+	 */
+	public static final String VERSION_X_X_X;
 
-    static
-    {
-        VERSION_X = getVersion(1);
-        VERSION_X_X = getVersion(2);
-        VERSION_X_X_X = getVersion(3);
-    }
+	static
+	{
+		VERSION_X = getVersion(1);
+		VERSION_X_X = getVersion(2);
+		VERSION_X_X_X = getVersion(3);
+	}
 
-    /**
-     * Get the version as a string. The string is built as major.minor.patch
-     * using the specified number of levels.
-     *
-     * @param levels
-     *            The number of levels (1-3).
-     * @return The version
-     */
-    public static String getVersion(int levels)
-    {
-        String version = Integer.toString(MAJOR);
-        if (levels > 1)
-            version += '.' + Integer.toString(MINOR);
-        if (levels > 2)
-            version += '.' + Integer.toString(PATCH);
-        return version;
-    }
+	/**
+	 * Do not allow public construction
+	 */
+	private Version()
+	{
+		// Do nothing
+	}
+
+	/**
+	 * Get the version as a string. The string is built as major.minor.patch
+	 * using the specified number of levels.
+	 *
+	 * @param levels
+	 *            The number of levels (1-3).
+	 * @return The version
+	 */
+	public static String getVersion(int levels)
+	{
+		String version = Integer.toString(MAJOR);
+		if (levels > 1)
+			version += '.' + Integer.toString(MINOR);
+		if (levels > 2)
+			version += '.' + Integer.toString(PATCH);
+		return version;
+	}
 }

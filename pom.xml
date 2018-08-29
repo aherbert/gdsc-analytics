@@ -4,7 +4,7 @@
 
   <groupId>uk.ac.sussex.gdsc</groupId>
   <artifactId>gdsc-analytics</artifactId>
-  <version>1.1.0-SNAPSHOT</version>
+  <version>2.0.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>GDSC Analytics</name>
@@ -83,6 +83,8 @@ protocol to collect usage information about a Java application.
     <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
     <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
     <coveralls-maven-plugin.version>4.3.0</coveralls-maven-plugin.version>
+    <commons-codec.version>1.11</commons-codec.version>
+    <assertj-core.version>3.11.0</assertj-core.version>
     <!-- Maven -->
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
@@ -118,15 +120,6 @@ protocol to collect usage information about a Java application.
     <defaultGoal>clean install</defaultGoal>
     <pluginManagement>
       <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>2.1</version>
-          <configuration>
-            <source>1.6</source>
-            <target>1.6</target>
-          </configuration>
-        </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
@@ -355,11 +348,13 @@ protocol to collect usage information about a Java application.
       <build>
         <plugins>
           <!-- Submit coverage -->
+          <!-- TODO - put this back when test suite is done 
           <plugin>
             <groupId>org.eluder.coveralls</groupId>
             <artifactId>coveralls-maven-plugin</artifactId>
             <version>${coveralls-maven-plugin.version}</version>
           </plugin>
+          -->
           <plugin>
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
@@ -421,7 +416,8 @@ protocol to collect usage information about a Java application.
                       </limits>
                     </rule>
                   </rules>
-                  <haltOnFailure>true</haltOnFailure>
+                  <!-- Update -->
+                  <haltOnFailure>false</haltOnFailure>
                 </configuration>
               </execution>
             </executions>
@@ -509,6 +505,15 @@ protocol to collect usage information about a Java application.
       </properties>
     </profile>
   </profiles>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>${assertj-core.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
 
   <distributionManagement>
     <snapshotRepository>

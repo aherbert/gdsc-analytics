@@ -43,6 +43,9 @@ public class RequestParameters extends Parameters
     private String category;
     private String action;
     private String label;
+    /**
+     * The value. This is an object to allow null to represent unset.
+     */
     private Integer value;
 
     /**
