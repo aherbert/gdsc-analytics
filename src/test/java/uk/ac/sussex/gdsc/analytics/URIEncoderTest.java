@@ -60,8 +60,13 @@ public class URIEncoderTest {
         // The same string
         Assertions.assertSame(unencoded, URIEncoder.encodeURI(unencoded));
 
-        // Encode others as hex in UTF-8
+        // Special case of space
+        testEncode("with space");
+        testEncode(" space");
+        testEncode("with ");
         testEncode(" ");
+
+        // Encode others as hex in UTF-8
         testEncode("&");
         testEncode("@");
         testEncode("/");

@@ -35,12 +35,16 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 /**
- * Simple URI encoder to encode strings using UTF-8.
+ * URI encoder to encode strings using UTF-8.
  */
 public class URIEncoder {
 
     /** The characters that do not require encoding. */
     private final static BitSet dontNeedEncoding;
+    /** The space character. This is replaced with '+'. */
+    private final static char SPACE = ' ';
+    /** The plus '+' character. */
+    private final static char PLUS = '+';
 
     static {
 
@@ -49,10 +53,11 @@ public class URIEncoder {
         /*
          * The list of characters that are not encoded has been determined as follows:
          *
-         * RFC 2396 states: ----- Data characters that are allowed in a URI but do not
-         * have a reserved purpose are called unreserved. These include upper and lower
-         * case letters, decimal digits, and a limited set of punctuation marks and
-         * symbols.
+         * RFC 2396 states:
+         * 
+         * Data characters that are allowed in a URI but do not have a reserved purpose
+         * are called unreserved. These include upper and lower case letters, decimal
+         * digits, and a limited set of punctuation marks and symbols.
          *
          * unreserved = alphanum | mark
          *
@@ -60,8 +65,11 @@ public class URIEncoder {
          *
          * Unreserved characters can be escaped without changing the semantics of the
          * URI, but this should not be done unless the URI is being used in a context
-         * that does not allow the unescaped character to appear. -----
+         * that does not allow the unescaped character to appear.
          *
+         *
+         * Note:
+         * 
          * It appears that both Netscape and Internet Explorer escape all special
          * characters from this list with the exception of "-", "_", ".", "*". While it
          * is not clear why they are escaping the other characters, perhaps it is safest
@@ -69,10 +77,9 @@ public class URIEncoder {
          * escaped. Therefore, we will use the same list. It is also noteworthy that
          * this is consistent with O'Reilly's "HTML: The Definitive Guide" (page 164).
          *
-         * As a last note, Intenet Explorer does not encode the "@" character which is
+         * As a last note, Internet Explorer does not encode the "@" character which is
          * clearly not unreserved according to the RFC. We are being consistent with the
          * RFC in this matter, as is Netscape.
-         *
          */
 
         dontNeedEncoding = new BitSet(256);
@@ -86,8 +93,7 @@ public class URIEncoder {
         for (i = '0'; i <= '9'; i++) {
             dontNeedEncoding.set(i);
         }
-        // Delegate the required encoding of space to URLEncoder
-        // dontNeedEncoding.set(' ');
+        dontNeedEncoding.set(' ');
         dontNeedEncoding.set('-');
         dontNeedEncoding.set('_');
         dontNeedEncoding.set('.');
@@ -115,9 +121,28 @@ public class URIEncoder {
      */
     public static String encodeURI(String string) {
         if (noEncodingRequired(string)) {
-            return string;
+            // Handle special case of space character
+            return encodeSpace(string);
         }
         return encodeURI(string, "UTF-8");
+    }
+
+    /**
+     * Encode the string substituting the space character for '+'.
+     *
+     * @param string the string
+     * @return the string
+     */
+    private static String encodeSpace(String string) {
+        if (string.indexOf(SPACE) == -1)
+            return string;
+        final char[] chars = string.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            if (chars[i] == SPACE) {
+                chars[i] = PLUS;
+            }
+        }
+        return new String(chars);
     }
 
     /**
