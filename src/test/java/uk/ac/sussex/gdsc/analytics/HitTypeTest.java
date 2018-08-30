@@ -32,12 +32,11 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class HitTypeTest
-{
-	@Test
-	public void testToString() {
-		for (HitType ht : HitType.values()) {
-			Assertions.assertEquals(String.valueOf(ht).toLowerCase(), ht.toString());
-		}
-	}
+public class HitTypeTest {
+    @Test
+    public void testToString() {
+        for (final HitType ht : HitType.values()) {
+            Assertions.assertEquals(String.valueOf(ht).toLowerCase(), ht.toString());
+        }
+    }
 }

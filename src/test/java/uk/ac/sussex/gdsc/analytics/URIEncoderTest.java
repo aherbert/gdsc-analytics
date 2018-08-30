@@ -34,43 +34,39 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class URIEncoderTest
-{
-	@Test
-	public void testEncoder() throws Exception
-	{
-		// Create a string that should not be encoded
-		final StringBuilder sb = new StringBuilder();
-		for (char c = '0'; c <= '9'; c++)
-			sb.append(c);
-		for (char c = 'a'; c <= 'z'; c++)
-			sb.append(c);
-		for (char c = 'A'; c <= 'Z'; c++)
-			sb.append(c);
-		sb.append("-_.!~*'()\"");
-		String unencoded = sb.toString();
-		Assertions.assertTrue(unencoded.length() > 0);
-		Assertions.assertEquals(unencoded, URIEncoder.encodeURI(unencoded));
+public class URIEncoderTest {
+    @Test
+    public void testEncoder() throws Exception {
+        // Create a string that should not be encoded
+        final StringBuilder sb = new StringBuilder();
+        for (char c = '0'; c <= '9'; c++)
+            sb.append(c);
+        for (char c = 'a'; c <= 'z'; c++)
+            sb.append(c);
+        for (char c = 'A'; c <= 'Z'; c++)
+            sb.append(c);
+        sb.append("-_.!~*'()\"");
+        final String unencoded = sb.toString();
+        Assertions.assertTrue(unencoded.length() > 0);
+        Assertions.assertEquals(unencoded, URIEncoder.encodeURI(unencoded));
 
-		// Encode others as hex
-		testEncode(" ");
-		testEncode("&");
-		testEncode("@");
-		testEncode("/");
-		testEncode("[]{}%$#");
-	}
+        // Encode others as hex
+        testEncode(" ");
+        testEncode("&");
+        testEncode("@");
+        testEncode("/");
+        testEncode("[]{}%$#");
+    }
 
-	private void testEncode(String string) throws Exception
-	{
-		// The encoding is not standard. It encodes all unsupported 
-		// chars as hex. So encode and test it can be decoded to the 
-		// same string using a standard decoder.
-		String encoded = URIEncoder.encodeURI(string);
-		Assertions.assertEquals(string, decode(encoded));
-	}
-	
-	private String decode(String s) throws Exception
-	{
-		return URLDecoder.decode(s, "UTF-8");
-	}
+    private static void testEncode(String string) throws Exception {
+        // The encoding is not standard. It encodes all unsupported
+        // chars as hex. So encode and test it can be decoded to the
+        // same string using a standard decoder.
+        final String encoded = URIEncoder.encodeURI(string);
+        Assertions.assertEquals(string, decode(encoded));
+    }
+
+    private static String decode(String s) throws Exception {
+        return URLDecoder.decode(s, "UTF-8");
+    }
 }

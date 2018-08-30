@@ -32,35 +32,29 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class SessionTest
-{
-	@Test
-	public void testReset()
-	{
-		Session session = new Session();
-		Assertions.assertTrue(session.isNew());
-		Assertions.assertFalse(session.isNew());
-		session.reset();
-		Assertions.assertTrue(session.isNew());
-	}
+public class SessionTest {
+    @Test
+    public void testReset() {
+        final Session session = new Session();
+        Assertions.assertTrue(session.isNew());
+        Assertions.assertFalse(session.isNew());
+        session.reset();
+        Assertions.assertTrue(session.isNew());
+    }
 
-	@Test
-	public void testTimeout()
-	{
-		Session session = new Session();
-		// 1 second timeout
-		session.setTimeout(1);
-		Assertions.assertEquals(1, session.getTimeout());
-		Assertions.assertTrue(session.isNew());
-		Assertions.assertFalse(session.isNew());
-		try
-		{
-			// Sleep for 1 second to ensure timeout
-			Thread.sleep(1000);
-		}
-		catch (InterruptedException e)
-		{ // Ignore
-		}
-		Assertions.assertTrue(session.isNew());
-	}
+    @Test
+    public void testTimeout() {
+        final Session session = new Session();
+        // 1 second timeout
+        session.setTimeout(1);
+        Assertions.assertEquals(1, session.getTimeout());
+        Assertions.assertTrue(session.isNew());
+        Assertions.assertFalse(session.isNew());
+        try {
+            // Sleep for 1 second to ensure timeout
+            Thread.sleep(1000);
+        } catch (final InterruptedException e) { // Ignore
+        }
+        Assertions.assertTrue(session.isNew());
+    }
 }

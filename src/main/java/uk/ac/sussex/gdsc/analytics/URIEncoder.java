@@ -34,29 +34,24 @@ package uk.ac.sussex.gdsc.analytics;
  *
  * @author Daniel Murphy
  */
-public class URIEncoder
-{
+public class URIEncoder {
     private static String mark = "-_.!~*'()\"";
 
     /**
      * Encode the string
      *
-     * @param string
-     *            The string
+     * @param string The string
      * @return The encoded string
      */
-    public static String encodeURI(String string)
-    {
+    public static String encodeURI(String string) {
         final StringBuilder uri = new StringBuilder(); // Encoded URL
 
         final char[] chars = string.toCharArray();
-        for (int i = 0; i < chars.length; i++)
-        {
+        for (int i = 0; i < chars.length; i++) {
             final char c = chars[i];
             if ((c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || mark.indexOf(c) != -1)
                 uri.append(c);
-            else
-            {
+            else {
                 uri.append('%');
                 uri.append(Integer.toHexString(c));
             }

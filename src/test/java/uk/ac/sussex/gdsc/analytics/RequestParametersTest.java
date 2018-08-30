@@ -32,59 +32,56 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class RequestParametersTest
-{
-	@Test
-	public void testConstructor()
-	{
-		for (HitType ht : HitType.values()) {
-			RequestParameters rp = new RequestParameters(ht);
-			Assertions.assertEquals(ht, rp.getHitTypeEnum());
-			Assertions.assertEquals(ht.toString(), rp.getHitType());
-		}
-	}
-	
-	/**
-	 * Test all properties invalidate the URL
-	 */
-	@Test
-	public void testProperties()
-	{
-		RequestParameters rp = new RequestParameters(HitType.PAGEVIEW);
+public class RequestParametersTest {
+    @Test
+    public void testConstructor() {
+        for (final HitType ht : HitType.values()) {
+            final RequestParameters rp = new RequestParameters(ht);
+            Assertions.assertEquals(ht, rp.getHitTypeEnum());
+            Assertions.assertEquals(ht.toString(), rp.getHitType());
+        }
+    }
 
-	    String documentPath = "1";
-	    String documentTitle = "2";
-	    String category = "3";
-	    String action = "4";
-	    String label = "5";
-	    Integer value = 99;
+    /**
+     * Test all properties invalidate the URL
+     */
+    @Test
+    public void testProperties() {
+        final RequestParameters rp = new RequestParameters(HitType.PAGEVIEW);
 
-		Assertions.assertNull(rp.getDocumentPath());
-		Assertions.assertNull(rp.getDocumentTitle());
-		Assertions.assertNull(rp.getCategory());
-		Assertions.assertNull(rp.getAction());
-		Assertions.assertNull(rp.getLabel());
-		Assertions.assertNull(rp.getValue());
-	
-		rp.setDocumentPath(documentPath);;
-		Assertions.assertEquals(documentPath, rp.getDocumentPath());
-		rp.setDocumentTitle(documentTitle);;
-		Assertions.assertEquals(documentTitle, rp.getDocumentTitle());
-		rp.setCategory(category);;
-		Assertions.assertEquals(category, rp.getCategory());
-		rp.setAction(action);;
-		Assertions.assertEquals(action, rp.getAction());
-		rp.setLabel(label);;
-		Assertions.assertEquals(label, rp.getLabel());
-		rp.setValue(value);
-		Assertions.assertEquals(value, rp.getValue());
-		
-		Assertions.assertFalse(rp.hasCustomDimensions());
-		rp.addCustomDimension(3, "33");
-		Assertions.assertTrue(rp.hasCustomDimensions());
-		
-		Assertions.assertFalse(rp.hasCustomMetrics());
-		rp.addCustomMetric(4, 44);
-		Assertions.assertTrue(rp.hasCustomMetrics());
-	}	
+        final String documentPath = "1";
+        final String documentTitle = "2";
+        final String category = "3";
+        final String action = "4";
+        final String label = "5";
+        final Integer value = 99;
+
+        Assertions.assertNull(rp.getDocumentPath());
+        Assertions.assertNull(rp.getDocumentTitle());
+        Assertions.assertNull(rp.getCategory());
+        Assertions.assertNull(rp.getAction());
+        Assertions.assertNull(rp.getLabel());
+        Assertions.assertNull(rp.getValue());
+
+        rp.setDocumentPath(documentPath);
+        Assertions.assertEquals(documentPath, rp.getDocumentPath());
+        rp.setDocumentTitle(documentTitle);
+        Assertions.assertEquals(documentTitle, rp.getDocumentTitle());
+        rp.setCategory(category);
+        Assertions.assertEquals(category, rp.getCategory());
+        rp.setAction(action);
+        Assertions.assertEquals(action, rp.getAction());
+        rp.setLabel(label);
+        Assertions.assertEquals(label, rp.getLabel());
+        rp.setValue(value);
+        Assertions.assertEquals(value, rp.getValue());
+
+        Assertions.assertFalse(rp.hasCustomDimensions());
+        rp.addCustomDimension(3, "33");
+        Assertions.assertTrue(rp.hasCustomDimensions());
+
+        Assertions.assertFalse(rp.hasCustomMetrics());
+        rp.addCustomMetric(4, 44);
+        Assertions.assertTrue(rp.hasCustomMetrics());
+    }
 }

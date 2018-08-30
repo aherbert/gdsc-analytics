@@ -37,65 +37,62 @@ import uk.ac.sussex.gdsc.analytics.Parameters.CustomDimension;
 import uk.ac.sussex.gdsc.analytics.Parameters.CustomMetric;
 
 @SuppressWarnings("javadoc")
-public class ParametersTest
-{
-	@Test
-	public void testCustomDimensions()
-	{
-		Parameters p = new Parameters();
+public class ParametersTest {
+    @Test
+    public void testCustomDimensions() {
+        final Parameters p = new Parameters();
 
-		Assertions.assertFalse(p.hasCustomDimensions());
-		Assertions.assertNull(p.getCustomDimensions());
-		Assertions.assertEquals(0, p.getNumberOfCustomDimensions());
+        Assertions.assertFalse(p.hasCustomDimensions());
+        Assertions.assertNull(p.getCustomDimensions());
+        Assertions.assertEquals(0, p.getNumberOfCustomDimensions());
 
-		int index = 3;
-		String value = "33";
+        final int index = 3;
+        final String value = "33";
 
-		// Ignored
-		p.addCustomDimension(index, null);
-		Assertions.assertFalse(p.hasCustomDimensions());
-		p.addCustomDimension(0, value);
-		Assertions.assertFalse(p.hasCustomDimensions());
-		p.addCustomDimension(201, value);
-		Assertions.assertFalse(p.hasCustomDimensions());
+        // Ignored
+        p.addCustomDimension(index, null);
+        Assertions.assertFalse(p.hasCustomDimensions());
+        p.addCustomDimension(0, value);
+        Assertions.assertFalse(p.hasCustomDimensions());
+        p.addCustomDimension(201, value);
+        Assertions.assertFalse(p.hasCustomDimensions());
 
-		p.addCustomDimension(index, value);
-		Assertions.assertTrue(p.hasCustomDimensions());
-		Assertions.assertEquals(1, p.getNumberOfCustomDimensions());
-		List<CustomDimension> list = p.getCustomDimensions();
-		Assertions.assertNotNull(list);
-		Assertions.assertEquals(1, list.size());
-		CustomDimension d = list.get(0);
-		Assertions.assertEquals(index, d.index);
-		Assertions.assertEquals(value, d.value);
-	}
+        p.addCustomDimension(index, value);
+        Assertions.assertTrue(p.hasCustomDimensions());
+        Assertions.assertEquals(1, p.getNumberOfCustomDimensions());
+        final List<CustomDimension> list = p.getCustomDimensions();
+        Assertions.assertNotNull(list);
+        Assertions.assertEquals(1, list.size());
+        final CustomDimension d = list.get(0);
+        Assertions.assertEquals(index, d.index);
+        Assertions.assertEquals(value, d.value);
+    }
 
-	@Test
-	public void testCustomMetrics()
-	{
-		Parameters p = new Parameters();
+    @Test
+    public void testCustomMetrics() {
+        final Parameters p = new Parameters();
 
-		Assertions.assertFalse(p.hasCustomMetrics());
-		Assertions.assertNull(p.getCustomMetrics());
-		Assertions.assertEquals(0, p.getNumberOfCustomMetrics());
+        Assertions.assertFalse(p.hasCustomMetrics());
+        Assertions.assertNull(p.getCustomMetrics());
+        Assertions.assertEquals(0, p.getNumberOfCustomMetrics());
 
-		int index = 3;
-		int value = 33;
+        final int index = 3;
+        final int value = 33;
 
-		// Ignored
-		p.addCustomMetric(0, value);
-		Assertions.assertFalse(p.hasCustomMetrics());
-		p.addCustomMetric(201, value);
-		Assertions.assertFalse(p.hasCustomMetrics());
+        // Ignored
+        p.addCustomMetric(0, value);
+        Assertions.assertFalse(p.hasCustomMetrics());
+        p.addCustomMetric(201, value);
+        Assertions.assertFalse(p.hasCustomMetrics());
 
-		p.addCustomMetric(index, value);
-		Assertions.assertTrue(p.hasCustomMetrics());
-		Assertions.assertEquals(1, p.getNumberOfCustomMetrics());
-		List<CustomMetric> list = p.getCustomMetrics();
-		Assertions.assertNotNull(list);
-		Assertions.assertEquals(1, list.size());
-		CustomMetric d = list.get(0);
-		Assertions.assertEquals(index, d.index);
-		Assertions.assertEquals(value, d.value);
-	}
+        p.addCustomMetric(index, value);
+        Assertions.assertTrue(p.hasCustomMetrics());
+        Assertions.assertEquals(1, p.getNumberOfCustomMetrics());
+        final List<CustomMetric> list = p.getCustomMetrics();
+        Assertions.assertNotNull(list);
+        Assertions.assertEquals(1, list.size());
+        final CustomMetric d = list.get(0);
+        Assertions.assertEquals(index, d.index);
+        Assertions.assertEquals(value, d.value);
+    }
 }

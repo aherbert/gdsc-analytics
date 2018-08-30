@@ -33,8 +33,7 @@ package uk.ac.sussex.gdsc.analytics;
  *
  * @author Alex Herbert
  */
-public enum HitType
-{
+public enum HitType {
     /** The pageview hit-type. */
     PAGEVIEW,
     /** The screenview hit-type. */
@@ -58,8 +57,7 @@ public enum HitType
     /**
      * Instantiates a new hit type.
      */
-    private HitType()
-    {
+    private HitType() {
         this.name = super.toString().toLowerCase();
     }
 
@@ -69,8 +67,7 @@ public enum HitType
      * @see java.lang.Enum#toString()
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         return name;
     }
 }

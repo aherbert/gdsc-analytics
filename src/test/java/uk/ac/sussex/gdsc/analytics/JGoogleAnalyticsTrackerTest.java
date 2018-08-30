@@ -37,96 +37,93 @@ import uk.ac.sussex.gdsc.analytics.JGoogleAnalyticsTracker.DispatchMode;
 import uk.ac.sussex.gdsc.analytics.JGoogleAnalyticsTracker.MeasurementProtocolVersion;
 
 @SuppressWarnings("javadoc")
-public class JGoogleAnalyticsTrackerTest
-{
-	private String trackingId = "AAA-123-456";
-	private String clientId = "Anything";
-	private String applicationName = "Test";
+public class JGoogleAnalyticsTrackerTest {
+    private final String trackingId = "AAA-123-456";
+    private final String clientId = "Anything";
+    private final String applicationName = "Test";
 
-	@Test
-	public void testConstructor()
-	{
-		ClientParameters cp = new ClientParameters(trackingId, clientId, applicationName);
-		MeasurementProtocolVersion version = MeasurementProtocolVersion.V_1;
-		JGoogleAnalyticsTracker tracker = new JGoogleAnalyticsTracker(cp, version);
-		Assertions.assertNotNull(tracker);
-		Assertions.assertTrue(tracker.isEnabled());
-		Assertions.assertEquals(DispatchMode.SINGLE_THREAD, tracker.getDispatchMode());
+    @SuppressWarnings("unused")
+    @Test
+    public void testConstructor() {
+        final ClientParameters cp = new ClientParameters(trackingId, clientId, applicationName);
+        final MeasurementProtocolVersion version = MeasurementProtocolVersion.V_1;
+        JGoogleAnalyticsTracker tracker = new JGoogleAnalyticsTracker(cp, version);
+        Assertions.assertNotNull(tracker);
+        Assertions.assertTrue(tracker.isEnabled());
+        Assertions.assertEquals(DispatchMode.SINGLE_THREAD, tracker.getDispatchMode());
 
-		// Require arguments
-		Assertions.assertThrows(NullPointerException.class, () -> {
-			new JGoogleAnalyticsTracker(null, version);
-		});
-		Assertions.assertThrows(NullPointerException.class, () -> {
-			new JGoogleAnalyticsTracker(cp, null);
-		});
+        // Require arguments
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            new JGoogleAnalyticsTracker(null, version);
+        });
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            new JGoogleAnalyticsTracker(cp, null);
+        });
 
-		// Overloaded constructor
-		tracker = new JGoogleAnalyticsTracker(cp, version, DispatchMode.MULTI_THREAD);
-		Assertions.assertEquals(DispatchMode.MULTI_THREAD, tracker.getDispatchMode());
-	}
+        // Overloaded constructor
+        tracker = new JGoogleAnalyticsTracker(cp, version, DispatchMode.MULTI_THREAD);
+        Assertions.assertEquals(DispatchMode.MULTI_THREAD, tracker.getDispatchMode());
+    }
 
-	@Test
-	public void testProperties()
-	{
-		ClientParameters cp = new ClientParameters(trackingId, clientId, applicationName);
-		MeasurementProtocolVersion version = MeasurementProtocolVersion.V_1;
+    @Test
+    public void testProperties() {
+        final ClientParameters cp = new ClientParameters(trackingId, clientId, applicationName);
+        final MeasurementProtocolVersion version = MeasurementProtocolVersion.V_1;
 
-		JGoogleAnalyticsTracker tracker = new JGoogleAnalyticsTracker(cp, version);
+        final JGoogleAnalyticsTracker tracker = new JGoogleAnalyticsTracker(cp, version);
 
-		tracker.setDispatchMode(DispatchMode.SYNCHRONOUS);
-		Assertions.assertEquals(DispatchMode.SYNCHRONOUS, tracker.getDispatchMode());
-		Assertions.assertTrue(tracker.isSynchronous());
-		Assertions.assertFalse(tracker.isSingleThreaded());
-		Assertions.assertFalse(tracker.isMultiThreaded());
+        tracker.setDispatchMode(DispatchMode.SYNCHRONOUS);
+        Assertions.assertEquals(DispatchMode.SYNCHRONOUS, tracker.getDispatchMode());
+        Assertions.assertTrue(tracker.isSynchronous());
+        Assertions.assertFalse(tracker.isSingleThreaded());
+        Assertions.assertFalse(tracker.isMultiThreaded());
 
-		tracker.setDispatchMode(DispatchMode.SINGLE_THREAD);
-		Assertions.assertEquals(DispatchMode.SINGLE_THREAD, tracker.getDispatchMode());
-		Assertions.assertFalse(tracker.isSynchronous());
-		Assertions.assertTrue(tracker.isSingleThreaded());
-		Assertions.assertFalse(tracker.isMultiThreaded());
+        tracker.setDispatchMode(DispatchMode.SINGLE_THREAD);
+        Assertions.assertEquals(DispatchMode.SINGLE_THREAD, tracker.getDispatchMode());
+        Assertions.assertFalse(tracker.isSynchronous());
+        Assertions.assertTrue(tracker.isSingleThreaded());
+        Assertions.assertFalse(tracker.isMultiThreaded());
 
-		tracker.setDispatchMode(DispatchMode.MULTI_THREAD);
-		Assertions.assertEquals(DispatchMode.MULTI_THREAD, tracker.getDispatchMode());
-		Assertions.assertFalse(tracker.isSynchronous());
-		Assertions.assertFalse(tracker.isSingleThreaded());
-		Assertions.assertTrue(tracker.isMultiThreaded());
+        tracker.setDispatchMode(DispatchMode.MULTI_THREAD);
+        Assertions.assertEquals(DispatchMode.MULTI_THREAD, tracker.getDispatchMode());
+        Assertions.assertFalse(tracker.isSynchronous());
+        Assertions.assertFalse(tracker.isSingleThreaded());
+        Assertions.assertTrue(tracker.isMultiThreaded());
 
-		// On by default
-		Assertions.assertTrue(tracker.isEnabled());
-		tracker.setEnabled(false);
-		Assertions.assertFalse(tracker.isEnabled());
+        // On by default
+        Assertions.assertTrue(tracker.isEnabled());
+        tracker.setEnabled(false);
+        Assertions.assertFalse(tracker.isEnabled());
 
-		// Off by default
-		Assertions.assertFalse(tracker.isSecure());
-		tracker.setSecure(true);
-		Assertions.assertTrue(tracker.isSecure());
-	}
+        // Off by default
+        Assertions.assertFalse(tracker.isSecure());
+        tracker.setSecure(true);
+        Assertions.assertTrue(tracker.isSecure());
+    }
 
-	@Test
-	public void testProxy()
-	{
-		JGoogleAnalyticsTracker.setProxy((Proxy) null);
-		JGoogleAnalyticsTracker.setProxy(Proxy.NO_PROXY);
-		
-		// Test various proxy addresses
-		// Valid
-		Assertions.assertTrue(JGoogleAnalyticsTracker.setProxy("http://localhost:80"));
-		Assertions.assertTrue(JGoogleAnalyticsTracker.setProxy("https://localhost:80"));
-		Assertions.assertTrue(JGoogleAnalyticsTracker.setProxy("localhost:80"));
-		Assertions.assertTrue(JGoogleAnalyticsTracker.setProxy("https://localhost:80/more/stuff"));
-		
-		// Invalid
-		Assertions.assertFalse(JGoogleAnalyticsTracker.setProxy(""));
-		Assertions.assertFalse(JGoogleAnalyticsTracker.setProxy("localhost"));
-		Assertions.assertFalse(JGoogleAnalyticsTracker.setProxy("http://localhost"));
-		Assertions.assertFalse(JGoogleAnalyticsTracker.setProxy("http://localhost :80"));
-		
-		// Reset
-		JGoogleAnalyticsTracker.setProxy(Proxy.NO_PROXY);
-	}
-	
-	// Q. How to test the dispatch?
-	// Can this use the proxy with a mock proxy?
-	// A. Create a mock dispatch receiver
+    @Test
+    public void testProxy() {
+        JGoogleAnalyticsTracker.setProxy((Proxy) null);
+        JGoogleAnalyticsTracker.setProxy(Proxy.NO_PROXY);
+
+        // Test various proxy addresses
+        // Valid
+        Assertions.assertTrue(JGoogleAnalyticsTracker.setProxy("http://localhost:80"));
+        Assertions.assertTrue(JGoogleAnalyticsTracker.setProxy("https://localhost:80"));
+        Assertions.assertTrue(JGoogleAnalyticsTracker.setProxy("localhost:80"));
+        Assertions.assertTrue(JGoogleAnalyticsTracker.setProxy("https://localhost:80/more/stuff"));
+
+        // Invalid
+        Assertions.assertFalse(JGoogleAnalyticsTracker.setProxy(""));
+        Assertions.assertFalse(JGoogleAnalyticsTracker.setProxy("localhost"));
+        Assertions.assertFalse(JGoogleAnalyticsTracker.setProxy("http://localhost"));
+        Assertions.assertFalse(JGoogleAnalyticsTracker.setProxy("http://localhost :80"));
+
+        // Reset
+        JGoogleAnalyticsTracker.setProxy(Proxy.NO_PROXY);
+    }
+
+    // Q. How to test the dispatch?
+    // Can this use the proxy with a mock proxy?
+    // A. Create a mock dispatch receiver
 }

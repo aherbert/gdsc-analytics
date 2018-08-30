@@ -32,273 +32,242 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 /**
- * Common client data. Allows caching of the client component of the Google Analytics URL.
+ * Common client data. Allows caching of the client component of the Google
+ * Analytics URL.
  *
  * @see "https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters"
  * @author Alex Herbert
  */
-public class ClientParameters extends Parameters
-{
-	private final String trackingId;
-	private final String clientId;
-	private final String applicationName;
-	private final Session session;
+public class ClientParameters extends Parameters {
+    private final String trackingId;
+    private final String clientId;
+    private final String applicationName;
+    private final Session session;
 
-	private String screenResolution = null;
-	private String userLanguage = null;
-	private String hostName = null;
-	private String userAgent = null;
-	private String applicationId = null;
-	private String applicationVersion = null;
-	private boolean anonymized = false;
+    private String screenResolution = null;
+    private String userLanguage = null;
+    private String hostName = null;
+    private String userAgent = null;
+    private String applicationId = null;
+    private String applicationVersion = null;
+    private boolean anonymized = false;
 
-	private String url = null;
+    private String url = null;
 
-	/**
-	 * Constructs with the tracking Id. If the client Id is null or empty then a new UUID will be created.
-	 *
-	 * @param trackingId
-	 *            Tracking Id (must not be null)
-	 * @param clientId
-	 *            Client Id (optional)
-	 * @param applicationName
-	 *            Application name (must not be null)
-	 */
-	public ClientParameters(String trackingId, String clientId, String applicationName)
-	{
-		if (trackingId == null || trackingId.length() == 0)
-			throw new IllegalArgumentException("Tracking code cannot be null");
-		if (!Pattern.matches("[A-Z]+-[0-9]+-[0-9]+", trackingId))
-		{
-			Logger logger = Logger.getLogger(ClientParameters.class.getName());
-			logger.warning("Tracking code appears invalid: " + trackingId);
-		}
-		if (clientId == null || clientId.length() == 0)
-			clientId = java.util.UUID.randomUUID().toString();
-		if (applicationName == null || applicationName.length() == 0)
-			throw new IllegalArgumentException("Application name cannot be null");
-		this.trackingId = trackingId;
-		this.clientId = clientId;
-		this.applicationName = applicationName;
-		this.session = new Session();
-	}
+    /**
+     * Constructs with the tracking Id. If the client Id is null or empty then a new
+     * UUID will be created.
+     *
+     * @param trackingId      Tracking Id (must not be null)
+     * @param clientId        Client Id (optional)
+     * @param applicationName Application name (must not be null)
+     */
+    public ClientParameters(String trackingId, String clientId, String applicationName) {
+        if (trackingId == null || trackingId.length() == 0)
+            throw new IllegalArgumentException("Tracking code cannot be null");
+        if (!Pattern.matches("[A-Z]+-[0-9]+-[0-9]+", trackingId)) {
+            final Logger logger = Logger.getLogger(ClientParameters.class.getName());
+            logger.warning("Tracking code appears invalid: " + trackingId);
+        }
+        if (clientId == null || clientId.length() == 0)
+            clientId = java.util.UUID.randomUUID().toString();
+        if (applicationName == null || applicationName.length() == 0)
+            throw new IllegalArgumentException("Application name cannot be null");
+        this.trackingId = trackingId;
+        this.clientId = clientId;
+        this.applicationName = applicationName;
+        this.session = new Session();
+    }
 
-	/**
-	 * @return the tracking Id
-	 */
-	public String getTrackingId()
-	{
-		return trackingId;
-	}
+    /**
+     * @return the tracking Id
+     */
+    public String getTrackingId() {
+        return trackingId;
+    }
 
-	/**
-	 * @return The client Id
-	 */
-	public String getClientId()
-	{
-		return clientId;
-	}
+    /**
+     * @return The client Id
+     */
+    public String getClientId() {
+        return clientId;
+    }
 
-	/**
-	 * @return the application name
-	 */
-	public String getApplicationName()
-	{
-		return applicationName;
-	}
+    /**
+     * @return the application name
+     */
+    public String getApplicationName() {
+        return applicationName;
+    }
 
-	/**
-	 * Check if this is a new session
-	 *
-	 * @return True if the session is new
-	 */
-	public boolean isNewSession()
-	{
-		return session.isNew();
-	}
+    /**
+     * Check if this is a new session
+     *
+     * @return True if the session is new
+     */
+    public boolean isNewSession() {
+        return session.isNew();
+    }
 
-	/**
-	 * @return the screenResolution
-	 */
-	public String getScreenResolution()
-	{
-		return screenResolution;
-	}
+    /**
+     * @return the screenResolution
+     */
+    public String getScreenResolution() {
+        return screenResolution;
+    }
 
-	/**
-	 * @return the userLanguage
-	 */
-	public String getUserLanguage()
-	{
-		return userLanguage;
-	}
+    /**
+     * @return the userLanguage
+     */
+    public String getUserLanguage() {
+        return userLanguage;
+    }
 
-	/**
-	 * @return The hostname
-	 */
-	public String getHostName()
-	{
-		return hostName;
-	}
+    /**
+     * @return The hostname
+     */
+    public String getHostName() {
+        return hostName;
+    }
 
-	/**
-	 * @return the user agent
-	 */
-	public String getUserAgent()
-	{
-		return userAgent;
-	}
+    /**
+     * @return the user agent
+     */
+    public String getUserAgent() {
+        return userAgent;
+    }
 
-	/**
-	 * @return the application Id
-	 */
-	public String getApplicationId()
-	{
-		return applicationId;
-	}
+    /**
+     * @return the application Id
+     */
+    public String getApplicationId() {
+        return applicationId;
+    }
 
-	/**
-	 * @return the application version
-	 */
-	public String getApplicationVersion()
-	{
-		return applicationVersion;
-	}
+    /**
+     * @return the application version
+     */
+    public String getApplicationVersion() {
+        return applicationVersion;
+    }
 
-	/**
-	 * @return True if the IP address of the sender will be anonymized
-	 */
-	public boolean isAnonymized()
-	{
-		return anonymized;
-	}
+    /**
+     * @return True if the IP address of the sender will be anonymized
+     */
+    public boolean isAnonymized() {
+        return anonymized;
+    }
 
-	/**
-	 * @return The client component of the URL
-	 */
-	public String getUrl()
-	{
-		return url;
-	}
+    /**
+     * @return The client component of the URL
+     */
+    public String getUrl() {
+        return url;
+    }
 
-	/**
-	 * Sets the screen resolution, like "1280x800".
-	 *
-	 * @param screenResolution
-	 *            the screen resolution to set
-	 */
-	public void setScreenResolution(String screenResolution)
-	{
-		this.url = null;
-		this.screenResolution = screenResolution;
-	}
+    /**
+     * Sets the screen resolution, like "1280x800".
+     *
+     * @param screenResolution the screen resolution to set
+     */
+    public void setScreenResolution(String screenResolution) {
+        this.url = null;
+        this.screenResolution = screenResolution;
+    }
 
-	/**
-	 * Sets the user language, like "EN-us"
-	 *
-	 * @param userLanguage
-	 *            the user language to set
-	 */
-	public void setUserLanguage(String userLanguage)
-	{
-		this.url = null;
-		this.userLanguage = userLanguage;
-	}
+    /**
+     * Sets the user language, like "EN-us"
+     *
+     * @param userLanguage the user language to set
+     */
+    public void setUserLanguage(String userLanguage) {
+        this.url = null;
+        this.userLanguage = userLanguage;
+    }
 
-	/**
-	 * Set the hostname
-	 *
-	 * @param hostName
-	 *            the hostname
-	 */
-	public void setHostName(String hostName)
-	{
-		this.url = null;
-		this.hostName = hostName;
-	}
+    /**
+     * Set the hostname
+     *
+     * @param hostName the hostname
+     */
+    public void setHostName(String hostName) {
+        this.url = null;
+        this.hostName = hostName;
+    }
 
-	/**
-	 * Set the client component of the Google Analytics URL. This can be used to cache part of the URL.
-	 *
-	 * @param url
-	 *            The client component of the URL
-	 */
-	public void setUrl(String url)
-	{
-		this.url = url;
-	}
+    /**
+     * Set the client component of the Google Analytics URL. This can be used to
+     * cache part of the URL.
+     *
+     * @param url The client component of the URL
+     */
+    public void setUrl(String url) {
+        this.url = url;
+    }
 
-	/**
-	 * @param userAgent
-	 *            the user agent to set
-	 */
-	public void setUserAgent(String userAgent)
-	{
-		this.url = null;
-		this.userAgent = userAgent;
-	}
+    /**
+     * @param userAgent the user agent to set
+     */
+    public void setUserAgent(String userAgent) {
+        this.url = null;
+        this.userAgent = userAgent;
+    }
 
-	/**
-	 * @param applicationId
-	 *            the application Id to set
-	 */
-	public void setApplicationId(String applicationId)
-	{
-		this.url = null;
-		this.applicationId = applicationId;
-	}
+    /**
+     * @param applicationId the application Id to set
+     */
+    public void setApplicationId(String applicationId) {
+        this.url = null;
+        this.applicationId = applicationId;
+    }
 
-	/**
-	 * @param applicationVersion
-	 *            the application version to set
-	 */
-	public void setApplicationVersion(String applicationVersion)
-	{
-		this.url = null;
-		this.applicationVersion = applicationVersion;
-	}
+    /**
+     * @param applicationVersion the application version to set
+     */
+    public void setApplicationVersion(String applicationVersion) {
+        this.url = null;
+        this.applicationVersion = applicationVersion;
+    }
 
-	/**
-	 * Set the state of IP anonymization
-	 *
-	 * @param anonymized
-	 *            True if the IP address of the sender will be anonymized
-	 */
-	public void setAnonymized(boolean anonymized)
-	{
-		this.url = null;
-		this.anonymized = anonymized;
-	}
+    /**
+     * Set the state of IP anonymization
+     *
+     * @param anonymized True if the IP address of the sender will be anonymized
+     */
+    public void setAnonymized(boolean anonymized) {
+        this.url = null;
+        this.anonymized = anonymized;
+    }
 
-	/**
-	 * Add a session level custom dimension. These will only be sent at the start of the session.
-	 *
-	 * @see uk.ac.sussex.gdsc.analytics.Parameters#addCustomDimension(int, java.lang.String)
-	 */
-	@Override
-	public void addCustomDimension(int index, String value)
-	{
-		this.url = null;
-		super.addCustomDimension(index, value);
-	}
+    /**
+     * Add a session level custom dimension. These will only be sent at the start of
+     * the session.
+     *
+     * @see uk.ac.sussex.gdsc.analytics.Parameters#addCustomDimension(int,
+     *      java.lang.String)
+     */
+    @Override
+    public void addCustomDimension(int index, String value) {
+        this.url = null;
+        super.addCustomDimension(index, value);
+    }
 
-	/**
-	 * Add a session level custom metric. These will only be sent at the start of the session.
-	 *
-	 * @see uk.ac.sussex.gdsc.analytics.Parameters#addCustomMetric(int, int)
-	 */
-	@Override
-	public void addCustomMetric(int index, int value)
-	{
-		this.url = null;
-		super.addCustomMetric(index, value);
-	}
+    /**
+     * Add a session level custom metric. These will only be sent at the start of
+     * the session.
+     *
+     * @see uk.ac.sussex.gdsc.analytics.Parameters#addCustomMetric(int, int)
+     */
+    @Override
+    public void addCustomMetric(int index, int value) {
+        this.url = null;
+        super.addCustomMetric(index, value);
+    }
 
-	/**
-	 * Reset the session (i.e. start a new session)
-	 */
-	public void resetSession()
-	{
-		this.session.reset();
-	}
+    /**
+     * Reset the session (i.e. start a new session)
+     */
+    public void resetSession() {
+        this.session.reset();
+    }
 }

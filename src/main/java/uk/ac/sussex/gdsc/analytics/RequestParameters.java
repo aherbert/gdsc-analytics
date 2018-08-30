@@ -34,8 +34,7 @@ package uk.ac.sussex.gdsc.analytics;
  * @see "https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters"
  * @author Alex Herbert
  */
-public class RequestParameters extends Parameters
-{
+public class RequestParameters extends Parameters {
     private final HitType hitType;
 
     private String documentPath = null;
@@ -51,140 +50,118 @@ public class RequestParameters extends Parameters
     /**
      * Instantiates a new request parameters.
      *
-     * @param hitType
-     *            the hit type
+     * @param hitType the hit type
      */
-    public RequestParameters(HitType hitType)
-    {
+    public RequestParameters(HitType hitType) {
         this.hitType = hitType;
     }
 
     /**
      * @return The hit type
      */
-    public String getHitType()
-    {
+    public String getHitType() {
         return hitType.toString();
     }
 
     /**
      * @return The hit type
      */
-    public HitType getHitTypeEnum()
-    {
+    public HitType getHitTypeEnum() {
         return hitType;
     }
 
     /**
      * @return the document path
      */
-    public String getDocumentPath()
-    {
+    public String getDocumentPath() {
         return documentPath;
     }
 
     /**
-     * @param documentPath
-     *            the document path to set
+     * @param documentPath the document path to set
      */
-    public void setDocumentPath(String documentPath)
-    {
+    public void setDocumentPath(String documentPath) {
         this.documentPath = documentPath;
     }
 
     /**
      * @return the document title
      */
-    public String getDocumentTitle()
-    {
+    public String getDocumentTitle() {
         return documentTitle;
     }
 
     /**
-     * @param documentTitle
-     *            the document title to set
+     * @param documentTitle the document title to set
      */
-    public void setDocumentTitle(String documentTitle)
-    {
+    public void setDocumentTitle(String documentTitle) {
         this.documentTitle = documentTitle;
     }
 
     /**
      * @return the event category
      */
-    public String getCategory()
-    {
+    public String getCategory() {
         return category;
     }
 
     /**
-     * @param category
-     *            the event category to set
+     * @param category the event category to set
      */
-    public void setCategory(String category)
-    {
+    public void setCategory(String category) {
         this.category = category;
     }
 
     /**
      * @return the event action
      */
-    public String getAction()
-    {
+    public String getAction() {
         return action;
     }
 
     /**
-     * @param action
-     *            the event action to set
+     * @param action the event action to set
      */
-    public void setAction(String action)
-    {
+    public void setAction(String action) {
         this.action = action;
     }
 
     /**
      * @return the event label
      */
-    public String getLabel()
-    {
+    public String getLabel() {
         return label;
     }
 
     /**
-     * @param label
-     *            the event label to set
+     * @param label the event label to set
      */
-    public void setLabel(String label)
-    {
+    public void setLabel(String label) {
         this.label = label;
     }
 
     /**
      * @return the event value
      */
-    public Integer getValue()
-    {
+    public Integer getValue() {
         return value;
     }
 
     /**
-     * @param value
-     *            the event value to set
+     * @param value the event value to set
      */
-    public void setValue(Integer value)
-    {
+    public void setValue(Integer value) {
         this.value = value;
     }
 
     /**
      * Add a hit level custom dimension
      *
-     * @see uk.ac.sussex.gdsc.analytics.Parameters#addCustomDimension(int, java.lang.String)
+     * @see uk.ac.sussex.gdsc.analytics.Parameters#addCustomDimension(int,
+     *      java.lang.String)
      */
     @Override
-    public void addCustomDimension(int index, String value)
-    {
+    public void addCustomDimension(int index, String value) {
         super.addCustomDimension(index, value);
     }
 
@@ -194,8 +171,7 @@ public class RequestParameters extends Parameters
      * @see uk.ac.sussex.gdsc.analytics.Parameters#addCustomMetric(int, int)
      */
     @Override
-    public void addCustomMetric(int index, int value)
-    {
+    public void addCustomMetric(int index, int value) {
         super.addCustomMetric(index, value);
     }
 }
