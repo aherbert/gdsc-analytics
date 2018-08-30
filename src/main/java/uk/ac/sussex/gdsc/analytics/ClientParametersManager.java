@@ -145,7 +145,7 @@ public class ClientParametersManager {
             hostName = future.get(2, TimeUnit.SECONDS); // timeout is in 2 seconds
         } catch (final TimeoutException e) {
             final Logger logger = Logger.getLogger(ClientParametersManager.class.getName());
-            logger.fine("GDSC Analytics: Timeout when resolving hostname");
+            logger.fine("Timeout when resolving hostname");
         } catch (final InterruptedException e) {
             // ignore this
         } catch (final ExecutionException e) {

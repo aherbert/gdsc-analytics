@@ -50,7 +50,7 @@ public class ClientParameters extends Parameters {
     private String userAgent = null;
     private String applicationId = null;
     private String applicationVersion = null;
-    private boolean anonymized = false;
+    private boolean anonymised = false;
 
     private String url = null;
 
@@ -152,10 +152,10 @@ public class ClientParameters extends Parameters {
     }
 
     /**
-     * @return True if the IP address of the sender will be anonymized
+     * @return True if the IP address of the sender will be anonymised
      */
-    public boolean isAnonymized() {
-        return anonymized;
+    public boolean isAnonymised() {
+        return anonymised;
     }
 
     /**
@@ -230,13 +230,13 @@ public class ClientParameters extends Parameters {
     }
 
     /**
-     * Set the state of IP anonymization
+     * Set the state of IP anonymisation
      *
-     * @param anonymized True if the IP address of the sender will be anonymized
+     * @param anonymised True if the IP address of the sender will be anonymised
      */
-    public void setAnonymized(boolean anonymized) {
+    public void setAnonymised(boolean anonymised) {
         this.url = null;
-        this.anonymized = anonymized;
+        this.anonymised = anonymised;
     }
 
     /**

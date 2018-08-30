@@ -574,11 +574,11 @@ public class JGoogleAnalyticsTracker {
     }
 
     /**
-     * Set the state of IP anonymization
+     * Set the state of IP anonymisation
      *
-     * @param anonymized True if the IP address of the sender will be anonymized
+     * @param anonymised True if the IP address of the sender will be anonymised
      */
-    public void setAnonymised(boolean anonymized) {
-        clientParameters.setAnonymized(anonymized);
+    public void setAnonymised(boolean anonymised) {
+        clientParameters.setAnonymised(anonymised);
     }
 }

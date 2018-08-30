@@ -28,6 +28,8 @@
  */
 package uk.ac.sussex.gdsc.analytics;
 
+import java.util.UUID;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -59,8 +61,18 @@ public class ClientParametersTest {
             new ClientParameters(trackingId, clientId, "");
         });
 
-        Assertions.assertNotNull(new ClientParameters(trackingId, null, applicationName).getClientId());
-        Assertions.assertNotNull(new ClientParameters(trackingId, "", applicationName).getClientId());
+        // Client ID is random UUID if not provided
+        checkClientId(new ClientParameters(trackingId, null, applicationName));
+        checkClientId(new ClientParameters(trackingId, "", applicationName));
+
+        // Tracking Id should match [A-Z]+-[0-9]+-[0-9]+
+        new ClientParameters("test bad tracking Id", clientId, applicationName);
+    }
+
+    private static void checkClientId(ClientParameters clientParameters) {
+        final String clientId = clientParameters.getClientId();
+        Assertions.assertNotNull(clientId);
+        Assertions.assertNotNull(UUID.fromString(clientId));
     }
 
     /**
@@ -81,7 +93,7 @@ public class ClientParametersTest {
         final String userAgent = "4";
         final String applicationId = "5";
         final String applicationVersion = "6";
-        final boolean anonymized = true;
+        final boolean anonymised = true;
 
         Assertions.assertNull(cp.getScreenResolution());
         cp.setScreenResolution(screenResolution);
@@ -125,9 +137,9 @@ public class ClientParametersTest {
 
         cp.setUrl(url);
         Assertions.assertEquals(url, cp.getUrl());
-        Assertions.assertFalse(cp.isAnonymized());
-        cp.setAnonymized(anonymized);
-        Assertions.assertEquals(anonymized, cp.isAnonymized());
+        Assertions.assertFalse(cp.isAnonymised());
+        cp.setAnonymised(anonymised);
+        Assertions.assertEquals(anonymised, cp.isAnonymised());
         Assertions.assertNull(cp.getUrl());
 
         cp.setUrl(url);

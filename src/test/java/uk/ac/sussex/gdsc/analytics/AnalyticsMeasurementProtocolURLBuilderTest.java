@@ -85,7 +85,7 @@ public class AnalyticsMeasurementProtocolURLBuilderTest {
         // Create the client
         final ClientParameters cp = new ClientParameters(trackingId, clientId, applicationName);
 
-        final boolean anonymized = true;
+        final boolean anonymised = true;
 
         cp.setScreenResolution(screenResolution);
         cp.setUserLanguage(userLanguage);
@@ -93,7 +93,7 @@ public class AnalyticsMeasurementProtocolURLBuilderTest {
         cp.setUserAgent(userAgent);
         cp.setApplicationId(applicationId);
         cp.setApplicationVersion(applicationVersion);
-        cp.setAnonymized(anonymized);
+        cp.setAnonymised(anonymised);
 
         cp.addCustomDimension(clientCDi1, clientCDv1);
         cp.addCustomDimension(clientCDi2, clientCDv2);
@@ -114,42 +114,41 @@ public class AnalyticsMeasurementProtocolURLBuilderTest {
         String url = b.buildURL(cp, rp, System.currentTimeMillis());
 
         //@formatter:off
-		UrlAssert a = (UrlAssert) Assertions.assertThat(new URL(host + url));
-		a
-		.hasParameter("v", version)
-		.hasParameter("sc", "start")
-		.hasParameter("tid", trackingId)
-		.hasParameter("cid", clientId)
-		.hasParameter("an", applicationName)
-		.hasParameter("aid", applicationId)
-		.hasParameter("av", applicationVersion)
-		.hasParameter("sr", screenResolution)
-		.hasParameter("ul", userLanguage)
-		.hasParameter("ua", userAgent)
-		.hasParameter("je", "1")
-		.hasParameter("cd"+clientCDi1, clientCDv1)
-		.hasParameter("cd"+clientCDi2, clientCDv2)
-		.hasParameter("cm"+clientCMi1, Integer.toString(clientCMv1))
-		.hasParameter("cm"+clientCMi2, Integer.toString(clientCMv2))
-		.hasParameter("cd"+paramCDi1, paramCDv1)
-		.hasParameter("cd"+paramCDi2, paramCDv2)
-		.hasParameter("cm"+paramCMi1, Integer.toString(paramCMv1))
-		.hasParameter("cm"+paramCMi2, Integer.toString(paramCMv2))
-		.hasParameter("t", rp.getHitType())
-		.hasParameter("dp", documentPath)
-		.hasParameter("dt", documentTitle)
-		.hasParameter("qt")
-		;
-		if (anonymized) {
-			a.hasParameter("aip", "1");
-			a.hasNoParameter("dh");
-		} else {
-			if (cp.getHostName() != null)
-				a.hasParameter("dh", cp.getHostName());
-			a.hasNoParameter("aip");
-		}
-
-		//@formatter:on
+        UrlAssert a = (UrlAssert) Assertions.assertThat(new URL(host + url));
+        a
+        .hasParameter("v", version)
+        .hasParameter("sc", "start")
+        .hasParameter("tid", trackingId)
+        .hasParameter("cid", clientId)
+        .hasParameter("an", applicationName)
+        .hasParameter("aid", applicationId)
+        .hasParameter("av", applicationVersion)
+        .hasParameter("sr", screenResolution)
+        .hasParameter("ul", userLanguage)
+        .hasParameter("ua", userAgent)
+        .hasParameter("je", "1")
+        .hasParameter("cd"+clientCDi1, clientCDv1)
+        .hasParameter("cd"+clientCDi2, clientCDv2)
+        .hasParameter("cm"+clientCMi1, Integer.toString(clientCMv1))
+        .hasParameter("cm"+clientCMi2, Integer.toString(clientCMv2))
+        .hasParameter("cd"+paramCDi1, paramCDv1)
+        .hasParameter("cd"+paramCDi2, paramCDv2)
+        .hasParameter("cm"+paramCMi1, Integer.toString(paramCMv1))
+        .hasParameter("cm"+paramCMi2, Integer.toString(paramCMv2))
+        .hasParameter("t", rp.getHitType())
+        .hasParameter("dp", documentPath)
+        .hasParameter("dt", documentTitle)
+        .hasParameter("qt")
+        ;
+        if (anonymised) {
+            a.hasParameter("aip", "1");
+            a.hasNoParameter("dh");
+        } else {
+            if (cp.getHostName() != null)
+                a.hasParameter("dh", cp.getHostName());
+            a.hasNoParameter("aip");
+        }
+        //@formatter:on
 
         // Second pageview
         rp = new RequestParameters(HitType.PAGEVIEW);
@@ -160,101 +159,100 @@ public class AnalyticsMeasurementProtocolURLBuilderTest {
         url = b.buildURL(cp, rp, System.currentTimeMillis());
 
         //@formatter:off
-		a = (UrlAssert) Assertions.assertThat(new URL(host + url));
-		a
-		.hasParameter("v", version)
-		// No a new session
-		.hasNoParameter("sc")
-		// Same client
-		.hasParameter("tid", trackingId)
-		.hasParameter("cid", clientId)
-		.hasParameter("an", applicationName)
-		.hasParameter("aid", applicationId)
-		.hasParameter("av", applicationVersion)
-		.hasParameter("sr", screenResolution)
-		.hasParameter("ul", userLanguage)
-		.hasParameter("ua", userAgent)
-		.hasParameter("je", "1")
-		// No session level parameters
-		.hasNoParameter("cd"+clientCDi1)
-		.hasNoParameter("cd"+clientCDi2)
-		.hasNoParameter("cm"+clientCMi1)
-		.hasNoParameter("cm"+clientCMi2)
-		// This hit has no custom parameters
-		.hasNoParameter("cd"+paramCDi1)
-		.hasNoParameter("cd"+paramCDi2)
-		.hasNoParameter("cm"+paramCMi1)
-		.hasNoParameter("cm"+paramCMi2)
-		.hasParameter("t", rp.getHitType())
-		.hasParameter("dp", documentPath + "2")
-		.hasParameter("dt", documentTitle + "2")
-		.hasParameter("qt")
-		;
-		if (anonymized) {
-			a.hasParameter("aip", "1");
-			a.hasNoParameter("dh");
-		} else {
-			if (cp.getHostName() != null)
-				a.hasParameter("dh", cp.getHostName());
-			a.hasNoParameter("aip");
-		}
-	}
+        a = (UrlAssert) Assertions.assertThat(new URL(host + url));
+        a
+        .hasParameter("v", version)
+        // No a new session
+        .hasNoParameter("sc")
+        // Same client
+        .hasParameter("tid", trackingId)
+        .hasParameter("cid", clientId)
+        .hasParameter("an", applicationName)
+        .hasParameter("aid", applicationId)
+        .hasParameter("av", applicationVersion)
+        .hasParameter("sr", screenResolution)
+        .hasParameter("ul", userLanguage)
+        .hasParameter("ua", userAgent)
+        .hasParameter("je", "1")
+        // No session level parameters
+        .hasNoParameter("cd"+clientCDi1)
+        .hasNoParameter("cd"+clientCDi2)
+        .hasNoParameter("cm"+clientCMi1)
+        .hasNoParameter("cm"+clientCMi2)
+        // This hit has no custom parameters
+        .hasNoParameter("cd"+paramCDi1)
+        .hasNoParameter("cd"+paramCDi2)
+        .hasNoParameter("cm"+paramCMi1)
+        .hasNoParameter("cm"+paramCMi2)
+        .hasParameter("t", rp.getHitType())
+        .hasParameter("dp", documentPath + "2")
+        .hasParameter("dt", documentTitle + "2")
+        .hasParameter("qt")
+        ;
+        if (anonymised) {
+            a.hasParameter("aip", "1");
+            a.hasNoParameter("dh");
+        } else {
+            if (cp.getHostName() != null)
+                a.hasParameter("dh", cp.getHostName());
+            a.hasNoParameter("aip");
+            //@formatter:on
+        }
+    }
 
+    @Test
+    public void testBuildURLEvent() throws MalformedURLException {
+        final AnalyticsMeasurementProtocolURLBuilder b = new AnalyticsMeasurementProtocolURLBuilder();
 
-	@Test
-	public void testBuildURLEvent() throws MalformedURLException
-	{
-		final AnalyticsMeasurementProtocolURLBuilder b = new AnalyticsMeasurementProtocolURLBuilder();
+        // Create the client
+        final ClientParameters cp = new ClientParameters(trackingId, clientId, applicationName);
 
-		// Create the client
-		final ClientParameters cp = new ClientParameters(trackingId, clientId, applicationName);
+        final boolean anonymised = false;
 
-		final boolean anonymized = false;
+        cp.setHostName(hostName);
+        cp.setAnonymised(anonymised);
 
-		cp.setHostName(hostName);
-		cp.setAnonymized(anonymized);
+        // Simple start-of-session pageview
+        final RequestParameters rp = new RequestParameters(HitType.EVENT);
 
-		// Simple start-of-session pageview
-		final RequestParameters rp = new RequestParameters(HitType.EVENT);
+        rp.setCategory(category);
+        rp.setAction(action);
+        rp.setLabel(label);
+        rp.setValue(value);
 
-		rp.setCategory(category);
-		rp.setAction(action);
-		rp.setLabel(label);
-		rp.setValue(value);
+        final String url = b.buildGetURL(cp, rp, System.currentTimeMillis());
 
-		final String url = b.buildGetURL(cp, rp, System.currentTimeMillis());
-
-		//@formatter:off
-		final UrlAssert a = (UrlAssert) Assertions.assertThat(new URL(host + url));
-		a
-		.hasParameter("v", version)
-		.hasParameter("sc", "start")
-		.hasParameter("tid", trackingId)
-		.hasParameter("cid", clientId)
-		.hasParameter("an", applicationName)
-		.hasNoParameter("aid")
-		.hasNoParameter("av")
-		.hasNoParameter("sr")
-		.hasNoParameter("ul")
-		.hasNoParameter("ua")
-		.hasParameter("je", "1")
-		.hasParameter("t", rp.getHitType())
-		.hasParameter("ec", category)
-		.hasParameter("ea", action)
-		.hasParameter("el", label)
-		.hasParameter("ev", value.toString())
-		.hasParameter("qt")
-		.hasParameter("z")
-		;
-		if (anonymized) {
-			a.hasParameter("aip", "1");
-			a.hasNoParameter("dh");
-		} else {
-			if (cp.getHostName() != null)
-				a.hasParameter("dh", cp.getHostName());
-			a.hasNoParameter("aip");
-		}
-		//@formatter:on
+        //@formatter:off
+        final UrlAssert a = (UrlAssert) Assertions.assertThat(new URL(host + url));
+        a
+        .hasParameter("v", version)
+        .hasParameter("sc", "start")
+        .hasParameter("tid", trackingId)
+        .hasParameter("cid", clientId)
+        .hasParameter("an", applicationName)
+        .hasNoParameter("aid")
+        .hasNoParameter("av")
+        .hasNoParameter("sr")
+        .hasNoParameter("ul")
+        .hasNoParameter("ua")
+        .hasParameter("je", "1")
+        .hasParameter("t", rp.getHitType())
+        .hasParameter("ec", category)
+        .hasParameter("ea", action)
+        .hasParameter("el", label)
+        .hasParameter("ev", value.toString())
+        .hasParameter("qt")
+        .hasParameter("z")
+        ;
+        if (anonymised) {
+            a.hasParameter("aip", "1");
+            a.hasNoParameter("dh");
+        } else {
+            if (cp.getHostName() != null)
+                a.hasParameter("dh", cp.getHostName());
+            a.hasNoParameter("aip");
+        }
+        //@formatter:on
 
         final String url2 = b.buildGetURL(cp, rp, System.currentTimeMillis());
         final String z1 = getZ(url);

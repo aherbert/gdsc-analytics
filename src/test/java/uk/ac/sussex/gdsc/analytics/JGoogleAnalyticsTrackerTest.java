@@ -29,6 +29,8 @@
 package uk.ac.sussex.gdsc.analytics;
 
 import java.net.Proxy;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -90,6 +92,13 @@ public class JGoogleAnalyticsTrackerTest {
         Assertions.assertFalse(tracker.isSingleThreaded());
         Assertions.assertTrue(tracker.isMultiThreaded());
 
+        // Test default to single thread.
+        tracker.setDispatchMode(null);
+        Assertions.assertEquals(DispatchMode.SINGLE_THREAD, tracker.getDispatchMode());
+        Assertions.assertFalse(tracker.isSynchronous());
+        Assertions.assertTrue(tracker.isSingleThreaded());
+        Assertions.assertFalse(tracker.isMultiThreaded());
+
         // On by default
         Assertions.assertTrue(tracker.isEnabled());
         tracker.setEnabled(false);
@@ -99,6 +108,32 @@ public class JGoogleAnalyticsTrackerTest {
         Assertions.assertFalse(tracker.isSecure());
         tracker.setSecure(true);
         Assertions.assertTrue(tracker.isSecure());
+
+        final Logger logger = Logger.getLogger(JGoogleAnalyticsTrackerTest.class.getName());
+        tracker.setLogger(logger);
+        Assertions.assertEquals(logger, tracker.getLogger());
+        tracker.setLogger(null);
+        Assertions.assertNotNull(tracker.getLogger());
+        Assertions.assertFalse(tracker.getLogger().isLoggable(Level.SEVERE));
+
+        // Test the properties of the client get invoked
+        final boolean[] resetSession = new boolean[1];
+        final boolean[] setAnonymised = new boolean[1];
+        final ClientParameters fakeCP = new ClientParameters(trackingId, clientId, applicationName) {
+            @Override
+            public void resetSession() {
+                resetSession[0] = true;
+            }
+
+            @Override
+            public void setAnonymised(boolean anonymised) {
+                setAnonymised[0] = true;
+            }
+        };
+        new JGoogleAnalyticsTracker(fakeCP, version).resetSession();
+        Assertions.assertTrue(resetSession[0]);
+        new JGoogleAnalyticsTracker(fakeCP, version).setAnonymised(true);
+        Assertions.assertTrue(setAnonymised[0]);
     }
 
     @Test
@@ -114,6 +149,7 @@ public class JGoogleAnalyticsTrackerTest {
         Assertions.assertTrue(JGoogleAnalyticsTracker.setProxy("https://localhost:80/more/stuff"));
 
         // Invalid
+        Assertions.assertFalse(JGoogleAnalyticsTracker.setProxy((String) null));
         Assertions.assertFalse(JGoogleAnalyticsTracker.setProxy(""));
         Assertions.assertFalse(JGoogleAnalyticsTracker.setProxy("localhost"));
         Assertions.assertFalse(JGoogleAnalyticsTracker.setProxy("http://localhost"));
