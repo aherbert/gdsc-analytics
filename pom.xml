@@ -348,7 +348,7 @@ protocol to collect usage information about a Java application.
       <build>
         <plugins>
           <!-- Submit coverage -->
-          <!-- TODO - put this back when test suite is done 
+          <!-- TODO - put this back when test suite is done
           <plugin>
             <groupId>org.eluder.coveralls</groupId>
             <artifactId>coveralls-maven-plugin</artifactId>
@@ -507,6 +507,11 @@ protocol to collect usage information about a Java application.
   </profiles>
 
   <dependencies>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-api</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
