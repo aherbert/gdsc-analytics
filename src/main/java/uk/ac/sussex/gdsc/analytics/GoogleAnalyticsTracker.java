@@ -56,35 +56,20 @@ import java.util.regex.Pattern;
  * <p>The tracker can operate in three modes:
  *
  * <ul>
- * <li>Synchronous mode: The HTTP request is sent to GA immediately, before
- *     the track method returns. This may slow your application down if GA doesn't
- *     respond fast.
- * <li>Multi-thread mode: Each track method call creates a new
- *     short-lived thread that sends the HTTP request to GA in the background and
- *     terminates.
- * <li>Single-thread mode (the default): The track method stores the
- *     request in a queue and returns immediately. A single long-lived background
- *     thread processes the queue content and sends the HTTP requests to GA.
+ * <li>Synchronous mode: The request is sent immediately.
+ * <li>Multi-thread mode: The request is sent using a background thread, 
+ *     one for each request.
+ * <li>Single-thread mode (the default): The request is queued and 
+ *     processed using a single-background thread.
  * </ul>
  *
- * <p>Note: This class has been copied from the JGoogleAnalyticsTracker project
- * and modified by Alex Herbert to:
+ * <p>Note: The ideas for this class are based on the JGoogleAnalyticsTracker project.
  *
- * <ul>
- * <li>Alter the data sent to Google Analytics to use the POST method for the Measurement Protocol.
- * <li>Remove the slfj dependency, replaced with {@link java.util.logging.Logger}.
- * <li>Make the logger specific to the instance
- *     (since each instance may have a different GA tracking ID).
- * <li>Use the {@code java.util.concurrent} for synchronisation and
- *     {@link ExecutorService} for background requests.
- * </ul>
- *
- * <p>The architecture for dispatching messages is largely unchanged.
- *
- * @author Daniel Murphy, Stefan Brozinski, Alex Herbert
+ * @see <a href=
+ *      "https://code.google.com/archive/p/jgoogleanalyticstracker/">JGoogleAnalyticsTracker</a>
  */
 //@formatter:on
-public class JGoogleAnalyticsTracker {
+public class GoogleAnalyticsTracker {
 
     /** The connection URL for Google Analytics over HTTP. */
     public static final String HTTP_GOOGLE_ANALYTICS_URL = "http://www.google-analytics.com/collect";
@@ -156,7 +141,7 @@ public class JGoogleAnalyticsTracker {
     }
 
     /** The logger for all static methods. */
-    private static final Logger logger = Logger.getLogger(JGoogleAnalyticsTracker.class.getName());
+    private static final Logger logger = Logger.getLogger(GoogleAnalyticsTracker.class.getName());
 
     /** The executor service for {@link DispatchMode#MULTI_THREAD} mode. */
     private static final ExecutorService multiThreadExecutor;
@@ -196,8 +181,6 @@ public class JGoogleAnalyticsTracker {
     /**
      * The Protocol version. This will only change when there are changes made that
      * are not backwards compatible.
-     *
-     * @author a.herbert@sussex.ac.uk
      */
     public static enum MeasurementProtocolVersion {
         /**
@@ -225,24 +208,33 @@ public class JGoogleAnalyticsTracker {
     private boolean secure;
 
     /**
-     * Create an instance
+     * Create an instance.
      *
      * @param clientParameters The client parameters
-     * @param version          The GA version
      */
-    public JGoogleAnalyticsTracker(ClientParameters clientParameters, MeasurementProtocolVersion version) {
-        this(clientParameters, version, DispatchMode.SINGLE_THREAD);
+    public GoogleAnalyticsTracker(ClientParameters clientParameters) {
+        this(clientParameters, DispatchMode.SINGLE_THREAD);
     }
 
     /**
-     * Create an instance
+     * Create an instance.
      *
      * @param clientParameters The client parameters
-     * @param version          The GA version
      * @param dispatchMode     The dispatch mode
      */
-    public JGoogleAnalyticsTracker(ClientParameters clientParameters, MeasurementProtocolVersion version,
-            DispatchMode dispatchMode) {
+    public GoogleAnalyticsTracker(ClientParameters clientParameters, DispatchMode dispatchMode) {
+        this(clientParameters, dispatchMode, MeasurementProtocolVersion.V_1);
+    }
+
+    /**
+     * Create an instance.
+     *
+     * @param clientParameters The client parameters
+     * @param dispatchMode     The dispatch mode
+     * @param version          The GA version
+     */
+    public GoogleAnalyticsTracker(ClientParameters clientParameters, 
+            DispatchMode dispatchMode, MeasurementProtocolVersion version) {
         this.clientParameters = Objects.requireNonNull(clientParameters, "Client parameters is null");
         builder = createBuilder(version);
         enabled = true;
@@ -358,7 +350,7 @@ public class JGoogleAnalyticsTracker {
      * @param proxy The proxy to use
      */
     public static void setProxy(Proxy proxy) {
-        JGoogleAnalyticsTracker.proxy = proxy;
+        GoogleAnalyticsTracker.proxy = proxy;
     }
 
     /**
@@ -558,21 +550,18 @@ public class JGoogleAnalyticsTracker {
             final int responseCode = connection.getResponseCode();
             if (responseCode != HttpURLConnection.HTTP_OK)
                 logger.severe(() -> {
-                    return String.format(
-                            "JGoogleAnalyticsTracker: Error requesting url '%s', received response code %d", parameters,
+                    return String.format("Error requesting url '%s', received response code %d", parameters,
                             responseCode);
                 });
             else {
                 logger.fine(() -> {
-                    return String.format("JGoogleAnalyticsTracker: Tracking success for url '%s'", parameters);
+                    return String.format("Tracking success for url '%s'", parameters);
                 });
                 // This is a success. All other returns are false.
                 return true;
             }
         } catch (final IOException e) {
             logger.log(Level.SEVERE, "Error making tracking request: " + e.getMessage(), e);
-            // logger.log(Level.SEVERE, "Error making tracking request: " + e.getMessage());
-            // Q. Should this rethrow?
         } finally {
             if (connection != null)
                 connection.disconnect();

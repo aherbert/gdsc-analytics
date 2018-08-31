@@ -35,11 +35,11 @@ import java.util.logging.Logger;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import uk.ac.sussex.gdsc.analytics.JGoogleAnalyticsTracker.DispatchMode;
-import uk.ac.sussex.gdsc.analytics.JGoogleAnalyticsTracker.MeasurementProtocolVersion;
+import uk.ac.sussex.gdsc.analytics.GoogleAnalyticsTracker.DispatchMode;
+import uk.ac.sussex.gdsc.analytics.GoogleAnalyticsTracker.MeasurementProtocolVersion;
 
 @SuppressWarnings("javadoc")
-public class JGoogleAnalyticsTrackerTest {
+public class GoogleAnalyticsTrackerTest {
     private final String trackingId = "AAA-123-456";
     private final String clientId = "Anything";
     private final String applicationName = "Test";
@@ -48,31 +48,36 @@ public class JGoogleAnalyticsTrackerTest {
     @Test
     public void testConstructor() {
         final ClientParameters cp = new ClientParameters(trackingId, clientId, applicationName);
-        final MeasurementProtocolVersion version = MeasurementProtocolVersion.V_1;
-        JGoogleAnalyticsTracker tracker = new JGoogleAnalyticsTracker(cp, version);
+
+        GoogleAnalyticsTracker tracker = new GoogleAnalyticsTracker(cp);
         Assertions.assertNotNull(tracker);
         Assertions.assertTrue(tracker.isEnabled());
         Assertions.assertEquals(DispatchMode.SINGLE_THREAD, tracker.getDispatchMode());
 
-        // Require arguments
-        Assertions.assertThrows(NullPointerException.class, () -> {
-            new JGoogleAnalyticsTracker(null, version);
-        });
-        Assertions.assertThrows(NullPointerException.class, () -> {
-            new JGoogleAnalyticsTracker(cp, null);
-        });
-
         // Overloaded constructor
-        tracker = new JGoogleAnalyticsTracker(cp, version, DispatchMode.MULTI_THREAD);
-        Assertions.assertEquals(DispatchMode.MULTI_THREAD, tracker.getDispatchMode());
+        final DispatchMode mode = DispatchMode.MULTI_THREAD;
+        tracker = new GoogleAnalyticsTracker(cp, mode);
+        Assertions.assertEquals(mode, tracker.getDispatchMode());
+
+        final DispatchMode mode2 = DispatchMode.SINGLE_THREAD;
+        MeasurementProtocolVersion version = MeasurementProtocolVersion.V_1;
+        tracker = new GoogleAnalyticsTracker(cp, mode2, version);
+        Assertions.assertEquals(mode2, tracker.getDispatchMode());
+
+        // Require some arguments (not dispatch mode)
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            new GoogleAnalyticsTracker(null, mode, version);
+        });
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            new GoogleAnalyticsTracker(cp, mode, null);
+        });
     }
 
     @Test
     public void testProperties() {
         final ClientParameters cp = new ClientParameters(trackingId, clientId, applicationName);
-        final MeasurementProtocolVersion version = MeasurementProtocolVersion.V_1;
 
-        final JGoogleAnalyticsTracker tracker = new JGoogleAnalyticsTracker(cp, version);
+        final GoogleAnalyticsTracker tracker = new GoogleAnalyticsTracker(cp);
 
         tracker.setDispatchMode(DispatchMode.SYNCHRONOUS);
         Assertions.assertEquals(DispatchMode.SYNCHRONOUS, tracker.getDispatchMode());
@@ -113,7 +118,7 @@ public class JGoogleAnalyticsTrackerTest {
         tracker.setSecure(true);
         Assertions.assertTrue(tracker.isSecure());
 
-        final Logger logger = Logger.getLogger(JGoogleAnalyticsTrackerTest.class.getName());
+        final Logger logger = Logger.getLogger(GoogleAnalyticsTrackerTest.class.getName());
         tracker.setLogger(logger);
         Assertions.assertEquals(logger, tracker.getLogger());
         tracker.setLogger(null);
@@ -134,39 +139,39 @@ public class JGoogleAnalyticsTrackerTest {
                 setAnonymised[0] = true;
             }
         };
-        new JGoogleAnalyticsTracker(fakeCP, version).resetSession();
+        new GoogleAnalyticsTracker(fakeCP).resetSession();
         Assertions.assertTrue(resetSession[0]);
-        new JGoogleAnalyticsTracker(fakeCP, version).setAnonymised(true);
+        new GoogleAnalyticsTracker(fakeCP).setAnonymised(true);
         Assertions.assertTrue(setAnonymised[0]);
     }
 
     @Test
     public void testProxy() {
-        JGoogleAnalyticsTracker.setProxy((Proxy) null);
-        JGoogleAnalyticsTracker.setProxy(Proxy.NO_PROXY);
+        GoogleAnalyticsTracker.setProxy((Proxy) null);
+        GoogleAnalyticsTracker.setProxy(Proxy.NO_PROXY);
 
         // Test various proxy addresses
         // Valid
-        Assertions.assertTrue(JGoogleAnalyticsTracker.setProxy("http://localhost:80"));
-        Assertions.assertTrue(JGoogleAnalyticsTracker.setProxy("https://localhost:80"));
-        Assertions.assertTrue(JGoogleAnalyticsTracker.setProxy("localhost:80"));
-        Assertions.assertTrue(JGoogleAnalyticsTracker.setProxy("https://localhost:80/more/stuff"));
+        Assertions.assertTrue(GoogleAnalyticsTracker.setProxy("http://localhost:80"));
+        Assertions.assertTrue(GoogleAnalyticsTracker.setProxy("https://localhost:80"));
+        Assertions.assertTrue(GoogleAnalyticsTracker.setProxy("localhost:80"));
+        Assertions.assertTrue(GoogleAnalyticsTracker.setProxy("https://localhost:80/more/stuff"));
 
         // Invalid
-        Assertions.assertFalse(JGoogleAnalyticsTracker.setProxy((String) null));
-        Assertions.assertFalse(JGoogleAnalyticsTracker.setProxy(""));
-        Assertions.assertFalse(JGoogleAnalyticsTracker.setProxy("localhost"));
-        Assertions.assertFalse(JGoogleAnalyticsTracker.setProxy("http://localhost"));
-        Assertions.assertFalse(JGoogleAnalyticsTracker.setProxy("http://localhost :80"));
+        Assertions.assertFalse(GoogleAnalyticsTracker.setProxy((String) null));
+        Assertions.assertFalse(GoogleAnalyticsTracker.setProxy(""));
+        Assertions.assertFalse(GoogleAnalyticsTracker.setProxy("localhost"));
+        Assertions.assertFalse(GoogleAnalyticsTracker.setProxy("http://localhost"));
+        Assertions.assertFalse(GoogleAnalyticsTracker.setProxy("http://localhost :80"));
 
         // Reset
-        JGoogleAnalyticsTracker.setProxy(Proxy.NO_PROXY);
+        GoogleAnalyticsTracker.setProxy(Proxy.NO_PROXY);
     }
 
     @Test
     public void testCompleteBackgroundTasksThrows() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            JGoogleAnalyticsTracker.completeBackgroundTasks(-1);
+            GoogleAnalyticsTracker.completeBackgroundTasks(-1);
         });
     }
 }

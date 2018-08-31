@@ -31,33 +31,14 @@
  * Analytics servers via the <a href=
  * "https://developers.google.com/analytics/devguides/collection/protocol/v1/">Google
  * Analytics Measurement Protocol</a>.
- * <p>
- * This package is based on ideas from JGoogleAnalyticsTracker by Daniel Murphy.
- * A similar package is JGoogleAnalytics by Siddique Hameed.
- * <p>
- * The JGoogleAnalyticsTracker code dummied the GET request sent to Google
- * Analytics by a browser. This code uses the new Analytics Measurement Protocol
- * which is designed to allow any web connected device to measure user
- * interaction via a HTTP POST request.
- * <p>
- * As a result all of the classes related to building the analytics URL were
- * re-written. The URIEncoder and JGoogleAnalyticsTracker classes have been
- * modified but remain recognisable and so have the same name.
- * <p>
- * Since the code will only be used within a Java application the referral,
+ * 
+ * <p>Since the code will only be used within a Java application the referral,
  * search referral and campaign functionality has been removed to simplify the
- * analytics and allow caching most of the constructed analytics URL. The code
- * is redistributed under the original MIT licence and maintains the copyright
- * of Daniel Murphey through the applicable original code with the addition of
- * Alex Herbert.
+ * analytics and allow caching most of the constructed analytics URL.
  *
  * @see <a href=
  *      "https://developers.google.com/analytics/devguides/collection/protocol/v1/">Google
  *      Analytics Measurement Protocol</a>
- * @see <a href=
- *      "https://code.google.com/archive/p/jgoogleanalyticstracker/">JGoogleAnalyticsTracker</a>
- * @see <a href=
- *      "https://github.com/siddii/jgoogleanalytics">JGoogleAnalytics</a>
  * @since 1.0.0
  */
 package uk.ac.sussex.gdsc.analytics;

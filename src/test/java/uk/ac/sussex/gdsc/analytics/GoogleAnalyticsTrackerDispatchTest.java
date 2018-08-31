@@ -55,22 +55,21 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 
-import uk.ac.sussex.gdsc.analytics.JGoogleAnalyticsTracker.DispatchMode;
-import uk.ac.sussex.gdsc.analytics.JGoogleAnalyticsTracker.DispatchStatus;
-import uk.ac.sussex.gdsc.analytics.JGoogleAnalyticsTracker.MeasurementProtocolVersion;
+import uk.ac.sussex.gdsc.analytics.GoogleAnalyticsTracker.DispatchMode;
+import uk.ac.sussex.gdsc.analytics.GoogleAnalyticsTracker.DispatchStatus;
 
 /**
  * This uses the mockito framework to test the dispatch of GoogleAnalytics
  * requests
  */
 @SuppressWarnings("javadoc")
-public class JGoogleAnalyticsTrackerDispatchTest {
+public class GoogleAnalyticsTrackerDispatchTest {
     private final String trackingId = "AAA-123-456";
     private final String clientId = "Anything";
     private final String applicationName = "Test";
 
     // Get the default logger
-    private static final Logger gaLogger = Logger.getLogger(JGoogleAnalyticsTracker.class.getName());
+    private static final Logger gaLogger = Logger.getLogger(GoogleAnalyticsTracker.class.getName());
 
     // Adapted from https://claritysoftware.co.uk/mocking-javas-url-with-mockito/
 
@@ -261,10 +260,10 @@ public class JGoogleAnalyticsTrackerDispatchTest {
 
         String host;
         if (secure) {
-            host = JGoogleAnalyticsTracker.HTTPS_GOOGLE_ANALYTICS_URL;
+            host = GoogleAnalyticsTracker.HTTPS_GOOGLE_ANALYTICS_URL;
             httpsUrlStreamHandler.addConnection(new URL(host), urlConnection, proxy);
         } else {
-            host = JGoogleAnalyticsTracker.HTTP_GOOGLE_ANALYTICS_URL;
+            host = GoogleAnalyticsTracker.HTTP_GOOGLE_ANALYTICS_URL;
             httpUrlStreamHandler.addConnection(new URL(host), urlConnection, proxy);
         }
 
@@ -279,13 +278,12 @@ public class JGoogleAnalyticsTrackerDispatchTest {
 
         // Send tracking request
         final ClientParameters cp = new ClientParameters(trackingId, clientId, applicationName);
-        final MeasurementProtocolVersion version = MeasurementProtocolVersion.V_1;
-        final JGoogleAnalyticsTracker tracker = new JGoogleAnalyticsTracker(cp, version, mode);
+        final GoogleAnalyticsTracker tracker = new GoogleAnalyticsTracker(cp, mode);
 
         // Configure
         tracker.setSecure(secure);
         // We can use NO_PROXY here, not a mock proxy.
-        JGoogleAnalyticsTracker.setProxy((proxy) ? Proxy.NO_PROXY : null);
+        GoogleAnalyticsTracker.setProxy((proxy) ? Proxy.NO_PROXY : null);
         // tracker.setDispatchMode(mode);
         tracker.setLogger(logger);
 
@@ -296,7 +294,7 @@ public class JGoogleAnalyticsTrackerDispatchTest {
         if (mode.isAsynchronous()) {
             // Wait for the request to be queued
             Thread.sleep(100);
-            Assertions.assertThat(JGoogleAnalyticsTracker.completeBackgroundTasks(1000)).isEqualTo(true);
+            Assertions.assertThat(GoogleAnalyticsTracker.completeBackgroundTasks(1000)).isEqualTo(true);
         }
 
         // Edge case testing. These should be logged.
@@ -369,8 +367,7 @@ public class JGoogleAnalyticsTrackerDispatchTest {
 
         // Send tracking request
         final ClientParameters cp = new ClientParameters(trackingId, clientId, applicationName);
-        final MeasurementProtocolVersion version = MeasurementProtocolVersion.V_1;
-        final JGoogleAnalyticsTracker tracker = new JGoogleAnalyticsTracker(cp, version);
+        final GoogleAnalyticsTracker tracker = new GoogleAnalyticsTracker(cp);
 
         // Ignored
         tracker.setEnabled(false);
@@ -393,7 +390,7 @@ public class JGoogleAnalyticsTrackerDispatchTest {
         tracker.setDispatchMode(DispatchMode.MULTI_THREAD);
         Assertions.assertThat(tracker.makeCustomRequest(requests.get(c++))).isEqualTo(DispatchStatus.RUNNING);
 
-        Assertions.assertThat(JGoogleAnalyticsTracker.completeBackgroundTasks(1000)).isEqualTo(true);
+        Assertions.assertThat(GoogleAnalyticsTracker.completeBackgroundTasks(1000)).isEqualTo(true);
 
         // Check the output streams have all been used
         final HashSet<String> set = new HashSet<>();
@@ -449,17 +446,16 @@ public class JGoogleAnalyticsTrackerDispatchTest {
 
         // Send tracking request
         final ClientParameters cp = new ClientParameters(trackingId, clientId, applicationName);
-        final MeasurementProtocolVersion version = MeasurementProtocolVersion.V_1;
-        final JGoogleAnalyticsTracker tracker = new JGoogleAnalyticsTracker(cp, version, mode);
+        final GoogleAnalyticsTracker tracker = new GoogleAnalyticsTracker(cp, mode);
 
         final List<RequestParameters> requests = setupRequests(output.size());
         for (final RequestParameters rp : requests)
             tracker.makeCustomRequest(rp);
 
         // Hope that we can hit the timeout
-        final boolean notFinished = JGoogleAnalyticsTracker.completeBackgroundTasks(100);
+        final boolean notFinished = GoogleAnalyticsTracker.completeBackgroundTasks(100);
         if (notFinished)
-            Assertions.assertThat(JGoogleAnalyticsTracker.completeBackgroundTasks(10000)).isEqualTo(true);
+            Assertions.assertThat(GoogleAnalyticsTracker.completeBackgroundTasks(10000)).isEqualTo(true);
 
         // Check the output streams have all been used
         final HashSet<String> set = new HashSet<>();
