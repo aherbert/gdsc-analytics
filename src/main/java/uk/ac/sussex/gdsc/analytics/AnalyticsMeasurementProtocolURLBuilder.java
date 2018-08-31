@@ -40,7 +40,6 @@ import uk.ac.sussex.gdsc.analytics.Parameters.CustomMetric;
  * This class only supports the pageview and event hit type.
  *
  * @see "https://developers.google.com/analytics/devguides/collection/protocol/v1/"
- * @author Alex Herbert
  */
 public class AnalyticsMeasurementProtocolURLBuilder implements IAnalyticsMeasurementProtocolURLBuilder {
     /** The random used for the get URL cache buster. */

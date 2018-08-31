@@ -32,7 +32,6 @@ package uk.ac.sussex.gdsc.analytics;
  * Google Analytics request data
  *
  * @see "https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters"
- * @author Alex Herbert
  */
 public class RequestParameters extends Parameters {
     private final HitType hitType;

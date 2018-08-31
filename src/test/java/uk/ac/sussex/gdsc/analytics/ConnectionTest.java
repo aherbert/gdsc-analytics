@@ -28,44 +28,39 @@
  */
 package uk.ac.sussex.gdsc.analytics;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.UnknownHostException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
- * Stores a hit type.
+ * This class exists to determine what happens when there is no Internet
+ * connection. This can be simulated by disconnecting the host (e.g. turn WiFi
+ * off; disconnect LAN; etc.) then running the test manually.
  */
-public enum HitType {
-    /** The pageview hit-type. */
-    PAGEVIEW,
-    /** The screenview hit-type. */
-    SCREENVIEW,
-    /** The event hit-type. */
-    EVENT,
-    /** The transaction hit-type. */
-    TRANSACTION,
-    /** The item hit-type. */
-    ITEM,
-    /** The social hit-type. */
-    SOCIAL,
-    /** The exception hit-type. */
-    EXCEPTION,
-    /** The timing hit-type. */
-    TIMING;
+@SuppressWarnings("javadoc")
+public class ConnectionTest {
 
-    /** The name. */
-    private final String name;
-
-    /**
-     * Instantiates a new hit type.
-     */
-    private HitType() {
-        this.name = super.toString().toLowerCase();
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Enum#toString()
-     */
-    @Override
-    public String toString() {
-        return name;
+    // Do not use disabled as then there are test skipped warnings.
+    // @org.junit.jupiter.api.Test
+    public void testConnection() {
+        Logger logger = Logger.getLogger(ConnectionTest.class.getName());
+        HttpURLConnection connection = null;
+        try {
+            final URL url = new URL("http://www.google.com");
+            connection = (HttpURLConnection) url.openConnection();
+            connection.connect();
+            final int responseCode = connection.getResponseCode();
+            logger.info("Response = " + responseCode);
+        } catch (final UnknownHostException e) {
+            logger.log(Level.WARNING, "Unknown host: " + e.getMessage(), e);
+        } catch (final IOException e) {
+            logger.log(Level.SEVERE, "Error making tracking request: " + e.getMessage(), e);
+        } finally {
+            if (connection != null)
+                connection.disconnect();
+        }
     }
 }

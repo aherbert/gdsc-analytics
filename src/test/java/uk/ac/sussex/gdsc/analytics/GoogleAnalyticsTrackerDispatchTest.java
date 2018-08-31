@@ -31,11 +31,13 @@ package uk.ac.sussex.gdsc.analytics;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 import java.net.URLStreamHandlerFactory;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -97,7 +99,7 @@ public class GoogleAnalyticsTrackerDispatchTest {
         /**
          * Gets the connection.
          *
-         * <p>If the fast mode is enabled then the bext connection from the queue is
+         * <p> If the fast mode is enabled then the bext connection from the queue is
          * returned. When the queue is empty the fast mode is disabled.
          *
          * @param map the map of connections for each URL
@@ -159,6 +161,10 @@ public class GoogleAnalyticsTrackerDispatchTest {
     public static void setupURLStreamHandlerFactory() {
         // Allows for mocking URL connections
         final URLStreamHandlerFactory urlStreamHandlerFactory = Mockito.mock(URLStreamHandlerFactory.class);
+
+        // Note: Setting this is a one time operation per VM.
+        // So this will prevent any other java code from connecting
+        // with a URL to a valid Internet resource.
         URL.setURLStreamHandlerFactory(urlStreamHandlerFactory);
 
         httpUrlStreamHandler = new HttpUrlStreamHandler();
@@ -258,21 +264,14 @@ public class GoogleAnalyticsTrackerDispatchTest {
         final ByteArrayOutputStream out = new ByteArrayOutputStream(1024);
         final HttpURLConnection urlConnection = createHttpUrlConnection(responseCode, out);
 
-        String host;
-        if (secure) {
-            host = GoogleAnalyticsTracker.HTTPS_GOOGLE_ANALYTICS_URL;
-            httpsUrlStreamHandler.addConnection(new URL(host), urlConnection, proxy);
-        } else {
-            host = GoogleAnalyticsTracker.HTTP_GOOGLE_ANALYTICS_URL;
-            httpUrlStreamHandler.addConnection(new URL(host), urlConnection, proxy);
-        }
+        String host = addConnection(urlConnection, secure, proxy);
 
         // For edge case testing
         Logger logger = gaLogger;
         if (responseCode != HttpURLConnection.HTTP_OK)
             logger = Mockito.spy(logger);
         if (ioException) {
-            Mockito.doThrow(IOException.class).when(urlConnection).connect();
+            Mockito.doThrow(new IOException("Mock IO exception")).when(urlConnection).connect();
             logger = Mockito.spy(logger);
         }
 
@@ -299,7 +298,8 @@ public class GoogleAnalyticsTrackerDispatchTest {
 
         // Edge case testing. These should be logged.
         if (responseCode != HttpURLConnection.HTTP_OK) {
-            Mockito.verify(logger, Mockito.times(1)).severe(ArgumentMatchers.any(Supplier.class));
+            Mockito.verify(logger, Mockito.times(1)).log(ArgumentMatchers.any(Level.class),
+                    ArgumentMatchers.any(Supplier.class));
             if (mode == DispatchMode.SYNCHRONOUS)
                 Assertions.assertThat(status).isEqualTo(DispatchStatus.ERROR);
             // Not expected to work so don't test
@@ -307,9 +307,11 @@ public class GoogleAnalyticsTrackerDispatchTest {
         }
         if (ioException) {
             Mockito.verify(logger, Mockito.times(1)).log(ArgumentMatchers.any(Level.class),
-                    ArgumentMatchers.anyString(), ArgumentMatchers.any(IOException.class));
+                    ArgumentMatchers.any(Supplier.class));
             if (mode == DispatchMode.SYNCHRONOUS)
                 Assertions.assertThat(status).isEqualTo(DispatchStatus.ERROR);
+            Assertions.assertThat(GoogleAnalyticsTracker.isDisabled()).isEqualTo(true);
+            GoogleAnalyticsTracker.clearLastIOException();
             // Not expected to work so don't test
             return;
         }
@@ -335,6 +337,19 @@ public class GoogleAnalyticsTrackerDispatchTest {
         .hasParameter("dt", rp.getDocumentTitle())
         ;
         //@formatter:on
+    }
+
+    private static String addConnection(HttpURLConnection urlConnection, boolean secure, boolean proxy)
+            throws MalformedURLException {
+        String host;
+        if (secure) {
+            host = GoogleAnalyticsTracker.HTTPS_GOOGLE_ANALYTICS_URL;
+            httpsUrlStreamHandler.addConnection(new URL(host), urlConnection, proxy);
+        } else {
+            host = GoogleAnalyticsTracker.HTTP_GOOGLE_ANALYTICS_URL;
+            httpUrlStreamHandler.addConnection(new URL(host), urlConnection, proxy);
+        }
+        return host;
     }
 
     private static RequestParameters createRequest(String documentPath, String documentTitle) {
@@ -467,5 +482,30 @@ public class GoogleAnalyticsTrackerDispatchTest {
             final String dt = getParameter(parameters, "dt");
             Assertions.assertThat(set.add(dp + dt)).isTrue();
         }
+    }
+
+    @Test
+    public void testFailedConnectionDisables() throws Exception {
+
+        final ByteArrayOutputStream out = new ByteArrayOutputStream(1024);
+        final HttpURLConnection urlConnection = createHttpUrlConnection(HttpURLConnection.HTTP_OK, out);
+
+        IOException ex = new UnknownHostException("Mock no connection");
+        Mockito.doThrow(ex).when(urlConnection).connect();
+
+        addConnection(urlConnection, false, false);
+
+        final ClientParameters cp = new ClientParameters(trackingId, clientId, applicationName);
+        final GoogleAnalyticsTracker tracker = new GoogleAnalyticsTracker(cp, DispatchMode.SYNCHRONOUS);
+        final RequestParameters rp = createRequest("path", "title");
+
+        DispatchStatus status = tracker.makeCustomRequest(rp);
+        Assertions.assertThat(status).isEqualTo(DispatchStatus.ERROR);
+        Assertions.assertThat(tracker.isEnabled()).isEqualTo(false);
+        Assertions.assertThat(GoogleAnalyticsTracker.isDisabled()).isEqualTo(true);
+        Assertions.assertThat(GoogleAnalyticsTracker.getLastIOException()).isEqualTo(ex);
+        GoogleAnalyticsTracker.clearLastIOException();
+        Assertions.assertThat(GoogleAnalyticsTracker.isDisabled()).isEqualTo(false);
+        Assertions.assertThat(GoogleAnalyticsTracker.getLastIOException()).isNull();
     }
 }

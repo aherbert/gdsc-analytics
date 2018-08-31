@@ -47,8 +47,6 @@ import java.util.logging.Logger;
 
 /**
  * Populates the client with information from the system
- *
- * @author Alex Herbert
  */
 public class ClientParametersManager {
 

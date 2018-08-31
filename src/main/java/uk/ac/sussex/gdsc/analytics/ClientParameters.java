@@ -36,7 +36,6 @@ import java.util.regex.Pattern;
  * Analytics URL.
  *
  * @see "https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters"
- * @author Alex Herbert
  */
 public class ClientParameters extends Parameters {
     private final String trackingId;

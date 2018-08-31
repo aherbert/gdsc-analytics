@@ -38,7 +38,6 @@ import java.util.List;
  *
  * @see "https://support.google.com/analytics/answer/2709829"
  * @see "https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters"
- * @author Alex Herbert
  */
 public class Parameters {
     /**

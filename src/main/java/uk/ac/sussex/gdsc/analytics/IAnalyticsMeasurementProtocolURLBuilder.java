@@ -30,8 +30,6 @@ package uk.ac.sussex.gdsc.analytics;
 
 /**
  * URL builder for the tracking requests.
- *
- * @author Alex Herbert
  */
 public interface IAnalyticsMeasurementProtocolURLBuilder {
     /**

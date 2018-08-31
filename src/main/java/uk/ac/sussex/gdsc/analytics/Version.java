@@ -38,7 +38,6 @@ package uk.ac.sussex.gdsc.analytics;
  * may be different from the Maven version for the gdsc-analytics artifact.
  *
  * @see "http://semver.org/"
- * @author Alex Herbert
  */
 public class Version {
     /**

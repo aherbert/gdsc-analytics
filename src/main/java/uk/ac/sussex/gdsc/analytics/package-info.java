@@ -31,7 +31,7 @@
  * Analytics servers via the <a href=
  * "https://developers.google.com/analytics/devguides/collection/protocol/v1/">Google
  * Analytics Measurement Protocol</a>.
- * 
+ *
  * <p>Since the code will only be used within a Java application the referral,
  * search referral and campaign functionality has been removed to simplify the
  * analytics and allow caching most of the constructed analytics URL.

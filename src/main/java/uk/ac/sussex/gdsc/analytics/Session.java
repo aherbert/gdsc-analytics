@@ -30,8 +30,6 @@ package uk.ac.sussex.gdsc.analytics;
 
 /**
  * Represent a session
- *
- * @author Alex Herbert
  */
 public class Session {
     /**

@@ -36,6 +36,7 @@ import java.net.Proxy;
 import java.net.Proxy.Type;
 import java.net.SocketAddress;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
@@ -57,9 +58,9 @@ import java.util.regex.Pattern;
  *
  * <ul>
  * <li>Synchronous mode: The request is sent immediately.
- * <li>Multi-thread mode: The request is sent using a background thread, 
+ * <li>Multi-thread mode: The request is sent using a background thread,
  *     one for each request.
- * <li>Single-thread mode (the default): The request is queued and 
+ * <li>Single-thread mode (the default): The request is queued and
  *     processed using a single-background thread.
  * </ul>
  *
@@ -157,13 +158,20 @@ public class GoogleAnalyticsTracker {
     /** The proxy using for tracking requests. */
     private static Proxy proxy = null;
 
+    /**
+     * The last IO exception that occurred when dispatching a request. If this is
+     * not null then the tracker is disabled as it is assumed that all subsequent
+     * tracking requests will fail.
+     */
+    private static volatile IOException lastIOException = null;
+
+    /** The thread number, incremented for new threads. */
+    private static final AtomicInteger threadNumber = new AtomicInteger(1);
+
     static {
         multiThreadExecutor = Executors.newCachedThreadPool((r) -> newThread(r));
         singleThreadExecutor = Executors.newFixedThreadPool(1, (r) -> newThread(r));
     }
-
-    /** The thread number, incremented for new threads. */
-    private static final AtomicInteger threadNumber = new AtomicInteger(1);
 
     /**
      * Create a new background thread.
@@ -233,8 +241,8 @@ public class GoogleAnalyticsTracker {
      * @param dispatchMode     The dispatch mode
      * @param version          The GA version
      */
-    public GoogleAnalyticsTracker(ClientParameters clientParameters, 
-            DispatchMode dispatchMode, MeasurementProtocolVersion version) {
+    public GoogleAnalyticsTracker(ClientParameters clientParameters, DispatchMode dispatchMode,
+            MeasurementProtocolVersion version) {
         this.clientParameters = Objects.requireNonNull(clientParameters, "Client parameters is null");
         builder = createBuilder(version);
         enabled = true;
@@ -314,12 +322,16 @@ public class GoogleAnalyticsTracker {
     }
 
     /**
-     * Check if dispatching tracking requests.
+     * Check if dispatching tracking requests from this tracker.
+     *
+     * <p>Note: This also returns {@code false} if there was an exception for any
+     * tracking request that signals a major problem.
      *
      * @return true if enabled
+     * @see #isDisabled()
      */
     public boolean isEnabled() {
-        return enabled;
+        return enabled && !isDisabled();
     }
 
     /**
@@ -409,9 +421,10 @@ public class GoogleAnalyticsTracker {
                 // Stop waiting
                 return !hasBackgroundTasks();
             }
-            if (System.currentTimeMillis() >= endTime)
+            if (System.currentTimeMillis() >= endTime) {
                 // Timeout
                 return !hasBackgroundTasks();
+            }
         }
         // Normal exit: no tasks
         return true;
@@ -447,7 +460,7 @@ public class GoogleAnalyticsTracker {
      * @throws NullPointerException if request parameters are null
      */
     public DispatchStatus makeCustomRequest(final RequestParameters requestParameters, final long timestamp) {
-        if (!enabled) {
+        if (!isEnabled()) {
             instanceLogger.fine("Ignoring tracking request, enabled is false");
             return DispatchStatus.IGNORED;
         }
@@ -511,30 +524,28 @@ public class GoogleAnalyticsTracker {
      * @return true, if successful
      */
     private boolean dispatchRequest(final RequestParameters requestParameters, final long timestamp) {
-        return dispatchRequest(builder, clientParameters, requestParameters, timestamp, instanceLogger, secure);
+        return dispatchRequest(this, requestParameters, timestamp);
     }
 
     /**
      * Send the parameters to Google Analytics using the Measurement Protocol. This
      * uses the HTTP POST method.
      *
-     * @param builder           The URL builder for Google Analytics Measurement
-     *                          Protocol
-     * @param clientParameters  The client parameter data
+     * @param tracker           The tracker
      * @param requestParameters The request parameter data
      * @param timestamp         The timestamp when the hit was reported (in
      *                          milliseconds)
-     * @param logger            The logger used for status messages
-     * @param secure            the secure
      * @return true, if successful
      */
-    private static boolean dispatchRequest(IAnalyticsMeasurementProtocolURLBuilder builder,
-            ClientParameters clientParameters, RequestParameters requestParameters, long timestamp, Logger logger,
-            boolean secure) {
+    private static boolean dispatchRequest(GoogleAnalyticsTracker tracker, RequestParameters requestParameters,
+            long timestamp) {
+        if (isDisabled())
+            return false;
         HttpURLConnection connection = null;
+        final Logger instanceLogger = tracker.instanceLogger;
         try {
-            final String parameters = builder.buildURL(clientParameters, requestParameters, timestamp);
-            final URL url = new URL((secure) ? HTTPS_GOOGLE_ANALYTICS_URL : HTTP_GOOGLE_ANALYTICS_URL);
+            final String parameters = tracker.builder.buildURL(tracker.clientParameters, requestParameters, timestamp);
+            final URL url = new URL((tracker.secure) ? HTTPS_GOOGLE_ANALYTICS_URL : HTTP_GOOGLE_ANALYTICS_URL);
             connection = (HttpURLConnection) ((proxy == null) ? url.openConnection() : url.openConnection(proxy));
             connection.setRequestMethod("POST");
             connection.setDoOutput(true);
@@ -548,25 +559,97 @@ public class GoogleAnalyticsTracker {
                 os.write(out);
             }
             final int responseCode = connection.getResponseCode();
-            if (responseCode != HttpURLConnection.HTTP_OK)
-                logger.severe(() -> {
+            if (responseCode != HttpURLConnection.HTTP_OK) {
+                // Note: Valid on 31-Aug-2018
+                // https://developers.google.com/analytics/devguides/collection/protocol/v1/validating-hits
+                // "The Google Analytics Measurement Protocol does not return HTTP error codes"
+                // This is unlikely to happen so log a warning.
+                // If Google change their response in the future this logging will serve
+                // as notice to update the code to do something more appropriate.
+                instanceLogger.log(Level.WARNING, () -> {
                     return String.format("Error requesting url '%s', received response code %d", parameters,
                             responseCode);
                 });
-            else {
-                logger.fine(() -> {
+                // Don't disable the tracker. It may just be a user of this library
+                // has built an invalid RequestParameters object so they should know
+                // about this. Lots of log messages will be notice enough.
+                // tracker.setEnabled(false);
+            } else {
+                instanceLogger.log(Level.FINE, () -> {
                     return String.format("Tracking success for url '%s'", parameters);
                 });
                 // This is a success. All other returns are false.
                 return true;
             }
+        } catch (final UnknownHostException e) {
+            setLastIOException(e);
+            // Occurs when disconnected from the Internet so this is not severe
+            instanceLogger.log(Level.WARNING, () -> {
+                return String.format("Unknown host: %s", e.getMessage());
+            });
         } catch (final IOException e) {
-            logger.log(Level.SEVERE, "Error making tracking request: " + e.getMessage(), e);
+            setLastIOException(e);
+            // Log all others at a severe level
+            instanceLogger.log(Level.SEVERE, () -> {
+                return String.format("Error making tracking request: %s : %s", e.getClass().getSimpleName(),
+                        e.getMessage());
+            });
         } finally {
-            if (connection != null)
+            if (connection != null) {
                 connection.disconnect();
+            }
         }
         return false;
+    }
+
+    /**
+     * Sets the last IO exception.
+     *
+     * <p>This will disable all tracking requests.
+     *
+     * @param e the last IO exception
+     */
+    private static void setLastIOException(IOException e) {
+        lastIOException = e;
+    }
+
+    /**
+     * Gets the last IO exception that occurred from a dispatch request.
+     *
+     * <p>If this is not {@code null} then all tracking is disabled as it is assumed
+     * that all subsequent tracking requests will fail.
+     *
+     * @return the last IO exception
+     */
+    public static IOException getLastIOException() {
+        return lastIOException;
+    }
+
+    /**
+     * Checks if all tracking is disabled.
+     *
+     * <p>This is true if an exception occurred during a dispatch request, i.e. any
+     * subsequent tracking requests will fail.
+     *
+     * <p>The state can be reset using {@link #clearLastIOException()} if another
+     * attempt at tracking is to be attempted, e.g. if the reason for the problem
+     * has been fixed.
+     *
+     * @return true, if is disabled
+     * @see #getLastIOException()
+     * @see #clearLastIOException()
+     */
+    public static boolean isDisabled() {
+        return lastIOException != null;
+    }
+
+    /**
+     * Clear the last IO exception.
+     *
+     * <p>Use this method to restart tracking.
+     */
+    public static void clearLastIOException() {
+        setLastIOException(null);
     }
 
     /**
