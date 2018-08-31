@@ -361,8 +361,11 @@ protocol to collect usage information about a Java application.
       <build>
         <plugins>
           <!-- Submit coverage -->
-          <!-- TODO - put this back when test suite is done <plugin> <groupId>org.eluder.coveralls</groupId> <artifactId>coveralls-maven-plugin</artifactId> 
-            <version>${coveralls-maven-plugin.version}</version> </plugin> -->
+          <plugin>
+            <groupId>org.eluder.coveralls</groupId>
+            <artifactId>coveralls-maven-plugin</artifactId>
+            <version>${coveralls-maven-plugin.version}</version>
+          </plugin>
           <plugin>
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
@@ -424,8 +427,7 @@ protocol to collect usage information about a Java application.
                       </limits>
                     </rule>
                   </rules>
-                  <!-- Update -->
-                  <haltOnFailure>false</haltOnFailure>
+                  <haltOnFailure>true</haltOnFailure>
                 </configuration>
               </execution>
             </executions>
