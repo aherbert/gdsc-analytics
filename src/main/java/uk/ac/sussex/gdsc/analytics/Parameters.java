@@ -30,6 +30,7 @@ package uk.ac.sussex.gdsc.analytics;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Base class for parameters to allow storing custom dimensions and metrics.
@@ -57,6 +58,7 @@ public class Parameters {
          * @param value the value
          */
         public CustomDimension(int index, String value) {
+            Objects.requireNonNull(value, "Value is null");
             this.index = index;
             this.value = value;
         }
@@ -95,15 +97,18 @@ public class Parameters {
 
     /**
      * Add a custom dimension
-     * <p>
-     * Note that custom dimensions have to be created for your site before they can
-     * be used in analytics reports. Dimensions should be used for segregation of
-     * data into categories.
-     *
-     * @see "https://support.google.com/analytics/answer/2709829"
+     * 
+     * <p>Note that custom dimensions have to be created for your site before they
+     * can be used in analytics reports. Dimensions should be used for segregation
+     * of data into categories.
+     * 
+     * <p>If the index is out of range, or the value is null then no custom
+     * dimension will be added.
      *
      * @param index The dimension index (1-20 or 1-200 for premium accounts)
-     * @param value The dimension value (must not be null)
+     * @param value The dimension value (ignored if null)
+     * @see <a href="https://support.google.com/analytics/answer/2709829">Create and
+     *      edit custom dimensions and metrics</a>
      */
     public void addCustomDimension(int index, String value) {
         if (index < 1 || index > 200)
@@ -123,7 +128,7 @@ public class Parameters {
     }
 
     /**
-     * @return The number of customer dimensions
+     * @return The number of custom dimensions
      */
     public int getNumberOfCustomDimensions() {
         return (customDimensions == null) ? 0 : customDimensions.size();
@@ -137,16 +142,16 @@ public class Parameters {
     }
 
     /**
-     * Add a custom metric
-     * <p>
-     * Note that custom metrics have to be created for your site before they can be
-     * used in analytics reports. Metrics should be used for numbers that you want
-     * to accumulate.
+     * Add a custom metric <p> Note that custom metrics have to be created for your
+     * site before they can be used in analytics reports. Metrics should be used for
+     * numbers that you want to accumulate.
      *
-     * @see "https://support.google.com/analytics/answer/2709829"
+     * <p>If the index is out of range then no custom dimension will be added.
      *
      * @param index The dimension index (1-20 or 1-200 for premium accounts)
      * @param value The metric value
+     * @see <a href="https://support.google.com/analytics/answer/2709829">Create and
+     *      edit custom dimensions and metrics</a>
      */
     public void addCustomMetric(int index, int value) {
         if (index < 1 || index > 200)

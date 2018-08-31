@@ -77,6 +77,8 @@ public class RequestParametersTest {
         Assertions.assertEquals(value, rp.getValue());
 
         Assertions.assertFalse(rp.hasCustomDimensions());
+        rp.addCustomDimension(1, null); // Ignored
+        Assertions.assertFalse(rp.hasCustomDimensions());
         rp.addCustomDimension(3, "33");
         Assertions.assertTrue(rp.hasCustomDimensions());
 

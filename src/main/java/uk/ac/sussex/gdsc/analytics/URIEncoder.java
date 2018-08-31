@@ -30,7 +30,6 @@ package uk.ac.sussex.gdsc.analytics;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.BitSet;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -180,6 +179,7 @@ public class URIEncoder {
      */
     public static boolean noEncodingRequired(char c) {
         final int i = c;
+        // Char is unsigned so no need to check below zero.
         return (i < dontNeedEncoding.length) ? dontNeedEncoding[i] : false;
     }
 }

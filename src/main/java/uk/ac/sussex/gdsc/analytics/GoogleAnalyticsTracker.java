@@ -41,6 +41,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
@@ -169,8 +170,14 @@ public class GoogleAnalyticsTracker {
     private static final AtomicInteger threadNumber = new AtomicInteger(1);
 
     static {
-        multiThreadExecutor = Executors.newCachedThreadPool((r) -> newThread(r));
-        singleThreadExecutor = Executors.newFixedThreadPool(1, (r) -> newThread(r));
+        final ThreadFactory tf = new ThreadFactory() {
+            @Override
+            public Thread newThread(Runnable r) {
+                return GoogleAnalyticsTracker.newThread(r);
+            }
+        };
+        multiThreadExecutor = Executors.newCachedThreadPool(tf);
+        singleThreadExecutor = Executors.newFixedThreadPool(1, tf);
     }
 
     /**
@@ -408,7 +415,7 @@ public class GoogleAnalyticsTracker {
      * @param timeoutMillis The maximum number of milliseconds to wait.
      * @return true if there are no background tasks remaining
      * @throws IllegalArgumentException if the timeout is negative
-     * @see #hasBackgroundTasks()
+     * @see #hasNoBackgroundTasks()
      */
     public static boolean completeBackgroundTasks(long timeoutMillis) throws IllegalArgumentException {
         if (timeoutMillis < 0)
@@ -419,11 +426,11 @@ public class GoogleAnalyticsTracker {
                 Thread.sleep(100);
             } catch (final InterruptedException e) {
                 // Stop waiting
-                return !hasBackgroundTasks();
+                return hasNoBackgroundTasks();
             }
             if (System.currentTimeMillis() >= endTime) {
                 // Timeout
-                return !hasBackgroundTasks();
+                return hasNoBackgroundTasks();
             }
         }
         // Normal exit: no tasks
@@ -437,6 +444,15 @@ public class GoogleAnalyticsTracker {
      */
     public static boolean hasBackgroundTasks() {
         return backgroundTasks.get() != 0;
+    }
+
+    /**
+     * Checks for <strong>no</strong> background tasks.
+     *
+     * @return true, if there are <strong>no</strong> background tasks
+     */
+    public static boolean hasNoBackgroundTasks() {
+        return backgroundTasks.get() == 0;
     }
 
     /**

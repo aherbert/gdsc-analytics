@@ -252,7 +252,6 @@ public class AnalyticsMeasurementProtocolURLBuilderTest {
                 a.hasParameter("dh", cp.getHostName());
             a.hasNoParameter("aip");
         }
-        //@formatter:on
 
         // Test the value will be ignored if null
         rp.setValue(null);
@@ -287,6 +286,7 @@ public class AnalyticsMeasurementProtocolURLBuilderTest {
         .hasParameter("qt")
         .hasParameter("z")
         ;
+        //@formatter:on
     }
 
     private static String getZ(String url) {
@@ -314,5 +314,16 @@ public class AnalyticsMeasurementProtocolURLBuilderTest {
                 b.buildURL(cp, rp, System.currentTimeMillis());
             }).isInstanceOf(IllegalArgumentException.class);
         }
+
+        // Also test null hit type in the switch statement for coverage
+        final RequestParameters rp = new RequestParameters(HitType.PAGEVIEW) {
+            @Override
+            public HitType getHitTypeEnum() {
+                return null;
+            }
+        };
+        Assertions.assertThatThrownBy(() -> {
+            b.buildURL(cp, rp, System.currentTimeMillis());
+        }).isInstanceOf(NullPointerException.class);
     }
 }

@@ -103,10 +103,9 @@ public class ClientParametersManager {
     }
 
     /**
-     * Populates the client parameters with the system hostname.
-     * <p>
-     * The call will timeout after 2 seconds (e.g. if the DNS is not working) and
-     * the hostname will be set to localhost.
+     * Populates the client parameters with the system hostname. <p> The call will
+     * timeout after 2 seconds (e.g. if the DNS is not working) and the hostname
+     * will be set to localhost.
      *
      * @param data The data
      */
@@ -189,8 +188,8 @@ public class ClientParametersManager {
             if (lc_os_name.contains("8.1"))             return "Windows NT 6.3";
             if (lc_os_name.contains("8"))               return "Windows NT 6.2";
             if (lc_os_name.contains("7"))               return "Windows NT 6.1";
-			return "Windows NT 6.1"; // Default to Windows 7
-			//@formatter:on
+            return "Windows NT 6.1"; // Default to Windows 7
+            //@formatter:on
         }
 
         // Mac - Note sure what to put here.
@@ -211,13 +210,12 @@ public class ClientParametersManager {
 
     /**
      * Get the screen size
-     * <p>
-     * Adapted from ij.IJ.getScreenSize() in the ImageJ code.
-     *
-     * @see "http://imagej.nih.gov/ij/"
+     * 
+     * <p>Adapted from ij.IJ.getScreenSize() in the ImageJ code.
      *
      * @param os_name The os.name system property
      * @return The dimension of the primary screen
+     * @see <a href="http://imagej.nih.gov/ij/">Image J</a>
      */
     public static Dimension getScreenSize(String os_name) {
         if (GraphicsEnvironment.isHeadless())

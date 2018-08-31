@@ -87,12 +87,12 @@ public class GoogleAnalyticsTrackerSendTest {
         private boolean fastMode = false;
 
         @Override
-        protected URLConnection openConnection(URL url) {
+        protected URLConnection openConnection(URL url) throws IOException {
             return getConnection(url, connections);
         }
 
         @Override
-        protected URLConnection openConnection(URL url, Proxy proxy) {
+        protected URLConnection openConnection(URL url, Proxy proxy) throws IOException {
             return getConnection(url, proxyConnections);
         }
 
@@ -104,15 +104,19 @@ public class GoogleAnalyticsTrackerSendTest {
          *
          * @param map the map of connections for each URL
          * @return the connection
+         * @throws IOException
          */
-        private URLConnection getConnection(URL url, Map<URL, URLConnection> map) {
+        private URLConnection getConnection(URL url, Map<URL, URLConnection> map) throws IOException {
             if (fastMode) {
                 final URLConnection conn = queue.poll();
                 if (conn != null)
                     return conn;
                 fastMode = false;
             }
-            return map.get(url);
+            URLConnection conn = map.get(url);
+            if (conn == null)
+                throw new IOException("Mock no openConnection()");
+            return conn;
         }
 
         public void resetConnections() {
@@ -485,18 +489,105 @@ public class GoogleAnalyticsTrackerSendTest {
     }
 
     /**
+     * This test attempts to create an error after tasks have been submitted to the
+     * queue so that they should be ignored when the single thread gets to process
+     * them.
+     *
+     * @throws Exception the exception
+     */
+    @Test
+    public void testSingleThreadBatchSendWithError() throws Exception {
+
+        int set1 = 5, set2 = 5;
+
+        // OK connections
+        final List<ByteArrayOutputStream> output = setupFastConnections(set1);
+
+        // One bad one
+        final ByteArrayOutputStream badOut = new ByteArrayOutputStream(1024);
+        final HttpURLConnection urlConnection = createHttpUrlConnection(HttpURLConnection.HTTP_OK, badOut);
+        Mockito.doThrow(IOException.class).when(urlConnection).connect();
+        httpUrlStreamHandler.addFastConnection(urlConnection);
+        output.add(badOut);
+
+        // More OK connections
+        final List<ByteArrayOutputStream> output2 = setupFastConnections(set2);
+
+        output.addAll(output2);
+
+        // Send tracking request
+        final ClientParameters cp = new ClientParameters(trackingId, clientId, applicationName);
+        final GoogleAnalyticsTracker tracker = new GoogleAnalyticsTracker(cp, DispatchMode.SINGLE_THREAD);
+
+        final List<RequestParameters> requests = setupRequests(output.size());
+        final List<DispatchStatus> status = new ArrayList<>();
+        for (final RequestParameters rp : requests) {
+            status.add(tracker.send(rp));
+        }
+
+        // The threads should not be able to process everything
+        Assertions.assertThat(GoogleAnalyticsTracker.hasNoBackgroundTasks()).isEqualTo(false);
+        Assertions.assertThat(GoogleAnalyticsTracker.completeBackgroundTasks(10000)).isEqualTo(true);
+        Assertions.assertThat(GoogleAnalyticsTracker.hasNoBackgroundTasks()).isEqualTo(true);
+
+        GoogleAnalyticsTracker.clearLastIOException();
+
+        // This test is only valid if more items were queued
+        // before the bad connection occurs to disabled the tracker.
+        // Count each status. Either ignored or running is expected.
+        // running should be more than set1.
+        int ignored = 0, running = 0, other = 0;
+        for (DispatchStatus s : status) {
+            switch (s) {
+            case IGNORED:
+                ignored++;
+                break;
+            case RUNNING:
+                running++;
+                break;
+            default:
+                other++;
+                break;
+            }
+        }
+
+        gaLogger.fine(String.format("Ignored = %d, Running = %d, Other = %d", ignored, running, other));
+
+        if (running <= set1) {
+            // Test not valid
+            return;
+        }
+
+        // Check not all the output streams have all been used
+        final HashSet<String> set = new HashSet<>();
+        for (final ByteArrayOutputStream out : output) {
+            if (out.size() == 0) {
+                continue;
+            }
+            // Check these all were unique requests
+            final String parameters = new String(out.toByteArray(), StandardCharsets.UTF_8);
+            final String dp = getParameter(parameters, "dp");
+            final String dt = getParameter(parameters, "dt");
+            Assertions.assertThat(set.add(dp + dt)).isTrue();
+        }
+
+        // Expecting to only process the first set, the rest should be ignored.
+        Assertions.assertThat(set.size()).isEqualTo(set1);
+    }
+
+    /**
      * Test a failed connection disables. This is handled differently to any other
      * IO exception so has a separate test.
      *
      * @throws Exception the exception
      */
     @Test
-    public void testFailedConnectionDisables() throws Exception {
+    public void testFailedConnectDisables() throws Exception {
 
         final ByteArrayOutputStream out = new ByteArrayOutputStream(1024);
         final HttpURLConnection urlConnection = createHttpUrlConnection(HttpURLConnection.HTTP_OK, out);
 
-        IOException ex = new UnknownHostException("Mock no connection");
+        IOException ex = new UnknownHostException("Mock no connect()");
         Mockito.doThrow(ex).when(urlConnection).connect();
 
         addConnection(urlConnection, false, false);
@@ -510,6 +601,31 @@ public class GoogleAnalyticsTrackerSendTest {
         Assertions.assertThat(tracker.isEnabled()).isEqualTo(false);
         Assertions.assertThat(GoogleAnalyticsTracker.isDisabled()).isEqualTo(true);
         Assertions.assertThat(GoogleAnalyticsTracker.getLastIOException()).isEqualTo(ex);
+        GoogleAnalyticsTracker.clearLastIOException();
+        Assertions.assertThat(GoogleAnalyticsTracker.isDisabled()).isEqualTo(false);
+        Assertions.assertThat(GoogleAnalyticsTracker.getLastIOException()).isNull();
+    }
+
+    /**
+     * Test a failed connection disables. This is handled differently to any other
+     * IO exception so has a separate test.
+     *
+     * @throws Exception the exception
+     */
+    @Test
+    public void testFailedOpenConnectionDisables() throws Exception {
+
+        // Don't set up a URLConnection. The mock handler will throw an IOException.
+
+        final ClientParameters cp = new ClientParameters(trackingId, clientId, applicationName);
+        final GoogleAnalyticsTracker tracker = new GoogleAnalyticsTracker(cp, DispatchMode.SYNCHRONOUS);
+        final RequestParameters rp = createRequest("path", "title");
+
+        DispatchStatus status = tracker.send(rp);
+        Assertions.assertThat(status).isEqualTo(DispatchStatus.ERROR);
+        Assertions.assertThat(tracker.isEnabled()).isEqualTo(false);
+        Assertions.assertThat(GoogleAnalyticsTracker.isDisabled()).isEqualTo(true);
+        Assertions.assertThat(GoogleAnalyticsTracker.getLastIOException()).isNotNull();
         GoogleAnalyticsTracker.clearLastIOException();
         Assertions.assertThat(GoogleAnalyticsTracker.isDisabled()).isEqualTo(false);
         Assertions.assertThat(GoogleAnalyticsTracker.getLastIOException()).isNull();

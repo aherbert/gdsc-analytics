@@ -145,6 +145,8 @@ public class ClientParametersTest {
         cp.setUrl(url);
         Assertions.assertEquals(url, cp.getUrl());
         Assertions.assertFalse(cp.hasCustomDimensions());
+        cp.addCustomDimension(1, null); // Ignored
+        Assertions.assertFalse(cp.hasCustomDimensions());
         cp.addCustomDimension(3, "33");
         Assertions.assertTrue(cp.hasCustomDimensions());
         Assertions.assertNull(cp.getUrl());

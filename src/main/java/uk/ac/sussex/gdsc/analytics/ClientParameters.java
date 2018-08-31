@@ -35,22 +35,46 @@ import java.util.regex.Pattern;
  * Common client data. Allows caching of the client component of the Google
  * Analytics URL.
  *
- * @see "https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters"
+ * @see <a
+ *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters">Measurement
+ *      Protocol Parameter Reference</a>
  */
 public class ClientParameters extends Parameters {
+
+    /** The tracking id. */
     private final String trackingId;
+
+    /** The client id. */
     private final String clientId;
+
+    /** The application name. */
     private final String applicationName;
+
+    /** The session. */
     private final Session session;
 
+    /** The screen resolution. */
     private String screenResolution = null;
+
+    /** The user language. */
     private String userLanguage = null;
+
+    /** The host name. */
     private String hostName = null;
+
+    /** The user agent. */
     private String userAgent = null;
+
+    /** The application id. */
     private String applicationId = null;
+
+    /** The application version. */
     private String applicationVersion = null;
+
+    /** The anonymised. */
     private boolean anonymised = false;
 
+    /** The url. */
     private String url = null;
 
     /**
@@ -79,6 +103,8 @@ public class ClientParameters extends Parameters {
     }
 
     /**
+     * Gets the tracking id.
+     *
      * @return the tracking Id
      */
     public String getTrackingId() {
@@ -86,6 +112,8 @@ public class ClientParameters extends Parameters {
     }
 
     /**
+     * Gets the client id.
+     *
      * @return The client Id
      */
     public String getClientId() {
@@ -93,6 +121,8 @@ public class ClientParameters extends Parameters {
     }
 
     /**
+     * Gets the application name.
+     *
      * @return the application name
      */
     public String getApplicationName() {
@@ -100,7 +130,7 @@ public class ClientParameters extends Parameters {
     }
 
     /**
-     * Check if this is a new session
+     * Check if this is a new session.
      *
      * @return True if the session is new
      */
@@ -109,20 +139,26 @@ public class ClientParameters extends Parameters {
     }
 
     /**
-     * @return the screenResolution
+     * Gets the screen resolution.
+     *
+     * @return the screen resolution
      */
     public String getScreenResolution() {
         return screenResolution;
     }
 
     /**
-     * @return the userLanguage
+     * Gets the user language.
+     *
+     * @return the user language
      */
     public String getUserLanguage() {
         return userLanguage;
     }
 
     /**
+     * Gets the host name.
+     *
      * @return The hostname
      */
     public String getHostName() {
@@ -130,6 +166,8 @@ public class ClientParameters extends Parameters {
     }
 
     /**
+     * Gets the user agent.
+     *
      * @return the user agent
      */
     public String getUserAgent() {
@@ -137,6 +175,8 @@ public class ClientParameters extends Parameters {
     }
 
     /**
+     * Gets the application id.
+     *
      * @return the application Id
      */
     public String getApplicationId() {
@@ -144,6 +184,8 @@ public class ClientParameters extends Parameters {
     }
 
     /**
+     * Gets the application version.
+     *
      * @return the application version
      */
     public String getApplicationVersion() {
@@ -151,6 +193,8 @@ public class ClientParameters extends Parameters {
     }
 
     /**
+     * Checks if is anonymised.
+     *
      * @return True if the IP address of the sender will be anonymised
      */
     public boolean isAnonymised() {
@@ -158,6 +202,8 @@ public class ClientParameters extends Parameters {
     }
 
     /**
+     * Gets the url.
+     *
      * @return The client component of the URL
      */
     public String getUrl() {
@@ -175,7 +221,7 @@ public class ClientParameters extends Parameters {
     }
 
     /**
-     * Sets the user language, like "EN-us"
+     * Sets the user language, like "EN-us".
      *
      * @param userLanguage the user language to set
      */
@@ -185,7 +231,7 @@ public class ClientParameters extends Parameters {
     }
 
     /**
-     * Set the hostname
+     * Set the hostname.
      *
      * @param hostName the hostname
      */
@@ -205,6 +251,8 @@ public class ClientParameters extends Parameters {
     }
 
     /**
+     * Sets the user agent.
+     *
      * @param userAgent the user agent to set
      */
     public void setUserAgent(String userAgent) {
@@ -213,6 +261,8 @@ public class ClientParameters extends Parameters {
     }
 
     /**
+     * Sets the application id.
+     *
      * @param applicationId the application Id to set
      */
     public void setApplicationId(String applicationId) {
@@ -221,6 +271,8 @@ public class ClientParameters extends Parameters {
     }
 
     /**
+     * Sets the application version.
+     *
      * @param applicationVersion the application version to set
      */
     public void setApplicationVersion(String applicationVersion) {
@@ -229,7 +281,7 @@ public class ClientParameters extends Parameters {
     }
 
     /**
-     * Set the state of IP anonymisation
+     * Set the state of IP anonymisation.
      *
      * @param anonymised True if the IP address of the sender will be anonymised
      */
@@ -242,6 +294,8 @@ public class ClientParameters extends Parameters {
      * Add a session level custom dimension. These will only be sent at the start of
      * the session.
      *
+     * @param index the index
+     * @param value the value
      * @see uk.ac.sussex.gdsc.analytics.Parameters#addCustomDimension(int,
      *      java.lang.String)
      */
@@ -255,6 +309,8 @@ public class ClientParameters extends Parameters {
      * Add a session level custom metric. These will only be sent at the start of
      * the session.
      *
+     * @param index the index
+     * @param value the value
      * @see uk.ac.sussex.gdsc.analytics.Parameters#addCustomMetric(int, int)
      */
     @Override

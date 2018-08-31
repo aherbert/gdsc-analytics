@@ -28,6 +28,8 @@
  */
 package uk.ac.sussex.gdsc.analytics;
 
+import java.util.Objects;
+
 /**
  * Google Analytics request data
  *
@@ -52,6 +54,7 @@ public class RequestParameters extends Parameters {
      * @param hitType the hit type
      */
     public RequestParameters(HitType hitType) {
+        Objects.requireNonNull(hitType, "Hit type is null");
         this.hitType = hitType;
     }
 
