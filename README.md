@@ -16,11 +16,14 @@ Functionality includes:
 - Synchronous or asynchronous measurement requests
 - Configurable session timeout
 - Collection of basic client parameters (screen size, user language, user agent)
+- Graceful disabling when no Internet connection
+- Configurable logging
 
 Example:
 
 ```java
-import uk.ac.sussex.gdsc.analytics.JGoogleAnalyticsTracker.*;
+import uk.ac.sussex.gdsc.analytics.GoogleAnalyticsTracker;
+import uk.ac.sussex.gdsc.analytics.GoogleAnalyticsTracker.*;
 
 // Create the tracker
 String trackingId = "AAA-123-456"; // Your Google Analytics tracking ID
@@ -28,13 +31,13 @@ String clientId = "Anything";
 String applicationName = "Test";
 
 ClientParameters cp = new ClientParameters(trackingId, clientId, applicationName);
-JGoogleAnalyticsTracker tracker = new JGoogleAnalyticsTracker(cp);
+GoogleAnalyticsTracker tracker = new GoogleAnalyticsTracker(cp);
 
 // Submit requests
 RequestParameters rp = new RequestParameters(HitType.PAGEVIEW);
 rp.setDocumentPath("/path/within/application/");
 rp.setDocumentTitle("Test Page");
-tracker.makeCustomRequest(rp)
+tracker.makeCustomRequest(rp);
 ```
 
 This would create a protocol parameter string of:
@@ -42,19 +45,6 @@ This would create a protocol parameter string of:
         v=1&sc=start&tid=AAA-123-456&cid=Anything&an=Test&je=1&t=pageview&dp=%2Fpath%2Fwithin%2Fapplication%2F&dt=Test+Page&qt=0
 
 See the [Measurement Protocol Parameter Reference Guide](https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters) for more details.
-
-Origin
-------
-
-This project is based on ideas from
-[JGoogleAnalyticsTracker](https://code.google.com/archive/p/jgoogleanalyticstracker/) by Daniel
-Murphy. A similar package is
-[JGoogleAnalytics](https://github.com/siddii/jgoogleanalytics) by Siddique Hameed. These
-projects dummied the GET request sent to Google Analytics by a web browser, i.e. used the legacy Google Analytics protocol.
-
-This code uses the new Analytics Measurement Protocol which is designed to
-allow any web connected device to measure user interaction via a HTTP POST
-request.
 
 
 Maven Installation
@@ -75,6 +65,27 @@ on it.
 
 	This will produce a gdsc-analytics-[VERSION].jar file in the local Maven
 	repository. You can now build the other packages that depend on this code.
+
+
+Background
+----------
+
+This project is based on ideas from
+[JGoogleAnalyticsTracker](https://code.google.com/archive/p/jgoogleanalyticstracker/)
+by Daniel Murphy. A similar package is
+[JGoogleAnalytics](https://github.com/siddii/jgoogleanalytics) by Siddique Hameed.
+These projects dummied the GET request sent to Google Analytics by a web browser,
+i.e. used the legacy Google Analytics protocol.
+
+This code uses the new Analytics Measurement Protocol which is designed to
+allow any web connected device to measure user interaction via a HTTP POST
+request.
+
+The code is used within the GDSC ImageJ plugins to collect usage information
+whenever a plugin is run. To comply with the
+[General Data Protection Regulation (GDPR)](https://ico.org.uk/for-organisations/guide-to-the-general-data-protection-regulation-gdpr/):
+- All data collected is anonymous and cannot be linked to an individual
+- The GDSC ImageJ plugins allow tracking to be disabled
 
 
 ###### Owner(s) ######
