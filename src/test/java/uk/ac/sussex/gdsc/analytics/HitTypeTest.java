@@ -35,8 +35,7 @@ import org.junit.jupiter.api.Test;
 public class HitTypeTest {
     @Test
     public void testToString() {
-        for (final HitType ht : HitType.values()) {
+        for (final HitType ht : HitType.values())
             Assertions.assertEquals(String.valueOf(ht).toLowerCase(), ht.toString());
-        }
     }
 }

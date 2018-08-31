@@ -85,9 +85,11 @@ protocol to collect usage information about a Java application.
     <coveralls-maven-plugin.version>4.3.0</coveralls-maven-plugin.version>
     <commons-codec.version>1.11</commons-codec.version>
     <assertj-core.version>3.11.0</assertj-core.version>
+    <mockito-core.version>2.21.0</mockito-core.version>
     <!-- Maven -->
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+    <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
     <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
     <maven-assembly-plugin.version>3.1.0</maven-assembly-plugin.version>
     <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
@@ -122,8 +124,19 @@ protocol to collect usage information about a Java application.
       <plugins>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${maven-compiler-plugin.version}</version>
+          <configuration>
+            <compilerArgs>
+              <arg>-Xlint:all</arg>
+            </compilerArgs>
+          </configuration>
+        </plugin>
+
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
-          <version>2.4</version>
+          <version>${maven-assembly-plugin.version}</version>
           <configuration>
             <descriptorRefs>
               <descriptorRef>jar-with-dependencies</descriptorRef>
@@ -348,13 +361,8 @@ protocol to collect usage information about a Java application.
       <build>
         <plugins>
           <!-- Submit coverage -->
-          <!-- TODO - put this back when test suite is done
-          <plugin>
-            <groupId>org.eluder.coveralls</groupId>
-            <artifactId>coveralls-maven-plugin</artifactId>
-            <version>${coveralls-maven-plugin.version}</version>
-          </plugin>
-          -->
+          <!-- TODO - put this back when test suite is done <plugin> <groupId>org.eluder.coveralls</groupId> <artifactId>coveralls-maven-plugin</artifactId> 
+            <version>${coveralls-maven-plugin.version}</version> </plugin> -->
           <plugin>
             <groupId>org.jacoco</groupId>
             <artifactId>jacoco-maven-plugin</artifactId>
@@ -516,6 +524,12 @@ protocol to collect usage information about a Java application.
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
       <version>${assertj-core.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>${mockito-core.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

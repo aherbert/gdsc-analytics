@@ -32,8 +32,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.EnumSet;
 
+import org.assertj.core.api.AbstractUrlAssert;
 import org.assertj.core.api.Assertions;
-import org.assertj.core.api.UrlAssert;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
@@ -114,7 +114,7 @@ public class AnalyticsMeasurementProtocolURLBuilderTest {
         String url = b.buildURL(cp, rp, System.currentTimeMillis());
 
         //@formatter:off
-        UrlAssert a = (UrlAssert) Assertions.assertThat(new URL(host + url));
+        AbstractUrlAssert<?> a = Assertions.assertThat(new URL(host + url));
         a
         .hasParameter("v", version)
         .hasParameter("sc", "start")
@@ -159,7 +159,7 @@ public class AnalyticsMeasurementProtocolURLBuilderTest {
         url = b.buildURL(cp, rp, System.currentTimeMillis());
 
         //@formatter:off
-        a = (UrlAssert) Assertions.assertThat(new URL(host + url));
+        a = Assertions.assertThat(new URL(host + url));
         a
         .hasParameter("v", version)
         // No a new session
@@ -223,7 +223,7 @@ public class AnalyticsMeasurementProtocolURLBuilderTest {
         final String url = b.buildGetURL(cp, rp, System.currentTimeMillis());
 
         //@formatter:off
-        final UrlAssert a = (UrlAssert) Assertions.assertThat(new URL(host + url));
+        AbstractUrlAssert<?> a = Assertions.assertThat(new URL(host + url));
         a
         .hasParameter("v", version)
         .hasParameter("sc", "start")
@@ -254,10 +254,39 @@ public class AnalyticsMeasurementProtocolURLBuilderTest {
         }
         //@formatter:on
 
+        // Test the value will be ignored if null
+        rp.setValue(null);
+
         final String url2 = b.buildGetURL(cp, rp, System.currentTimeMillis());
         final String z1 = getZ(url);
         final String z2 = getZ(url2);
         Assertions.assertThat(z1).isNotEqualTo(z2);
+
+        a = Assertions.assertThat(new URL(host + url2));
+        a
+        .hasParameter("v", version)
+        // No a new session
+        .hasNoParameter("sc")
+        // Same client
+        .hasParameter("tid", trackingId)
+        .hasParameter("cid", clientId)
+        .hasParameter("an", applicationName)
+        .hasNoParameter("aid")
+        .hasNoParameter("av")
+        .hasNoParameter("sr")
+        .hasNoParameter("ul")
+        .hasNoParameter("ua")
+        .hasParameter("je", "1")
+        // Event hit with no value
+        .hasParameter("t", rp.getHitType())
+        .hasParameter("ec", category)
+        .hasParameter("ea", action)
+        .hasParameter("el", label)
+        // No event value
+        .hasNoParameter("ev")
+        .hasParameter("qt")
+        .hasParameter("z")
+        ;
     }
 
     private static String getZ(String url) {

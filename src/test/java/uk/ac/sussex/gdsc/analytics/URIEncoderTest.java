@@ -40,8 +40,8 @@ import org.junit.jupiter.api.Test;
 @SuppressWarnings("javadoc")
 public class URIEncoderTest {
 
-    private Logger logger = Logger.getLogger(URIEncoderTest.class.getName());
-    private Level level = Level.FINE;
+    private final Logger logger = Logger.getLogger(URIEncoderTest.class.getName());
+    private final Level level = Level.FINE;
 
     @Test
     public void testEncoder() throws Exception {
@@ -102,7 +102,7 @@ public class URIEncoderTest {
             String answer;
             try {
                 answer = URLEncoder.encode(string, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
+            } catch (final UnsupportedEncodingException e) {
                 throw new RuntimeException(e);
             }
             return "<<" + string + ">> == <<" + answer + ">> : <<" + encoded + ">>";

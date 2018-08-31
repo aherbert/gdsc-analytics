@@ -40,7 +40,7 @@ import java.util.logging.Logger;
 public class URIEncoder {
 
     /** The characters that do not require encoding. */
-    private final static BitSet dontNeedEncoding;
+    private final static boolean[] dontNeedEncoding;
     /** The space character. This is replaced with '+'. */
     private final static char SPACE = ' ';
     /** The plus '+' character. */
@@ -54,7 +54,7 @@ public class URIEncoder {
          * The list of characters that are not encoded has been determined as follows:
          *
          * RFC 2396 states:
-         * 
+         *
          * Data characters that are allowed in a URI but do not have a reserved purpose
          * are called unreserved. These include upper and lower case letters, decimal
          * digits, and a limited set of punctuation marks and symbols.
@@ -69,7 +69,7 @@ public class URIEncoder {
          *
          *
          * Note:
-         * 
+         *
          * It appears that both Netscape and Internet Explorer escape all special
          * characters from this list with the exception of "-", "_", ".", "*". While it
          * is not clear why they are escaping the other characters, perhaps it is safest
@@ -82,22 +82,20 @@ public class URIEncoder {
          * RFC in this matter, as is Netscape.
          */
 
-        dontNeedEncoding = new BitSet(256);
+        // The original code used a bitset but this has been switched here to an array
+        dontNeedEncoding = new boolean[123];
         int i;
-        for (i = 'a'; i <= 'z'; i++) {
-            dontNeedEncoding.set(i);
-        }
-        for (i = 'A'; i <= 'Z'; i++) {
-            dontNeedEncoding.set(i);
-        }
-        for (i = '0'; i <= '9'; i++) {
-            dontNeedEncoding.set(i);
-        }
-        dontNeedEncoding.set(' ');
-        dontNeedEncoding.set('-');
-        dontNeedEncoding.set('_');
-        dontNeedEncoding.set('.');
-        dontNeedEncoding.set('*');
+        for (i = 'a'; i <= 'z'; i++) // ASCII 97 - 122
+            dontNeedEncoding[i] = true;
+        for (i = 'A'; i <= 'Z'; i++) // ASCII 65 - 90
+            dontNeedEncoding[i] = true;
+        for (i = '0'; i <= '9'; i++) // ASCII 48 - 57
+            dontNeedEncoding[i] = true;
+        dontNeedEncoding[' '] = true; // ASCII 32
+        dontNeedEncoding['-'] = true; // ASCII 45
+        dontNeedEncoding['_'] = true; // ASCII 95
+        dontNeedEncoding['.'] = true; // ASCII 46
+        dontNeedEncoding['*'] = true; // ASCII 42
     }
 
     /**
@@ -109,10 +107,10 @@ public class URIEncoder {
 
     /**
      * Encode the string using UTF-8.
-     * 
+     *
      * <p>A check is made for any characters that require encoding. If {@code false}
      * the same string is returned.
-     * 
+     *
      * <p>Otherwise the actual encoding is performed by
      * {@link URLEncoder#encode(String, String)}.
      *
@@ -120,10 +118,9 @@ public class URIEncoder {
      * @return The encoded string
      */
     public static String encodeURI(String string) {
-        if (noEncodingRequired(string)) {
+        if (noEncodingRequired(string))
             // Handle special case of space character
             return encodeSpace(string);
-        }
         return encodeURI(string, "UTF-8");
     }
 
@@ -137,11 +134,9 @@ public class URIEncoder {
         if (string.indexOf(SPACE) == -1)
             return string;
         final char[] chars = string.toCharArray();
-        for (int i = 0; i < chars.length; i++) {
-            if (chars[i] == SPACE) {
+        for (int i = 0; i < chars.length; i++)
+            if (chars[i] == SPACE)
                 chars[i] = PLUS;
-            }
-        }
         return new String(chars);
     }
 
@@ -156,7 +151,7 @@ public class URIEncoder {
     static String encodeURI(String string, String encoding) throws RuntimeException {
         try {
             return URLEncoder.encode(string, encoding);
-        } catch (UnsupportedEncodingException e) {
+        } catch (final UnsupportedEncodingException e) {
             // UTF-8 is required by the Java platform so this should not happen
             Logger.getLogger(URIEncoder.class.getName()).severe("Unsupported encoding: " + e.getMessage());
             throw new RuntimeException(e);
@@ -171,10 +166,9 @@ public class URIEncoder {
      */
     public static boolean noEncodingRequired(String s) {
         Objects.requireNonNull(s, "The string is null");
-        for (int i = 0; i < s.length(); i++) {
+        for (int i = 0; i < s.length(); i++)
             if (!noEncodingRequired(s.charAt(i)))
                 return false;
-        }
         return true;
     }
 
@@ -184,8 +178,8 @@ public class URIEncoder {
      * @param c the character
      * @return true, if no encoding is required
      */
-    @SuppressWarnings("cast")
     public static boolean noEncodingRequired(char c) {
-        return dontNeedEncoding.get((int) c);
+        final int i = c;
+        return (i < dontNeedEncoding.length) ? dontNeedEncoding[i] : false;
     }
 }

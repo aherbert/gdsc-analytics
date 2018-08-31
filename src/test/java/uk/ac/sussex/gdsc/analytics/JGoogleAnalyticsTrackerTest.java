@@ -77,18 +77,21 @@ public class JGoogleAnalyticsTrackerTest {
         tracker.setDispatchMode(DispatchMode.SYNCHRONOUS);
         Assertions.assertEquals(DispatchMode.SYNCHRONOUS, tracker.getDispatchMode());
         Assertions.assertTrue(tracker.isSynchronous());
+        Assertions.assertFalse(tracker.isAsynchronous());
         Assertions.assertFalse(tracker.isSingleThreaded());
         Assertions.assertFalse(tracker.isMultiThreaded());
 
         tracker.setDispatchMode(DispatchMode.SINGLE_THREAD);
         Assertions.assertEquals(DispatchMode.SINGLE_THREAD, tracker.getDispatchMode());
         Assertions.assertFalse(tracker.isSynchronous());
+        Assertions.assertTrue(tracker.isAsynchronous());
         Assertions.assertTrue(tracker.isSingleThreaded());
         Assertions.assertFalse(tracker.isMultiThreaded());
 
         tracker.setDispatchMode(DispatchMode.MULTI_THREAD);
         Assertions.assertEquals(DispatchMode.MULTI_THREAD, tracker.getDispatchMode());
         Assertions.assertFalse(tracker.isSynchronous());
+        Assertions.assertTrue(tracker.isAsynchronous());
         Assertions.assertFalse(tracker.isSingleThreaded());
         Assertions.assertTrue(tracker.isMultiThreaded());
 
@@ -96,6 +99,7 @@ public class JGoogleAnalyticsTrackerTest {
         tracker.setDispatchMode(null);
         Assertions.assertEquals(DispatchMode.SINGLE_THREAD, tracker.getDispatchMode());
         Assertions.assertFalse(tracker.isSynchronous());
+        Assertions.assertTrue(tracker.isAsynchronous());
         Assertions.assertTrue(tracker.isSingleThreaded());
         Assertions.assertFalse(tracker.isMultiThreaded());
 
@@ -159,7 +163,10 @@ public class JGoogleAnalyticsTrackerTest {
         JGoogleAnalyticsTracker.setProxy(Proxy.NO_PROXY);
     }
 
-    // Q. How to test the dispatch?
-    // Can this use the proxy with a mock proxy?
-    // A. Create a mock dispatch receiver
+    @Test
+    public void testCompleteBackgroundTasksThrows() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            JGoogleAnalyticsTracker.completeBackgroundTasks(-1);
+        });
+    }
 }

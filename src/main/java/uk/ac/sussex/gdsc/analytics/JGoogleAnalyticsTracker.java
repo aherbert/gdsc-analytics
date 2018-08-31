@@ -28,6 +28,7 @@
  */
 package uk.ac.sussex.gdsc.analytics;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
@@ -35,125 +36,161 @@ import java.net.Proxy;
 import java.net.Proxy.Type;
 import java.net.SocketAddress;
 import java.net.URL;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+//@formatter:off
 /**
- * Common tracking calls are implemented as methods, but if you want to control
- * what data to send, then use {@link #makeCustomRequest(RequestParameters)}. If
- * you are making custom calls, the only requirements are:
+ * Send custom requests to Google Analytics (GA) using the <a href=
+ * "https://developers.google.com/analytics/devguides/collection/protocol/v1/">Google
+ * Analytics Measurement Protocol</a>.
+ *
+ * <p>The tracker can operate in three modes:
+ *
  * <ul>
- * <li>{@link RequestParameters#setDocumentPath(String)} must be populated</li>
+ * <li>Synchronous mode: The HTTP request is sent to GA immediately, before
+ *     the track method returns. This may slow your application down if GA doesn't
+ *     respond fast.
+ * <li>Multi-thread mode: Each track method call creates a new
+ *     short-lived thread that sends the HTTP request to GA in the background and
+ *     terminates.
+ * <li>Single-thread mode (the default): The track method stores the
+ *     request in a queue and returns immediately. A single long-lived background
+ *     thread processes the queue content and sends the HTTP requests to GA.
  * </ul>
- * See the <a
- * href=http://code.google.com/intl/en-US/apis/analytics/docs/tracking/gaTrackingTroubleshooting.html#gifParameters>
- * Google Troubleshooting Guide</a> for more info on the tracking parameters
- * (although it doesn't seem to be fully updated).
- * <p>
- * The tracker can operate in three modes:
- * </p>
+ *
+ * <p>Note: This class has been copied from the JGoogleAnalyticsTracker project
+ * and modified by Alex Herbert to:
+ *
  * <ul>
- * <li>synchronous mode: The HTTP request is sent to GA immediately, before the
- * track method returns. This may slow your application down if GA doesn't
- * respond fast.
- * <li>multi-thread mode: Each track method call creates a new short-lived
- * thread that sends the HTTP request to GA in the background and terminates.
- * <li>single-thread mode (the default): The track method stores the request in
- * a FIFO and returns immediately. A single long-lived background thread
- * consumes the FIFO content and sends the HTTP requests to GA.
+ * <li>Alter the data sent to Google Analytics to use the POST method for the Measurement Protocol.
+ * <li>Remove the slfj dependency, replaced with {@link java.util.logging.Logger}.
+ * <li>Make the logger specific to the instance
+ *     (since each instance may have a different GA tracking ID).
+ * <li>Use the {@code java.util.concurrent} for synchronisation and
+ *     {@link ExecutorService} for background requests.
  * </ul>
- * <p>
- * To halt the background thread safely, use the call
- * {@link #stopBackgroundThread(long)}, where the parameter is the timeout to
- * wait for any remaining queued tracking calls to be made. Keep in mind that if
- * new tracking requests are made after the thread is stopped, they will just be
- * stored in the queue, and will not be sent to GA until the thread is started
- * again with {@link #setDispatchMode(DispatchMode)} using
- * {@link DispatchMode#SINGLE_THREAD}.
- * </p>
- * <p>
- * Note: This class has been copied from the JGoogleAnalyticsTracker project and
- * modified by Alex Herbert to:
- * </p>
- * <ul>
- * <li>Alter the data sent to Google Analytics to use the POST method for the
- * Measurement Protocol
- * <li>Remove the slfj dependency
- * <li>Make the logger specific to the instance (since each instance may have a
- * different GA tracking ID)
- * </ul>
- * <p>
- * The architecture for dispatching messages is unchanged.
- * </p>
+ *
+ * <p>The architecture for dispatching messages is largely unchanged.
  *
  * @author Daniel Murphy, Stefan Brozinski, Alex Herbert
  */
+//@formatter:on
 public class JGoogleAnalyticsTracker {
+
+    /** The connection URL for Google Analytics over HTTP. */
+    public static final String HTTP_GOOGLE_ANALYTICS_URL = "http://www.google-analytics.com/collect";
+    /** The connection URL for Google Analytics over HTTPS. */
+    public static final String HTTPS_GOOGLE_ANALYTICS_URL = "https://www.google-analytics.com/collect";
+
     /**
      * The dispatch mode
      */
     public static enum DispatchMode {
-    /**
-     * Each tracking call will wait until the http request completes before
-     * returning
-     */
-    SYNCHRONOUS,
-    /**
-     * Each tracking call spawns a new thread to make the http request
-     */
-    MULTI_THREAD,
-    /**
-     * Each tracking request is added to a queue, and a single dispatch thread makes
-     * the requests.
-     * <p>
-     * The dispatch thread is shared by all instances of the class. To avoid your
-     * tracking calls being swamped by another tracker you could use the
-     * {@link #MULTI_THREAD} option and let the JVM figure out which request
-     * dispatch thread to run.
-     */
-    SINGLE_THREAD
-    }
+        /**
+         * Each tracking call will wait until the http request completes before
+         * returning
+         */
+        SYNCHRONOUS {
+            @Override
+            public boolean isAsynchronous() {
+                return false;
+            }
+        },
+        /**
+         * Each tracking call spawns a new thread to make the http request
+         */
+        MULTI_THREAD,
+        /**
+         * Each tracking request is added to a queue, and a single dispatch thread makes
+         * the requests.
+         *
+         * <p>The dispatch thread is shared by all instances of the class. To avoid your
+         * tracking calls being swamped by another tracker you could use the
+         * {@link #MULTI_THREAD} option and let the JVM figure out which request
+         * dispatch thread to run.
+         */
+        SINGLE_THREAD;
 
-    /**
-     * Allow the correct instance to be put into the request queue. This means that
-     * if the logger on the instance is changed after the request is added to the
-     * queue then the correct logger can be obtained from the instance getLogger()
-     * method.
-     */
-    private static class RequestData {
-        final RequestParameters requestParameters;
-        final long timestamp;
-        final JGoogleAnalyticsTracker tracker;
-
-        RequestData(RequestParameters requestParameters, long timestamp, JGoogleAnalyticsTracker tracker) {
-            this.requestParameters = requestParameters;
-            this.timestamp = timestamp;
-            this.tracker = tracker;
+        /**
+         * Checks if the mode is asynchronous (i.e. in the background).
+         *
+         * @return true, if asynchronous
+         */
+        public boolean isAsynchronous() {
+            return true;
         }
     }
 
-    private static final ThreadGroup asyncThreadGroup = new ThreadGroup("Async Google Analytics Threads");
-    private static AtomicLong asyncThreadsRunning = new AtomicLong(0);
-    private static Proxy proxy = Proxy.NO_PROXY;
-    // private static Queue<RequestData> fifo = new LinkedList<RequestData>();
-    private static BlockingQueue<RequestData> fifo = new LinkedBlockingQueue<>();
-    private static Thread backgroundThread = null; // the thread used in 'queued' mode.
-    private static boolean backgroundThreadMayRun = false;
-    // Java 1.6
-    private static Charset cs = Charset.forName("UTF-8");
-    // Java 1.7. Not yet used by this library.
-    // private static Charset cs = StandardCharsets.UTF_8;
+    /**
+     * The dispatch status
+     */
+    public static enum DispatchStatus {
+        /**
+         * The request has been ignored. This occurs when the tracked is disabled.
+         */
+        IGNORED,
+        /**
+         * The request has been processed. This occurs when using
+         * {@link DispatchMode#SYNCHRONOUS}.
+         */
+        COMPLETE,
+        /**
+         * The request has errored. This occurs when using
+         * {@link DispatchMode#SYNCHRONOUS}.
+         */
+        ERROR,
+        /**
+         * The request is running. This occurs when using
+         * {@link DispatchMode#MULTI_THREAD} or {@link DispatchMode#SINGLE_THREAD}.
+         */
+        RUNNING;
+    }
+
+    /** The logger for all static methods. */
+    private static final Logger logger = Logger.getLogger(JGoogleAnalyticsTracker.class.getName());
+
+    /** The executor service for {@link DispatchMode#MULTI_THREAD} mode. */
+    private static final ExecutorService multiThreadExecutor;
+
+    /** The executor service for {@link DispatchMode#SINGLE_THREAD} mode. */
+    private static final ExecutorService singleThreadExecutor;
+
+    /**
+     * The count of the number of tasks waiting in the background.
+     */
+    private static AtomicLong backgroundTasks = new AtomicLong(0);
+
+    /** The proxy using for tracking requests. */
+    private static Proxy proxy = null;
 
     static {
-        asyncThreadGroup.setMaxPriority(Thread.MIN_PRIORITY);
-        asyncThreadGroup.setDaemon(true);
+        multiThreadExecutor = Executors.newCachedThreadPool((r) -> newThread(r));
+        singleThreadExecutor = Executors.newFixedThreadPool(1, (r) -> newThread(r));
+    }
+
+    /** The thread number, incremented for new threads. */
+    private static final AtomicInteger threadNumber = new AtomicInteger(1);
+
+    /**
+     * Create a new background thread.
+     *
+     * @param r the runnable
+     * @return the thread
+     */
+    private static Thread newThread(Runnable r) {
+        final Thread t = new Thread(r, "GoogleAnalyticsThread-" + threadNumber.getAndIncrement());
+        t.setDaemon(true);
+        t.setPriority(Thread.MIN_PRIORITY);
+        return t;
     }
 
     /**
@@ -169,11 +206,22 @@ public class JGoogleAnalyticsTracker {
         V_1
     }
 
-    private Logger logger = Logger.getLogger(JGoogleAnalyticsTracker.class.getName());
+    /** The instance logger. This is initialised as the static logger. */
+    private Logger instanceLogger = logger;
+
+    /** The client parameters. */
     private final ClientParameters clientParameters;
+
+    /** The URL builder. */
     private final IAnalyticsMeasurementProtocolURLBuilder builder;
+
+    /** The dispatch mode. */
     private DispatchMode mode;
+
+    /** The enabled flag. */
     private boolean enabled;
+
+    /** The secure flag. Set to true to use HTTPS. */
     private boolean secure;
 
     /**
@@ -202,7 +250,7 @@ public class JGoogleAnalyticsTracker {
     }
 
     /**
-     * Sets the dispatch mode
+     * Sets the dispatch mode.
      *
      * @see DispatchMode
      * @param mode the mode to to put the tracker in. If this is null, the tracker
@@ -211,8 +259,6 @@ public class JGoogleAnalyticsTracker {
     public void setDispatchMode(DispatchMode mode) {
         if (mode == null)
             mode = DispatchMode.SINGLE_THREAD;
-        if (mode == DispatchMode.SINGLE_THREAD)
-            startBackgroundThread(logger);
         this.mode = mode;
     }
 
@@ -231,15 +277,26 @@ public class JGoogleAnalyticsTracker {
      * Convenience method to check if the tracker is in synchronous mode.
      *
      * @return true, if is synchronous
+     * @see DispatchMode#SYNCHRONOUS
      */
     public boolean isSynchronous() {
         return mode == DispatchMode.SYNCHRONOUS;
     }
 
     /**
+     * Convenience method to check if the tracker is in an asynchronous mode.
+     *
+     * @return true, if is asynchronous
+     */
+    public boolean isAsynchronous() {
+        return mode.isAsynchronous();
+    }
+
+    /**
      * Convenience method to check if the tracker is in single-thread mode.
      *
      * @return true, if is single threaded
+     * @see DispatchMode#SINGLE_THREAD
      */
     public boolean isSingleThreaded() {
         return mode == DispatchMode.SINGLE_THREAD;
@@ -249,42 +306,43 @@ public class JGoogleAnalyticsTracker {
      * Convenience method to check if the tracker is in multi-thread mode.
      *
      * @return true, if is multi threaded
+     * @see DispatchMode#MULTI_THREAD
      */
     public boolean isMultiThreaded() {
         return mode == DispatchMode.MULTI_THREAD;
     }
 
     /**
-     * Sets if the api dispatches tracking requests.
+     * Sets to true to enable dispatching tracking requests.
      *
-     * @param enabled the new enabled
+     * @param enabled true if enabled
      */
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
     }
 
     /**
-     * If the api is dispatching tracking requests (default of true).
+     * Check if dispatching tracking requests.
      *
-     * @return true, if is enabled
+     * @return true if enabled
      */
     public boolean isEnabled() {
         return enabled;
     }
 
     /**
-     * Checks if is using HTTPS.
+     * Checks if is using a secure connection (HTTPS).
      *
-     * @return true, if is secure
+     * @return true if is secure
      */
     public boolean isSecure() {
         return secure;
     }
 
     /**
-     * Sets to true to use HTTPS.
+     * Sets to true to use a secure connection (HTTPS).
      *
-     * @param secure the new secure
+     * @param secure true if is secure
      */
     public void setSecure(boolean secure) {
         this.secure = secure;
@@ -292,26 +350,24 @@ public class JGoogleAnalyticsTracker {
 
     /**
      * Define the proxy to use for all GA tracking requests. You can pass
-     * Proxy.NO_PROXY to explicit use no proxy. Pass null to revert to the system
+     * Proxy.NO_PROXY to explicitly use no proxy. Pass null to revert to the system
      * default mechanism for connecting.
-     * <p>
-     * Call this static method early (before creating any tracking requests).
+     *
+     * <p>Call this static method early (before creating any tracking requests).
      *
      * @param proxy The proxy to use
      */
     public static void setProxy(Proxy proxy) {
-        if (proxy == null)
-            proxy = Proxy.NO_PROXY;
         JGoogleAnalyticsTracker.proxy = proxy;
     }
 
     /**
      * Define the proxy to use for all GA tracking requests.
-     * <p>
-     * Call this static method early (before creating any tracking requests).
-     * <p>
-     * If no proxy can be set then this will reset the proxy to
-     * {@link Proxy#NO_PROXY}.
+     *
+     * <p>Call this static method early (before creating any tracking requests).
+     *
+     * <p>If no proxy can be set then this will revert the system to default
+     * mechanism for connecting.
      *
      * @param proxyAddress "hostname:port" of the proxy to use; may also be given as
      *                     URL ("http://hostname:port/").
@@ -330,46 +386,63 @@ public class JGoogleAnalyticsTracker {
                 return true;
             }
         }
-        setProxy(Proxy.NO_PROXY);
+        setProxy((Proxy) null);
         return false;
     }
 
     /**
      * Wait for background tasks to complete.
-     * <p>
-     * This works in {@link DispatchMode#SINGLE_THREAD} and
+     *
+     * <p>This works in {@link DispatchMode#SINGLE_THREAD} and
      * {@link DispatchMode#MULTI_THREAD} mode.
      *
+     * <p>Returns {@code true} if there are no background tasks remaining.
+     *
+     * <p>An {@link InterruptedException} on this thread causes this method to stop
+     * waiting.
+     *
      * @param timeoutMillis The maximum number of milliseconds to wait.
+     * @return true if there are no background tasks remaining
+     * @throws IllegalArgumentException if the timeout is negative
+     * @see #hasBackgroundTasks()
      */
-    public static void completeBackgroundTasks(long timeoutMillis) {
-        boolean fifoEmpty = false;
-        boolean asyncThreadsCompleted = false;
-
-        final long absTimeout = System.currentTimeMillis() + timeoutMillis;
-        while (System.currentTimeMillis() < absTimeout) {
-            fifoEmpty = fifo.size() == 0;
-            asyncThreadsCompleted = (asyncThreadsRunning.get() == 0);
-
-            if (fifoEmpty && asyncThreadsCompleted)
-                break;
-
+    public static boolean completeBackgroundTasks(long timeoutMillis) throws IllegalArgumentException {
+        if (timeoutMillis < 0)
+            throw new IllegalArgumentException("Timeout must be positive: " + timeoutMillis);
+        final long endTime = System.currentTimeMillis() + timeoutMillis;
+        while (hasBackgroundTasks()) {
             try {
                 Thread.sleep(100);
             } catch (final InterruptedException e) {
-                break;
+                // Stop waiting
+                return !hasBackgroundTasks();
             }
+            if (System.currentTimeMillis() >= endTime)
+                // Timeout
+                return !hasBackgroundTasks();
         }
+        // Normal exit: no tasks
+        return true;
+    }
+
+    /**
+     * Checks for background tasks.
+     *
+     * @return true, if there are background tasks
+     */
+    public static boolean hasBackgroundTasks() {
+        return backgroundTasks.get() != 0;
     }
 
     /**
      * Makes a custom tracking request based on the given data.
      *
      * @param requestParameters The request parameters
-     * @throws NullPointerException if requestData is null
+     * @return the dispatch status
+     * @throws NullPointerException if request parameters are null
      */
-    public void makeCustomRequest(RequestParameters requestParameters) {
-        makeCustomRequest(requestParameters, System.currentTimeMillis());
+    public DispatchStatus makeCustomRequest(RequestParameters requestParameters) {
+        return makeCustomRequest(requestParameters, System.currentTimeMillis());
     }
 
     /**
@@ -378,43 +451,75 @@ public class JGoogleAnalyticsTracker {
      * @param requestParameters The request parameters
      * @param timestamp         The timestamp when the hit was reported (in
      *                          milliseconds)
-     * @throws NullPointerException if requestData is null
+     * @return the dispatch status
+     * @throws NullPointerException if request parameters are null
      */
-    public void makeCustomRequest(final RequestParameters requestParameters, final long timestamp) {
+    public DispatchStatus makeCustomRequest(final RequestParameters requestParameters, final long timestamp) {
         if (!enabled) {
-            logger.fine("Ignoring tracking request, enabled is false");
-            return;
+            instanceLogger.fine("Ignoring tracking request, enabled is false");
+            return DispatchStatus.IGNORED;
         }
         Objects.requireNonNull(requestParameters, "Request parameters cannot be null");
 
+        DispatchStatus status;
         switch (mode) {
         case MULTI_THREAD:
-            final Thread t = new Thread(asyncThreadGroup, "AnalyticsThread-" + asyncThreadGroup.activeCount()) {
-                @Override
-                public void run() {
-                    asyncThreadsRunning.getAndIncrement();
-                    try {
-                        dispatchRequest(builder, clientParameters, requestParameters, timestamp, logger, secure);
-                    } finally {
-                        asyncThreadsRunning.getAndDecrement();
-                    }
-                }
-            };
-            t.setDaemon(true);
-            t.start();
+            executeDispatchRequest(multiThreadExecutor, requestParameters, timestamp);
+            status = DispatchStatus.RUNNING;
             break;
 
         case SYNCHRONOUS:
-            dispatchRequest(builder, clientParameters, requestParameters, timestamp, logger, secure);
+            // Do on the same thread
+            if (dispatchRequest(requestParameters, timestamp))
+                status = DispatchStatus.COMPLETE;
+            else
+                status = DispatchStatus.ERROR;
             break;
 
         case SINGLE_THREAD:
-        default: // in case it's null, we default to the single-thread
-            fifo.add(new RequestData(requestParameters, timestamp, this));
-            if (!backgroundThreadMayRun)
-                logger.severe("A tracker request has been added to the queue but the background thread isn't running.");
+            // Fall through
+        default: // Default to the single-thread
+            executeDispatchRequest(singleThreadExecutor, requestParameters, timestamp);
+            status = DispatchStatus.RUNNING;
             break;
         }
+        return status;
+    }
+
+    /**
+     * Submit the dispatch request using the provided executor.
+     *
+     * @param executorService   the executor service
+     * @param requestParameters The request parameter data
+     * @param timestamp         The timestamp when the hit was reported (in
+     *                          milliseconds)
+     */
+    private void executeDispatchRequest(ExecutorService executorService, final RequestParameters requestParameters,
+            final long timestamp) {
+        // Increment the task count
+        backgroundTasks.getAndIncrement();
+        // Submit a new runnable
+        executorService.execute(() -> {
+            try {
+                dispatchRequest(requestParameters, timestamp);
+            } finally {
+                // The task has run
+                backgroundTasks.getAndDecrement();
+            }
+        });
+    }
+
+    /**
+     * Send the parameters to Google Analytics using the Measurement Protocol. This
+     * uses the HTTP POST method.
+     *
+     * @param requestParameters The request parameter data
+     * @param timestamp         The timestamp when the hit was reported (in
+     *                          milliseconds)
+     * @return true, if successful
+     */
+    private boolean dispatchRequest(final RequestParameters requestParameters, final long timestamp) {
+        return dispatchRequest(builder, clientParameters, requestParameters, timestamp, instanceLogger, secure);
     }
 
     /**
@@ -429,23 +534,20 @@ public class JGoogleAnalyticsTracker {
      *                          milliseconds)
      * @param logger            The logger used for status messages
      * @param secure            the secure
+     * @return true, if successful
      */
-    private static void dispatchRequest(IAnalyticsMeasurementProtocolURLBuilder builder,
+    private static boolean dispatchRequest(IAnalyticsMeasurementProtocolURLBuilder builder,
             ClientParameters clientParameters, RequestParameters requestParameters, long timestamp, Logger logger,
             boolean secure) {
         HttpURLConnection connection = null;
         try {
             final String parameters = builder.buildURL(clientParameters, requestParameters, timestamp);
-            final URL url = new URL(
-                    (secure) ? "https://www.google-analytics.com/collect" : "http://www.google-analytics.com/collect");
-            connection = (HttpURLConnection) url.openConnection(proxy);
+            final URL url = new URL((secure) ? HTTPS_GOOGLE_ANALYTICS_URL : HTTP_GOOGLE_ANALYTICS_URL);
+            connection = (HttpURLConnection) ((proxy == null) ? url.openConnection() : url.openConnection(proxy));
             connection.setRequestMethod("POST");
             connection.setDoOutput(true);
             connection.setUseCaches(false);
-            // Java 1.5 method
-            // final byte[] out = parameters.getBytes("UTF-8");
-            // Java 1.6 method
-            final byte[] out = parameters.getBytes(cs);
+            final byte[] out = parameters.getBytes(StandardCharsets.UTF_8);
             final int length = out.length;
             connection.setFixedLengthStreamingMode(length);
             connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8");
@@ -454,20 +556,28 @@ public class JGoogleAnalyticsTracker {
                 os.write(out);
             }
             final int responseCode = connection.getResponseCode();
-            if (responseCode != HttpURLConnection.HTTP_OK) {
-                logger.severe(() -> String.format(
-                        "JGoogleAnalyticsTracker: Error requesting url '%s', received response code %d", parameters,
-                        responseCode));
-            } else {
-                logger.fine(() -> String.format("JGoogleAnalyticsTracker: Tracking success for url '%s'", parameters));
+            if (responseCode != HttpURLConnection.HTTP_OK)
+                logger.severe(() -> {
+                    return String.format(
+                            "JGoogleAnalyticsTracker: Error requesting url '%s', received response code %d", parameters,
+                            responseCode);
+                });
+            else {
+                logger.fine(() -> {
+                    return String.format("JGoogleAnalyticsTracker: Tracking success for url '%s'", parameters);
+                });
+                // This is a success. All other returns are false.
+                return true;
             }
-        } catch (final Exception e) {
-            logger.severe(() -> "Error making tracking request: " + e.getMessage());
+        } catch (final IOException e) {
+            logger.log(Level.SEVERE, "Error making tracking request: " + e.getMessage(), e);
+            // logger.log(Level.SEVERE, "Error making tracking request: " + e.getMessage());
             // Q. Should this rethrow?
         } finally {
             if (connection != null)
                 connection.disconnect();
         }
+        return false;
     }
 
     /**
@@ -477,70 +587,9 @@ public class JGoogleAnalyticsTracker {
      * @return the URL builder
      */
     private static IAnalyticsMeasurementProtocolURLBuilder createBuilder(MeasurementProtocolVersion version) {
-        switch (version) {
-        case V_1:
-        default:
-            return new AnalyticsMeasurementProtocolURLBuilder();
-        }
-    }
-
-    /**
-     * If the background thread for 'queued' mode is not running, start it now.
-     */
-    private synchronized static void startBackgroundThread(final Logger logger) {
-        if (backgroundThread == null || !backgroundThread.isAlive()) {
-            backgroundThreadMayRun = true;
-            backgroundThread = new Thread(asyncThreadGroup, "AnalyticsBackgroundThread") {
-                @Override
-                public void run() {
-                    logger.fine("AnalyticsBackgroundThread started");
-                    try {
-                        while (backgroundThreadMayRun) {
-                            final RequestData data = fifo.take();
-                            if (data.requestParameters == null) {
-                                // Ignore shutdown signals
-                                continue;
-                            }
-                            dispatchRequest(data.tracker.builder, data.tracker.clientParameters, data.requestParameters,
-                                    data.timestamp, data.tracker.logger, data.tracker.secure);
-                        }
-                    } catch (final InterruptedException e) {
-                        logger.warning(() -> "Background thread interrupted: " + e.getMessage());
-                    } finally {
-                        backgroundThreadMayRun = false;
-                    }
-                }
-            };
-
-            // Don't prevent the application from terminating.
-            // Use completeBackgroundTasks() before exit if you want to ensure
-            // that all pending GA requests are sent.
-            backgroundThread.setDaemon(true);
-            backgroundThread.start();
-        }
-    }
-
-    /**
-     * Stop the long-lived background thread.
-     * <p>
-     * This method is needed for debugging purposes only. Calling it in an
-     * application is not really required: The background thread will terminate
-     * automatically when the application exits.
-     *
-     * @param timeoutMillis If nonzero, wait for thread completion before returning.
-     */
-    public synchronized static void stopBackgroundThread(long timeoutMillis) {
-        backgroundThreadMayRun = false;
-        // Pass a shutdown signal to the queue
-        fifo.add(new RequestData(null, 0, null));
-        if ((backgroundThread != null) && (timeoutMillis > 0)) {
-            try {
-                backgroundThread.join(timeoutMillis);
-            } catch (final InterruptedException e) {
-                // Ignore
-            }
-            backgroundThread = null;
-        }
+        // Only one version at the moment. Test that it has been set.
+        Objects.requireNonNull(version, "Version is null");
+        return new AnalyticsMeasurementProtocolURLBuilder();
     }
 
     /**
@@ -549,7 +598,7 @@ public class JGoogleAnalyticsTracker {
      * @return the logger
      */
     public Logger getLogger() {
-        return logger;
+        return instanceLogger;
     }
 
     /**
@@ -563,7 +612,7 @@ public class JGoogleAnalyticsTracker {
             logger = Logger.getAnonymousLogger();
             logger.setLevel(Level.OFF);
         }
-        this.logger = logger;
+        this.instanceLogger = logger;
     }
 
     /**
