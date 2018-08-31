@@ -440,18 +440,18 @@ public class GoogleAnalyticsTracker {
     }
 
     /**
-     * Makes a custom tracking request based on the given data.
+     * Send the tracking request to Google Analytics.
      *
      * @param requestParameters The request parameters
      * @return the dispatch status
      * @throws NullPointerException if request parameters are null
      */
-    public DispatchStatus makeCustomRequest(RequestParameters requestParameters) {
-        return makeCustomRequest(requestParameters, System.currentTimeMillis());
+    public DispatchStatus send(RequestParameters requestParameters) {
+        return send(requestParameters, System.currentTimeMillis());
     }
 
     /**
-     * Makes a custom tracking request based on the given data.
+     * Send the tracking request to Google Analytics.
      *
      * @param requestParameters The request parameters
      * @param timestamp         The timestamp when the hit was reported (in
@@ -459,7 +459,7 @@ public class GoogleAnalyticsTracker {
      * @return the dispatch status
      * @throws NullPointerException if request parameters are null
      */
-    public DispatchStatus makeCustomRequest(final RequestParameters requestParameters, final long timestamp) {
+    public DispatchStatus send(final RequestParameters requestParameters, final long timestamp) {
         if (!isEnabled()) {
             instanceLogger.fine("Ignoring tracking request, enabled is false");
             return DispatchStatus.IGNORED;

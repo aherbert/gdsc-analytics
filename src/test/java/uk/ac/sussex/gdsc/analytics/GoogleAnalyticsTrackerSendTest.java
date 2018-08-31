@@ -65,7 +65,7 @@ import uk.ac.sussex.gdsc.analytics.GoogleAnalyticsTracker.DispatchStatus;
  * requests
  */
 @SuppressWarnings("javadoc")
-public class GoogleAnalyticsTrackerDispatchTest {
+public class GoogleAnalyticsTrackerSendTest {
     private final String trackingId = "AAA-123-456";
     private final String clientId = "Anything";
     private final String applicationName = "Test";
@@ -180,85 +180,85 @@ public class GoogleAnalyticsTrackerDispatchTest {
     }
 
     @Test
-    public void testHttpSynchronousDispatch() throws Exception {
+    public void testHttpSynchronousSend() throws Exception {
         // This allows the logging for a tracking success to be hit
         final Level l = gaLogger.getLevel();
         gaLogger.setLevel(Level.FINE);
-        testDispatch(false, false, DispatchMode.SYNCHRONOUS);
+        testSend(false, false, DispatchMode.SYNCHRONOUS);
         gaLogger.setLevel(l);
     }
 
     @Test
-    public void testHttpSingleThreadDispatch() throws Exception {
-        testDispatch(false, false, DispatchMode.SINGLE_THREAD);
+    public void testHttpSingleThreadSend() throws Exception {
+        testSend(false, false, DispatchMode.SINGLE_THREAD);
     }
 
     @Test
-    public void testHttpMultiThreadDispatch() throws Exception {
-        testDispatch(false, false, DispatchMode.MULTI_THREAD);
+    public void testHttpMultiThreadSend() throws Exception {
+        testSend(false, false, DispatchMode.MULTI_THREAD);
     }
 
     @Test
-    public void testHttpsSynchronousDispatch() throws Exception {
-        testDispatch(true, false, DispatchMode.SYNCHRONOUS);
+    public void testHttpsSynchronousSend() throws Exception {
+        testSend(true, false, DispatchMode.SYNCHRONOUS);
     }
 
     @Test
-    public void testHttpsSingleThreadDispatch() throws Exception {
-        testDispatch(true, false, DispatchMode.SINGLE_THREAD);
+    public void testHttpsSingleThreadSend() throws Exception {
+        testSend(true, false, DispatchMode.SINGLE_THREAD);
     }
 
     @Test
-    public void testHttpsMultiThreadDispatch() throws Exception {
-        testDispatch(true, false, DispatchMode.MULTI_THREAD);
+    public void testHttpsMultiThreadSend() throws Exception {
+        testSend(true, false, DispatchMode.MULTI_THREAD);
     }
 
     @Test
-    public void testHttpProxySynchronousDispatch() throws Exception {
-        testDispatch(false, true, DispatchMode.SYNCHRONOUS);
+    public void testHttpProxySynchronousSend() throws Exception {
+        testSend(false, true, DispatchMode.SYNCHRONOUS);
     }
 
     @Test
-    public void testHttpProxySingleThreadDispatch() throws Exception {
-        testDispatch(false, true, DispatchMode.SINGLE_THREAD);
+    public void testHttpProxySingleThreadSend() throws Exception {
+        testSend(false, true, DispatchMode.SINGLE_THREAD);
     }
 
     @Test
-    public void testHttpProxyMultiThreadDispatch() throws Exception {
-        testDispatch(false, true, DispatchMode.MULTI_THREAD);
+    public void testHttpProxyMultiThreadSend() throws Exception {
+        testSend(false, true, DispatchMode.MULTI_THREAD);
     }
 
     @Test
-    public void testHttpsProxySynchronousDispatch() throws Exception {
-        testDispatch(true, true, DispatchMode.SYNCHRONOUS);
+    public void testHttpsProxySynchronousSend() throws Exception {
+        testSend(true, true, DispatchMode.SYNCHRONOUS);
     }
 
     @Test
-    public void testHttpsProxySingleThreadDispatch() throws Exception {
-        testDispatch(true, true, DispatchMode.SINGLE_THREAD);
+    public void testHttpsProxySingleThreadSend() throws Exception {
+        testSend(true, true, DispatchMode.SINGLE_THREAD);
     }
 
     @Test
-    public void testHttpsProxyMultiThreadDispatch() throws Exception {
-        testDispatch(true, true, DispatchMode.MULTI_THREAD);
+    public void testHttpsProxyMultiThreadSend() throws Exception {
+        testSend(true, true, DispatchMode.MULTI_THREAD);
     }
 
     @Test
-    public void testHttpSynchronousDispatchWithBadResponse() throws Exception {
-        testDispatch(true, true, DispatchMode.SYNCHRONOUS, HttpURLConnection.HTTP_INTERNAL_ERROR, false);
+    public void testHttpSynchronousSendWithBadResponse() throws Exception {
+        testSend(true, true, DispatchMode.SYNCHRONOUS, HttpURLConnection.HTTP_INTERNAL_ERROR, false);
     }
 
     @Test
-    public void testHttpSynchronousDispatchWithIOException() throws Exception {
-        testDispatch(true, true, DispatchMode.SYNCHRONOUS, HttpURLConnection.HTTP_OK, true);
+    public void testHttpSynchronousSendWithIOException() throws Exception {
+        testSend(true, true, DispatchMode.SYNCHRONOUS, HttpURLConnection.HTTP_OK, true);
     }
 
-    private void testDispatch(boolean secure, boolean proxy, DispatchMode mode) throws Exception {
-        testDispatch(secure, proxy, mode, HttpURLConnection.HTTP_OK, false);
+    private void testSend(boolean secure, boolean proxy, DispatchMode mode) throws Exception {
+        testSend(secure, proxy, mode, HttpURLConnection.HTTP_OK, false);
     }
 
     @SuppressWarnings({ "unchecked" })
-    private void testDispatch(boolean secure, boolean proxy, DispatchMode mode, int responseCode, boolean ioException)
+    private void testSend(boolean secure, boolean proxy, DispatchMode mode, int responseCode, boolean ioException)
             throws Exception {
 
         final ByteArrayOutputStream out = new ByteArrayOutputStream(1024);
@@ -288,7 +288,7 @@ public class GoogleAnalyticsTrackerDispatchTest {
 
         final RequestParameters rp = createRequest("path 1", "title 2");
 
-        final DispatchStatus status = tracker.makeCustomRequest(rp);
+        final DispatchStatus status = tracker.send(rp);
 
         if (mode.isAsynchronous()) {
             // Wait for the request to be queued
@@ -373,7 +373,7 @@ public class GoogleAnalyticsTrackerDispatchTest {
     }
 
     @Test
-    public void testMakeRequest() throws Exception {
+    public void testConsecutiveSend() throws Exception {
 
         // 1. Synchronous
         // 2. Single-thread
@@ -386,7 +386,7 @@ public class GoogleAnalyticsTrackerDispatchTest {
 
         // Ignored
         tracker.setEnabled(false);
-        Assertions.assertThat(tracker.makeCustomRequest(createRequest("p", "t"))).isEqualTo(DispatchStatus.IGNORED);
+        Assertions.assertThat(tracker.send(createRequest("p", "t"))).isEqualTo(DispatchStatus.IGNORED);
 
         tracker.setEnabled(true);
 
@@ -395,15 +395,15 @@ public class GoogleAnalyticsTrackerDispatchTest {
 
         // 1. Syncrhonous OK
         tracker.setDispatchMode(DispatchMode.SYNCHRONOUS);
-        Assertions.assertThat(tracker.makeCustomRequest(requests.get(c++))).isEqualTo(DispatchStatus.COMPLETE);
+        Assertions.assertThat(tracker.send(requests.get(c++))).isEqualTo(DispatchStatus.COMPLETE);
 
         // 2. Single-thread
         tracker.setDispatchMode(DispatchMode.SINGLE_THREAD);
-        Assertions.assertThat(tracker.makeCustomRequest(requests.get(c++))).isEqualTo(DispatchStatus.RUNNING);
+        Assertions.assertThat(tracker.send(requests.get(c++))).isEqualTo(DispatchStatus.RUNNING);
 
         // 3. Single-thread (background running)
         tracker.setDispatchMode(DispatchMode.MULTI_THREAD);
-        Assertions.assertThat(tracker.makeCustomRequest(requests.get(c++))).isEqualTo(DispatchStatus.RUNNING);
+        Assertions.assertThat(tracker.send(requests.get(c++))).isEqualTo(DispatchStatus.RUNNING);
 
         Assertions.assertThat(GoogleAnalyticsTracker.completeBackgroundTasks(1000)).isEqualTo(true);
 
@@ -446,16 +446,16 @@ public class GoogleAnalyticsTrackerDispatchTest {
     }
 
     @Test
-    public void testMultiThreadRequests() throws Exception {
-        testBackgroundThreadRequests(50, DispatchMode.MULTI_THREAD);
+    public void testMultiThreadBatchSend() throws Exception {
+        testBatchSend(50, DispatchMode.MULTI_THREAD);
     }
 
     @Test
-    public void testSingleThreadRequests() throws Exception {
-        testBackgroundThreadRequests(50, DispatchMode.SINGLE_THREAD);
+    public void testSingleThreadBatchSend() throws Exception {
+        testBatchSend(50, DispatchMode.SINGLE_THREAD);
     }
 
-    private void testBackgroundThreadRequests(int size, DispatchMode mode) throws Exception {
+    private void testBatchSend(int size, DispatchMode mode) throws Exception {
 
         final List<ByteArrayOutputStream> output = setupFastConnections(size);
 
@@ -465,7 +465,7 @@ public class GoogleAnalyticsTrackerDispatchTest {
 
         final List<RequestParameters> requests = setupRequests(output.size());
         for (final RequestParameters rp : requests)
-            tracker.makeCustomRequest(rp);
+            tracker.send(rp);
 
         // Hope that we can hit the timeout
         final boolean notFinished = GoogleAnalyticsTracker.completeBackgroundTasks(100);
@@ -484,6 +484,12 @@ public class GoogleAnalyticsTrackerDispatchTest {
         }
     }
 
+    /**
+     * Test a failed connection disables. This is handled differently to any other
+     * IO exception so has a separate test.
+     *
+     * @throws Exception the exception
+     */
     @Test
     public void testFailedConnectionDisables() throws Exception {
 
@@ -499,7 +505,7 @@ public class GoogleAnalyticsTrackerDispatchTest {
         final GoogleAnalyticsTracker tracker = new GoogleAnalyticsTracker(cp, DispatchMode.SYNCHRONOUS);
         final RequestParameters rp = createRequest("path", "title");
 
-        DispatchStatus status = tracker.makeCustomRequest(rp);
+        DispatchStatus status = tracker.send(rp);
         Assertions.assertThat(status).isEqualTo(DispatchStatus.ERROR);
         Assertions.assertThat(tracker.isEnabled()).isEqualTo(false);
         Assertions.assertThat(GoogleAnalyticsTracker.isDisabled()).isEqualTo(true);

@@ -22,8 +22,7 @@ Functionality includes:
 Example:
 
 ```java
-import uk.ac.sussex.gdsc.analytics.GoogleAnalyticsTracker;
-import uk.ac.sussex.gdsc.analytics.GoogleAnalyticsTracker.*;
+import uk.ac.sussex.gdsc.analytics.*;
 
 // Create the tracker
 String trackingId = "AAA-123-456"; // Your Google Analytics tracking ID
@@ -37,7 +36,7 @@ GoogleAnalyticsTracker tracker = new GoogleAnalyticsTracker(cp);
 RequestParameters rp = new RequestParameters(HitType.PAGEVIEW);
 rp.setDocumentPath("/path/within/application/");
 rp.setDocumentTitle("Test Page");
-tracker.makeCustomRequest(rp);
+tracker.send(rp);
 ```
 
 This would create a protocol parameter string of:

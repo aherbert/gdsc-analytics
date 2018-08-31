@@ -63,4 +63,23 @@ public class ConnectionTest {
                 connection.disconnect();
         }
     }
+
+    /**
+     * Demo of using the tracker. This code is placed in the project README.md file.
+     */
+    public void demo() {
+        // Create the tracker
+        String trackingId = "AAA-123-456"; // Your Google Analytics tracking ID
+        String clientId = "Anything";
+        String applicationName = "Test";
+
+        ClientParameters cp = new ClientParameters(trackingId, clientId, applicationName);
+        GoogleAnalyticsTracker tracker = new GoogleAnalyticsTracker(cp);
+
+        // Submit requests
+        RequestParameters rp = new RequestParameters(HitType.PAGEVIEW);
+        rp.setDocumentPath("/path/within/application/");
+        rp.setDocumentTitle("Test Page");
+        tracker.send(rp);
+    }
 }
