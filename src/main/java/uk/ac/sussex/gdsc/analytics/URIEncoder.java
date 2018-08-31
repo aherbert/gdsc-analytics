@@ -2,28 +2,24 @@
  * #%L
  * Genome Damage and Stability Centre Analytics Package
  *
- * The GDSC Analytics package contains code to use the Google Analytics Measurement
- * protocol to collect usage information about a Java application.
+ * The GDSC Analytics package contains code to use the Google Analytics
+ * Measurement protocol to collect usage information about a Java application.
  * %%
- * Copyright (C) 2010 - 2018 Alex Herbert, Daniel Murphy
+ * Copyright (C) 2010 - 2018 Alex Herbert
  * %%
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
  *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
 package uk.ac.sussex.gdsc.analytics;
@@ -39,11 +35,11 @@ import java.util.logging.Logger;
 public class URIEncoder {
 
     /** The characters that do not require encoding. */
-    private final static boolean[] dontNeedEncoding;
+    private static final boolean[] dontNeedEncoding;
     /** The space character. This is replaced with '+'. */
-    private final static char SPACE = ' ';
+    private static final char SPACE = ' ';
     /** The plus '+' character. */
-    private final static char PLUS = '+';
+    private static final char PLUS = '+';
 
     static {
 
@@ -84,12 +80,15 @@ public class URIEncoder {
         // The original code used a bitset but this has been switched here to an array
         dontNeedEncoding = new boolean[123];
         int i;
-        for (i = 'a'; i <= 'z'; i++) // ASCII 97 - 122
+        for (i = 'a'; i <= 'z'; i++) { // ASCII 97 - 122
             dontNeedEncoding[i] = true;
-        for (i = 'A'; i <= 'Z'; i++) // ASCII 65 - 90
+        }
+        for (i = 'A'; i <= 'Z'; i++) { // ASCII 65 - 90
             dontNeedEncoding[i] = true;
-        for (i = '0'; i <= '9'; i++) // ASCII 48 - 57
+        }
+        for (i = '0'; i <= '9'; i++) { // ASCII 48 - 57
             dontNeedEncoding[i] = true;
+        }
         dontNeedEncoding[' '] = true; // ASCII 32
         dontNeedEncoding['-'] = true; // ASCII 45
         dontNeedEncoding['_'] = true; // ASCII 95
