@@ -92,9 +92,9 @@ public class GoogleAnalyticsTrackerSendTest {
 
     /**
      * Gets the connection.
- *
-     * <p>If the fast mode is enabled then the bext connection from the queue is returned. When
-     * the queue is empty the fast mode is disabled.
+     *
+     * <p>If the fast mode is enabled then the bext connection from the queue is returned. When the
+     * queue is empty the fast mode is disabled.
      *
      * @param map the map of connections for each URL
      * @return the connection
@@ -177,6 +177,7 @@ public class GoogleAnalyticsTrackerSendTest {
   @BeforeEach
   public void reset() {
     httpUrlStreamHandler.resetConnections();
+    GoogleAnalyticsTracker.clearLastIoException();
   }
 
   @Test
