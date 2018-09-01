@@ -27,6 +27,7 @@ package uk.ac.sussex.gdsc.analytics;
 
 import uk.ac.sussex.gdsc.analytics.GoogleAnalyticsTracker.DispatchMode;
 import uk.ac.sussex.gdsc.analytics.GoogleAnalyticsTracker.DispatchStatus;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -48,6 +49,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -495,7 +497,7 @@ public class GoogleAnalyticsTrackerSendTest {
   @Test
   public void testSingleThreadBatchSendWithError() throws Exception {
 
-    int set1 = 5, set2 = 5;
+    int set1 = 15, set2 = 15;
 
     // OK connections
     final List<ByteArrayOutputStream> output = setupFastConnections(set1);
@@ -524,8 +526,13 @@ public class GoogleAnalyticsTrackerSendTest {
       status.add(tracker.send(rp));
     }
 
-    // The threads should not be able to process everything
-    Assertions.assertThat(GoogleAnalyticsTracker.hasNoBackgroundTasks()).isEqualTo(false);
+    // The threads should not be able to process everything.
+    // Try and hit the no background tasks code point. Don't assert this is false
+    // as sometimes the code is too quick processing the requests.
+    boolean noTasks = GoogleAnalyticsTracker.hasNoBackgroundTasks();
+    if (!noTasks) {
+      gaLogger.info("Failed to queue up tasks in single thread mode");
+    }
     Assertions.assertThat(GoogleAnalyticsTracker.completeBackgroundTasks(10000)).isEqualTo(true);
     Assertions.assertThat(GoogleAnalyticsTracker.hasNoBackgroundTasks()).isEqualTo(true);
 
