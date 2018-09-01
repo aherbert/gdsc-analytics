@@ -40,21 +40,22 @@ import java.net.URLStreamHandlerFactory;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.function.Supplier;
+import java.util.logging.Handler;
 import java.util.logging.Level;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 
 /**
@@ -68,6 +69,30 @@ public class GoogleAnalyticsTrackerSendTest {
 
   // Get the default logger
   private static final Logger gaLogger = Logger.getLogger(GoogleAnalyticsTracker.class.getName());
+
+  /** Capture all the log records. */
+  private static final List<LogRecord> logRecords = Collections.synchronizedList(new ArrayList<>());
+
+  static {
+    // Add a handler to record log records.
+    gaLogger.addHandler(new Handler() {
+
+      @Override
+      public void publish(LogRecord record) {
+        logRecords.add(record);
+      }
+
+      @Override
+      public void flush() {
+        // Ignore
+      }
+
+      @Override
+      public void close() throws SecurityException {
+        // Ignore
+      }
+    });
+  }
 
   // Adapted from https://claritysoftware.co.uk/mocking-javas-url-with-mockito/
 
@@ -105,13 +130,15 @@ public class GoogleAnalyticsTrackerSendTest {
     private URLConnection getConnection(URL url, Map<URL, URLConnection> map) throws IOException {
       if (fastMode) {
         final URLConnection conn = queue.poll();
-        if (conn != null)
+        if (conn != null) {
           return conn;
+        }
         fastMode = false;
       }
-      URLConnection conn = map.get(url);
-      if (conn == null)
+      final URLConnection conn = map.get(url);
+      if (conn == null) {
         throw new IOException("Mock no openConnection()");
+      }
       return conn;
     }
 
@@ -134,10 +161,11 @@ public class GoogleAnalyticsTrackerSendTest {
       // System.out.printf("add %s %b thread = %d : %s\n", url.toString(), proxy,
       // Thread.currentThread().getId(),
       // Integer.toHexString(System.identityHashCode(conn)));
-      if (proxy)
+      if (proxy) {
         proxyConnections.put(url, conn);
-      else
+      } else {
         connections.put(url, conn);
+      }
     }
 
     /**
@@ -180,6 +208,7 @@ public class GoogleAnalyticsTrackerSendTest {
   public void reset() {
     httpUrlStreamHandler.resetConnections();
     GoogleAnalyticsTracker.clearLastIoException();
+    logRecords.clear();
   }
 
   @Test
@@ -260,22 +289,16 @@ public class GoogleAnalyticsTrackerSendTest {
     testSend(secure, proxy, mode, HttpURLConnection.HTTP_OK, false);
   }
 
-  @SuppressWarnings({"unchecked"})
   private void testSend(boolean secure, boolean proxy, DispatchMode mode, int responseCode,
       boolean ioException) throws Exception {
 
     final ByteArrayOutputStream out = new ByteArrayOutputStream(1024);
     final HttpURLConnection urlConnection = createHttpUrlConnection(responseCode, out);
 
-    String host = addConnection(urlConnection, secure, proxy);
+    final String host = addConnection(urlConnection, secure, proxy);
 
-    // For edge case testing
-    Logger logger = gaLogger;
-    if (responseCode != HttpURLConnection.HTTP_OK)
-      logger = Mockito.spy(logger);
     if (ioException) {
       Mockito.doThrow(new IOException("Mock IO exception")).when(urlConnection).connect();
-      logger = Mockito.spy(logger);
     }
 
     // Send tracking request
@@ -287,7 +310,6 @@ public class GoogleAnalyticsTrackerSendTest {
     // We can use NO_PROXY here, not a mock proxy.
     GoogleAnalyticsTracker.setProxy((proxy) ? Proxy.NO_PROXY : null);
     // tracker.setDispatchMode(mode);
-    tracker.setLogger(logger);
 
     final RequestParameters rp = createRequest("path 1", "title 2");
 
@@ -301,18 +323,20 @@ public class GoogleAnalyticsTrackerSendTest {
 
     // Edge case testing. These should be logged.
     if (responseCode != HttpURLConnection.HTTP_OK) {
-      Mockito.verify(logger, Mockito.times(1)).log(ArgumentMatchers.any(Level.class),
-          ArgumentMatchers.any(Supplier.class));
-      if (mode == DispatchMode.SYNCHRONOUS)
+      Assertions.assertThat(logRecords).size().isEqualTo(1);
+      Assertions.assertThat(logRecords.get(0).getLevel()).isEqualTo(Level.WARNING);
+      if (mode == DispatchMode.SYNCHRONOUS) {
         Assertions.assertThat(status).isEqualTo(DispatchStatus.ERROR);
+      }
       // Not expected to work so don't test
       return;
     }
     if (ioException) {
-      Mockito.verify(logger, Mockito.times(1)).log(ArgumentMatchers.any(Level.class),
-          ArgumentMatchers.any(Supplier.class));
-      if (mode == DispatchMode.SYNCHRONOUS)
+      Assertions.assertThat(logRecords).size().isEqualTo(1);
+      Assertions.assertThat(logRecords.get(0).getLevel()).isEqualTo(Level.SEVERE);
+      if (mode == DispatchMode.SYNCHRONOUS) {
         Assertions.assertThat(status).isEqualTo(DispatchStatus.ERROR);
+      }
       Assertions.assertThat(GoogleAnalyticsTracker.isDisabled()).isEqualTo(true);
       GoogleAnalyticsTracker.clearLastIoException();
       // Not expected to work so don't test
@@ -436,8 +460,9 @@ public class GoogleAnalyticsTrackerSendTest {
 
   private static List<RequestParameters> setupRequests(int size) {
     final List<RequestParameters> list = new ArrayList<>(size);
-    for (int i = 0; i < size; i++)
+    for (int i = 0; i < size; i++) {
       list.add(createRequest("p" + i, "t" + i));
+    }
     return list;
   }
 
@@ -468,13 +493,15 @@ public class GoogleAnalyticsTrackerSendTest {
     final GoogleAnalyticsTracker tracker = new GoogleAnalyticsTracker(cp, mode);
 
     final List<RequestParameters> requests = setupRequests(output.size());
-    for (final RequestParameters rp : requests)
+    for (final RequestParameters rp : requests) {
       tracker.send(rp);
+    }
 
     // Hope that we can hit the timeout
     final boolean notFinished = GoogleAnalyticsTracker.completeBackgroundTasks(100);
-    if (notFinished)
+    if (notFinished) {
       Assertions.assertThat(GoogleAnalyticsTracker.completeBackgroundTasks(10000)).isEqualTo(true);
+    }
 
     // Check the output streams have all been used
     final HashSet<String> set = new HashSet<>();
@@ -497,7 +524,7 @@ public class GoogleAnalyticsTrackerSendTest {
   @Test
   public void testSingleThreadBatchSendWithError() throws Exception {
 
-    int set1 = 15, set2 = 15;
+    final int set1 = 15, set2 = 15;
 
     // OK connections
     final List<ByteArrayOutputStream> output = setupFastConnections(set1);
@@ -529,7 +556,7 @@ public class GoogleAnalyticsTrackerSendTest {
     // The threads should not be able to process everything.
     // Try and hit the no background tasks code point. Don't assert this is false
     // as sometimes the code is too quick processing the requests.
-    boolean noTasks = GoogleAnalyticsTracker.hasNoBackgroundTasks();
+    final boolean noTasks = GoogleAnalyticsTracker.hasNoBackgroundTasks();
     if (!noTasks) {
       gaLogger.info("Failed to queue up tasks in single thread mode");
     }
@@ -543,7 +570,7 @@ public class GoogleAnalyticsTrackerSendTest {
     // Count each status. Either ignored or running is expected.
     // running should be more than set1.
     int ignored = 0, running = 0, other = 0;
-    for (DispatchStatus s : status) {
+    for (final DispatchStatus s : status) {
       switch (s) {
         case IGNORED:
           ignored++;
@@ -593,7 +620,7 @@ public class GoogleAnalyticsTrackerSendTest {
     final ByteArrayOutputStream out = new ByteArrayOutputStream(1024);
     final HttpURLConnection urlConnection = createHttpUrlConnection(HttpURLConnection.HTTP_OK, out);
 
-    IOException ex = new UnknownHostException("Mock no connect()");
+    final IOException ex = new UnknownHostException("Mock no connect()");
     Mockito.doThrow(ex).when(urlConnection).connect();
 
     addConnection(urlConnection, false, false);
@@ -602,7 +629,7 @@ public class GoogleAnalyticsTrackerSendTest {
     final GoogleAnalyticsTracker tracker = new GoogleAnalyticsTracker(cp, DispatchMode.SYNCHRONOUS);
     final RequestParameters rp = createRequest("path", "title");
 
-    DispatchStatus status = tracker.send(rp);
+    final DispatchStatus status = tracker.send(rp);
     Assertions.assertThat(status).isEqualTo(DispatchStatus.ERROR);
     Assertions.assertThat(tracker.isEnabled()).isEqualTo(false);
     Assertions.assertThat(GoogleAnalyticsTracker.isDisabled()).isEqualTo(true);
@@ -627,7 +654,7 @@ public class GoogleAnalyticsTrackerSendTest {
     final GoogleAnalyticsTracker tracker = new GoogleAnalyticsTracker(cp, DispatchMode.SYNCHRONOUS);
     final RequestParameters rp = createRequest("path", "title");
 
-    DispatchStatus status = tracker.send(rp);
+    final DispatchStatus status = tracker.send(rp);
     Assertions.assertThat(status).isEqualTo(DispatchStatus.ERROR);
     Assertions.assertThat(tracker.isEnabled()).isEqualTo(false);
     Assertions.assertThat(GoogleAnalyticsTracker.isDisabled()).isEqualTo(true);

@@ -25,46 +25,18 @@
 
 package uk.ac.sussex.gdsc.analytics;
 
-import java.util.Locale;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-/**
- * Stores a hit type.
- */
-public enum HitType {
-  /** The pageview hit-type. */
-  PAGEVIEW,
-  /** The screenview hit-type. */
-  SCREENVIEW,
-  /** The event hit-type. */
-  EVENT,
-  /** The transaction hit-type. */
-  TRANSACTION,
-  /** The item hit-type. */
-  ITEM,
-  /** The social hit-type. */
-  SOCIAL,
-  /** The exception hit-type. */
-  EXCEPTION,
-  /** The timing hit-type. */
-  TIMING;
-
-  /** The name. */
-  private final String name;
-
-  /**
-   * Instantiates a new hit type.
-   */
-  private HitType() {
-    this.name = super.toString().toLowerCase(Locale.getDefault());
-  }
-
-  /*
-   * (non-Javadoc)
-   *
-   * @see java.lang.Enum#toString()
-   */
-  @Override
-  public String toString() {
-    return name;
+@SuppressWarnings("javadoc")
+public class VersionUtilsTest {
+  @Test
+  public void testVersion() {
+    Assertions.assertEquals(String.format("%d", VersionUtils.MAJOR), VersionUtils.VERSION_X);
+    Assertions.assertEquals(String.format("%d.%d", VersionUtils.MAJOR, VersionUtils.MINOR),
+        VersionUtils.VERSION_X_X);
+    Assertions.assertEquals(
+        String.format("%d.%d.%d", VersionUtils.MAJOR, VersionUtils.MINOR, VersionUtils.PATCH),
+        VersionUtils.VERSION_X_X_X);
   }
 }

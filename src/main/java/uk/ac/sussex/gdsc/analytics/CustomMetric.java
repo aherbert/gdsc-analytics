@@ -25,46 +25,42 @@
 
 package uk.ac.sussex.gdsc.analytics;
 
-import java.util.Locale;
-
 /**
- * Stores a hit type.
+ * Stores a custom metric.
  */
-public enum HitType {
-  /** The pageview hit-type. */
-  PAGEVIEW,
-  /** The screenview hit-type. */
-  SCREENVIEW,
-  /** The event hit-type. */
-  EVENT,
-  /** The transaction hit-type. */
-  TRANSACTION,
-  /** The item hit-type. */
-  ITEM,
-  /** The social hit-type. */
-  SOCIAL,
-  /** The exception hit-type. */
-  EXCEPTION,
-  /** The timing hit-type. */
-  TIMING;
+public class CustomMetric {
+  /** The index. */
+  private final int index;
 
-  /** The name. */
-  private final String name;
+  /** The value. */
+  private final int value;
 
   /**
-   * Instantiates a new hit type.
+   * Instantiates a new custom metric.
+   *
+   * @param index the index
+   * @param value the value
    */
-  private HitType() {
-    this.name = super.toString().toLowerCase(Locale.getDefault());
+  public CustomMetric(int index, int value) {
+    this.index = index;
+    this.value = value;
   }
 
-  /*
-   * (non-Javadoc)
+  /**
+   * Gets the index.
    *
-   * @see java.lang.Enum#toString()
+   * @return the index
    */
-  @Override
-  public String toString() {
-    return name;
+  public int getIndex() {
+    return index;
+  }
+
+  /**
+   * Gets the value.
+   *
+   * @return the value
+   */
+  public int getValue() {
+    return value;
   }
 }

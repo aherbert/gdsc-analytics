@@ -40,10 +40,10 @@ public class RequestParameters extends Parameters {
   private final HitType hitType;
 
   /** The document path. */
-  private String documentPath = null;
+  private String documentPath;
 
   /** The document title. */
-  private String documentTitle = null;
+  private String documentTitle;
 
   /** The category. */
   private String category;

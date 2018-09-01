@@ -43,7 +43,7 @@ public class ConnectionTest {
   // Do not use disabled as then there are test skipped warnings.
   // @org.junit.jupiter.api.Test
   public void testConnection() {
-    Logger logger = Logger.getLogger(ConnectionTest.class.getName());
+    final Logger logger = Logger.getLogger(ConnectionTest.class.getName());
     HttpURLConnection connection = null;
     try {
       final URL url = new URL("http://www.google.com");
@@ -56,8 +56,9 @@ public class ConnectionTest {
     } catch (final IOException ex) {
       logger.log(Level.SEVERE, "Error making tracking request: " + ex.getMessage(), ex);
     } finally {
-      if (connection != null)
+      if (connection != null) {
         connection.disconnect();
+      }
     }
   }
 
@@ -66,15 +67,15 @@ public class ConnectionTest {
    */
   public void demo() {
     // Create the tracker
-    String trackingId = "AAA-123-456"; // Your Google Analytics tracking ID
-    String clientId = "Anything";
-    String applicationName = "Test";
+    final String trackingId = "AAA-123-456"; // Your Google Analytics tracking ID
+    final String clientId = "Anything";
+    final String applicationName = "Test";
 
-    ClientParameters cp = new ClientParameters(trackingId, clientId, applicationName);
-    GoogleAnalyticsTracker tracker = new GoogleAnalyticsTracker(cp);
+    final ClientParameters cp = new ClientParameters(trackingId, clientId, applicationName);
+    final GoogleAnalyticsTracker tracker = new GoogleAnalyticsTracker(cp);
 
     // Submit requests
-    RequestParameters rp = new RequestParameters(HitType.PAGEVIEW);
+    final RequestParameters rp = new RequestParameters(HitType.PAGEVIEW);
     rp.setDocumentPath("/path/within/application/");
     rp.setDocumentTitle("Test Page");
     tracker.send(rp);

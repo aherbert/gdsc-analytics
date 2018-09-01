@@ -25,6 +25,8 @@
 
 package uk.ac.sussex.gdsc.analytics;
 
+import java.util.Locale;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -32,7 +34,8 @@ import org.junit.jupiter.api.Test;
 public class HitTypeTest {
   @Test
   public void testToString() {
-    for (final HitType ht : HitType.values())
-      Assertions.assertEquals(String.valueOf(ht).toLowerCase(), ht.toString());
+    for (final HitType ht : HitType.values()) {
+      Assertions.assertEquals(String.valueOf(ht).toLowerCase(Locale.getDefault()), ht.toString());
+    }
   }
 }

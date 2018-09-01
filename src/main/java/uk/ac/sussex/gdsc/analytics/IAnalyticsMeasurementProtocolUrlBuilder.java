@@ -34,7 +34,7 @@ public interface IAnalyticsMeasurementProtocolUrlBuilder {
    *
    * @return The version
    */
-  public String getVersion();
+  String getVersion();
 
   /**
    * Build the parameters URL request from the data. The parameters are suitable for use in the HTTP
@@ -45,7 +45,7 @@ public interface IAnalyticsMeasurementProtocolUrlBuilder {
    * @param timestamp The timestamp when the hit was reported (in milliseconds)
    * @return The parameters URL
    */
-  public String buildUrl(ClientParameters clientParameters, RequestParameters requestParameters,
+  String buildUrl(ClientParameters clientParameters, RequestParameters requestParameters,
       long timestamp);
 
   /**
@@ -57,6 +57,6 @@ public interface IAnalyticsMeasurementProtocolUrlBuilder {
    * @param timestamp The timestamp when the hit was reported (in milliseconds)
    * @return The parameters URL
    */
-  public String buildGetUrl(ClientParameters clientParameters, RequestParameters requestParameters,
+  String buildGetUrl(ClientParameters clientParameters, RequestParameters requestParameters,
       long timestamp);
 }

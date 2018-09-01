@@ -27,9 +27,9 @@ package uk.ac.sussex.gdsc.analytics;
 
 import uk.ac.sussex.gdsc.analytics.GoogleAnalyticsTracker.DispatchMode;
 import uk.ac.sussex.gdsc.analytics.GoogleAnalyticsTracker.MeasurementProtocolVersion;
+
 import java.net.Proxy;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -55,7 +55,7 @@ public class GoogleAnalyticsTrackerTest {
     Assertions.assertEquals(mode, tracker.getDispatchMode());
 
     final DispatchMode mode2 = DispatchMode.SINGLE_THREAD;
-    MeasurementProtocolVersion version = MeasurementProtocolVersion.V_1;
+    final MeasurementProtocolVersion version = MeasurementProtocolVersion.V_1;
     tracker = new GoogleAnalyticsTracker(cp, mode2, version);
     Assertions.assertEquals(mode2, tracker.getDispatchMode());
 
@@ -112,13 +112,6 @@ public class GoogleAnalyticsTrackerTest {
     Assertions.assertFalse(tracker.isSecure());
     tracker.setSecure(true);
     Assertions.assertTrue(tracker.isSecure());
-
-    final Logger logger = Logger.getLogger(GoogleAnalyticsTrackerTest.class.getName());
-    tracker.setLogger(logger);
-    Assertions.assertEquals(logger, tracker.getLogger());
-    tracker.setLogger(null);
-    Assertions.assertNotNull(tracker.getLogger());
-    Assertions.assertFalse(tracker.getLogger().isLoggable(Level.SEVERE));
 
     // Test the properties of the client get invoked
     final boolean[] resetSession = new boolean[1];

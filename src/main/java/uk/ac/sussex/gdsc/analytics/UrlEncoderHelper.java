@@ -32,15 +32,15 @@ import java.util.logging.Logger;
 
 /**
  * URL encoder to encode strings using UTF-8.
- * 
+ *
  * <p>Checks for any characters that require encoding and handles the simple case of changing ' '
  * (space) to '+'. Otherwise tÏhe actual encoding is performed by
  * {@link URLEncoder#encode(String, String)}.
  */
-public class FastUrlEncoder {
+public final class UrlEncoderHelper {
 
   /** The characters that do not require encoding. */
-  private static final boolean[] dontNeedEncoding;
+  private static final boolean[] NO_ENCODING;
   /** The space character. This is replaced with '+'. */
   private static final char SPACE = ' ';
   /** The plus '+' character. */
@@ -83,27 +83,27 @@ public class FastUrlEncoder {
      */
 
     // The original code used a bitset but this has been switched here to an array
-    dontNeedEncoding = new boolean[ASCII_SIZE];
+    NO_ENCODING = new boolean[ASCII_SIZE];
     for (int i = 'a'; i <= 'z'; i++) { // ASCII 97 - 122
-      dontNeedEncoding[i] = true;
+      NO_ENCODING[i] = true;
     }
     for (int i = 'A'; i <= 'Z'; i++) { // ASCII 65 - 90
-      dontNeedEncoding[i] = true;
+      NO_ENCODING[i] = true;
     }
     for (int i = '0'; i <= '9'; i++) { // ASCII 48 - 57
-      dontNeedEncoding[i] = true;
+      NO_ENCODING[i] = true;
     }
-    dontNeedEncoding[' '] = true; // ASCII 32
-    dontNeedEncoding['-'] = true; // ASCII 45
-    dontNeedEncoding['_'] = true; // ASCII 95
-    dontNeedEncoding['.'] = true; // ASCII 46
-    dontNeedEncoding['*'] = true; // ASCII 42
+    NO_ENCODING[' '] = true; // ASCII 32
+    NO_ENCODING['-'] = true; // ASCII 45
+    NO_ENCODING['_'] = true; // ASCII 95
+    NO_ENCODING['.'] = true; // ASCII 46
+    NO_ENCODING['*'] = true; // ASCII 42
   }
 
   /**
    * No public instances.
    */
-  private FastUrlEncoder() {
+  private UrlEncoderHelper() {
     // Do nothing
   }
 
@@ -119,11 +119,11 @@ public class FastUrlEncoder {
    * @return The encoded string
    */
   public static String encode(String string) {
-    if (noEncodingRequired(string)) {
-      // Handle special case of space character
-      return spaceEncode(string);
-    }
-    return urlEncode(string, "UTF-8");
+    return (noEncodingRequired(string))
+        // Handle special case of space character
+        ? spaceEncode(string)
+        // Delagate encoding
+        : urlEncode(string, "UTF-8");
   }
 
   /**
@@ -158,7 +158,7 @@ public class FastUrlEncoder {
       return URLEncoder.encode(string, encoding);
     } catch (final UnsupportedEncodingException ex) {
       // UTF-8 is required by the Java platform so this should not happen
-      Logger.getLogger(FastUrlEncoder.class.getName())
+      Logger.getLogger(UrlEncoderHelper.class.getName())
           .severe("Unsupported encoding: " + ex.getMessage());
       throw new RuntimeException(ex);
     }
@@ -189,6 +189,12 @@ public class FastUrlEncoder {
   public static boolean noEncodingRequired(char ch) {
     final int i = ch;
     // Char is unsigned so no need to check below zero.
-    return (i < dontNeedEncoding.length) ? dontNeedEncoding[i] : false;
+    boolean noEncoding;
+    if (i < NO_ENCODING.length) {
+      noEncoding = NO_ENCODING[i];
+    } else {
+      noEncoding = false;
+    }
+    return noEncoding;
   }
 }

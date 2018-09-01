@@ -33,7 +33,7 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.concurrent.Callable;
+import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -45,12 +45,48 @@ import java.util.logging.Logger;
 /**
  * Populates the client with information from the system.
  */
-public class ClientParametersManager {
+public final class ClientParametersHelper {
+
+  /** The logger. */
+  private static final Logger logger = Logger.getLogger(ClientParametersHelper.class.getName());
+  /** The Windows NT user-agent string for Windows 7. */
+  private static final String WINDOWS_NT_6_1 = "Windows NT 6.1";
+  /**
+   * A simple array that maps substrings of the Windows os.name system property to a user agent
+   * string.
+   */
+  //@formatter:off
+  private static final String[][] WINDOWS_OS_NAME_TO_UA = {
+      { "server 2016",       "Windows NT 10.0"},
+      { "server 2012 r2",    "Windows NT 6.3"},
+      { "server 2012",       "Windows NT 6.2"},
+      { "server 2011",       WINDOWS_NT_6_1},
+      { "server 2008 r2",    WINDOWS_NT_6_1},
+      { "server 2008",       "Windows NT 6.0"},
+      { "server 2003",       "Windows NT 5.2"},
+      { "vista",             "Windows NT 6.0"},
+      { "xp x64",            "Windows NT 5.2"},
+      { "xp",                "Windows NT 5.1"},
+      { "2000, service",     "Windows NT 5.01"},
+      { "2000",              "Windows NT 5.0"},
+      { "nt 4",              "Windows NT 4.0"},
+      { "mw",                "Windows 98; Win 9x 4.90"},
+      { "98",                "Windows 98"},
+      { "95",                "Windows 95"},
+      { "ce",                "Windows CE"},
+      { "10",                "Windows NT 10.0"},
+      { "8.1",               "Windows NT 6.3"},
+      { "8",                 "Windows NT 6.2"},
+      { "7",                 WINDOWS_NT_6_1},
+  };
+  //@formatter:on
+  /** The default hostname. */
+  private static final String DEFAULT_HOSTNAME = "localhost";
 
   /**
    * No public construction.
    */
-  private ClientParametersManager() {
+  private ClientParametersHelper() {
     // Do nothing
   }
 
@@ -59,15 +95,16 @@ public class ClientParametersManager {
    *
    * @param data The data
    */
-  public static final void populate(ClientParameters data) {
+  public static void populate(ClientParameters data) {
     String region = System.getProperty("user.region");
     if (region == null) {
       region = System.getProperty("user.country");
     }
-    data.setUserLanguage((System.getProperty("user.language") + "-" + region).toLowerCase());
+    data.setUserLanguage(
+        (System.getProperty("user.language") + "-" + region).toLowerCase(Locale.getDefault()));
 
     // Do not collect the hostname be default
-    data.setHostName("localhost");
+    data.setHostName(DEFAULT_HOSTNAME);
 
     final String osName = System.getProperty("os.name");
 
@@ -84,9 +121,8 @@ public class ClientParametersManager {
     // last part is the JRE version. Add the operating system to this, e.g.
     // Java/1.6.0.19 (Windows NT 6.1)
 
-    final StringBuilder sb = new StringBuilder();
-    sb.append("Java/").append(System.getProperty("java.version"));
-    sb.append(" (").append(getPlatform(osName)).append(")");
+    final StringBuilder sb = new StringBuilder("Java/").append(System.getProperty("java.version"))
+        .append(" (").append(getPlatform(osName)).append(')');
     data.setUserAgent(sb.toString());
 
     // Note: Adding the OS does not currently work within Google Analytics.
@@ -108,48 +144,46 @@ public class ClientParametersManager {
    *
    * @param data The data
    */
-  public static final void populateHostname(ClientParameters data) {
-    String hostName = "localhost";
+  public static void populateHostname(ClientParameters data) {
 
     // This can wait for a long time (e.g. if the DNS is not working).
     // Write so that it can timeout without causing a delay to the calling program.
     final ExecutorService executor = Executors.newSingleThreadExecutor();
-    final Future<String> future = executor.submit(new Callable<String>() {
-      @Override
-      public String call() {
-        String hostName = "localhost";
-        try {
-          final InetAddress iAddress = InetAddress.getLocalHost();
-          // This performs a lookup of the name service as well
-          // e.g. host.domain.com
-          hostName = iAddress.getCanonicalHostName();
+    final Future<String> future = executor.submit(() -> {
+      try {
+        final InetAddress iAddress = InetAddress.getLocalHost();
+        // This performs a lookup of the name service as well
+        // e.g. host.domain.com
+        return iAddress.getCanonicalHostName();
 
-          // This only retrieves the bare hostname
-          // e.g. host
-          // hostName = iAddress.getHostName();
+        // This only retrieves the bare hostname
+        // e.g. host
+        // return iAddress.getHostName();
 
-          // This retrieves the IP address as a string
-          // e.g. 192.168.0.1
-          // hostName = iAddress.getHostAddress();
-        } catch (final UnknownHostException ex) {
-          // ignore this
-        }
-        return hostName;
+        // This retrieves the IP address as a string
+        // e.g. 192.168.0.1
+        // return iAddress.getHostAddress();
+      } catch (final UnknownHostException ex) {
+        logger.fine(() -> {
+          return String.format("Unknown host %s", ex.getMessage());
+        });
       }
+      return DEFAULT_HOSTNAME;
     });
     try {
-      hostName = future.get(2, TimeUnit.SECONDS); // timeout is in 2 seconds
+      data.setHostName(future.get(2, TimeUnit.SECONDS)); // timeout is in 2 seconds
+      return;
     } catch (final TimeoutException ex) {
-      final Logger logger = Logger.getLogger(ClientParametersManager.class.getName());
       logger.fine("Timeout when resolving hostname");
-    } catch (final InterruptedException ex) {
-      // ignore this
-    } catch (final ExecutionException ex) {
-      // ignore this
+    } catch (final InterruptedException | ExecutionException ex) {
+      logger.fine(() -> {
+        return String.format("Problem when resolving hostname %s", ex.getMessage());
+      });
+    } finally {
+      executor.shutdownNow();
     }
-    executor.shutdownNow();
-
-    data.setHostName(hostName);
+    // Fall through case
+    data.setHostName(DEFAULT_HOSTNAME);
   }
 
   /**
@@ -163,32 +197,14 @@ public class ClientParametersManager {
     // the user agent platform token:
     // https://msdn.microsoft.com/en-gb/library/ms537503(v=vs.85).aspx
     // https://en.wikipedia.org/wiki/Windows_NT#Releases
-    final String lc_os_name = osName.toLowerCase();
+    final String lc_os_name = osName.toLowerCase(Locale.getDefault());
     if (lc_os_name.contains("windows")) {
-      //@formatter:off
-      if (lc_os_name.contains("server 2016"))     { return "Windows NT 10.0"; }
-      if (lc_os_name.contains("server 2012 r2"))  { return "Windows NT 6.3"; }
-      if (lc_os_name.contains("server 2012"))     { return "Windows NT 6.2"; }
-      if (lc_os_name.contains("server 2011"))     { return "Windows NT 6.1"; }
-      if (lc_os_name.contains("server 2008 r2"))  { return "Windows NT 6.1"; }
-      if (lc_os_name.contains("server 2008"))     { return "Windows NT 6.0"; }
-      if (lc_os_name.contains("server 2003"))     { return "Windows NT 5.2"; }
-      if (lc_os_name.contains("vista"))           { return "Windows NT 6.0"; }
-      if (lc_os_name.contains("xp x64"))          { return "Windows NT 5.2"; }
-      if (lc_os_name.contains("xp"))              { return "Windows NT 5.1"; }
-      if (lc_os_name.contains("2000, service"))   { return "Windows NT 5.01"; }
-      if (lc_os_name.contains("2000"))            { return "Windows NT 5.0"; }
-      if (lc_os_name.contains("nt 4"))            { return "Windows NT 4.0"; }
-      if (lc_os_name.contains("mw"))              { return "Windows 98; Win 9x 4.90"; }
-      if (lc_os_name.contains("98"))              { return "Windows 98"; }
-      if (lc_os_name.contains("95"))              { return "Windows 95"; }
-      if (lc_os_name.contains("ce"))              { return "Windows CE"; }
-      if (lc_os_name.contains("10"))              { return "Windows NT 10.0"; }
-      if (lc_os_name.contains("8.1"))             { return "Windows NT 6.3"; }
-      if (lc_os_name.contains("8"))               { return "Windows NT 6.2"; }
-      if (lc_os_name.contains("7"))               { return "Windows NT 6.1"; }
-      return "Windows NT 6.1"; // Default to Windows 7
-      //@formatter:on
+      for (final String[] pair : WINDOWS_OS_NAME_TO_UA) {
+        if (lc_os_name.contains(pair[0])) {
+          return pair[1];
+        }
+      }
+      return WINDOWS_NT_6_1; // Default to Windows 7
     }
 
     // Mac - Note sure what to put here.

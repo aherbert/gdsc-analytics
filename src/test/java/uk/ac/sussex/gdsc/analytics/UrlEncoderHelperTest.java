@@ -34,27 +34,30 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class FastUrlEncoderTest {
+public class UrlEncoderHelperTest {
 
-  private final Logger logger = Logger.getLogger(FastUrlEncoderTest.class.getName());
+  private final Logger logger = Logger.getLogger(UrlEncoderHelperTest.class.getName());
   private final Level level = Level.FINE;
 
   @Test
   public void testEncoder() throws Exception {
     // Create a string that should not be encoded
     final StringBuilder sb = new StringBuilder();
-    for (char c = '0'; c <= '9'; c++)
+    for (char c = '0'; c <= '9'; c++) {
       sb.append(c);
-    for (char c = 'a'; c <= 'z'; c++)
+    }
+    for (char c = 'a'; c <= 'z'; c++) {
       sb.append(c);
-    for (char c = 'A'; c <= 'Z'; c++)
+    }
+    for (char c = 'A'; c <= 'Z'; c++) {
       sb.append(c);
+    }
     sb.append("-_.*");
     final String unencoded = sb.toString();
     Assertions.assertTrue(unencoded.length() > 0);
-    Assertions.assertTrue(FastUrlEncoder.noEncodingRequired(unencoded));
+    Assertions.assertTrue(UrlEncoderHelper.noEncodingRequired(unencoded));
     // The same string
-    Assertions.assertSame(unencoded, FastUrlEncoder.encode(unencoded));
+    Assertions.assertSame(unencoded, UrlEncoderHelper.encode(unencoded));
 
     // Special case of space
     testEncode("with space");
@@ -91,7 +94,7 @@ public class FastUrlEncoderTest {
     // The encoding is not standard. It encodes all unsupported
     // chars as hex. So encode and test it can be decoded to the
     // same string using a standard decoder.
-    final String encoded = FastUrlEncoder.encode(string);
+    final String encoded = UrlEncoderHelper.encode(string);
 
     // Log the encoding
     logger.log(level, () -> {
@@ -117,7 +120,7 @@ public class FastUrlEncoderTest {
   @Test
   public void testEncoderThrows() {
     Assertions.assertThrows(RuntimeException.class, () -> {
-      FastUrlEncoder.urlEncode("test", "bad charset name");
+      UrlEncoderHelper.urlEncode("test", "bad charset name");
     });
   }
 }

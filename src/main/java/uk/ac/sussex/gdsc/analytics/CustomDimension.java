@@ -25,17 +25,45 @@
 
 package uk.ac.sussex.gdsc.analytics;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import java.util.Objects;
 
-@SuppressWarnings("javadoc")
-public class VersionTest {
-  @Test
-  public void testVersion() {
-    Assertions.assertEquals(String.format("%d", Version.MAJOR), Version.VERSION_X);
-    Assertions.assertEquals(String.format("%d.%d", Version.MAJOR, Version.MINOR),
-        Version.VERSION_X_X);
-    Assertions.assertEquals(String.format("%d.%d.%d", Version.MAJOR, Version.MINOR, Version.PATCH),
-        Version.VERSION_X_X_X);
+/**
+ * Stores a custom dimension.
+ */
+public class CustomDimension {
+  /** The index. */
+  private final int index;
+
+  /** The value. */
+  private final String value;
+
+  /**
+   * Instantiates a new custom dimension.
+   *
+   * @param index the index
+   * @param value the value
+   */
+  public CustomDimension(int index, String value) {
+    Objects.requireNonNull(value, "Value is null");
+    this.index = index;
+    this.value = value;
+  }
+
+  /**
+   * Gets the index.
+   *
+   * @return the index
+   */
+  public int getIndex() {
+    return index;
+  }
+
+  /**
+   * Gets the value.
+   *
+   * @return the value
+   */
+  public String getValue() {
+    return value;
   }
 }

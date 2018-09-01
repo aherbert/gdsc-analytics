@@ -27,7 +27,6 @@ package uk.ac.sussex.gdsc.analytics;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Base class for parameters to allow storing custom dimensions and metrics. Note that custom
@@ -41,61 +40,11 @@ import java.util.Objects;
  */
 public class Parameters {
 
-  /**
-   * Stores a custom dimension.
-   */
-  public class CustomDimension {
-    /** The index. */
-    final int index;
-
-    /** The value. */
-    final String value;
-
-    /**
-     * Instantiates a new custom dimension.
-     *
-     * @param index the index
-     * @param value the value
-     */
-    public CustomDimension(int index, String value) {
-      Objects.requireNonNull(value, "Value is null");
-      this.index = index;
-      this.value = value;
-    }
-  }
-
-  /**
-   * Stores a custom metric.
-   */
-  public class CustomMetric {
-    /** The index. */
-    final int index;
-
-    /** The value. */
-    final int value;
-
-    /**
-     * Instantiates a new custom metric.
-     *
-     * @param index the index
-     * @param value the value
-     */
-    public CustomMetric(int index, int value) {
-      this.index = index;
-      this.value = value;
-    }
-  }
-
   /** The custom dimensions. */
-  private List<CustomDimension> customDimensions = null;
+  private List<CustomDimension> customDimensions;
 
   /** The custom metrics. */
-  private List<CustomMetric> customMetrics = null;
-
-  /**
-   * Default constructor.
-   */
-  public Parameters() {}
+  private List<CustomMetric> customMetrics;
 
   /**
    * Add a custom dimension

@@ -36,7 +36,7 @@ package uk.ac.sussex.gdsc.analytics;
  *
  * @see "http://semver.org/"
  */
-public class Version {
+public final class VersionUtils {
 
   /** The major version. */
   public static final int MAJOR = 2;
@@ -58,6 +58,11 @@ public class Version {
    */
   public static final String VERSION_X_X_X;
 
+  /** Define level 1. */
+  private static final int LEVEL_ONE = 1;
+  /** Define level 2. */
+  private static final int LEVEL_TWO = 2;
+
   static {
     VERSION_X = getVersion(1);
     VERSION_X_X = getVersion(2);
@@ -67,7 +72,7 @@ public class Version {
   /**
    * Do not allow public construction.
    */
-  private Version() {
+  private VersionUtils() {
     // Do nothing
   }
 
@@ -79,13 +84,13 @@ public class Version {
    * @return The version
    */
   public static String getVersion(int levels) {
-    String version = Integer.toString(MAJOR);
-    if (levels > 1) {
-      version += '.' + Integer.toString(MINOR);
+    final StringBuffer version = new StringBuffer().append(MAJOR);
+    if (levels > LEVEL_ONE) {
+      version.append('.').append(MINOR);
     }
-    if (levels > 2) {
-      version += '.' + Integer.toString(PATCH);
+    if (levels > LEVEL_TWO) {
+      version.append('.').append(PATCH);
     }
-    return version;
+    return version.toString();
   }
 }

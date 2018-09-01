@@ -25,10 +25,6 @@
 
 package uk.ac.sussex.gdsc.analytics;
 
-import uk.ac.sussex.gdsc.analytics.Parameters.CustomDimension;
-import uk.ac.sussex.gdsc.analytics.Parameters.CustomMetric;
-
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -41,7 +37,7 @@ import java.util.Random;
 public class AnalyticsMeasurementProtocolUrlBuilder
     implements IAnalyticsMeasurementProtocolUrlBuilder {
   /** The random used for the get URL cache buster. */
-  private Random random = null;
+  private Random random;
 
   /*
    * (non-Javadoc)
@@ -71,13 +67,12 @@ public class AnalyticsMeasurementProtocolUrlBuilder
     sb.append("v=1"); // version
 
     // Flag to state that session level custom dimensions and metrics should be
-    // built
-    boolean buildSessionLevelCustomParams = false;
+    // built. First check for a new session.
+    boolean buildSessionLevelCustomParams = clientParameters.isNewSession();
 
-    // Check if this is a new session
-    if (clientParameters.isNewSession()) {
+    if (buildSessionLevelCustomParams) {
+      // Register the new session
       sb.append("&sc=start");
-      buildSessionLevelCustomParams = true;
     }
 
     // Build the client data.
@@ -94,8 +89,8 @@ public class AnalyticsMeasurementProtocolUrlBuilder
     // Add the client custom dimensions and metrics at the session level, so we only
     // build this when a new session or when the client parameters have changed.
     if (buildSessionLevelCustomParams) {
-      buildCustomDimensionsUrl(sb, clientParameters.getCustomDimensions());
-      buildCustomMetricsUrl(sb, clientParameters.getCustomMetrics());
+      buildCustomDimensionsUrl(sb, clientParameters);
+      buildCustomMetricsUrl(sb, clientParameters);
     }
 
     // Build the request data
@@ -104,8 +99,8 @@ public class AnalyticsMeasurementProtocolUrlBuilder
     add(sb, "t", requestParameters.getHitType());
 
     // Check for more custom dimensions
-    buildCustomDimensionsUrl(sb, requestParameters.getCustomDimensions());
-    buildCustomMetricsUrl(sb, requestParameters.getCustomMetrics());
+    buildCustomDimensionsUrl(sb, requestParameters);
+    buildCustomMetricsUrl(sb, requestParameters);
 
     switch (requestParameters.getHitTypeEnum()) {
       case PAGEVIEW:
@@ -167,7 +162,7 @@ public class AnalyticsMeasurementProtocolUrlBuilder
    * @param value the value
    */
   private static void add(StringBuilder sb, String key, String value) {
-    sb.append('&').append(key).append('=').append(FastUrlEncoder.encode(value));
+    sb.append('&').append(key).append('=').append(UrlEncoderHelper.encode(value));
   }
 
   /**
@@ -200,7 +195,7 @@ public class AnalyticsMeasurementProtocolUrlBuilder
    * @param value the value
    */
   private static void addDimension(StringBuilder sb, int index, String value) {
-    sb.append("&cd").append(index).append('=').append(FastUrlEncoder.encode(value));
+    sb.append("&cd").append(index).append('=').append(UrlEncoderHelper.encode(value));
   }
 
   /**
@@ -269,22 +264,19 @@ public class AnalyticsMeasurementProtocolUrlBuilder
     return url;
   }
 
-  private static void buildCustomDimensionsUrl(StringBuilder sb,
-      List<CustomDimension> customDimensions) {
-    if (customDimensions == null) {
-      return;
-    }
-    for (final CustomDimension cd : customDimensions) {
-      addDimension(sb, cd.index, cd.value);
+  private static void buildCustomDimensionsUrl(StringBuilder sb, Parameters parameters) {
+    if (parameters.hasCustomDimensions()) {
+      for (final CustomDimension cd : parameters.getCustomDimensions()) {
+        addDimension(sb, cd.getIndex(), cd.getValue());
+      }
     }
   }
 
-  private static void buildCustomMetricsUrl(StringBuilder sb, List<CustomMetric> customMetrics) {
-    if (customMetrics == null) {
-      return;
-    }
-    for (final CustomMetric cm : customMetrics) {
-      addMetric(sb, cm.index, cm.value);
+  private static void buildCustomMetricsUrl(StringBuilder sb, Parameters parameters) {
+    if (parameters.hasCustomMetrics()) {
+      for (final CustomMetric cm : parameters.getCustomMetrics()) {
+        addMetric(sb, cm.getIndex(), cm.getValue());
+      }
     }
   }
 }

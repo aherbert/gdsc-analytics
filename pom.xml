@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
@@ -86,6 +87,7 @@ Measurement protocol to collect usage information about a Java application.
     <commons-codec.version>1.11</commons-codec.version>
     <assertj-core.version>3.11.0</assertj-core.version>
     <mockito-core.version>2.21.0</mockito-core.version>
+    <spotbugs.version>3.1.6</spotbugs.version>
     <!-- Maven -->
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
@@ -99,6 +101,11 @@ Measurement protocol to collect usage information about a Java application.
     <maven-changes-plugin.version>2.12.1</maven-changes-plugin.version>
     <maven-site-plugin.version>3.7.1</maven-site-plugin.version>
     <maven-project-info-reports-plugin.version>3.0.0</maven-project-info-reports-plugin.version>
+    <maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
+    <maven-pmd-plugin.version>3.10.0</maven-pmd-plugin.version>
+    <maven-jxr-plugin.version>2.5</maven-jxr-plugin.version>
+    <maven-project-info-reports-plugin.version>3.0.0</maven-project-info-reports-plugin.version>
+    <maven-site-plugin.version>3.7.1</maven-site-plugin.version>
     <!-- JaCoCo Checks -->
     <org.jacoco.class.covered>0.96</org.jacoco.class.covered>
     <org.jacoco.instruction.covered>0.8</org.jacoco.instruction.covered>
@@ -132,7 +139,6 @@ Measurement protocol to collect usage information about a Java application.
             </compilerArgs>
           </configuration>
         </plugin>
-
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
@@ -171,6 +177,14 @@ Measurement protocol to collect usage information about a Java application.
               </manifest>
             </archive>
           </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-project-info-reports-plugin</artifactId>
+          <version>${maven-project-info-reports-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-site-plugin</artifactId>
+          <version>${maven-site-plugin.version}</version>
         </plugin>
       </plugins>
     </pluginManagement>
@@ -233,6 +247,53 @@ Measurement protocol to collect usage information about a Java application.
           <canUpdateCopyright>true</canUpdateCopyright>
         </configuration>
       </plugin>
+      <plugin>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${maven-checkstyle-plugin.version}</version>
+        <configuration>
+          <configLocation>${basedir}/src/main/resources/checkstyle/checkstyle.xml</configLocation>
+          <encoding>UTF-8</encoding>
+          <consoleOutput>true</consoleOutput>
+          <failsOnError>true</failsOnError>
+          <linkXRef>true</linkXRef>
+        </configuration>
+        <executions>
+          <execution>
+            <id>verify</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>${maven-pmd-plugin.version}</version>
+        <configuration>
+          <targetJdk>${maven.compiler.target}</targetJdk>
+          <skipEmptyReport>false</skipEmptyReport>
+          <analysisCache>true</analysisCache>
+          <rulesets>
+            <ruleset>${basedir}/src/main/resources/pmd/pmd-ruleset.xml</ruleset>
+          </rulesets>
+          <failOnViolation>false</failOnViolation>
+          <printFailingErrors>false</printFailingErrors>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+              <goal>check</goal>
+              <goal>cpd-check</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+        <version>${spotbugs.version}</version>
+      </plugin>
     </plugins>
     <resources>
       <resource>
@@ -271,6 +332,67 @@ Measurement protocol to collect usage information about a Java application.
             </reports>
           </reportSet>
         </reportSets>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>${maven-checkstyle-plugin.version}</version>
+        <configuration>
+          <configLocation>${basedir}/src/main/resources/checkstyle/checkstyle.xml</configLocation>
+          <encoding>UTF-8</encoding>
+          <linkXRef>true</linkXRef>
+          <enableRulesSummary>false</enableRulesSummary>
+          <includeResources>false</includeResources>
+        </configuration>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>checkstyle</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+      <plugin>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>${maven-pmd-plugin.version}</version>
+        <configuration>
+          <targetJdk>${maven.compiler.target}</targetJdk>
+          <skipEmptyReport>false</skipEmptyReport>
+          <analysisCache>true</analysisCache>
+          <rulesets>
+            <ruleset>${basedir}/src/main/resources/pmd/pmd-ruleset.xml</ruleset>
+          </rulesets>
+        </configuration>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>pmd</report>
+              <report>cpd</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+      <plugin>
+        <groupId>com.github.spotbugs</groupId>
+        <artifactId>spotbugs-maven-plugin</artifactId>
+        <version>${spotbugs.version}</version>
+        <configuration>
+          <threshold>Normal</threshold>
+          <effort>Default</effort>
+          <excludeFilterFile>${basedir}/src/main/resources/spotbugs/spotbugs-exclude-filter.xml</excludeFilterFile>
+        </configuration>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>spotbugs</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <version>${maven-jxr-plugin.version}</version>
       </plugin>
     </plugins>
   </reporting>
@@ -388,7 +510,8 @@ Measurement protocol to collect usage information about a Java application.
                 <goals>
                   <goal>check</goal>
                 </goals>
-                <!-- Currently the same as the jacoco profile but halts on failure -->
+                <!-- Currently the same as the jacoco profile but halts on 
+                  failure -->
                 <configuration>
                   <rules>
                     <rule>

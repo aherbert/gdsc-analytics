@@ -41,7 +41,14 @@ public class Session {
    * Create a new session.
    */
   public Session() {
-    reset();
+    resetSession();
+  }
+
+  /**
+   * Reset and start a new session.
+   */
+  private void resetSession() {
+    now = Long.MIN_VALUE;
   }
 
   /**
@@ -86,7 +93,7 @@ public class Session {
    * Reset and start a new session.
    */
   public void reset() {
-    now = Long.MIN_VALUE;
+    resetSession();
   }
 
   /**

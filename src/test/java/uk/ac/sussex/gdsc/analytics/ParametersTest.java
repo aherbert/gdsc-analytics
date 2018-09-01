@@ -25,8 +25,6 @@
 
 package uk.ac.sussex.gdsc.analytics;
 
-import uk.ac.sussex.gdsc.analytics.Parameters.CustomDimension;
-import uk.ac.sussex.gdsc.analytics.Parameters.CustomMetric;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -59,8 +57,8 @@ public class ParametersTest {
     Assertions.assertNotNull(list);
     Assertions.assertEquals(1, list.size());
     final CustomDimension d = list.get(0);
-    Assertions.assertEquals(index, d.index);
-    Assertions.assertEquals(value, d.value);
+    Assertions.assertEquals(index, d.getIndex());
+    Assertions.assertEquals(value, d.getValue());
   }
 
   @Test
@@ -87,7 +85,7 @@ public class ParametersTest {
     Assertions.assertNotNull(list);
     Assertions.assertEquals(1, list.size());
     final CustomMetric d = list.get(0);
-    Assertions.assertEquals(index, d.index);
-    Assertions.assertEquals(value, d.value);
+    Assertions.assertEquals(index, d.getIndex());
+    Assertions.assertEquals(value, d.getValue());
   }
 }

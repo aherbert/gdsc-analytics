@@ -140,8 +140,9 @@ public class AnalyticsMeasurementProtocolUrlBuilderTest {
             a.hasParameter("aip", "1");
             a.hasNoParameter("dh");
         } else {
-            if (cp.getHostName() != null)
-                a.hasParameter("dh", cp.getHostName());
+            if (cp.getHostName() != null) {
+              a.hasParameter("dh", cp.getHostName());
+            }
             a.hasNoParameter("aip");
         }
         //@formatter:on
@@ -189,8 +190,9 @@ public class AnalyticsMeasurementProtocolUrlBuilderTest {
             a.hasParameter("aip", "1");
             a.hasNoParameter("dh");
         } else {
-            if (cp.getHostName() != null)
-                a.hasParameter("dh", cp.getHostName());
+            if (cp.getHostName() != null) {
+              a.hasParameter("dh", cp.getHostName());
+            }
             a.hasNoParameter("aip");
             //@formatter:on
     }
@@ -244,8 +246,9 @@ public class AnalyticsMeasurementProtocolUrlBuilderTest {
             a.hasParameter("aip", "1");
             a.hasNoParameter("dh");
         } else {
-            if (cp.getHostName() != null)
-                a.hasParameter("dh", cp.getHostName());
+            if (cp.getHostName() != null) {
+              a.hasParameter("dh", cp.getHostName());
+            }
             a.hasNoParameter("aip");
         }
 

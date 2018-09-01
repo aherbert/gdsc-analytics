@@ -25,46 +25,22 @@
 
 package uk.ac.sussex.gdsc.analytics;
 
-import java.util.Locale;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-/**
- * Stores a hit type.
- */
-public enum HitType {
-  /** The pageview hit-type. */
-  PAGEVIEW,
-  /** The screenview hit-type. */
-  SCREENVIEW,
-  /** The event hit-type. */
-  EVENT,
-  /** The transaction hit-type. */
-  TRANSACTION,
-  /** The item hit-type. */
-  ITEM,
-  /** The social hit-type. */
-  SOCIAL,
-  /** The exception hit-type. */
-  EXCEPTION,
-  /** The timing hit-type. */
-  TIMING;
+@SuppressWarnings("javadoc")
+public class CustomDimensionTest {
+  @SuppressWarnings("unused")
+  @Test
+  public void testConstructor() {
+    final int index = 1;
+    final String value = "value";
+    final CustomDimension cd = new CustomDimension(index, value);
+    Assertions.assertEquals(index, cd.getIndex());
+    Assertions.assertEquals(value, cd.getValue());
 
-  /** The name. */
-  private final String name;
-
-  /**
-   * Instantiates a new hit type.
-   */
-  private HitType() {
-    this.name = super.toString().toLowerCase(Locale.getDefault());
-  }
-
-  /*
-   * (non-Javadoc)
-   *
-   * @see java.lang.Enum#toString()
-   */
-  @Override
-  public String toString() {
-    return name;
+    Assertions.assertThrows(NullPointerException.class, () -> {
+      new CustomDimension(index, null);
+    });
   }
 }
