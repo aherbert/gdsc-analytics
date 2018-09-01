@@ -179,7 +179,7 @@ public class ClientParametersManager {
       if (lc_os_name.contains("2000, service"))   { return "Windows NT 5.01"; }
       if (lc_os_name.contains("2000"))            { return "Windows NT 5.0"; }
       if (lc_os_name.contains("nt 4"))            { return "Windows NT 4.0"; }
-      if (lc_os_name.contains("mw"))              { return "Windows 98; } Win 9x 4.90"; }
+      if (lc_os_name.contains("mw"))              { return "Windows 98; Win 9x 4.90"; }
       if (lc_os_name.contains("98"))              { return "Windows 98"; }
       if (lc_os_name.contains("95"))              { return "Windows 95"; }
       if (lc_os_name.contains("ce"))              { return "Windows CE"; }
