@@ -22,154 +22,199 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
+
 package uk.ac.sussex.gdsc.analytics;
 
 import java.util.Objects;
 
 /**
- * Google Analytics request data
+ * Google Analytics request data.
  *
- * @see "https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters"
+ * @see <a href=
+ *      "https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters">Measurement
+ *      Protocol Parameter Reference</a>
  */
 public class RequestParameters extends Parameters {
-    private final HitType hitType;
 
-    private String documentPath = null;
-    private String documentTitle = null;
-    private String category;
-    private String action;
-    private String label;
-    /**
-     * The value. This is an object to allow null to represent unset.
-     */
-    private Integer value;
+  /** The hit type. */
+  private final HitType hitType;
 
-    /**
-     * Instantiates a new request parameters.
-     *
-     * @param hitType the hit type
-     */
-    public RequestParameters(HitType hitType) {
-        Objects.requireNonNull(hitType, "Hit type is null");
-        this.hitType = hitType;
-    }
+  /** The document path. */
+  private String documentPath = null;
 
-    /**
-     * @return The hit type
-     */
-    public String getHitType() {
-        return hitType.toString();
-    }
+  /** The document title. */
+  private String documentTitle = null;
 
-    /**
-     * @return The hit type
-     */
-    public HitType getHitTypeEnum() {
-        return hitType;
-    }
+  /** The category. */
+  private String category;
 
-    /**
-     * @return the document path
-     */
-    public String getDocumentPath() {
-        return documentPath;
-    }
+  /** The action. */
+  private String action;
 
-    /**
-     * @param documentPath the document path to set
-     */
-    public void setDocumentPath(String documentPath) {
-        this.documentPath = documentPath;
-    }
+  /** The label. */
+  private String label;
+  /**
+   * The value. This is an object to allow null to represent unset.
+   */
+  private Integer value;
 
-    /**
-     * @return the document title
-     */
-    public String getDocumentTitle() {
-        return documentTitle;
-    }
+  /**
+   * Instantiates a new request parameters.
+   *
+   * @param hitType the hit type
+   */
+  public RequestParameters(HitType hitType) {
+    Objects.requireNonNull(hitType, "Hit type is null");
+    this.hitType = hitType;
+  }
 
-    /**
-     * @param documentTitle the document title to set
-     */
-    public void setDocumentTitle(String documentTitle) {
-        this.documentTitle = documentTitle;
-    }
+  /**
+   * Gets the hit type.
+   *
+   * @return The hit type
+   */
+  public String getHitType() {
+    return hitType.toString();
+  }
 
-    /**
-     * @return the event category
-     */
-    public String getCategory() {
-        return category;
-    }
+  /**
+   * Gets the hit type enum.
+   *
+   * @return The hit type
+   */
+  public HitType getHitTypeEnum() {
+    return hitType;
+  }
 
-    /**
-     * @param category the event category to set
-     */
-    public void setCategory(String category) {
-        this.category = category;
-    }
+  /**
+   * Gets the document path.
+   *
+   * @return the document path
+   */
+  public String getDocumentPath() {
+    return documentPath;
+  }
 
-    /**
-     * @return the event action
-     */
-    public String getAction() {
-        return action;
-    }
+  /**
+   * Sets the document path.
+   *
+   * @param documentPath the document path to set
+   */
+  public void setDocumentPath(String documentPath) {
+    this.documentPath = documentPath;
+  }
 
-    /**
-     * @param action the event action to set
-     */
-    public void setAction(String action) {
-        this.action = action;
-    }
+  /**
+   * Gets the document title.
+   *
+   * @return the document title
+   */
+  public String getDocumentTitle() {
+    return documentTitle;
+  }
 
-    /**
-     * @return the event label
-     */
-    public String getLabel() {
-        return label;
-    }
+  /**
+   * Sets the document title.
+   *
+   * @param documentTitle the document title to set
+   */
+  public void setDocumentTitle(String documentTitle) {
+    this.documentTitle = documentTitle;
+  }
 
-    /**
-     * @param label the event label to set
-     */
-    public void setLabel(String label) {
-        this.label = label;
-    }
+  /**
+   * Gets the category.
+   *
+   * @return the event category
+   */
+  public String getCategory() {
+    return category;
+  }
 
-    /**
-     * @return the event value
-     */
-    public Integer getValue() {
-        return value;
-    }
+  /**
+   * Sets the category.
+   *
+   * @param category the event category to set
+   */
+  public void setCategory(String category) {
+    this.category = category;
+  }
 
-    /**
-     * @param value the event value to set
-     */
-    public void setValue(Integer value) {
-        this.value = value;
-    }
+  /**
+   * Gets the action.
+   *
+   * @return the event action
+   */
+  public String getAction() {
+    return action;
+  }
 
-    /**
-     * Add a hit level custom dimension
-     *
-     * @see uk.ac.sussex.gdsc.analytics.Parameters#addCustomDimension(int,
-     *      java.lang.String)
-     */
-    @Override
-    public void addCustomDimension(int index, String value) {
-        super.addCustomDimension(index, value);
-    }
+  /**
+   * Sets the action.
+   *
+   * @param action the event action to set
+   */
+  public void setAction(String action) {
+    this.action = action;
+  }
 
-    /**
-     * Add a hit level custom metric
-     *
-     * @see uk.ac.sussex.gdsc.analytics.Parameters#addCustomMetric(int, int)
-     */
-    @Override
-    public void addCustomMetric(int index, int value) {
-        super.addCustomMetric(index, value);
-    }
+  /**
+   * Gets the label.
+   *
+   * @return the event label
+   */
+  public String getLabel() {
+    return label;
+  }
+
+  /**
+   * Sets the label.
+   *
+   * @param label the event label to set
+   */
+  public void setLabel(String label) {
+    this.label = label;
+  }
+
+  /**
+   * Gets the value.
+   *
+   * @return the event value
+   */
+  public Integer getValue() {
+    return value;
+  }
+
+  /**
+   * Sets the value.
+   *
+   * @param value the event value to set
+   */
+  public void setValue(Integer value) {
+    this.value = value;
+  }
+
+  /**
+   * Add a hit level custom dimension.
+   *
+   * @param index the index
+   * @param value the value
+   * @see uk.ac.sussex.gdsc.analytics.Parameters#addCustomDimension(int, java.lang.String)
+   */
+  @Override
+  public void addCustomDimension(int index, String value) {
+    super.addCustomDimension(index, value);
+  }
+
+  /**
+   * Add a hit level custom metric.
+   *
+   * @param index the index
+   * @param value the value
+   * @see uk.ac.sussex.gdsc.analytics.Parameters#addCustomMetric(int, int)
+   */
+  @Override
+  public void addCustomMetric(int index, int value) {
+    super.addCustomMetric(index, value);
+  }
 }

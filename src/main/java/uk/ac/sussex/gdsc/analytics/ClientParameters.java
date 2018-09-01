@@ -22,303 +22,303 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
+
 package uk.ac.sussex.gdsc.analytics;
 
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 /**
- * Common client data. Allows caching of the client component of the Google
- * Analytics URL.
+ * Common client data. Allows caching of the client component of the Google Analytics URL.
  *
- * @see <a
- *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters">Measurement
+ * @see <a href=
+ *      "https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters">Measurement
  *      Protocol Parameter Reference</a>
  */
 public class ClientParameters extends Parameters {
 
-    /** The tracking id. */
-    private final String trackingId;
+  /** The tracking id. */
+  private final String trackingId;
 
-    /** The client id. */
-    private final String clientId;
+  /** The client id. */
+  private final String clientId;
 
-    /** The application name. */
-    private final String applicationName;
+  /** The application name. */
+  private final String applicationName;
 
-    /** The session. */
-    private final Session session;
+  /** The session. */
+  private final Session session;
 
-    /** The screen resolution. */
-    private String screenResolution = null;
+  /** The screen resolution. */
+  private String screenResolution = null;
 
-    /** The user language. */
-    private String userLanguage = null;
+  /** The user language. */
+  private String userLanguage = null;
 
-    /** The host name. */
-    private String hostName = null;
+  /** The host name. */
+  private String hostName = null;
 
-    /** The user agent. */
-    private String userAgent = null;
+  /** The user agent. */
+  private String userAgent = null;
 
-    /** The application id. */
-    private String applicationId = null;
+  /** The application id. */
+  private String applicationId = null;
 
-    /** The application version. */
-    private String applicationVersion = null;
+  /** The application version. */
+  private String applicationVersion = null;
 
-    /** The anonymised. */
-    private boolean anonymised = false;
+  /** The anonymised. */
+  private boolean anonymised = false;
 
-    /** The url. */
-    private String url = null;
+  /** The url. */
+  private String url = null;
 
-    /**
-     * Constructs with the tracking Id. If the client Id is null or empty then a new
-     * UUID will be created.
-     *
-     * @param trackingId      Tracking Id (must not be null)
-     * @param clientId        Client Id (optional)
-     * @param applicationName Application name (must not be null)
-     */
-    public ClientParameters(String trackingId, String clientId, String applicationName) {
-        if (trackingId == null || trackingId.length() == 0)
-            throw new IllegalArgumentException("Tracking code cannot be null");
-        if (!Pattern.matches("[A-Z]+-[0-9]+-[0-9]+", trackingId)) {
-            final Logger logger = Logger.getLogger(ClientParameters.class.getName());
-            logger.warning("Tracking code appears invalid: " + trackingId);
-        }
-        if (clientId == null || clientId.length() == 0)
-            clientId = java.util.UUID.randomUUID().toString();
-        if (applicationName == null || applicationName.length() == 0)
-            throw new IllegalArgumentException("Application name cannot be null");
-        this.trackingId = trackingId;
-        this.clientId = clientId;
-        this.applicationName = applicationName;
-        this.session = new Session();
+  /**
+   * Constructs with the tracking Id. If the client Id is null or empty then a new UUID will be
+   * created.
+   *
+   * @param trackingId Tracking Id (must not be null)
+   * @param clientId Client Id (optional)
+   * @param applicationName Application name (must not be null)
+   */
+  public ClientParameters(String trackingId, String clientId, String applicationName) {
+    if (trackingId == null || trackingId.length() == 0) {
+      throw new IllegalArgumentException("Tracking code cannot be null");
     }
-
-    /**
-     * Gets the tracking id.
-     *
-     * @return the tracking Id
-     */
-    public String getTrackingId() {
-        return trackingId;
+    if (!Pattern.matches("[A-Z]+-[0-9]+-[0-9]+", trackingId)) {
+      final Logger logger = Logger.getLogger(ClientParameters.class.getName());
+      logger.warning("Tracking code appears invalid: " + trackingId);
     }
-
-    /**
-     * Gets the client id.
-     *
-     * @return The client Id
-     */
-    public String getClientId() {
-        return clientId;
+    if (clientId == null || clientId.length() == 0) {
+      clientId = java.util.UUID.randomUUID().toString();
     }
-
-    /**
-     * Gets the application name.
-     *
-     * @return the application name
-     */
-    public String getApplicationName() {
-        return applicationName;
+    if (applicationName == null || applicationName.length() == 0) {
+      throw new IllegalArgumentException("Application name cannot be null");
     }
+    this.trackingId = trackingId;
+    this.clientId = clientId;
+    this.applicationName = applicationName;
+    this.session = new Session();
+  }
 
-    /**
-     * Check if this is a new session.
-     *
-     * @return True if the session is new
-     */
-    public boolean isNewSession() {
-        return session.isNew();
-    }
+  /**
+   * Gets the tracking id.
+   *
+   * @return the tracking Id
+   */
+  public String getTrackingId() {
+    return trackingId;
+  }
 
-    /**
-     * Gets the screen resolution.
-     *
-     * @return the screen resolution
-     */
-    public String getScreenResolution() {
-        return screenResolution;
-    }
+  /**
+   * Gets the client id.
+   *
+   * @return The client Id
+   */
+  public String getClientId() {
+    return clientId;
+  }
 
-    /**
-     * Gets the user language.
-     *
-     * @return the user language
-     */
-    public String getUserLanguage() {
-        return userLanguage;
-    }
+  /**
+   * Gets the application name.
+   *
+   * @return the application name
+   */
+  public String getApplicationName() {
+    return applicationName;
+  }
 
-    /**
-     * Gets the host name.
-     *
-     * @return The hostname
-     */
-    public String getHostName() {
-        return hostName;
-    }
+  /**
+   * Check if this is a new session.
+   *
+   * @return True if the session is new
+   */
+  public boolean isNewSession() {
+    return session.isNew();
+  }
 
-    /**
-     * Gets the user agent.
-     *
-     * @return the user agent
-     */
-    public String getUserAgent() {
-        return userAgent;
-    }
+  /**
+   * Gets the screen resolution.
+   *
+   * @return the screen resolution
+   */
+  public String getScreenResolution() {
+    return screenResolution;
+  }
 
-    /**
-     * Gets the application id.
-     *
-     * @return the application Id
-     */
-    public String getApplicationId() {
-        return applicationId;
-    }
+  /**
+   * Gets the user language.
+   *
+   * @return the user language
+   */
+  public String getUserLanguage() {
+    return userLanguage;
+  }
 
-    /**
-     * Gets the application version.
-     *
-     * @return the application version
-     */
-    public String getApplicationVersion() {
-        return applicationVersion;
-    }
+  /**
+   * Gets the host name.
+   *
+   * @return The hostname
+   */
+  public String getHostName() {
+    return hostName;
+  }
 
-    /**
-     * Checks if is anonymised.
-     *
-     * @return True if the IP address of the sender will be anonymised
-     */
-    public boolean isAnonymised() {
-        return anonymised;
-    }
+  /**
+   * Gets the user agent.
+   *
+   * @return the user agent
+   */
+  public String getUserAgent() {
+    return userAgent;
+  }
 
-    /**
-     * Gets the url.
-     *
-     * @return The client component of the URL
-     */
-    public String getUrl() {
-        return url;
-    }
+  /**
+   * Gets the application id.
+   *
+   * @return the application Id
+   */
+  public String getApplicationId() {
+    return applicationId;
+  }
 
-    /**
-     * Sets the screen resolution, like "1280x800".
-     *
-     * @param screenResolution the screen resolution to set
-     */
-    public void setScreenResolution(String screenResolution) {
-        this.url = null;
-        this.screenResolution = screenResolution;
-    }
+  /**
+   * Gets the application version.
+   *
+   * @return the application version
+   */
+  public String getApplicationVersion() {
+    return applicationVersion;
+  }
 
-    /**
-     * Sets the user language, like "EN-us".
-     *
-     * @param userLanguage the user language to set
-     */
-    public void setUserLanguage(String userLanguage) {
-        this.url = null;
-        this.userLanguage = userLanguage;
-    }
+  /**
+   * Checks if is anonymised.
+   *
+   * @return True if the IP address of the sender will be anonymised
+   */
+  public boolean isAnonymised() {
+    return anonymised;
+  }
 
-    /**
-     * Set the hostname.
-     *
-     * @param hostName the hostname
-     */
-    public void setHostName(String hostName) {
-        this.url = null;
-        this.hostName = hostName;
-    }
+  /**
+   * Gets the url.
+   *
+   * @return The client component of the URL
+   */
+  public String getUrl() {
+    return url;
+  }
 
-    /**
-     * Set the client component of the Google Analytics URL. This can be used to
-     * cache part of the URL.
-     *
-     * @param url The client component of the URL
-     */
-    public void setUrl(String url) {
-        this.url = url;
-    }
+  /**
+   * Sets the screen resolution, like "1280x800".
+   *
+   * @param screenResolution the screen resolution to set
+   */
+  public void setScreenResolution(String screenResolution) {
+    this.url = null;
+    this.screenResolution = screenResolution;
+  }
 
-    /**
-     * Sets the user agent.
-     *
-     * @param userAgent the user agent to set
-     */
-    public void setUserAgent(String userAgent) {
-        this.url = null;
-        this.userAgent = userAgent;
-    }
+  /**
+   * Sets the user language, like "EN-us".
+   *
+   * @param userLanguage the user language to set
+   */
+  public void setUserLanguage(String userLanguage) {
+    this.url = null;
+    this.userLanguage = userLanguage;
+  }
 
-    /**
-     * Sets the application id.
-     *
-     * @param applicationId the application Id to set
-     */
-    public void setApplicationId(String applicationId) {
-        this.url = null;
-        this.applicationId = applicationId;
-    }
+  /**
+   * Set the hostname.
+   *
+   * @param hostName the hostname
+   */
+  public void setHostName(String hostName) {
+    this.url = null;
+    this.hostName = hostName;
+  }
 
-    /**
-     * Sets the application version.
-     *
-     * @param applicationVersion the application version to set
-     */
-    public void setApplicationVersion(String applicationVersion) {
-        this.url = null;
-        this.applicationVersion = applicationVersion;
-    }
+  /**
+   * Set the client component of the Google Analytics URL. This can be used to cache part of the
+   * URL.
+   *
+   * @param url The client component of the URL
+   */
+  public void setUrl(String url) {
+    this.url = url;
+  }
 
-    /**
-     * Set the state of IP anonymisation.
-     *
-     * @param anonymised True if the IP address of the sender will be anonymised
-     */
-    public void setAnonymised(boolean anonymised) {
-        this.url = null;
-        this.anonymised = anonymised;
-    }
+  /**
+   * Sets the user agent.
+   *
+   * @param userAgent the user agent to set
+   */
+  public void setUserAgent(String userAgent) {
+    this.url = null;
+    this.userAgent = userAgent;
+  }
 
-    /**
-     * Add a session level custom dimension. These will only be sent at the start of
-     * the session.
-     *
-     * @param index the index
-     * @param value the value
-     * @see uk.ac.sussex.gdsc.analytics.Parameters#addCustomDimension(int,
-     *      java.lang.String)
-     */
-    @Override
-    public void addCustomDimension(int index, String value) {
-        this.url = null;
-        super.addCustomDimension(index, value);
-    }
+  /**
+   * Sets the application id.
+   *
+   * @param applicationId the application Id to set
+   */
+  public void setApplicationId(String applicationId) {
+    this.url = null;
+    this.applicationId = applicationId;
+  }
 
-    /**
-     * Add a session level custom metric. These will only be sent at the start of
-     * the session.
-     *
-     * @param index the index
-     * @param value the value
-     * @see uk.ac.sussex.gdsc.analytics.Parameters#addCustomMetric(int, int)
-     */
-    @Override
-    public void addCustomMetric(int index, int value) {
-        this.url = null;
-        super.addCustomMetric(index, value);
-    }
+  /**
+   * Sets the application version.
+   *
+   * @param applicationVersion the application version to set
+   */
+  public void setApplicationVersion(String applicationVersion) {
+    this.url = null;
+    this.applicationVersion = applicationVersion;
+  }
 
-    /**
-     * Reset the session (i.e. start a new session)
-     */
-    public void resetSession() {
-        this.session.reset();
-    }
+  /**
+   * Set the state of IP anonymisation.
+   *
+   * @param anonymised True if the IP address of the sender will be anonymised
+   */
+  public void setAnonymised(boolean anonymised) {
+    this.url = null;
+    this.anonymised = anonymised;
+  }
+
+  /**
+   * Add a session level custom dimension. These will only be sent at the start of the session.
+   *
+   * @param index the index
+   * @param value the value
+   * @see uk.ac.sussex.gdsc.analytics.Parameters#addCustomDimension(int, java.lang.String)
+   */
+  @Override
+  public void addCustomDimension(int index, String value) {
+    this.url = null;
+    super.addCustomDimension(index, value);
+  }
+
+  /**
+   * Add a session level custom metric. These will only be sent at the start of the session.
+   *
+   * @param index the index
+   * @param value the value
+   * @see uk.ac.sussex.gdsc.analytics.Parameters#addCustomMetric(int, int)
+   */
+  @Override
+  public void addCustomMetric(int index, int value) {
+    this.url = null;
+    super.addCustomMetric(index, value);
+  }
+
+  /**
+   * Reset the session (i.e. start a new session)
+   */
+  public void resetSession() {
+    this.session.reset();
+  }
 }

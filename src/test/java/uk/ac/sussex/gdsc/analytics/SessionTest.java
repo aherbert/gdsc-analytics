@@ -22,6 +22,7 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
+
 package uk.ac.sussex.gdsc.analytics;
 
 import org.junit.jupiter.api.Assertions;
@@ -29,28 +30,28 @@ import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
 public class SessionTest {
-    @Test
-    public void testReset() {
-        final Session session = new Session();
-        Assertions.assertTrue(session.isNew());
-        Assertions.assertFalse(session.isNew());
-        session.reset();
-        Assertions.assertTrue(session.isNew());
-    }
+  @Test
+  public void testReset() {
+    final Session session = new Session();
+    Assertions.assertTrue(session.isNew());
+    Assertions.assertFalse(session.isNew());
+    session.reset();
+    Assertions.assertTrue(session.isNew());
+  }
 
-    @Test
-    public void testTimeout() {
-        final Session session = new Session();
-        // 1 second timeout
-        session.setTimeout(1);
-        Assertions.assertEquals(1, session.getTimeout());
-        Assertions.assertTrue(session.isNew());
-        Assertions.assertFalse(session.isNew());
-        try {
-            // Sleep for 1 second to ensure timeout
-            Thread.sleep(1000);
-        } catch (final InterruptedException e) { // Ignore
-        }
-        Assertions.assertTrue(session.isNew());
+  @Test
+  public void testTimeout() {
+    final Session session = new Session();
+    // 1 second timeout
+    session.setTimeout(1);
+    Assertions.assertEquals(1, session.getTimeout());
+    Assertions.assertTrue(session.isNew());
+    Assertions.assertFalse(session.isNew());
+    try {
+      // Sleep for 1 second to ensure timeout
+      Thread.sleep(1000);
+    } catch (final InterruptedException ex) { // Ignore
     }
+    Assertions.assertTrue(session.isNew());
+  }
 }

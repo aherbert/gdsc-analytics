@@ -22,6 +22,7 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
+
 package uk.ac.sussex.gdsc.analytics;
 
 import java.io.IOException;
@@ -32,50 +33,50 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * This class exists to determine what happens when there is no Internet
- * connection. This can be simulated by disconnecting the host (e.g. turn WiFi
- * off; disconnect LAN; etc.) then running the test manually.
+ * This class exists to determine what happens when there is no Internet connection. This can be
+ * simulated by disconnecting the host (e.g. turn WiFi off; disconnect LAN; etc.) then running the
+ * test manually.
  */
 @SuppressWarnings("javadoc")
 public class ConnectionTest {
 
-    // Do not use disabled as then there are test skipped warnings.
-    // @org.junit.jupiter.api.Test
-    public void testConnection() {
-        Logger logger = Logger.getLogger(ConnectionTest.class.getName());
-        HttpURLConnection connection = null;
-        try {
-            final URL url = new URL("http://www.google.com");
-            connection = (HttpURLConnection) url.openConnection();
-            connection.connect();
-            final int responseCode = connection.getResponseCode();
-            logger.info("Response = " + responseCode);
-        } catch (final UnknownHostException e) {
-            logger.log(Level.WARNING, "Unknown host: " + e.getMessage(), e);
-        } catch (final IOException e) {
-            logger.log(Level.SEVERE, "Error making tracking request: " + e.getMessage(), e);
-        } finally {
-            if (connection != null)
-                connection.disconnect();
-        }
+  // Do not use disabled as then there are test skipped warnings.
+  // @org.junit.jupiter.api.Test
+  public void testConnection() {
+    Logger logger = Logger.getLogger(ConnectionTest.class.getName());
+    HttpURLConnection connection = null;
+    try {
+      final URL url = new URL("http://www.google.com");
+      connection = (HttpURLConnection) url.openConnection();
+      connection.connect();
+      final int responseCode = connection.getResponseCode();
+      logger.info("Response = " + responseCode);
+    } catch (final UnknownHostException ex) {
+      logger.log(Level.WARNING, "Unknown host: " + ex.getMessage(), ex);
+    } catch (final IOException ex) {
+      logger.log(Level.SEVERE, "Error making tracking request: " + ex.getMessage(), ex);
+    } finally {
+      if (connection != null)
+        connection.disconnect();
     }
+  }
 
-    /**
-     * Demo of using the tracker. This code is placed in the project README.md file.
-     */
-    public void demo() {
-        // Create the tracker
-        String trackingId = "AAA-123-456"; // Your Google Analytics tracking ID
-        String clientId = "Anything";
-        String applicationName = "Test";
+  /**
+   * Demo of using the tracker. This code is placed in the project README.md file.
+   */
+  public void demo() {
+    // Create the tracker
+    String trackingId = "AAA-123-456"; // Your Google Analytics tracking ID
+    String clientId = "Anything";
+    String applicationName = "Test";
 
-        ClientParameters cp = new ClientParameters(trackingId, clientId, applicationName);
-        GoogleAnalyticsTracker tracker = new GoogleAnalyticsTracker(cp);
+    ClientParameters cp = new ClientParameters(trackingId, clientId, applicationName);
+    GoogleAnalyticsTracker tracker = new GoogleAnalyticsTracker(cp);
 
-        // Submit requests
-        RequestParameters rp = new RequestParameters(HitType.PAGEVIEW);
-        rp.setDocumentPath("/path/within/application/");
-        rp.setDocumentTitle("Test Page");
-        tracker.send(rp);
-    }
+    // Submit requests
+    RequestParameters rp = new RequestParameters(HitType.PAGEVIEW);
+    rp.setDocumentPath("/path/within/application/");
+    rp.setDocumentTitle("Test Page");
+    tracker.send(rp);
+  }
 }

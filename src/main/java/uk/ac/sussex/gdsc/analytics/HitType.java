@@ -22,46 +22,47 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
+
 package uk.ac.sussex.gdsc.analytics;
 
 /**
  * Stores a hit type.
  */
 public enum HitType {
-    /** The pageview hit-type. */
-    PAGEVIEW,
-    /** The screenview hit-type. */
-    SCREENVIEW,
-    /** The event hit-type. */
-    EVENT,
-    /** The transaction hit-type. */
-    TRANSACTION,
-    /** The item hit-type. */
-    ITEM,
-    /** The social hit-type. */
-    SOCIAL,
-    /** The exception hit-type. */
-    EXCEPTION,
-    /** The timing hit-type. */
-    TIMING;
+  /** The pageview hit-type. */
+  PAGEVIEW,
+  /** The screenview hit-type. */
+  SCREENVIEW,
+  /** The event hit-type. */
+  EVENT,
+  /** The transaction hit-type. */
+  TRANSACTION,
+  /** The item hit-type. */
+  ITEM,
+  /** The social hit-type. */
+  SOCIAL,
+  /** The exception hit-type. */
+  EXCEPTION,
+  /** The timing hit-type. */
+  TIMING;
 
-    /** The name. */
-    private final String name;
+  /** The name. */
+  private final String name;
 
-    /**
-     * Instantiates a new hit type.
-     */
-    private HitType() {
-        this.name = super.toString().toLowerCase();
-    }
+  /**
+   * Instantiates a new hit type.
+   */
+  private HitType() {
+    this.name = super.toString().toLowerCase();
+  }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see java.lang.Enum#toString()
-     */
-    @Override
-    public String toString() {
-        return name;
-    }
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.lang.Enum#toString()
+   */
+  @Override
+  public String toString() {
+    return name;
+  }
 }

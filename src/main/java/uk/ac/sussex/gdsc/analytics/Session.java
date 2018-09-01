@@ -22,84 +22,88 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
+
 package uk.ac.sussex.gdsc.analytics;
 
 /**
- * Represent a session
+ * Represent a session.
  */
 public class Session {
-    /**
-     * Google sessions timeout after 30 minutes of inactivity
-     */
-    private long timeout = 30 * 60;
-    /**
-     * Timestamp of the session.
-     */
-    private long now;
 
-    /**
-     * Create a new session
-     */
-    public Session() {
-        reset();
-    }
+  /** Google sessions timeout after 30 minutes of inactivity. */
+  private long timeout = 30 * 60;
+  /**
+   * Timestamp of the session.
+   */
+  private long now;
 
-    /**
-     * Get the number of seconds since the epoch (midnight, January 1, 1970 UTC)
-     *
-     * @return The timestamp in seconds
-     */
-    public static long timestamp() {
-        return System.currentTimeMillis() / 1000L;
-    }
+  /**
+   * Create a new session.
+   */
+  public Session() {
+    reset();
+  }
 
-    /**
-     * Check if the session is new (i.e. has not been initialised, has timed out, or
-     * been reset). Calling this refreshes the current session to prevent timeout.
-     *
-     * @return True if the session is new
-     */
-    public boolean isNew() {
-        final long expires = getExpires();
-        // Get the current time.
-        now = timestamp();
-        // Check if the session has expired
-        return (now >= expires);
-    }
+  /**
+   * Get the number of seconds since the epoch (midnight, January 1, 1970 UTC).
+   *
+   * @return The timestamp in seconds
+   */
+  public static long timestamp() {
+    return System.currentTimeMillis() / 1000L;
+  }
 
-    /**
-     * Get the current session expire time.
-     * <p>
-     * This is the time returned from {@link #timestamp()} on from the last refresh
-     * plus the session timeout.
-     * <p>
-     * If negative then the session has been reset and is currently a new session
-     * (with no timeout).
-     *
-     * @return the expires
-     */
-    public long getExpires() {
-        return now + timeout;
-    }
+  /**
+   * Check if the session is new (i.e. has not been initialised, has timed out, or been reset).
+   * Calling this refreshes the current session to prevent timeout.
+   *
+   * @return True if the session is new
+   */
+  public boolean isNew() {
+    final long expires = getExpires();
+    // Get the current time.
+    now = timestamp();
+    // Check if the session has expired
+    return (now >= expires);
+  }
 
-    /**
-     * Reset and start a new session
-     */
-    public void reset() {
-        now = Long.MIN_VALUE;
-    }
+  /**
+   * Get the current session expire time.
+   *
+   * <p>This is the time returned from {@link #timestamp()} on from the last refresh plus the
+   * session timeout.
+   *
+   * <p>If negative then the session has been reset and is currently a new session (with no
+   * timeout).
+   *
+   * @return the expires
+   */
+  public long getExpires() {
+    return now + timeout;
+  }
 
-    /**
-     * @return the timeout
-     */
-    public long getTimeout() {
-        return timeout;
-    }
+  /**
+   * Reset and start a new session.
+   */
+  public void reset() {
+    now = Long.MIN_VALUE;
+  }
 
-    /**
-     * @param timeout the timeout to set
-     */
-    public void setTimeout(long timeout) {
-        this.timeout = timeout;
-    }
+  /**
+   * Gets the timeout.
+   *
+   * @return the timeout
+   */
+  public long getTimeout() {
+    return timeout;
+  }
+
+  /**
+   * Sets the timeout.
+   *
+   * @param timeout the timeout to set
+   */
+  public void setTimeout(long timeout) {
+    this.timeout = timeout;
+  }
 }

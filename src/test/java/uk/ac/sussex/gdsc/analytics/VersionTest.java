@@ -22,6 +22,7 @@
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
+
 package uk.ac.sussex.gdsc.analytics;
 
 import org.junit.jupiter.api.Assertions;
@@ -29,11 +30,12 @@ import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
 public class VersionTest {
-    @Test
-    public void testVersion() {
-        Assertions.assertEquals(String.format("%d", Version.MAJOR), Version.VERSION_X);
-        Assertions.assertEquals(String.format("%d.%d", Version.MAJOR, Version.MINOR), Version.VERSION_X_X);
-        Assertions.assertEquals(String.format("%d.%d.%d", Version.MAJOR, Version.MINOR, Version.PATCH),
-                Version.VERSION_X_X_X);
-    }
+  @Test
+  public void testVersion() {
+    Assertions.assertEquals(String.format("%d", Version.MAJOR), Version.VERSION_X);
+    Assertions.assertEquals(String.format("%d.%d", Version.MAJOR, Version.MINOR),
+        Version.VERSION_X_X);
+    Assertions.assertEquals(String.format("%d.%d.%d", Version.MAJOR, Version.MINOR, Version.PATCH),
+        Version.VERSION_X_X_X);
+  }
 }
