@@ -27,10 +27,15 @@ package uk.ac.sussex.gdsc.analytics;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.InetAddress;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 /**
  * This class exists to determine what happens when there is no Internet connection. This can be
@@ -41,13 +46,14 @@ import java.util.logging.Logger;
 public class ConnectionTest {
 
   // Do not use disabled as then there are test skipped warnings.
-  // @org.junit.jupiter.api.Test
+  //@org.junit.jupiter.api.Test
   public void testConnection() {
     final Logger logger = Logger.getLogger(ConnectionTest.class.getName());
     HttpURLConnection connection = null;
     try {
       final URL url = new URL("http://www.google.com");
       connection = (HttpURLConnection) url.openConnection();
+      logger.info("Timeout = " + connection.getConnectTimeout());
       connection.connect();
       final int responseCode = connection.getResponseCode();
       logger.info("Response = " + responseCode);
@@ -62,22 +68,45 @@ public class ConnectionTest {
     }
   }
 
+  //@org.junit.jupiter.api.Test
+  public void testConnection2() throws IOException {
+    isInternetAvailable();
+  }
+
+  public static boolean isInternetAvailable() throws IOException {
+    return isHostAvailable("google.com") || isHostAvailable("amazon.com")
+        || isHostAvailable("facebook.com") || isHostAvailable("apple.com");
+  }
+
+  private static boolean isHostAvailable(String hostName) throws IOException {
+    try (Socket socket = new Socket()) {
+      int port = 80;
+      InetSocketAddress socketAddress = new InetSocketAddress(hostName, port);
+      socket.connect(socketAddress, 3000);
+      System.out.println(hostName);
+      return true;
+    } catch (UnknownHostException unknownHost) {
+      return false;
+    }
+  }
+
   /**
    * Demo of using the tracker. This code is placed in the project README.md file.
    */
   public void demo() {
     // Create the tracker
     final String trackingId = "AAA-123-456"; // Your Google Analytics tracking ID
-    final String clientId = "Anything";
-    final String applicationName = "Test";
+    final String userId = "Anything";
 
-    final ClientParameters cp = new ClientParameters(trackingId, clientId, applicationName);
-    final GoogleAnalyticsTracker tracker = new GoogleAnalyticsTracker(cp);
+    final GoogleAnalyticsClient ga =
+        GoogleAnalyticsClient.createBuilder(trackingId).setUserId(userId).build();
 
     // Submit requests
-    final RequestParameters rp = new RequestParameters(HitType.PAGEVIEW);
-    rp.setDocumentPath("/path/within/application/");
-    rp.setDocumentTitle("Test Page");
-    tracker.send(rp);
+    String documentHostName = "www.abc.com";
+    String documentPath = "/path/within/application/";
+    ga.pageview(documentHostName, documentPath).send();
+
+    // Shutdown
+    ga.shutdown();
   }
 }

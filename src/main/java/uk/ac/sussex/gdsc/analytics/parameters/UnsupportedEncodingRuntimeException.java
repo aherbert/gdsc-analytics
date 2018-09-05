@@ -23,17 +23,30 @@
  * #L%
  */
 
+package uk.ac.sussex.gdsc.analytics.parameters;
+
+import java.io.UnsupportedEncodingException;
+
 /**
- * Provide a framework to send raw user interaction data directly to Google Analytics servers via
- * the <a href= "https://developers.google.com/analytics/devguides/collection/protocol/v1/">Google
- * Analytics Measurement Protocol</a>.
- *
- * <p>Since the code will only be used within a Java application the referral, search referral and
- * campaign functionality has been removed to simplify the analytics and allow caching most of the
- * constructed analytics URL.
- *
- * @see <a href= "https://developers.google.com/analytics/devguides/collection/protocol/v1/">Google
- *      Analytics Measurement Protocol</a>
- * @since 1.0
+ * The Character Encoding is not supported.
+ * 
+ * <p>This class serves to wrap a checked {@link UnsupportedEncodingException} with an unchecked
+ * exception.
  */
-package uk.ac.sussex.gdsc.analytics;
+class UnsupportedEncodingRuntimeException extends RuntimeException {
+
+  /**
+   * The serial version ID.
+   */
+  private static final long serialVersionUID = 329458356137801805L;
+
+  /**
+   * Constructs an UnsupportedEncodingRuntimeException with the underlying
+   * {@link UnsupportedEncodingException}.
+   *
+   * @param ex the underlying exception
+   */
+  public UnsupportedEncodingRuntimeException(UnsupportedEncodingException ex) {
+    super(ex);
+  }
+}

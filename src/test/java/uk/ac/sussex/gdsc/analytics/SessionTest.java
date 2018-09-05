@@ -25,6 +25,8 @@
 
 package uk.ac.sussex.gdsc.analytics;
 
+import org.apache.commons.rng.UniformRandomProvider;
+import org.apache.commons.rng.simple.RandomSource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -33,25 +35,55 @@ public class SessionTest {
   @Test
   public void testReset() {
     final Session session = new Session();
-    Assertions.assertTrue(session.isNew());
-    Assertions.assertFalse(session.isNew());
+    Assertions.assertTrue(session.refresh());
+    Assertions.assertFalse(session.refresh());
     session.reset();
-    Assertions.assertTrue(session.isNew());
+    Assertions.assertTrue(session.refresh());
   }
 
+  @SuppressWarnings("unused")
   @Test
   public void testTimeout() {
-    final Session session = new Session();
-    // 1 second timeout
-    session.setTimeout(1);
-    Assertions.assertEquals(1, session.getTimeout());
-    Assertions.assertTrue(session.isNew());
-    Assertions.assertFalse(session.isNew());
-    try {
-      // Sleep for 1 second to ensure timeout
-      Thread.sleep(1000);
-    } catch (final InterruptedException ex) { // Ignore
+    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+      new Session(-1);
+    });
+    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+      new Session().setTimeout(-1);
+    });
+
+    final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
+    for (int i = 0; i < 5; i++) {
+      long timeout = rg.nextLong(1000000L);
+      Session session = new Session(timeout);
+      Assertions.assertEquals(0, session.getTimeStamp());
+      Assertions.assertEquals(timeout, session.getTimeout());
+      session.refresh();
+      Assertions.assertFalse(0L == session.getTimeStamp(), "Timestamp has not changed");
     }
-    Assertions.assertTrue(session.isNew());
+
+    // 0 millisecond timeout
+    Session session = new Session(Session.ALWAYS_TIMEOUT);
+    Assertions.assertFalse(session.hasExpired());
+    Assertions.assertTrue(session.refresh());
+    Assertions.assertTrue(session.hasExpired());
+    Assertions.assertTrue(session.refresh());
+    Assertions.assertTrue(session.hasExpired());
+    Assertions.assertTrue(session.refresh());
+    Assertions.assertTrue(session.hasExpired());
+
+    // Never timeout. This should work on the same session
+    //session = new Session(Session.NEVER_TIMEOUT);
+    session.setTimeout(Session.NEVER_TIMEOUT);
+    Assertions.assertEquals(Long.MAX_VALUE, session.getTimeout());
+    Assertions.assertFalse(session.hasExpired());
+    Assertions.assertFalse(session.refresh());
+    Assertions.assertFalse(session.hasExpired());
+    Assertions.assertFalse(session.refresh());
+    session.reset();
+    Assertions.assertTrue(session.refresh());
+    Assertions.assertFalse(session.hasExpired());
+    Assertions.assertFalse(session.refresh());
+    Assertions.assertFalse(session.hasExpired());
+    Assertions.assertFalse(session.refresh());
   }
 }

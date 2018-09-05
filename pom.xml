@@ -59,12 +59,6 @@ Measurement protocol to collect usage information about a Java application.
     <contributor>
       <name>Alex Herbert</name>
     </contributor>
-    <contributor>
-      <name>Daniel Murphy</name>
-    </contributor>
-    <contributor>
-      <name>Stefan Brozinski</name>
-    </contributor>
   </contributors>
 
   <properties>
@@ -78,7 +72,7 @@ Measurement protocol to collect usage information about a Java application.
     <org.junit.jupiter.version>5.2.0</org.junit.jupiter.version>
     <org.junit.platform.version>1.2.0</org.junit.platform.version>
     <org.junit.version>4.12</org.junit.version>
-    <commons.rng.version>1.1</commons.rng.version>
+    <commons-rng.version>1.1</commons-rng.version>
     <org.jacoco.version>0.8.1</org.jacoco.version>
     <license-maven-plugin.version>1.16</license-maven-plugin.version>
     <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
@@ -655,6 +649,12 @@ Measurement protocol to collect usage information about a Java application.
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
       <version>${mockito-core.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-rng-simple</artifactId>
+      <version>${commons-rng.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

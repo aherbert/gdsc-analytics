@@ -84,7 +84,7 @@ public final class VersionUtils {
    * @return The version
    */
   public static String getVersion(int levels) {
-    final StringBuffer version = new StringBuffer().append(MAJOR);
+    final StringBuilder version = new StringBuilder().append(MAJOR);
     if (levels > LEVEL_ONE) {
       version.append('.').append(MINOR);
     }

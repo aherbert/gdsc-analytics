@@ -23,17 +23,27 @@
  * #L%
  */
 
+package uk.ac.sussex.gdsc.analytics.parameters;
+
+import java.util.concurrent.ThreadLocalRandom;
+
 /**
- * Provide a framework to send raw user interaction data directly to Google Analytics servers via
- * the <a href= "https://developers.google.com/analytics/devguides/collection/protocol/v1/">Google
- * Analytics Measurement Protocol</a>.
- *
- * <p>Since the code will only be used within a Java application the referral, search referral and
- * campaign functionality has been removed to simplify the analytics and allow caching most of the
- * constructed analytics URL.
- *
- * @see <a href= "https://developers.google.com/analytics/devguides/collection/protocol/v1/">Google
- *      Analytics Measurement Protocol</a>
- * @since 1.0
+ * Adds parameter {@code z} with a random integer to a URL.
+ * 
+ * <p>To be used as a cache buster parameter when using the HTTP GET method.
+ * 
+ * <p>The class is thread safe as it uses {@link ThreadLocalRandom} to generate the random integer.
+ * 
+ * @see <a
+ *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#z">Cache
+ *      Buster</a>
  */
-package uk.ac.sussex.gdsc.analytics;
+public class CacheBusterParameter extends IntParameter {
+
+  /**
+   * Instantiates a new instance.
+   */
+  public CacheBusterParameter() {
+    super("&z", ThreadLocalRandom.current().nextInt());
+  }
+}

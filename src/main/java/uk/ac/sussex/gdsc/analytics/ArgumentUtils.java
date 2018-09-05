@@ -23,17 +23,33 @@
  * #L%
  */
 
-/**
- * Provide a framework to send raw user interaction data directly to Google Analytics servers via
- * the <a href= "https://developers.google.com/analytics/devguides/collection/protocol/v1/">Google
- * Analytics Measurement Protocol</a>.
- *
- * <p>Since the code will only be used within a Java application the referral, search referral and
- * campaign functionality has been removed to simplify the analytics and allow caching most of the
- * constructed analytics URL.
- *
- * @see <a href= "https://developers.google.com/analytics/devguides/collection/protocol/v1/">Google
- *      Analytics Measurement Protocol</a>
- * @since 1.0
- */
 package uk.ac.sussex.gdsc.analytics;
+
+/**
+ * Contains utility functions for checking arguments.
+ */
+public final class ArgumentUtils {
+
+  /**
+   * No public construction.
+   */
+  private ArgumentUtils() {
+    // Do nothing
+  }
+
+  /**
+   * Validate the thread priority is in the range allowed.
+   *
+   * @param priority the priority
+   * @return the priority
+   * @throws IllegalArgumentException If the priority is not allowed
+   * @see Thread#MIN_PRIORITY
+   * @see Thread#MAX_PRIORITY
+   */
+  public static int validateThreadPriority(int priority) throws IllegalArgumentException {
+    if (priority < Thread.MIN_PRIORITY || priority > Thread.MAX_PRIORITY) {
+      throw new IllegalArgumentException("Invalid priority: " + priority);
+    }
+    return priority;
+  }
+}

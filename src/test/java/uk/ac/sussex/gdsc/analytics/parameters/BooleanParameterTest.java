@@ -23,17 +23,27 @@
  * #L%
  */
 
-/**
- * Provide a framework to send raw user interaction data directly to Google Analytics servers via
- * the <a href= "https://developers.google.com/analytics/devguides/collection/protocol/v1/">Google
- * Analytics Measurement Protocol</a>.
- *
- * <p>Since the code will only be used within a Java application the referral, search referral and
- * campaign functionality has been removed to simplify the analytics and allow caching most of the
- * constructed analytics URL.
- *
- * @see <a href= "https://developers.google.com/analytics/devguides/collection/protocol/v1/">Google
- *      Analytics Measurement Protocol</a>
- * @since 1.0
- */
-package uk.ac.sussex.gdsc.analytics;
+package uk.ac.sussex.gdsc.analytics.parameters;
+
+import uk.ac.sussex.gdsc.analytics.TestUtils;
+
+import org.apache.commons.rng.UniformRandomProvider;
+import org.apache.commons.rng.simple.RandomSource;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+@SuppressWarnings("javadoc")
+public class BooleanParameterTest {
+  @Test
+  public void testFormat() {
+    final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
+    for (int i = 0; i < 5; i++) {
+      String name = TestUtils.randomName(rg, 3);
+      boolean value = rg.nextBoolean();
+      BooleanParameter bp = new BooleanParameter("&" + name, value);
+      Assertions.assertEquals(String.format("&%s=%c", name, (value) ? '1' : '0'),
+          TestUtils.callAppendTo(bp));
+      Assertions.assertEquals(value, bp.isValue());
+    }
+  }
+}

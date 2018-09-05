@@ -23,17 +23,33 @@
  * #L%
  */
 
-/**
- * Provide a framework to send raw user interaction data directly to Google Analytics servers via
- * the <a href= "https://developers.google.com/analytics/devguides/collection/protocol/v1/">Google
- * Analytics Measurement Protocol</a>.
- *
- * <p>Since the code will only be used within a Java application the referral, search referral and
- * campaign functionality has been removed to simplify the analytics and allow caching most of the
- * constructed analytics URL.
- *
- * @see <a href= "https://developers.google.com/analytics/devguides/collection/protocol/v1/">Google
- *      Analytics Measurement Protocol</a>
- * @since 1.0
- */
 package uk.ac.sussex.gdsc.analytics;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.Proxy;
+import java.net.URL;
+
+/**
+ * Interface to allow a custom connection to be opened for a URL.
+ *
+ * <p>This exists for testing purposes.
+ */
+interface HttpConnectionProvider {
+
+  /**
+   * Open a connection.
+   *
+   * @param url the url (assumed to be a HTTP/HTTPS protocol)
+   * @param proxy the proxy
+   * @return the http URL connection
+   * @throws IOException Signals that an I/O exception has occurred.
+   * @throws ClassCastException If the connection cannot be cast to a HttpURLConnection
+   * @see URL#openConnection()
+   * @see URL#openConnection(Proxy)
+   */
+  default HttpURLConnection openConnection(URL url, Proxy proxy)
+      throws IOException, ClassCastException {
+    return (HttpURLConnection) ((proxy == null) ? url.openConnection() : url.openConnection(proxy));
+  }
+}

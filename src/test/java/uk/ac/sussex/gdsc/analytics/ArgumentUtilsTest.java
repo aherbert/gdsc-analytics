@@ -23,17 +23,23 @@
  * #L%
  */
 
-/**
- * Provide a framework to send raw user interaction data directly to Google Analytics servers via
- * the <a href= "https://developers.google.com/analytics/devguides/collection/protocol/v1/">Google
- * Analytics Measurement Protocol</a>.
- *
- * <p>Since the code will only be used within a Java application the referral, search referral and
- * campaign functionality has been removed to simplify the analytics and allow caching most of the
- * constructed analytics URL.
- *
- * @see <a href= "https://developers.google.com/analytics/devguides/collection/protocol/v1/">Google
- *      Analytics Measurement Protocol</a>
- * @since 1.0
- */
 package uk.ac.sussex.gdsc.analytics;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+@SuppressWarnings("javadoc")
+public class ArgumentUtilsTest {
+  @Test
+  public void testValidateThreadPriority() {
+    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+      ArgumentUtils.validateThreadPriority(Thread.MIN_PRIORITY - 1);
+    });
+    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+      ArgumentUtils.validateThreadPriority(Thread.MAX_PRIORITY + 1);
+    });
+    for (int i = Thread.MIN_PRIORITY; i <= Thread.MAX_PRIORITY; i++) {
+      ArgumentUtils.validateThreadPriority(i);
+    }
+  }
+}

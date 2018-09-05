@@ -23,17 +23,52 @@
  * #L%
  */
 
+package uk.ac.sussex.gdsc.analytics.parameters;
+
 /**
- * Provide a framework to send raw user interaction data directly to Google Analytics servers via
- * the <a href= "https://developers.google.com/analytics/devguides/collection/protocol/v1/">Google
- * Analytics Measurement Protocol</a>.
- *
- * <p>Since the code will only be used within a Java application the referral, search referral and
- * campaign functionality has been removed to simplify the analytics and allow caching most of the
- * constructed analytics URL.
- *
- * @see <a href= "https://developers.google.com/analytics/devguides/collection/protocol/v1/">Google
- *      Analytics Measurement Protocol</a>
- * @since 1.0
+ * Stores a named {@code int} parameter.
  */
-package uk.ac.sussex.gdsc.analytics;
+public final class ResolutionParameter extends NamedParameter {
+
+  /** The width. */
+  private final int width;
+
+  /** The height. */
+  private final int height;
+
+  /**
+   * Instantiates a new custom dimension.
+   *
+   * @param name the name
+   * @param width the width
+   * @param height the height
+   */
+  public ResolutionParameter(String name, int width, int height) {
+    super(name);
+    this.width = width;
+    this.height = height;
+  }
+
+  /**
+   * Gets the width.
+   *
+   * @return the width
+   */
+  public int getWidth() {
+    return width;
+  }
+
+  /**
+   * Gets the height.
+   *
+   * @return the height
+   */
+  public int getHeight() {
+    return height;
+  }
+
+  @Override
+  public void appendTo(StringBuilder sb) {
+    FormattedParameterHelper.appendResolution(sb, getName(), width, height);
+  }
+}

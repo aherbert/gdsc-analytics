@@ -23,17 +23,25 @@
  * #L%
  */
 
+package uk.ac.sussex.gdsc.analytics.parameters;
+
 /**
- * Provide a framework to send raw user interaction data directly to Google Analytics servers via
- * the <a href= "https://developers.google.com/analytics/devguides/collection/protocol/v1/">Google
- * Analytics Measurement Protocol</a>.
- *
- * <p>Since the code will only be used within a Java application the referral, search referral and
- * campaign functionality has been removed to simplify the analytics and allow caching most of the
- * constructed analytics URL.
- *
- * @see <a href= "https://developers.google.com/analytics/devguides/collection/protocol/v1/">Google
- *      Analytics Measurement Protocol</a>
- * @since 1.0
+ * Stores a custom dimension parameter.
+ * 
+ * @see <a
+ *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#cd_">Custom
+ *      Dimension</a>
  */
-package uk.ac.sussex.gdsc.analytics;
+public final class CustomDimensionParameter extends IndexedStringParameter {
+
+  /**
+   * Instantiates a new custom dimension.
+   *
+   * @param index the index
+   * @param value the value
+   * @throws IllegalArgumentException If the index is not strictly positive
+   */
+  public CustomDimensionParameter(int index, String value) throws IllegalArgumentException {
+    super("&cd", index, value);
+  }
+}

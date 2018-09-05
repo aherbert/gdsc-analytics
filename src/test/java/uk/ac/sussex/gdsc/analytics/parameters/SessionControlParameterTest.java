@@ -23,17 +23,29 @@
  * #L%
  */
 
-/**
- * Provide a framework to send raw user interaction data directly to Google Analytics servers via
- * the <a href= "https://developers.google.com/analytics/devguides/collection/protocol/v1/">Google
- * Analytics Measurement Protocol</a>.
- *
- * <p>Since the code will only be used within a Java application the referral, search referral and
- * campaign functionality has been removed to simplify the analytics and allow caching most of the
- * constructed analytics URL.
- *
- * @see <a href= "https://developers.google.com/analytics/devguides/collection/protocol/v1/">Google
- *      Analytics Measurement Protocol</a>
- * @since 1.0
- */
-package uk.ac.sussex.gdsc.analytics;
+package uk.ac.sussex.gdsc.analytics.parameters;
+
+import uk.ac.sussex.gdsc.analytics.TestUtils;
+import uk.ac.sussex.gdsc.analytics.parameters.SessionControlParameter;
+
+import java.util.Locale;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+@SuppressWarnings("javadoc")
+public class SessionControlParameterTest {
+  @Test
+  public void testToString() {
+    for (final SessionControlParameter ht : SessionControlParameter.values()) {
+      String expected = String.valueOf(ht).toLowerCase(Locale.getDefault());
+      Assertions.assertEquals(expected, ht.toString());
+    }
+  }
+
+  @Test
+  public void testFormat() {
+    Assertions.assertEquals("&sc=end", TestUtils.callAppendTo(SessionControlParameter.END));
+    Assertions.assertEquals("&sc=start", TestUtils.callAppendTo(SessionControlParameter.START));
+  }
+}

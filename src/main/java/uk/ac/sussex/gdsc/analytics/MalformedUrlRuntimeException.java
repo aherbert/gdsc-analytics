@@ -23,17 +23,31 @@
  * #L%
  */
 
-/**
- * Provide a framework to send raw user interaction data directly to Google Analytics servers via
- * the <a href= "https://developers.google.com/analytics/devguides/collection/protocol/v1/">Google
- * Analytics Measurement Protocol</a>.
- *
- * <p>Since the code will only be used within a Java application the referral, search referral and
- * campaign functionality has been removed to simplify the analytics and allow caching most of the
- * constructed analytics URL.
- *
- * @see <a href= "https://developers.google.com/analytics/devguides/collection/protocol/v1/">Google
- *      Analytics Measurement Protocol</a>
- * @since 1.0
- */
 package uk.ac.sussex.gdsc.analytics;
+
+import java.net.MalformedURLException;
+
+/**
+ * Thrown to indicate that a malformed URL has occurred. Either no legal protocol could be found in
+ * a specification string or the string could not be parsed.
+ *
+ * <p>This class serves to wrap a checked {@link MalformedURLException} with an unchecked exception.
+ * It is used to avoid having to explicitly catch the {@link MalformedURLException} when the URL has
+ * not been adjusted from known defaults.
+ */
+class MalformedUrlRuntimeException extends RuntimeException {
+
+  /**
+   * The serial version ID.
+   */
+  private static final long serialVersionUID = -27315935928218977L;
+
+  /**
+   * Constructs an MalformedUrlRuntimeException with the underlying {@link MalformedURLException}.
+   *
+   * @param ex the underlying exception
+   */
+  public MalformedUrlRuntimeException(MalformedURLException ex) {
+    super(ex);
+  }
+}

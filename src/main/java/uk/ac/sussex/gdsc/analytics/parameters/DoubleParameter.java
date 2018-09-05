@@ -18,22 +18,43 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public
- * License along with this program.  If not, see
+ * License adouble with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
 
+package uk.ac.sussex.gdsc.analytics.parameters;
+
 /**
- * Provide a framework to send raw user interaction data directly to Google Analytics servers via
- * the <a href= "https://developers.google.com/analytics/devguides/collection/protocol/v1/">Google
- * Analytics Measurement Protocol</a>.
- *
- * <p>Since the code will only be used within a Java application the referral, search referral and
- * campaign functionality has been removed to simplify the analytics and allow caching most of the
- * constructed analytics URL.
- *
- * @see <a href= "https://developers.google.com/analytics/devguides/collection/protocol/v1/">Google
- *      Analytics Measurement Protocol</a>
- * @since 1.0
+ * Stores a named {@code double} parameter.
  */
-package uk.ac.sussex.gdsc.analytics;
+public class DoubleParameter extends NamedParameter {
+
+  /** The value. */
+  private final double value;
+
+  /**
+   * Instantiates a new instance.
+   *
+   * @param name the name
+   * @param value the value
+   */
+  public DoubleParameter(String name, double value) {
+    super(name);
+    this.value = value;
+  }
+
+  /**
+   * Gets the value.
+   *
+   * @return the value
+   */
+  public final double getValue() {
+    return value;
+  }
+
+  @Override
+  public void appendTo(StringBuilder sb) {
+    FormattedParameterHelper.append(sb, getName(), value);
+  }
+}
