@@ -28,9 +28,7 @@ package uk.ac.sussex.gdsc.analytics.parameters;
 /**
  * Stores a custom dimension parameter.
  * 
- * @see <a
- *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#cd_">Custom
- *      Dimension</a>
+ * @see <a href="http://goo.gl/a8d4RP#cd_">Custom Dimension</a>
  */
 public final class CustomDimensionParameter extends IndexedStringParameter {
 

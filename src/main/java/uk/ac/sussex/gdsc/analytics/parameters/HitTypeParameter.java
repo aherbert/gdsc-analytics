@@ -30,9 +30,7 @@ import java.util.Locale;
 /**
  * Stores valid values for a hit type.
  * 
- * @see <a
- *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#t">Hit
- *      type</a>
+ * @see <a href="http://goo.gl/a8d4RP#t">Hit type</a>
  */
 public enum HitTypeParameter implements FormattedParameter {
   /** The pageview hit-type. */

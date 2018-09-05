@@ -27,6 +27,7 @@ package uk.ac.sussex.gdsc.analytics.parameters;
 
 import uk.ac.sussex.gdsc.analytics.TestUtils;
 import uk.ac.sussex.gdsc.analytics.parameters.Parameters.HitBuilder;
+import uk.ac.sussex.gdsc.analytics.parameters.Parameters.PartialBuilder;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -49,9 +50,9 @@ public class ParametersTest {
   String host = "http://www.abc.com";
 
   @Test
-  public void testClientParametersBuilder() throws MalformedURLException {
+  public void testRequiredBuilder() throws MalformedURLException {
     // @formatter:off
-    URL url = createURL(Parameters.newClientParametersBuilder(trackingId)
+    URL url = createURL(Parameters.newRequiredBuilder(trackingId)
                                   .build());
     Assertions.assertThat(url)
     .hasParameter("v", "1")
@@ -65,7 +66,7 @@ public class ParametersTest {
     UUID.fromString(getParameter(url.getQuery(), "cid"));
 
     Assertions.assertThat(
-        createURL(Parameters.newClientParametersBuilder(trackingId)
+        createURL(Parameters.newRequiredBuilder(trackingId)
                             .addClientId(clientId).build()))
     .hasParameter("v", "1")
     .hasParameter("je", "1")
@@ -76,7 +77,7 @@ public class ParametersTest {
 
     UUID uuid = UUID.fromString(clientId2);
     Assertions.assertThat(
-        createURL(Parameters.newClientParametersBuilder(trackingId)
+        createURL(Parameters.newRequiredBuilder(trackingId)
                             .addClientId(uuid).build()))
     .hasParameter("v", "1")
     .hasParameter("je", "1")
@@ -86,7 +87,7 @@ public class ParametersTest {
     ;
 
     Assertions.assertThat(
-        createURL(Parameters.newClientParametersBuilder(trackingId)
+        createURL(Parameters.newRequiredBuilder(trackingId)
                             .addUserId(userId).build()))
     .hasParameter("v", "1")
     .hasParameter("je", "1")
@@ -97,7 +98,7 @@ public class ParametersTest {
 
 
     Assertions.assertThat(
-        createURL(Parameters.newClientParametersBuilder(trackingId)
+        createURL(Parameters.newRequiredBuilder(trackingId)
                             .addUserId(userId)
                             .addClientId(clientId).build()))
     .hasParameter("v", "1")
@@ -110,17 +111,17 @@ public class ParametersTest {
   }
 
   @Test
-  public void testClientParametersBuilderThrows() {
+  public void testRequiredBuilderThrows() {
     // @formatter:off
     // Bad tracking Id
     Assertions.assertThatThrownBy(() -> Parameters
-        .newClientParametersBuilder("ashdjk"))
+        .newRequiredBuilder("ashdjk"))
         .isInstanceOf(IllegalArgumentException.class);
 
     // Duplicate client id
     Assertions
         .assertThatThrownBy(() -> Parameters
-            .newClientParametersBuilder(trackingId)
+            .newRequiredBuilder(trackingId)
             .addClientId(clientId)
             .addClientId(clientId))
         .isInstanceOf(IllegalArgumentException.class);
@@ -128,14 +129,14 @@ public class ParametersTest {
     // Duplicate client id
     UUID uuid = UUID.fromString(clientId2);
     Assertions.assertThatThrownBy(() -> Parameters
-        .newClientParametersBuilder(trackingId)
+        .newRequiredBuilder(trackingId)
         .addClientId(uuid)
         .addClientId(uuid))
         .isInstanceOf(IllegalArgumentException.class);
 
     // Duplicate user id
     Assertions.assertThatThrownBy(() -> Parameters
-        .newClientParametersBuilder(trackingId)
+        .newRequiredBuilder(trackingId)
         .addUserId(userId)
         .addUserId(userId))
         .isInstanceOf(IllegalArgumentException.class);
@@ -143,16 +144,17 @@ public class ParametersTest {
   }
 
   @Test
-  public void testNonClientParametersBuilder() throws MalformedURLException {
+  public void testPartialBuilder() throws MalformedURLException {
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (int i = 0; i < 5; i++) {
       String applicationName = TestUtils.randomName(rg, 3);
       String documentTitle = TestUtils.randomName(rg, 3);
       // @formatter:off
-      URL url = createURL(Parameters.newNonClientParametersBuilder()
-                                    .addApplicationName(applicationName)
-                                    .addDocumentTitle(documentTitle)
-                                    .build());
+      PartialBuilder<?> builder = Parameters.newPartialBuilder(this); 
+      Assertions.assertThat(this).isSameAs(builder.getParent());
+      URL url = createURL(builder.addApplicationName(applicationName)
+                                 .addDocumentTitle(documentTitle)
+                                 .build());
       Assertions.assertThat(url)
       .hasParameter("an", applicationName)
       .hasParameter("dt", documentTitle)
@@ -162,14 +164,14 @@ public class ParametersTest {
   }
 
   @Test
-  public void testGenericParametersBuilder() throws MalformedURLException {
+  public void testBuilder() throws MalformedURLException {
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (int i = 0; i < 5; i++) {
       String applicationName = TestUtils.randomName(rg, 3);
       String documentTitle = TestUtils.randomName(rg, 3);
       String userId = TestUtils.randomName(rg, 3);
       // @formatter:off
-      URL url = createURL(Parameters.newGenericParametersBuilder()
+      URL url = createURL(Parameters.newBuilder()
                                     .addApplicationName(applicationName)
                                     .addDocumentTitle(documentTitle)
                                     .addUserId(userId)
@@ -254,6 +256,6 @@ public class ParametersTest {
    * @throws MalformedURLException the malformed URL exception
    */
   private URL createURL(Parameters parameters) throws MalformedURLException {
-    return new URL(host + parameters.formatGetString());
+    return new URL(host + parameters.toGetString());
   }
 }

@@ -125,8 +125,7 @@ public class Session {
   /**
    * Get the timestamp of the last call to {@link #refresh()}.
    *
-   * <p>If zero then the session has been reset and is currently a new session (with no
-   * timeout).
+   * <p>If zero then the session has been reset and is currently a new session (with no timeout).
    *
    * @return the timestamp
    */

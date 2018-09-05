@@ -29,45 +29,28 @@ import uk.ac.sussex.gdsc.analytics.parameters.FormattedParameter;
 import uk.ac.sussex.gdsc.analytics.parameters.HitTypeParameter;
 import uk.ac.sussex.gdsc.analytics.parameters.ParameterUtils;
 import uk.ac.sussex.gdsc.analytics.parameters.Parameters;
-import uk.ac.sussex.gdsc.analytics.parameters.Parameters.ClientParametersBuilder;
-import uk.ac.sussex.gdsc.analytics.parameters.Parameters.GenericParametersBuilder;
 import uk.ac.sussex.gdsc.analytics.parameters.Parameters.HitBuilder;
-import uk.ac.sussex.gdsc.analytics.parameters.Parameters.NonClientParametersBuilder;
+import uk.ac.sussex.gdsc.analytics.parameters.Parameters.ParametersBuilder;
+import uk.ac.sussex.gdsc.analytics.parameters.Parameters.PartialBuilder;
+import uk.ac.sussex.gdsc.analytics.parameters.Parameters.RequiredBuilder;
 import uk.ac.sussex.gdsc.analytics.parameters.QueueTimeParameter;
 import uk.ac.sussex.gdsc.analytics.parameters.SessionControlParameter;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.InetSocketAddress;
-import java.net.MalformedURLException;
-import java.net.Proxy;
-import java.net.Proxy.Type;
-import java.net.SocketAddress;
-import java.net.URL;
-import java.net.UnknownHostException;
-import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Send custom requests to Google Analytics using the <a href=
  * "https://developers.google.com/analytics/devguides/collection/protocol/v1/">Google Analytics
  * Measurement Protocol</a>.
  *
- * <p>The client uses an {@link ExecutorService} to send requests.
+ * <p>The client uses an {@link ExecutorService} to send requests via a {@link HitDispatcher}.
  *
- * <p>The client is represents interactions of a single user (or client). This requires a Google
+ * <p>The client represents interactions of a single user (or client). This requires a Google
  * Analytics tracking Id parameter and either a client or user Id parameter. These are fixed for a
  * single client instance.
  *
@@ -79,16 +62,6 @@ public class GoogleAnalyticsClient {
   // Do not resend all of client URL every time.
   // Test against google debug server.
   // Move mock test to integration tests.
-
-  /** The hostname for the Google Analytics URL. */
-  public static final String GOOGLE_ANALYTICS_HOSTNAME = "www.google-analytics.com";
-  /** The file for the Google Analytics debug collection. */
-  public static final String GOOGLE_ANALYTICS_DEBUG_FILE = "/debug/collect";
-  /** The file for the Google Analytics collection. */
-  public static final String GOOGLE_ANALYTICS_FILE = "/collect";
-
-  /** The logger. */
-  private static final Logger logger = Logger.getLogger(GoogleAnalyticsClient.class.getName());
 
   /**
    * Used when ignoring requests due to {@link DispatchStatus#IGNORED}.
@@ -107,11 +80,8 @@ public class GoogleAnalyticsClient {
    */
   private final ExecutorService executorService;
 
-  /**
-   * The last IO exception that occurred when dispatching a request. If this is not null then the
-   * tracker is disabled as it is assumed that all subsequent tracking requests will fail.
-   */
-  private final AtomicReference<IOException> lastIoException = new AtomicReference<>();
+  /** The hit dispatcher. */
+  private final HitDispatcher hitDispatcher;
 
   /**
    * The client parameters. These are sent with each hit.
@@ -125,15 +95,6 @@ public class GoogleAnalyticsClient {
 
   /** The session. */
   private final Session session;
-
-  /** The url used for tracking requests. */
-  private final URL url;
-
-  /** The proxy used for tracking requests. */
-  private final Proxy proxy;
-
-  /** The connection provider. */
-  private final HttpConnectionProvider connectionProvider;
 
   /** The ignore flag. */
   private boolean ignore;
@@ -164,32 +125,23 @@ public class GoogleAnalyticsClient {
     /** The executor service. */
     private ExecutorService executorService;
 
+    /** The hit dispatcher. */
+    private HitDispatcher hitDispatcher;
+
     /** The per-hit parameters. */
-    private NonClientParametersBuilder perHitParameters;
+    private PartialBuilder<Builder> perHitParameters;
 
     /** The per-session parameters. */
-    private NonClientParametersBuilder perSessionParameters;
+    private PartialBuilder<Builder> perSessionParameters;
 
     /** The session timeout. */
     private long sessionTimeout;
-
-    /** The proxy used for tracking requests. */
-    private Proxy proxy;
 
     /** The secure flag. Set to true to use HTTPS. */
     private boolean secure;
 
     /** The debug flag. Set to true to use the Google Analytics debug server. */
     private boolean debug;
-
-    /** The google analytics hostname. */
-    private String googleAnalyticsHostname = GOOGLE_ANALYTICS_HOSTNAME;
-
-    /** The google analytics file. */
-    private String googleAnalyticsFile = GOOGLE_ANALYTICS_FILE;
-
-    /** The connection provider. */
-    private HttpConnectionProvider connectionProvider;
 
     /**
      * Creates a new builder.
@@ -209,8 +161,7 @@ public class GoogleAnalyticsClient {
     public GoogleAnalyticsClient build() throws MalformedUrlRuntimeException {
 
       // This will work if user/client Id are null as it generates a random UUID
-      final ClientParametersBuilder clientBuilder =
-          Parameters.newClientParametersBuilder(trackingId);
+      final RequiredBuilder clientBuilder = Parameters.newRequiredBuilder(trackingId);
       if (userId != null) {
         clientBuilder.addUserId(userId);
       }
@@ -228,15 +179,13 @@ public class GoogleAnalyticsClient {
           (perSessionParameters == null) ? FormattedParameter.empty()
               : perSessionParameters.build();
 
-      // Set up the connection. This may be set for testing purposes.
-      if (connectionProvider == null) {
-        connectionProvider = new HttpConnectionProvider() {
-          // The default method will be used
-        };
+      // Set up the dispatcher.
+      if (hitDispatcher == null) {
+        hitDispatcher = DefaultHitDispatcher.getDefault(isSecure(), isDebug());
       }
 
-      return new GoogleAnalyticsClient(clientBuilder.build(), sessionParameters,
-          createExecutorService(), sessionTimeout, getUrl(), proxy, connectionProvider);
+      return new GoogleAnalyticsClient(clientBuilder.build(), sessionParameters, sessionTimeout,
+          createExecutorService(), hitDispatcher);
     }
 
     /**
@@ -264,9 +213,7 @@ public class GoogleAnalyticsClient {
      * @param trackingId the tracking id
      * @return the builder
      * @throws IllegalArgumentException if tracking ID is invalid
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#tid">Tracking
-     *      Id</a>
+     * @see <a href="http://goo.gl/a8d4RP#tid">Tracking Id</a>
      */
     public Builder setTrackingId(String trackingId) {
       ParameterUtils.validateTrackingId(trackingId);
@@ -292,9 +239,7 @@ public class GoogleAnalyticsClient {
      *
      * @param userId the user id
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#uid">User
-     *      Id</a>
+     * @see <a href="http://goo.gl/a8d4RP#uid">User Id</a>
      */
     public Builder setUserId(String userId) {
       this.userId = userId;
@@ -321,9 +266,7 @@ public class GoogleAnalyticsClient {
      * @param clientId the client id
      * @return the builder
      * @throws IllegalArgumentException if not a valid UUID
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#cid">Client
-     *      Id</a>
+     * @see <a href="http://goo.gl/a8d4RP#cid">Client Id</a>
      */
     public Builder setClientId(String clientId) throws IllegalArgumentException {
       this.clientId = clientId;
@@ -340,9 +283,7 @@ public class GoogleAnalyticsClient {
      *
      * @param clientId the client id
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#cid">Client
-     *      Id</a>
+     * @see <a href="http://goo.gl/a8d4RP#cid">Client Id</a>
      */
     public Builder setClientId(UUID clientId) {
       this.clientId = clientId;
@@ -451,6 +392,32 @@ public class GoogleAnalyticsClient {
     }
 
     /**
+     * Gets the hit dispatcher used to send hit requests.
+     *
+     * <p>If {@code null} then a default dispatcher will be used.
+     * 
+     * @return the hit dispatcher
+     */
+    public HitDispatcher getHitDispatcher() {
+      return hitDispatcher;
+    }
+
+    /**
+     * Sets the hit dispatcher used to send hit requests. Defaults to {@code null}.
+     *
+     * <p>If {@code null} then a default dispatcher will be used. The default is shared at the
+     * system level default allowing a single point of control over hit requests.
+     * 
+     * @param hitDispatcher the hit dispatcher
+     * @return the builder
+     * @see DefaultHitDispatcher
+     */
+    public Builder setHitDispatcher(HitDispatcher hitDispatcher) {
+      this.hitDispatcher = hitDispatcher;
+      return this;
+    }
+
+    /**
      * Gets the parameters that will be used for each hit or creates them if absent.
      *
      * <p>These parameters are in addition to the required tracking Id and client/user Id which are
@@ -458,9 +425,9 @@ public class GoogleAnalyticsClient {
      *
      * @return the per-hit parameters
      */
-    public NonClientParametersBuilder getOrCreatePerHitParameters() {
+    public PartialBuilder<Builder> getOrCreatePerHitParameters() {
       if (perHitParameters == null) {
-        perHitParameters = Parameters.newNonClientParametersBuilder();
+        perHitParameters = Parameters.newPartialBuilder(this);
       }
       return perHitParameters;
     }
@@ -477,8 +444,9 @@ public class GoogleAnalyticsClient {
      * @param perHitParameters the new per-hit parameters
      * @return the builder
      */
-    public Builder setPerHitParameters(NonClientParametersBuilder perHitParameters) {
-      this.perHitParameters = perHitParameters;
+    public Builder setPerHitParameters(FormattedParameter perHitParameters) {
+      this.perHitParameters = Parameters.newPartialBuilder(this);
+      this.perHitParameters.add(perHitParameters);
       return this;
     }
 
@@ -487,9 +455,9 @@ public class GoogleAnalyticsClient {
      *
      * @return the per-session parameters
      */
-    public NonClientParametersBuilder getOrCreatePerSessionParameters() {
+    public PartialBuilder<Builder> getOrCreatePerSessionParameters() {
       if (perSessionParameters == null) {
-        perSessionParameters = Parameters.newNonClientParametersBuilder();
+        perSessionParameters = Parameters.newPartialBuilder(this);
       }
       return perSessionParameters;
     }
@@ -503,8 +471,9 @@ public class GoogleAnalyticsClient {
      * @param perSessionParameters the new per-session parameters
      * @return the builder
      */
-    public Builder setPerSessionParameters(NonClientParametersBuilder perSessionParameters) {
-      this.perSessionParameters = perSessionParameters;
+    public Builder setPerSessionParameters(FormattedParameter perSessionParameters) {
+      this.perSessionParameters = Parameters.newPartialBuilder(this);
+      this.perSessionParameters.add(perSessionParameters);
       return this;
     }
 
@@ -552,65 +521,6 @@ public class GoogleAnalyticsClient {
     }
 
     /**
-     * Gets the proxy to use for all tracking requests.
-     *
-     * @return the proxy
-     */
-    public Proxy getProxy() {
-      return proxy;
-    }
-
-    /**
-     * Define the proxy to use for all tracking requests. You can pass {@link Proxy#NO_PROXY} to
-     * explicitly use no proxy. Pass null to revert to the system default mechanism for connecting.
-     *
-     * @param proxy The proxy to use
-     * @return the builder
-     */
-    public Builder setProxy(Proxy proxy) {
-      this.proxy = proxy;
-      return this;
-    }
-
-    /**
-     * Define the proxy to use for all tracking requests.
-     *
-     * <p>If no proxy can be set then this will revert the system to default mechanism for
-     * connecting.
-     *
-     * @param proxyAddress "hostname:port" of the proxy to use; may also be given as URL
-     *        ("http://hostname:port/").
-     * @return true, if successful
-     */
-    public boolean setProxy(String proxyAddress) {
-      if (proxyAddress != null) {
-        // Split into "hostname:port"
-        final Matcher m = Pattern.compile("^(https?://|)([^ :]+):([0-9]+)").matcher(proxyAddress);
-        if (m.find()) {
-          final String hostname = m.group(2);
-          final int port = Integer.parseInt(m.group(3));
-
-          final SocketAddress sa = new InetSocketAddress(hostname, port);
-          setProxy(new Proxy(Type.HTTP, sa));
-          return true;
-        }
-      }
-      setProxy((Proxy) null);
-      return false;
-    }
-
-    /**
-     * Sets the connection provider.
-     *
-     * <p>Used for testing.
-     *
-     * @param connectionProvider the new connection provider
-     */
-    void setConnectionProvider(HttpConnectionProvider connectionProvider) {
-      this.connectionProvider = connectionProvider;
-    }
-
-    /**
      * Check the debug flag. Set to true to use the Google Analytics debug server.
      *
      * @return true, if is debug
@@ -627,95 +537,17 @@ public class GoogleAnalyticsClient {
      */
     public Builder setDebug(boolean debug) {
       this.debug = debug;
-      setFile((debug) ? GOOGLE_ANALYTICS_DEBUG_FILE : GOOGLE_ANALYTICS_FILE);
       return this;
-    }
-
-    /**
-     * Gets the Google Analytics hostname component of the URL.
-     *
-     * @return the hostname
-     */
-    public String getHostname() {
-      return googleAnalyticsHostname;
-    }
-
-    /**
-     * Sets the Google Analytics hostname component of the URL.
-     *
-     * @param hostname the new hostname
-     * @return the builder
-     */
-    public Builder setHostname(String hostname) {
-      this.googleAnalyticsHostname = hostname;
-      return this;
-    }
-
-    /**
-     * Gets the Google Analytics file component of the URL.
-     *
-     * @return the file
-     */
-    public String getFile() {
-      return googleAnalyticsFile;
-    }
-
-    /**
-     * Sets the Google Analytics file component of the URL.
-     *
-     * @param file the new file
-     * @return the builder
-     */
-    public Builder setFile(String file) {
-      this.googleAnalyticsFile = file;
-      return this;
-    }
-
-    /**
-     * Gets the Google Analytics url.
-     *
-     * <p>This may throw a wrapped {@link MalformedURLException} if the hostname and file have been
-     * changed from the defaults.
-     *
-     * @return the url
-     * @throws MalformedUrlRuntimeException If the URL was malformed
-     */
-    public URL getUrl() throws MalformedUrlRuntimeException {
-      try {
-        final String protocol = (secure) ? "https" : "http";
-        return new URL(protocol, getHostname(), getFile());
-      } catch (final MalformedURLException ex) {
-        logger.severe("Failed to create Google Analytics URL: " + ex.getMessage());
-        throw new MalformedUrlRuntimeException(ex);
-      }
     }
   }
-
 
   //@formatter:off
   /**
    * Builder for a <strong>single</strong> Google Analytics hit.
    *
-   * <p>This builder is coupled to the enclosing {@link GoogleAnalyticsClient} which
-   * provides client parameters including the tracking Id and client/user id.
-   *
-   * <p>The builder performs the following functions:
-   *
-   * <ul>
-   * <li>Adds the client parameters from the {@link GoogleAnalyticsClient}
-   * <li>Initialises the hit type
-   * <li>Refreshes the session
-   * <li>Stores the hit timestamp
-   * <li>If a new session, adds the session level parameters from the {@link GoogleAnalyticsClient}
-   * <li>Allows any additional hit parameters to be added
-   * <li>Provides a method to send the request
-   * </ul>
-   *
-   * <p>The user is responsible for ensuring all the required parameters for the hit are added.
-   * These may be added to the hit builder or may already be part of the client or session
-   * parameters.
+   * <p>This builder is coupled to the enclosing {@link GoogleAnalyticsClient} which provides client
+   * parameters including the tracking Id and client/user id.
    */
-  //@formatter:on
   private final class GoogleAnalyticsHitBuilder extends HitBuilder<Future<DispatchStatus>> {
 
     /**
@@ -744,25 +576,21 @@ public class GoogleAnalyticsClient {
    *
    * @param clientParameters The client parameters (sent with every hit)
    * @param sessionParameters The session parameters (resent with each new session)
-   * @param executorService The executor service for dispatching background requests
    * @param timeout the timeout
-   * @param url the url
-   * @param proxy the proxy
-   * @param connectionProvider the connection provider
+   * @param executorService The executor service for dispatching background requests
+   * @param hitDispatcher the hit dispatcher
    */
-  GoogleAnalyticsClient(FormattedParameter clientParameters, FormattedParameter sessionParameters,
-      ExecutorService executorService, long timeout, URL url, Proxy proxy,
-      HttpConnectionProvider connectionProvider) {
+  private GoogleAnalyticsClient(FormattedParameter clientParameters,
+      FormattedParameter sessionParameters, long timeout, ExecutorService executorService,
+      HitDispatcher hitDispatcher) {
     Objects.requireNonNull(clientParameters, "Client parameters");
     Objects.requireNonNull(sessionParameters, "Session parameters");
     this.executorService = Objects.requireNonNull(executorService, "Executor service");
+    this.hitDispatcher = Objects.requireNonNull(hitDispatcher, "Hit dispatcher");
     // Generate state
-    this.clientParameters = clientParameters.formatPostString();
+    this.clientParameters = clientParameters.toPostString();
     this.sessionParameters = sessionParameters.simplify();
     session = new Session(timeout);
-    this.url = url;
-    this.proxy = proxy;
-    this.connectionProvider = connectionProvider;
   }
 
   /**
@@ -775,19 +603,40 @@ public class GoogleAnalyticsClient {
    * @return the builder
    * @throws IllegalArgumentException if tracking ID is invalid
    * @see <a
-   *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#tid">Tracking
+   *      href="http://goo.gl/a8d4RP#tid">Tracking
    *      Id</a>
    */
   public static Builder createBuilder(String trackingId) {
     return new Builder(trackingId);
   }
 
+  //@formatter:off
   /**
-   * Creates the hit builder.
+   * Create a Builder for a <strong>single</strong> Google Analytics hit.
    *
+   * <p>This builder is coupled to the enclosing {@link GoogleAnalyticsClient} which
+   * provides client parameters including the tracking Id and client/user id.
+   *
+   * <p>This method ensures the following occur:
+   *
+   * <ul>
+   * <li>Refreshes the session
+   * <li>Initialises the hit type
+   * <li>Stores the hit timestamp
+   * <li>If a new session, adds the session level parameters from the {@link GoogleAnalyticsClient}
+   * <li>Allows any additional hit parameters to be added
+   * <li>Provides a method to send the request
+   * <li>The client parameters are added within the send method
+   * </ul>
+   *
+   * <p>The user is responsible for ensuring all the required parameters for the hit are added.
+   * These may be added to the hit builder or may already be part of the client or session
+   * parameters.
+   * 
    * @param hitType the hit type
    * @return the hit builder
    */
+  //@formatter:on
   HitBuilder<Future<DispatchStatus>> createHitBuilder(HitTypeParameter hitType) {
     final boolean isNew = session.refresh();
     final HitBuilder<Future<DispatchStatus>> builder =
@@ -817,7 +666,7 @@ public class GoogleAnalyticsClient {
    *
    * @param documentLocationUrl the document location URL
    * @return the hit builder
-   * @see GenericParametersBuilder#addDocumentLocationUrl(String)
+   * @see ParametersBuilder#addDocumentLocationUrl(String)
    */
   public HitBuilder<Future<DispatchStatus>> pageview(String documentLocationUrl) {
     return createHitBuilder(HitTypeParameter.PAGEVIEW).addDocumentLocationUrl(documentLocationUrl);
@@ -831,8 +680,8 @@ public class GoogleAnalyticsClient {
    * @param documentHostName the document host name
    * @param documentPath the document path
    * @return the hit builder
-   * @see GenericParametersBuilder#addDocumentHostName(String)
-   * @see GenericParametersBuilder#addDocumentPath(String)
+   * @see ParametersBuilder#addDocumentHostName(String)
+   * @see ParametersBuilder#addDocumentPath(String)
    */
   public HitBuilder<Future<DispatchStatus>> pageview(String documentHostName, String documentPath) {
     return createHitBuilder(HitTypeParameter.PAGEVIEW).addDocumentHostName(documentHostName)
@@ -846,7 +695,7 @@ public class GoogleAnalyticsClient {
    *
    * @param screenName the screen name
    * @return the hit builder
-   * @see GenericParametersBuilder#addScreenName(String)
+   * @see ParametersBuilder#addScreenName(String)
    */
   public HitBuilder<Future<DispatchStatus>> screenview(String screenName) {
     return createHitBuilder(HitTypeParameter.SCREENVIEW).addScreenName(screenName);
@@ -861,9 +710,9 @@ public class GoogleAnalyticsClient {
    * @param eventAction the event action
    * @param eventValue the event value
    * @return the hit builder
-   * @see GenericParametersBuilder#addEventCategory(String)
-   * @see GenericParametersBuilder#addEventAction(String)
-   * @see GenericParametersBuilder#addEventValue(int)
+   * @see ParametersBuilder#addEventCategory(String)
+   * @see ParametersBuilder#addEventAction(String)
+   * @see ParametersBuilder#addEventValue(int)
    */
   public HitBuilder<Future<DispatchStatus>> event(String eventCategory, String eventAction,
       int eventValue) {
@@ -919,8 +768,8 @@ public class GoogleAnalyticsClient {
    * <p>Optional parameters to be added are: exception description; is exception fatal.
    *
    * @return the hit builder
-   * @see GenericParametersBuilder#addExceptionDescription(String)
-   * @see GenericParametersBuilder#addIsExceptionFatal(boolean)
+   * @see ParametersBuilder#addExceptionDescription(String)
+   * @see ParametersBuilder#addIsExceptionFatal(boolean)
    */
   public HitBuilder<Future<DispatchStatus>> exception() {
     return createHitBuilder(HitTypeParameter.EXCEPTION);
@@ -935,9 +784,9 @@ public class GoogleAnalyticsClient {
    * @param userTimingVariableName the user timing variable name
    * @param userTimingTime the user timing time
    * @return the hit builder
-   * @see GenericParametersBuilder#addUserTimingCategory(String)
-   * @see GenericParametersBuilder#addUserTimingVariableName(String)
-   * @see GenericParametersBuilder#addUserTimingTime(int)
+   * @see ParametersBuilder#addUserTimingCategory(String)
+   * @see ParametersBuilder#addUserTimingVariableName(String)
+   * @see ParametersBuilder#addUserTimingTime(int)
    */
   public HitBuilder<Future<DispatchStatus>> timing(String userTimingCategory,
       String userTimingVariableName, int userTimingTime) {
@@ -973,61 +822,53 @@ public class GoogleAnalyticsClient {
     return executorService.isShutdown();
   }
 
-
   /**
-   * Returns {@code true} if all tasks have completed following shut down. Note that
-   * {@code isTerminated} is never {@code true} unless either {@code shutdown} or
-   * {@code shutdownNow} was called first.
+   * Return {@code true} if this tracker is disabled due to an error.
    *
-   * @return {@code true} if all tasks have completed following shut down
-   * @see ExecutorService#isTerminated()
+   * @return true, if is disabled
+   * @see HitDispatcher#isDisabled()
    */
-  public boolean isTerminated() {
-    return executorService.isTerminated();
+  public boolean isDisabled() {
+    return hitDispatcher.isDisabled();
   }
 
   /**
-   * Initiates an orderly shutdown in which previously submitted tasks are executed, but no new
-   * tasks will be accepted. Invocation has no additional effect if already shut down.
-   *
-   * <p>This method does not wait for previously submitted tasks to complete execution. Use
-   * {@link #awaitTermination awaitTermination} to do that.
-   *
-   * @see ExecutorService#shutdown()
+   * Reset the session (i.e. start a new session)
    */
-  public void shutdown() {
-    executorService.shutdown();
+  public void resetSession() {
+    session.reset();
   }
 
   /**
-   * Attempts to stop all actively executing tasks, halts the processing of waiting tasks, and
-   * returns a count of the tasks that were awaiting execution.
+   * Gets the executor service.
+   * 
+   * <p>This can be used to permanently shutdown the client.
+   * 
+   * <p>Warning: The service may be shared among client instances so use with care!
+   * 
+   * <p>Fast on/off switching of the client can be done using {@link #setIgnore(boolean)}.
    *
-   * <p>This method does not wait for actively executing tasks to terminate. Use
-   * {@link #awaitTermination awaitTermination} to do that.
-   *
-   * <p>There are no guarantees beyond best-effort attempts to stop processing actively executing
-   * tasks.
-   *
-   * @return a count of the tasks that were awaiting execution
-   * @see ExecutorService#shutdownNow()
+   * @return the executor service
+   * @see #setIgnore(boolean)
    */
-  public int shutdownNow() {
-    return executorService.shutdownNow().size();
+  public ExecutorService getExecutorService() {
+    return executorService;
   }
 
   /**
-   * Blocks until all tasks have completed execution after a shutdown request, or the timeout
-   * occurs, or the current thread is interrupted, whichever happens first.
+   * Gets the hit dispatcher.
    *
-   * @param timeout the maximum time to wait
-   * @return {@code true} if this executor terminated and {@code false} if the timeout elapsed
-   *         before termination
-   * @throws InterruptedException if interrupted while waiting
-   * @see ExecutorService#awaitTermination(long, TimeUnit)
+   * <p>This can be used to permanently disable the client.
+   * 
+   * <p>Warning: The dispatcher may be shared among client instances so use with care!
+   * 
+   * <p>Fast on/off switching of the client can be done using {@link #setIgnore(boolean)}.
+   * 
+   * @return the hit dispatcher
+   * @see #setIgnore(boolean)
    */
-  public boolean awaitTermination(long timeout) throws InterruptedException {
-    return executorService.awaitTermination(timeout, TimeUnit.MILLISECONDS);
+  public HitDispatcher getHitDispatcher() {
+    return hitDispatcher;
   }
 
   /**
@@ -1068,114 +909,11 @@ public class GoogleAnalyticsClient {
     if (isDisabled()) {
       return DispatchStatus.DISABLED;
     }
-    HttpURLConnection connection = null;
-    try {
-      connection = connectionProvider.openConnection(url, proxy);
-      connection.setRequestMethod("POST");
-      connection.setDoOutput(true);
-      connection.setUseCaches(false);
-      connection.setRequestProperty("Content-Type",
-          "application/x-www-form-urlencoded; charset=UTF-8");
-      // Build the request
-      final StringBuilder sb = new StringBuilder(clientParameters);
-      parameters.appendTo(sb);
-      // Add the queue time offset
-      QueueTimeParameter.appendTo(sb, timestamp);
-      // Send the request
-      final byte[] out = sb.toString().getBytes(StandardCharsets.UTF_8);
-      final int length = out.length;
-      connection.setFixedLengthStreamingMode(length);
-      connection.connect();
-      try (OutputStream os = connection.getOutputStream()) {
-        os.write(out);
-      }
-      final int responseCode = connection.getResponseCode();
-      if (responseCode == HttpURLConnection.HTTP_OK) {
-        logger.log(Level.FINE, () -> String.format("Tracking success for url '%s'", parameters));
-        // This is a success. All other returns are false.
-        return DispatchStatus.COMPLETE;
-      }
-      // Note: Valid on 31-Aug-2018
-      // https://developers.google.com/analytics/devguides/collection/protocol/v1/validating-hits
-      // "The Google Analytics Measurement Protocol does not return HTTP error codes"
-      // This is unlikely to happen so log a warning but don't disable the tracker.
-      // If Google change their response in the future this logging will serve
-      // as notice to update the code to do something more appropriate.
-      logger.log(Level.WARNING,
-          () -> String.format("Error requesting url '%s', received response code %d", parameters,
-              responseCode));
-    } catch (
-
-    final UnknownHostException ex) {
-      setLastIoException(ex);
-      // Occurs when disconnected from the Internet so this is not severe
-      logger.log(Level.WARNING, () -> String.format("Unknown host: %s", ex.getMessage()));
-    } catch (final IOException ex) {
-      setLastIoException(ex);
-      // Log all others at a severe level
-      logger.log(Level.SEVERE, () -> String.format("Error making tracking request: %s : %s",
-          ex.getClass().getSimpleName(), ex.getMessage()));
-    } finally {
-      if (connection != null) {
-        connection.disconnect();
-      }
-    }
-    return DispatchStatus.ERROR;
-  }
-
-  /**
-   * Sets the last IO exception.
-   *
-   * <p>This will disable all tracking requests.
-   *
-   * @param ex the last IO exception
-   */
-  private void setLastIoException(IOException ex) {
-    lastIoException.set(ex);
-  }
-
-  /**
-   * Gets the last IO exception that occurred from a dispatch request.
-   *
-   * <p>If this is not {@code null} then all tracking is disabled as it is assumed that all
-   * subsequent tracking requests will fail.
-   *
-   * @return the last IO exception
-   */
-  public IOException getLastIoException() {
-    return lastIoException.get();
-  }
-
-  /**
-   * Checks if the tracker is disabled due to an error.
-   *
-   * <p>This is true if an exception occurred during a dispatch request, i.e. any subsequent
-   * tracking requests will fail.
-   *
-   * <p>The state can be reset using {@link #clearLastIoException()} if another attempt at tracking
-   * is to be attempted, e.g. if the reason for the problem has been fixed.
-   *
-   * @return true, if is disabled
-   * @see #getLastIoException()
-   * @see #clearLastIoException()
-   */
-  public boolean isDisabled() {
-    return lastIoException.get() != null;
-  }
-
-  /**
-   * Clear the last IO exception.
-   *
-   * <p>Use this method to restart tracking.
-   */
-  public void clearLastIoException() {
-    setLastIoException(null);
-  }
-
-  /**
-   * Reset the session (i.e. start a new session)
-   */
-  public void resetSession() {
-    session.reset();
+    // Build the request
+    final StringBuilder sb = new StringBuilder(clientParameters);
+    parameters.appendTo(sb);
+    // Add the queue time offset
+    QueueTimeParameter.appendTo(sb, timestamp);
+    return hitDispatcher.send(sb.toString(), 0);
   }
 }

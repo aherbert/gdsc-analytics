@@ -1,9 +1,7 @@
 package uk.ac.sussex.gdsc.analytics;
 
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 /**
  * A dummy class implementing the {@link Future} interface to return a status result.
@@ -67,7 +65,7 @@ public class DispatchFuture implements Future<DispatchStatus> {
    * @see java.util.concurrent.Future#get()
    */
   @Override
-  public DispatchStatus get() throws InterruptedException, ExecutionException {
+  public DispatchStatus get() {
     return getStatus();
   }
 
@@ -77,8 +75,7 @@ public class DispatchFuture implements Future<DispatchStatus> {
    * @see java.util.concurrent.Future#get(long, java.util.concurrent.TimeUnit)
    */
   @Override
-  public DispatchStatus get(long timeout, TimeUnit unit)
-      throws InterruptedException, ExecutionException, TimeoutException {
+  public DispatchStatus get(long timeout, TimeUnit unit) {
     return getStatus();
   }
 }

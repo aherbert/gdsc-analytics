@@ -28,9 +28,7 @@ package uk.ac.sussex.gdsc.analytics.parameters;
 /**
  * Adds parameter {@code v=1} to a URL.
  * 
- * @see <a
- *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#v">Protocol
- *      Version</a>
+ * @see <a href="http://goo.gl/a8d4RP#v">Protocol Version</a>
  */
 public final class Version1Parameter implements FormattedParameter {
 

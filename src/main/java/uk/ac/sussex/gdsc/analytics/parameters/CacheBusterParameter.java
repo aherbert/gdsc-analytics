@@ -34,9 +34,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * 
  * <p>The class is thread safe as it uses {@link ThreadLocalRandom} to generate the random integer.
  * 
- * @see <a
- *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#z">Cache
- *      Buster</a>
+ * @see <a href="http://goo.gl/a8d4RP#z">Cache Buster</a>
  */
 public class CacheBusterParameter extends IntParameter {
 

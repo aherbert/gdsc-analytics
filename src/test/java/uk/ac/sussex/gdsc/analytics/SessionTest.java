@@ -72,7 +72,7 @@ public class SessionTest {
     Assertions.assertTrue(session.hasExpired());
 
     // Never timeout. This should work on the same session
-    //session = new Session(Session.NEVER_TIMEOUT);
+    // session = new Session(Session.NEVER_TIMEOUT);
     session.setTimeout(Session.NEVER_TIMEOUT);
     Assertions.assertEquals(Long.MAX_VALUE, session.getTimeout());
     Assertions.assertFalse(session.hasExpired());

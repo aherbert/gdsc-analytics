@@ -37,9 +37,7 @@ import java.util.UUID;
  * <p>Note that although not enforced the set of {@code name=value} URL parameters should have
  * unique {@code name} tags. If not the hit may not be correctly processed by Google Analytics.
  *
- * @see <a href=
- *      "https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters">Measurement
- *      Protocol Parameter Reference</a>
+ * @see <a href= "http://goo.gl/a8d4RP">Measurement Protocol Parameter Reference</a>
  */
 public class Parameters implements FormattedParameter {
 
@@ -51,7 +49,7 @@ public class Parameters implements FormattedParameter {
    *
    * @param formattedParameters the formatted parameters
    */
-  Parameters(FormattedParameter[] formattedParameters) {
+  private Parameters(FormattedParameter[] formattedParameters) {
     this.formattedParameters = formattedParameters;
   }
 
@@ -69,7 +67,7 @@ public class Parameters implements FormattedParameter {
   }
 
   /**
-   * Create a new {@link ClientParametersBuilder} with the given Google Analytics tracking id.
+   * Create a new {@link RequiredBuilder} with the given Google Analytics tracking id.
    * 
    * <p>The format is UA-XXXX-Y.
    * 
@@ -79,37 +77,76 @@ public class Parameters implements FormattedParameter {
    * @param trackingId the tracking id
    * @return the builder
    * @throws IllegalArgumentException if tracking ID is invalid
-   * @see <a
-   *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#tid">Tracking
-   *      Id</a>
+   * @see <a href="http://goo.gl/a8d4RP#tid">Tracking Id</a>
    */
-  public static ClientParametersBuilder newClientParametersBuilder(String trackingId)
+  public static RequiredBuilder newRequiredBuilder(String trackingId)
       throws IllegalArgumentException {
-    return new ClientParametersBuilder(trackingId);
+    return new RequiredBuilder(trackingId);
   }
 
+  //@formatter:off
   /**
-   * Create a new {@link NonClientParametersBuilder}.
+   * Create a new {@link PartialBuilder}.
    * 
-   * <p>This is a specialist builder to ensure the the tracking Id and client/user Id are not
-   * duplicated when adding additional parameters.
+   * <p>This is a specialist builder to ensure the parameters required for each hit (version,
+   * tracking Id; and client/user Id) are not duplicated when adding additional parameters.
    * 
+   * <p>The {@link PartialBuilder} provide support for using a typed parent to allow chaining:
+   * 
+   * <pre>
+   * // Simple parent builder 
+   * public class ParentBuilder {
+   * 
+   *   private PartialBuilder&lt;ParentBuilder&gt; parameters;
+   * 
+   *   public ParentBuilder() {
+   *     parameters = Parameters.newPartialBuilder(this);
+   *   }
+   * 
+   *   public ParentBuilder doSomething() {
+   *     // ... something useful
+   *     return this;
+   *   }
+   * 
+   *   public PartialBuilder&lt;ParentBuilder&gt; getParameters() {
+   *     return parameters;
+   *   }
+   * 
+   *   public Parameters build() {
+   *     return parameters.build();
+   *   }
+   * }
+   * 
+   * // Example chaining: 
+   * Parameters parameters = new ParentBuilder()
+   *     .doSomething()
+   *     .getParameters().addUserId("Mr.Demo")
+   *                     .getParent()
+   *     .build();
+   * </pre>
+   * 
+   * <p>The {@code parent} can be set to {@code null} if the {@link PartialBuilder#getParent()}
+   * method will not be used.
+   *
+   * @param <P> the type of the parent
+   * @param parent the parent
    * @return the builder
    */
-  public static NonClientParametersBuilder newNonClientParametersBuilder() {
-    return new NonClientParametersBuilder();
+  //@formatter:on
+  public static <P> PartialBuilder<P> newPartialBuilder(P parent) {
+    return new PartialBuilder<>(parent);
   }
 
   /**
-   * Create a new {@link GenericParametersBuilder}.
+   * Create a new {@link Builder}.
    * 
    * <p>This is a generic builder with no defaults that exposes the parameter API. It can be used to
    * construct partial or complete hit parameters.
    *
    * @return the builder
    */
-  public static GenericParametersBuilder newGenericParametersBuilder() {
-    return new GenericParametersBuilder();
+  public static Builder newBuilder() {
+    return new Builder();
   }
 
   /**
@@ -128,7 +165,7 @@ public class Parameters implements FormattedParameter {
    * @see <a href="https://www.sitepoint.com/self-types-with-javas-generics/">Self Types with Java’s
    *      Generics</a>
    */
-  static class ParametersBuilder<B extends ParametersBuilder<B>> {
+  public static class ParametersBuilder<B extends ParametersBuilder<B>> {
 
     /** The forward slash character '/'. */
     private static final char FORWARDSLASH = '/';
@@ -153,6 +190,11 @@ public class Parameters implements FormattedParameter {
       self = (B) selfType.cast(this);
     }
 
+    private B addParameter(FormattedParameter parameter) {
+      list.add(parameter);
+      return self;
+    }
+
     /**
      * Builds the {@link Parameters}.
      *
@@ -169,8 +211,7 @@ public class Parameters implements FormattedParameter {
      * @return the builder
      */
     public B add(FormattedParameter parameter) {
-      list.add(Objects.requireNonNull(parameter, "Parameter is null"));
-      return self;
+      return addParameter(Objects.requireNonNull(parameter, "Parameter is null"));
     }
 
     /**
@@ -186,8 +227,7 @@ public class Parameters implements FormattedParameter {
      */
     public B add(String name, String value) throws IllegalArgumentException {
       ParameterUtils.requireNotEmpty(name, "name is empty");
-      list.add(new StringParameter(name, value));
-      return self;
+      return addParameter(new StringParameter(name, value));
     }
 
     ////////////////////////////////////////////////////////
@@ -206,13 +246,10 @@ public class Parameters implements FormattedParameter {
      * <p>Currently supports version 1.
      * 
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#v">Protocol
-     *      Version</a>
+     * @see <a href="http://goo.gl/a8d4RP#v">Protocol Version</a>
      */
-    protected B addVersion() {
-      list.add(Version1Parameter.getDefaultInstance());
-      return self;
+    public B addVersion() {
+      return addParameter(Version1Parameter.getDefaultInstance());
     }
 
     /**
@@ -223,13 +260,10 @@ public class Parameters implements FormattedParameter {
      * @param trackingId the tracking id
      * @return the builder
      * @throws IllegalArgumentException if tracking ID is invalid
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#tid">Tracking
-     *      Id</a>
+     * @see <a href="http://goo.gl/a8d4RP#tid">Tracking Id</a>
      */
-    protected B addTrackingId(String trackingId) throws IllegalArgumentException {
-      list.add(new TrackingIdParameter(trackingId));
-      return self;
+    public B addTrackingId(String trackingId) throws IllegalArgumentException {
+      return addParameter(new TrackingIdParameter(trackingId));
     }
 
     /**
@@ -239,13 +273,10 @@ public class Parameters implements FormattedParameter {
      *
      * @param anonymizeIp the anonymize ip
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#aip">Anonymize
-     *      IP</a>
+     * @see <a href="http://goo.gl/a8d4RP#aip">Anonymize IP</a>
      */
     public B addAnonymizeIp(boolean anonymizeIp) {
-      list.add(new BooleanParameter("&aip", anonymizeIp));
-      return self;
+      return addParameter(new BooleanParameter("&aip", anonymizeIp));
     }
 
     /**
@@ -253,13 +284,10 @@ public class Parameters implements FormattedParameter {
      *
      * @param dataSource the data source
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#ds">Data
-     *      Source</a>
+     * @see <a href="http://goo.gl/a8d4RP#ds">Data Source</a>
      */
     public B addDataSource(String dataSource) {
-      list.add(new StringParameter("&ds", dataSource));
-      return self;
+      return addParameter(new StringParameter("&ds", dataSource));
     }
 
     /**
@@ -270,13 +298,10 @@ public class Parameters implements FormattedParameter {
      *
      * @param queueTime the queue time
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#qt">Queue
-     *      Time</a>
+     * @see <a href="http://goo.gl/a8d4RP#qt">Queue Time</a>
      */
-    protected B addQueueTime(int queueTime) {
-      list.add(new QueueTimeParameter(queueTime));
-      return self;
+    public B addQueueTime(int queueTime) {
+      return addParameter(new QueueTimeParameter(queueTime));
     }
 
     /**
@@ -286,13 +311,10 @@ public class Parameters implements FormattedParameter {
      * <p>It should be added as the last parameter in the URL.
      *
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#z">Cache
-     *      Buster</a>
+     * @see <a href="http://goo.gl/a8d4RP#z">Cache Buster</a>
      */
-    protected B addCacheBuster() {
-      list.add(new CacheBusterParameter());
-      return self;
+    public B addCacheBuster() {
+      return addParameter(new CacheBusterParameter());
     }
 
     ////////////////////////////////////////////////////////
@@ -310,13 +332,10 @@ public class Parameters implements FormattedParameter {
      * @param clientId the client id
      * @return the builder
      * @throws IllegalArgumentException if not a valid UUID
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#cid">Client
-     *      Id</a>
+     * @see <a href="http://goo.gl/a8d4RP#cid">Client Id</a>
      */
-    protected B addClientId(String clientId) throws IllegalArgumentException {
-      list.add(new ClientIdParameter(clientId));
-      return self;
+    public B addClientId(String clientId) throws IllegalArgumentException {
+      return addParameter(new ClientIdParameter(clientId));
     }
 
     /**
@@ -326,13 +345,10 @@ public class Parameters implements FormattedParameter {
      *
      * @param clientId the client id
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#cid">Client
-     *      Id</a>
+     * @see <a href="http://goo.gl/a8d4RP#cid">Client Id</a>
      */
-    protected B addClientId(UUID clientId) {
-      list.add(new ClientIdParameter(clientId));
-      return self;
+    public B addClientId(UUID clientId) {
+      return addParameter(new ClientIdParameter(clientId));
     }
 
     /**
@@ -345,14 +361,11 @@ public class Parameters implements FormattedParameter {
      * @param userId the user id
      * @return the builder
      * @throws IllegalArgumentException if the user id is empty
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#uid">User
-     *      Id</a>
+     * @see <a href="http://goo.gl/a8d4RP#uid">User Id</a>
      */
-    protected B addUserId(String userId) throws IllegalArgumentException {
+    public B addUserId(String userId) throws IllegalArgumentException {
       ParameterUtils.requireNotEmpty(userId, "User Id is empty");
-      list.add(new StringParameter("&uid", userId));
-      return self;
+      return addParameter(new StringParameter("&uid", userId));
     }
 
     ////////////////////////////////////////////////////////
@@ -364,13 +377,10 @@ public class Parameters implements FormattedParameter {
      *
      * @param sessionControl the session control
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#sc">Session
-     *      Control</a>
+     * @see <a href="http://goo.gl/a8d4RP#sc">Session Control</a>
      */
     public B addSessionControl(SessionControlParameter sessionControl) {
-      list.add(Objects.requireNonNull(sessionControl, "Session control is null"));
-      return self;
+      return addParameter(Objects.requireNonNull(sessionControl, "Session control is null"));
     }
 
     ////////////////////////////////////////////////////////
@@ -387,28 +397,23 @@ public class Parameters implements FormattedParameter {
      * @param width the width
      * @param height the height
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#sr">Screen
-     *      Resolution</a>
+     * @see <a href="http://goo.gl/a8d4RP#sr">Screen Resolution</a>
      */
     public B addScreenResolution(int width, int height) {
-      list.add(new ResolutionParameter("&sr", width, height));
-      return self;
+      return addParameter(new ResolutionParameter("&sr", width, height));
     }
 
     /**
      * Adds the screen resolution using system information.
      *
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#sr">Screen
-     *      Resolution</a>
+     * @see <a href="http://goo.gl/a8d4RP#sr">Screen Resolution</a>
      * @see SystemUtils#getScreenSize()
      */
     public B addScreenResolution() {
       final Dimension d = SystemUtils.getScreenSize();
       if (d != null) {
-        list.add(new ResolutionParameter("&sr", d.width, d.height));
+        addParameter(new ResolutionParameter("&sr", d.width, d.height));
       }
       return self;
     }
@@ -419,13 +424,10 @@ public class Parameters implements FormattedParameter {
      * @param width the width
      * @param height the height
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#vp">Viewport
-     *      Size</a>
+     * @see <a href="http://goo.gl/a8d4RP#vp">Viewport Size</a>
      */
     public B addViewportSize(int width, int height) {
-      list.add(new ResolutionParameter("&vp", width, height));
-      return self;
+      return addParameter(new ResolutionParameter("&vp", width, height));
     }
 
     /**
@@ -433,13 +435,10 @@ public class Parameters implements FormattedParameter {
      *
      * @param documentEncoding the document encoding
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#de">Document
-     *      Encoding</a>
+     * @see <a href="http://goo.gl/a8d4RP#de">Document Encoding</a>
      */
     public B addDocumentEncoding(String documentEncoding) {
-      list.add(new StringParameter("&de", documentEncoding));
-      return self;
+      return addParameter(new StringParameter("&de", documentEncoding));
     }
 
     /**
@@ -447,13 +446,10 @@ public class Parameters implements FormattedParameter {
      *
      * @param screenColorDepth the screen color depth
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#sd">Screen
-     *      Colors</a>
+     * @see <a href="http://goo.gl/a8d4RP#sd">Screen Colors</a>
      */
     public B addScreenColors(String screenColorDepth) {
-      list.add(new StringParameter("&sd", screenColorDepth));
-      return self;
+      return addParameter(new StringParameter("&sd", screenColorDepth));
     }
 
     /**
@@ -461,26 +457,20 @@ public class Parameters implements FormattedParameter {
      *
      * @param userLanguage the user language
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#ul">User
-     *      Language</a>
+     * @see <a href="http://goo.gl/a8d4RP#ul">User Language</a>
      */
     public B addUserLanguage(String userLanguage) {
-      list.add(new UserLanguageParameter(userLanguage));
-      return self;
+      return addParameter(new UserLanguageParameter(userLanguage));
     }
 
     /**
      * Adds the user language using the default locale.
      *
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#ul">User
-     *      Language</a>
+     * @see <a href="http://goo.gl/a8d4RP#ul">User Language</a>
      */
     public B addUserLanguage() {
-      list.add(new UserLanguageParameter());
-      return self;
+      return addParameter(new UserLanguageParameter());
     }
 
     /**
@@ -488,13 +478,10 @@ public class Parameters implements FormattedParameter {
      *
      * @param javaEnabled the java enabled
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#je">Java
-     *      Enabled</a>
+     * @see <a href="http://goo.gl/a8d4RP#je">Java Enabled</a>
      */
     public B addJavaEnabled(boolean javaEnabled) {
-      list.add(new BooleanParameter("&je", javaEnabled));
-      return self;
+      return addParameter(new BooleanParameter("&je", javaEnabled));
     }
 
     /**
@@ -502,13 +489,10 @@ public class Parameters implements FormattedParameter {
      *
      * @param flashVersion the flash version
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#fl">Flash
-     *      Version</a>
+     * @see <a href="http://goo.gl/a8d4RP#fl">Flash Version</a>
      */
     public B addFlashVersion(String flashVersion) {
-      list.add(new StringParameter("&fl", flashVersion));
-      return self;
+      return addParameter(new StringParameter("&fl", flashVersion));
     }
 
     ////////////////////////////////////////////////////////
@@ -520,13 +504,10 @@ public class Parameters implements FormattedParameter {
      *
      * @param hitType the hit type
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#t">Hit
-     *      type</a>
+     * @see <a href="http://goo.gl/a8d4RP#t">Hit type</a>
      */
     public B addHitType(HitTypeParameter hitType) {
-      list.add(Objects.requireNonNull(hitType, "Hit type is null"));
-      return self;
+      return addParameter(Objects.requireNonNull(hitType, "Hit type is null"));
     }
 
     /**
@@ -534,13 +515,10 @@ public class Parameters implements FormattedParameter {
      *
      * @param nonInteractive the non interactive
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#ni">Non-Interaction
-     *      Hit</a>
+     * @see <a href="http://goo.gl/a8d4RP#ni">Non-Interaction Hit</a>
      */
     public B addNonInteractionHit(boolean nonInteractive) {
-      list.add(new BooleanParameter("&ni", nonInteractive));
-      return self;
+      return addParameter(new BooleanParameter("&ni", nonInteractive));
     }
 
     ////////////////////////////////////////////////////////
@@ -556,13 +534,10 @@ public class Parameters implements FormattedParameter {
      *
      * @param documentLocationUrl the document location url
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#dl">Document
-     *      Location Url</a>
+     * @see <a href="http://goo.gl/a8d4RP#dl">Document Location Url</a>
      */
     public B addDocumentLocationUrl(String documentLocationUrl) {
-      list.add(new StringParameter("&dl", documentLocationUrl));
-      return self;
+      return addParameter(new StringParameter("&dl", documentLocationUrl));
     }
 
     /**
@@ -573,13 +548,10 @@ public class Parameters implements FormattedParameter {
      *
      * @param documentHostName the document host name
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#dl">Document
-     *      Host Name</a>
+     * @see <a href="http://goo.gl/a8d4RP#dl">Document Host Name</a>
      */
     public B addDocumentHostName(String documentHostName) {
-      list.add(new StringParameter("&dh", documentHostName));
-      return self;
+      return addParameter(new StringParameter("&dh", documentHostName));
     }
 
     /**
@@ -590,17 +562,14 @@ public class Parameters implements FormattedParameter {
      *
      * @param documentPath the document path
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#dp">Document
-     *      Path</a>
+     * @see <a href="http://goo.gl/a8d4RP#dp">Document Path</a>
      */
     public B addDocumentPath(String documentPath) {
       ParameterUtils.requireNotEmpty(documentPath, "Document path is empty");
       if (documentPath.charAt(0) != FORWARDSLASH) {
         throw new IllegalArgumentException("Document path should begin with '/'");
       }
-      list.add(new StringParameter("&dp", documentPath));
-      return self;
+      return addParameter(new StringParameter("&dp", documentPath));
     }
 
     /**
@@ -608,13 +577,10 @@ public class Parameters implements FormattedParameter {
      *
      * @param documentTitle the document title
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#dt">Document
-     *      Title</a>
+     * @see <a href="http://goo.gl/a8d4RP#dt">Document Title</a>
      */
     public B addDocumentTitle(String documentTitle) {
-      list.add(new StringParameter("&dt", documentTitle));
-      return self;
+      return addParameter(new StringParameter("&dt", documentTitle));
     }
 
     /**
@@ -625,13 +591,10 @@ public class Parameters implements FormattedParameter {
      *
      * @param screenName the screen name
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#cd">Screen
-     *      Name</a>
+     * @see <a href="http://goo.gl/a8d4RP#cd">Screen Name</a>
      */
     public B addScreenName(String screenName) {
-      list.add(new StringParameter("&cd", screenName));
-      return self;
+      return addParameter(new StringParameter("&cd", screenName));
     }
 
     /**
@@ -640,13 +603,10 @@ public class Parameters implements FormattedParameter {
      * @param groupIndex the group index
      * @param contentGroup the content group
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#cg_">Content
-     *      Group</a>
+     * @see <a href="http://goo.gl/a8d4RP#cg_">Content Group</a>
      */
     public B addContentGroup(int groupIndex, String contentGroup) {
-      list.add(new IndexedStringParameter("&cg", groupIndex, contentGroup));
-      return self;
+      return addParameter(new IndexedStringParameter("&cg", groupIndex, contentGroup));
     }
 
     /**
@@ -654,13 +614,10 @@ public class Parameters implements FormattedParameter {
      *
      * @param linkId the link id
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#linkid">Link
-     *      ID</a>
+     * @see <a href="http://goo.gl/a8d4RP#linkid">Link ID</a>
      */
     public B addLinkeId(String linkId) {
-      list.add(new StringParameter("&linkid", linkId));
-      return self;
+      return addParameter(new StringParameter("&linkid", linkId));
     }
 
     ////////////////////////////////////////////////////////
@@ -675,13 +632,10 @@ public class Parameters implements FormattedParameter {
      *
      * @param applicationName the application name
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#an">Application
-     *      Name</a>
+     * @see <a href="http://goo.gl/a8d4RP#an">Application Name</a>
      */
     public B addApplicationName(String applicationName) {
-      list.add(new StringParameter("&an", applicationName));
-      return self;
+      return addParameter(new StringParameter("&an", applicationName));
     }
 
     /**
@@ -689,13 +643,10 @@ public class Parameters implements FormattedParameter {
      *
      * @param applicationId the application id
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#aid">Application
-     *      Id</a>
+     * @see <a href="http://goo.gl/a8d4RP#aid">Application Id</a>
      */
     public B addApplicationId(String applicationId) {
-      list.add(new StringParameter("&aid", applicationId));
-      return self;
+      return addParameter(new StringParameter("&aid", applicationId));
     }
 
     /**
@@ -703,13 +654,10 @@ public class Parameters implements FormattedParameter {
      *
      * @param applicationVersion the application version
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#av">Application
-     *      Version</a>
+     * @see <a href="http://goo.gl/a8d4RP#av">Application Version</a>
      */
     public B addApplicationVersion(String applicationVersion) {
-      list.add(new StringParameter("&av", applicationVersion));
-      return self;
+      return addParameter(new StringParameter("&av", applicationVersion));
     }
 
     /**
@@ -717,13 +665,10 @@ public class Parameters implements FormattedParameter {
      *
      * @param applicationInstallerId the application installer id
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#aiid">Application
-     *      Installer ID</a>
+     * @see <a href="http://goo.gl/a8d4RP#aiid">Application Installer ID</a>
      */
     public B addApplicationInstallerId(String applicationInstallerId) {
-      list.add(new StringParameter("&aiid", applicationInstallerId));
-      return self;
+      return addParameter(new StringParameter("&aiid", applicationInstallerId));
     }
 
     ////////////////////////////////////////////////////////
@@ -738,14 +683,11 @@ public class Parameters implements FormattedParameter {
      * @param eventCategory the event category
      * @return the builder
      * @throws IllegalArgumentException If the event category is empty
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#ec">Event
-     *      Category</a>
+     * @see <a href="http://goo.gl/a8d4RP#ec">Event Category</a>
      */
     public B addEventCategory(String eventCategory) throws IllegalArgumentException {
       ParameterUtils.requireNotEmpty(eventCategory, "Event category is empty");
-      list.add(new StringParameter("&ec", eventCategory));
-      return self;
+      return addParameter(new StringParameter("&ec", eventCategory));
     }
 
     /**
@@ -756,14 +698,11 @@ public class Parameters implements FormattedParameter {
      * @param eventAction the event action
      * @return the builder
      * @throws IllegalArgumentException If the event action is empty
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#ea">Event
-     *      Action</a>
+     * @see <a href="http://goo.gl/a8d4RP#ea">Event Action</a>
      */
     public B addEventAction(String eventAction) throws IllegalArgumentException {
       ParameterUtils.requireNotEmpty(eventAction, "Event action is empty");
-      list.add(new StringParameter("&ea", eventAction));
-      return self;
+      return addParameter(new StringParameter("&ea", eventAction));
     }
 
     /**
@@ -771,13 +710,10 @@ public class Parameters implements FormattedParameter {
      *
      * @param eventLabel the event label
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#el">Event
-     *      Label</a>
+     * @see <a href="http://goo.gl/a8d4RP#el">Event Label</a>
      */
     public B addEventLabel(String eventLabel) {
-      list.add(new StringParameter("&el", eventLabel));
-      return self;
+      return addParameter(new StringParameter("&el", eventLabel));
     }
 
     /**
@@ -788,14 +724,11 @@ public class Parameters implements FormattedParameter {
      * @param eventValue the event value
      * @return the builder
      * @throws IllegalArgumentException If the event value is negative
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#ev">Event
-     *      Value</a>
+     * @see <a href="http://goo.gl/a8d4RP#ev">Event Value</a>
      */
     public B addEventValue(int eventValue) throws IllegalArgumentException {
       ParameterUtils.requirePositive(eventValue, "Event value");
-      list.add(new IntParameter("&ev", eventValue));
-      return self;
+      return addParameter(new IntParameter("&ev", eventValue));
     }
 
     ////////////////////////////////////////////////////////
@@ -821,13 +754,10 @@ public class Parameters implements FormattedParameter {
      * 
      * @param userTimingCategory the user timing category
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#utc">User
-     *      timing category</a>
+     * @see <a href="http://goo.gl/a8d4RP#utc">User timing category</a>
      */
     public B addUserTimingCategory(String userTimingCategory) {
-      list.add(new StringParameter("&utc", userTimingCategory));
-      return self;
+      return addParameter(new StringParameter("&utc", userTimingCategory));
     }
 
     /**
@@ -837,13 +767,10 @@ public class Parameters implements FormattedParameter {
      *
      * @param userTimingVariableName the user timing variable name
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#utv">User
-     *      timing variable name</a>
+     * @see <a href="http://goo.gl/a8d4RP#utv">User timing variable name</a>
      */
     public B addUserTimingVariableName(String userTimingVariableName) {
-      list.add(new StringParameter("&utv", userTimingVariableName));
-      return self;
+      return addParameter(new StringParameter("&utv", userTimingVariableName));
     }
 
     /**
@@ -853,13 +780,10 @@ public class Parameters implements FormattedParameter {
      * 
      * @param userTimingTime the user timing time
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#utt">User
-     *      timing time</a>
+     * @see <a href="http://goo.gl/a8d4RP#utt">User timing time</a>
      */
     public B addUserTimingTime(int userTimingTime) {
-      list.add(new IntParameter("&utt", userTimingTime));
-      return self;
+      return addParameter(new IntParameter("&utt", userTimingTime));
     }
 
     /**
@@ -867,13 +791,10 @@ public class Parameters implements FormattedParameter {
      *
      * @param userTimingLabel the user timing label
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#utl">User
-     *      timing label</a>
+     * @see <a href="http://goo.gl/a8d4RP#utl">User timing label</a>
      */
     public B addUserTimingLabel(String userTimingLabel) {
-      list.add(new StringParameter("&utl", userTimingLabel));
-      return self;
+      return addParameter(new StringParameter("&utl", userTimingLabel));
     }
 
     /**
@@ -881,13 +802,10 @@ public class Parameters implements FormattedParameter {
      *
      * @param pageLoadTime the page load time
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#plt">Page
-     *      load time</a>
+     * @see <a href="http://goo.gl/a8d4RP#plt">Page load time</a>
      */
     public B addPageLoadTime(int pageLoadTime) {
-      list.add(new IntParameter("&plt", pageLoadTime));
-      return self;
+      return addParameter(new IntParameter("&plt", pageLoadTime));
     }
 
     /**
@@ -895,13 +813,10 @@ public class Parameters implements FormattedParameter {
      *
      * @param dnsTime the DNS time
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#dns">DNS
-     *      time</a>
+     * @see <a href="http://goo.gl/a8d4RP#dns">DNS time</a>
      */
     public B addDnsTime(int dnsTime) {
-      list.add(new IntParameter("&dns", dnsTime));
-      return self;
+      return addParameter(new IntParameter("&dns", dnsTime));
     }
 
     /**
@@ -909,13 +824,10 @@ public class Parameters implements FormattedParameter {
      *
      * @param pageDownloadTime the page download time
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#pdt">Page
-     *      download time</a>
+     * @see <a href="http://goo.gl/a8d4RP#pdt">Page download time</a>
      */
     public B addPageDownloadTime(int pageDownloadTime) {
-      list.add(new IntParameter("&pdt", pageDownloadTime));
-      return self;
+      return addParameter(new IntParameter("&pdt", pageDownloadTime));
     }
 
     /**
@@ -923,13 +835,10 @@ public class Parameters implements FormattedParameter {
      *
      * @param redirectResponseTime the redirect response time
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#rrt">Redirect
-     *      response time</a>
+     * @see <a href="http://goo.gl/a8d4RP#rrt">Redirect response time</a>
      */
     public B addRedirectResponseTime(int redirectResponseTime) {
-      list.add(new IntParameter("&rrt", redirectResponseTime));
-      return self;
+      return addParameter(new IntParameter("&rrt", redirectResponseTime));
     }
 
     /**
@@ -937,13 +846,10 @@ public class Parameters implements FormattedParameter {
      *
      * @param tcpConnectTime the TCP connect time
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#tcp">TCP
-     *      connect time</a>
+     * @see <a href="http://goo.gl/a8d4RP#tcp">TCP connect time</a>
      */
     public B addTcpConnectTime(int tcpConnectTime) {
-      list.add(new IntParameter("&tcp", tcpConnectTime));
-      return self;
+      return addParameter(new IntParameter("&tcp", tcpConnectTime));
     }
 
     /**
@@ -951,13 +857,10 @@ public class Parameters implements FormattedParameter {
      *
      * @param serverResponseTime the server response time
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#srt">Server
-     *      response time</a>
+     * @see <a href="http://goo.gl/a8d4RP#srt">Server response time</a>
      */
     public B addServerResponseTime(int serverResponseTime) {
-      list.add(new IntParameter("&srt", serverResponseTime));
-      return self;
+      return addParameter(new IntParameter("&srt", serverResponseTime));
     }
 
     /**
@@ -965,13 +868,10 @@ public class Parameters implements FormattedParameter {
      *
      * @param domInteractiveTime the DOM interactive time
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#dit">DOM
-     *      interactive time</a>
+     * @see <a href="http://goo.gl/a8d4RP#dit">DOM interactive time</a>
      */
     public B addDomInteractiveTime(int domInteractiveTime) {
-      list.add(new IntParameter("&dit", domInteractiveTime));
-      return self;
+      return addParameter(new IntParameter("&dit", domInteractiveTime));
     }
 
     /**
@@ -979,13 +879,10 @@ public class Parameters implements FormattedParameter {
      *
      * @param contentLoadTime the content load time
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#clt">Content
-     *      load time</a>
+     * @see <a href="http://goo.gl/a8d4RP#clt">Content load time</a>
      */
     public B addContentLoadTime(int contentLoadTime) {
-      list.add(new IntParameter("&clt", contentLoadTime));
-      return self;
+      return addParameter(new IntParameter("&clt", contentLoadTime));
     }
 
     ////////////////////////////////////////////////////////
@@ -997,13 +894,10 @@ public class Parameters implements FormattedParameter {
      *
      * @param exceptionDescription the exception description
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#exd">Exception
-     *      Description</a>
+     * @see <a href="http://goo.gl/a8d4RP#exd">Exception Description</a>
      */
     public B addExceptionDescription(String exceptionDescription) {
-      list.add(new StringParameter("&exd", exceptionDescription));
-      return self;
+      return addParameter(new StringParameter("&exd", exceptionDescription));
     }
 
     /**
@@ -1011,13 +905,10 @@ public class Parameters implements FormattedParameter {
      *
      * @param exceptionFatal the exception fatal
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#exd">Is
-     *      Exception Fatal</a>
+     * @see <a href="http://goo.gl/a8d4RP#exd">Is Exception Fatal</a>
      */
     public B addIsExceptionFatal(boolean exceptionFatal) {
-      list.add(new BooleanParameter("&exf", exceptionFatal));
-      return self;
+      return addParameter(new BooleanParameter("&exf", exceptionFatal));
     }
 
     ////////////////////////////////////////////////////////
@@ -1030,13 +921,10 @@ public class Parameters implements FormattedParameter {
      * @param index the index
      * @param value the value
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#cd_">Custom
-     *      Dimension</a>
+     * @see <a href="http://goo.gl/a8d4RP#cd_">Custom Dimension</a>
      */
     public B addCustomDimension(int index, String value) {
-      list.add(new CustomDimensionParameter(index, value));
-      return self;
+      return addParameter(new CustomDimensionParameter(index, value));
     }
 
     /**
@@ -1045,13 +933,10 @@ public class Parameters implements FormattedParameter {
      * @param index the index
      * @param value the value
      * @return the builder
-     * @see <a
-     *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#cm_">Custom
-     *      Metric</a>
+     * @see <a href="http://goo.gl/a8d4RP#cm_">Custom Metric</a>
      */
     public B addCustomMetric(int index, int value) {
-      list.add(new CustomMetricParameter(index, value));
-      return self;
+      return addParameter(new CustomMetricParameter(index, value));
     }
 
     ////////////////////////////////////////////////////////
@@ -1059,39 +944,26 @@ public class Parameters implements FormattedParameter {
     ////////////////////////////////////////////////////////
   }
 
-  /**
-   * A builder for {@link Parameters}.
-   * 
-   * <p>This is a special builder that ensures that the tracking Id, client Id and user Id cannot be
-   * set.
-   * 
-   * <p>This builder should be used to construct a subset of parameters that are sent in addition to
-   * the tracking Id, client Id and/or user Id parameters.
-   * 
-   * @see ClientParametersBuilder
-   */
-  public static class NonClientParametersBuilder
-      extends ParametersBuilder<NonClientParametersBuilder> {
-    /**
-     * Create a new builder.
-     */
-    NonClientParametersBuilder() {
-      super(NonClientParametersBuilder.class);
-    }
-  }
+  ////////////////////////////////////////////////////////
+  // Public builders.
+  ////////////////////////////////////////////////////////
+  // These set the type for the ParametersBuilder<B> so
+  // the object method API drops the generic recursion
+  // and is cleaner.
+  ////////////////////////////////////////////////////////
 
   // @formatter:off
   /**
-   * A builder for {@link Parameters}.
+   * A builder for {@link Parameters} required for every hit.
    * 
    * <p>This is a special builder that ensures that:
    * 
    * <ul> 
-   * <li>The protocol version is set (required for all hits)
-   * <li>The tracking Id is set (required for all hits)
-   * <li>The client Id can be added only once
-   * <li>The user Id can be added only once
-   * <li>The client Id is a random UUID if both the client Id and user Id are unset
+   * <li>The protocol version is set (required for all hits).
+   * <li>The tracking Id is set (required for all hits).
+   * <li>The client Id can be added only once.
+   * <li>The user Id can be added only once.
+   * <li>The client Id is a random UUID if both the client Id and user Id are unset.
    * </ul>
    *
    * <p>Note: Either the client Id or user Id are required for all hits.
@@ -1099,7 +971,7 @@ public class Parameters implements FormattedParameter {
    * <p>This builder should be used to construct parameters that are sent with every hit.
    */
   // @formatter:on
-  public static class ClientParametersBuilder extends ParametersBuilder<ClientParametersBuilder> {
+  public static class RequiredBuilder extends ParametersBuilder<RequiredBuilder> {
 
     /** Flag to indicate the client Id has been set. */
     private boolean hasClientId;
@@ -1111,8 +983,8 @@ public class Parameters implements FormattedParameter {
      *
      * @param trackingId the tracking id
      */
-    ClientParametersBuilder(String trackingId) {
-      super(ClientParametersBuilder.class);
+    private RequiredBuilder(String trackingId) {
+      super(RequiredBuilder.class);
       addVersion();
       // This is true since this is Java
       addJavaEnabled(true);
@@ -1120,7 +992,7 @@ public class Parameters implements FormattedParameter {
     }
 
     @Override
-    public ClientParametersBuilder addClientId(String clientId) throws IllegalArgumentException {
+    public RequiredBuilder addClientId(String clientId) throws IllegalArgumentException {
       if (hasClientId) {
         throw new IllegalArgumentException("Duplicate client Id");
       }
@@ -1129,7 +1001,7 @@ public class Parameters implements FormattedParameter {
     }
 
     @Override
-    public ClientParametersBuilder addClientId(UUID clientId) {
+    public RequiredBuilder addClientId(UUID clientId) {
       if (hasClientId) {
         throw new IllegalArgumentException("Duplicate client Id");
       }
@@ -1138,7 +1010,7 @@ public class Parameters implements FormattedParameter {
     }
 
     @Override
-    public ClientParametersBuilder addUserId(String userId) throws IllegalArgumentException {
+    public RequiredBuilder addUserId(String userId) throws IllegalArgumentException {
       if (hasUserId) {
         throw new IllegalArgumentException("Duplicate user Id");
       }
@@ -1156,21 +1028,120 @@ public class Parameters implements FormattedParameter {
     }
   }
 
+  // @formatter:off
+  /**
+   * A builder for {@link Parameters} that are in addition to the parameters required for every hit.
+   * 
+   * <p>This is a special builder that ensures that the following methods do nothing:
+   * 
+   * <ul> 
+   * <li>{@link #addVersion()}
+   * <li>{@link #addTrackingId(String)}
+   * <li>{@link #addClientId(String)}
+   * <li>{@link #addClientId(UUID)} 
+   * <li>{@link #addUserId(String)}
+   * </ul>
+   * 
+   * <p>This builder should be used to construct a partial subset of parameters that are sent in 
+   * addition to the required protocol parameters version, tracking Id, client Id and/or user Id 
+   * parameters.
+   * 
+   * <p>Provides a utility method that allows the builder to return it's parent.
+   *
+   * @param <P> the type of the parent
+   * @see RequiredBuilder
+   */
+  // @formatter:on
+  public static class PartialBuilder<P> extends ParametersBuilder<PartialBuilder<P>> {
+
+    /** The parent. */
+    private final P parent;
+
+    /**
+     * Create a new builder.
+     *
+     * @param parent the parent
+     */
+    private PartialBuilder(P parent) {
+      super(PartialBuilder.class);
+      this.parent = parent;
+    }
+
+    @Override
+    public PartialBuilder<P> addVersion() {
+      return self;
+    }
+
+    @Override
+    public PartialBuilder<P> addTrackingId(String trackingId) {
+      return self;
+    }
+
+    @Override
+    public PartialBuilder<P> addClientId(String clientId) throws IllegalArgumentException {
+      return self;
+    }
+
+    @Override
+    public PartialBuilder<P> addClientId(UUID clientId) {
+      return self;
+    }
+
+    @Override
+    public PartialBuilder<P> addUserId(String userId) throws IllegalArgumentException {
+      return self;
+    }
+
+    /**
+     * Gets the parent.
+     * 
+     * <p>The parent is set during construction allowing this builder to be chained.
+     *
+     * @return the parent
+     */
+    public P getParent() {
+      return parent;
+    }
+  }
+
+  /**
+   * A builder for {@link Parameters}.
+   * 
+   * <p>This is a generic builder with no defaults that exposes the parameter API. It can be used to
+   * construct partial or complete hit parameters.
+   * 
+   * <p>Note that other specialised builders are provided that add restrictions to prevent common
+   * misuse cases.
+   * 
+   * @see RequiredBuilder
+   * @see PartialBuilder
+   */
+  public static class Builder extends ParametersBuilder<Builder> {
+
+    /**
+     * Create a new builder.
+     */
+    private Builder() {
+      super(Builder.class);
+    }
+  }
+
   /**
    * A builder for {@link Parameters} for a <strong>single</strong> Google Analytics hit.
    * 
    * <p>This is a special builder that ensures that the hit type is set and a timestamp of the hit
    * is recorded.
    * 
-   * <p>The builder will create partial parameters for a hit and should be combined with the
-   * required parameters: version; tracking Id; client/user Id.
+   * <p>No restrictions are made on the parameter API so the builder can be used to create a
+   * complete hit or partial hit to be combined with the required parameters: version; tracking Id;
+   * client/user Id.
    * 
    * <p>The abstract class provides a method to send the hit so should be extended with an
    * implementation that handles the send request.
    *
    * @param <T> the result type returned by the send method
    */
-  public abstract static class HitBuilder<T> extends Parameters.ParametersBuilder<HitBuilder<T>> {
+  public abstract static class HitBuilder<T> extends ParametersBuilder<HitBuilder<T>> {
 
     /** The timestamp when the hit was created. */
     private final long timestamp;
@@ -1204,67 +1175,5 @@ public class Parameters implements FormattedParameter {
      * @return the result
      */
     public abstract T send();
-  }
-
-  /**
-   * A builder for {@link Parameters}.
-   * 
-   * <p>This is a generic builder with no defaults that exposes the parameter API. It can be used to
-   * construct partial or complete hit parameters.
-   * 
-   * <p>Note that other specialised builders are provided that add restrictions to prevent common
-   * misuse cases.
-   * 
-   * @see ClientParametersBuilder
-   * @see NonClientParametersBuilder
-   */
-  public static class GenericParametersBuilder extends ParametersBuilder<GenericParametersBuilder> {
-
-    /**
-     * Create a new builder.
-     */
-    GenericParametersBuilder() {
-      super(GenericParametersBuilder.class);
-    }
-
-    ////////////////////////////////////////////////////////
-    // Expose protected methods
-    ////////////////////////////////////////////////////////
-
-    @Override
-    public GenericParametersBuilder addCacheBuster() {
-      return super.addCacheBuster();
-    }
-
-    @Override
-    public GenericParametersBuilder addClientId(String clientId) throws IllegalArgumentException {
-      return super.addClientId(clientId);
-    }
-
-    @Override
-    public GenericParametersBuilder addClientId(UUID clientId) {
-      return super.addClientId(clientId);
-    }
-
-    @Override
-    public GenericParametersBuilder addQueueTime(int queueTime) {
-      return super.addQueueTime(queueTime);
-    }
-
-    @Override
-    public GenericParametersBuilder addTrackingId(String trackingId)
-        throws IllegalArgumentException {
-      return super.addTrackingId(trackingId);
-    }
-
-    @Override
-    public GenericParametersBuilder addUserId(String userId) throws IllegalArgumentException {
-      return super.addUserId(userId);
-    }
-
-    @Override
-    public GenericParametersBuilder addVersion() {
-      return super.addVersion();
-    }
   }
 }

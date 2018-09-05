@@ -32,9 +32,7 @@ import java.util.UUID;
  * 
  * <p>This field is required if User ID (uid) is not specified in the request.
  * 
- * @see <a
- *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#cid">Client
- *      Id</a>
+ * @see <a href="http://goo.gl/a8d4RP#cid">Client Id</a>
  */
 public class ClientIdParameter extends StringParameter {
 

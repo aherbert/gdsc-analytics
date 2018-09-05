@@ -42,13 +42,13 @@ public interface FormattedParameter {
    * <p>Note: The '<strong>&amp;</strong>' character <strong>must</strong> be included.
    *
    * <p>A correct parameter URL with no '<strong>&amp;</strong>' character can be obtained from the
-   * function {@link #formatPostString()}.
+   * function {@link #toPostString()}.
    * 
    * <p>This method allows consecutive {@link FormattedParameter} instances can be formatted to the
    * same {@link StringBuilder} using repeats calls to {@link #appendTo(StringBuilder)}.
    * 
    * @param sb the string builder
-   * @see #formatGetString()
+   * @see #toGetString()
    */
   void appendTo(StringBuilder sb);
 
@@ -61,7 +61,7 @@ public interface FormattedParameter {
    * 
    * @return the string
    */
-  default String formatPostString() {
+  default String toPostString() {
     final StringBuilder sb = new StringBuilder();
     appendTo(sb);
     if (sb.length() != 0) {
@@ -79,7 +79,7 @@ public interface FormattedParameter {
    * 
    * @return the string
    */
-  default String formatGetString() {
+  default String toGetString() {
     final StringBuilder sb = new StringBuilder();
     appendTo(sb);
     if (sb.length() != 0) {
@@ -140,13 +140,13 @@ public interface FormattedParameter {
       }
 
       @Override
-      public String formatPostString() {
+      public String toPostString() {
         // Empty string
         return "";
       }
 
       @Override
-      public String formatGetString() {
+      public String toGetString() {
         // Empty string
         return "";
       }

@@ -31,9 +31,7 @@ package uk.ac.sussex.gdsc.analytics.parameters;
  * <p>Note that in the case of asynchronous hits it is better to add the queue time just before
  * sending the tracking request using the helper method {@link #appendTo(StringBuilder, long)}.
  * 
- * @see <a
- *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#qt">Queue
- *      Time</a>
+ * @see <a href="http://goo.gl/a8d4RP#qt">Queue Time</a>
  */
 public class QueueTimeParameter implements FormattedParameter {
 

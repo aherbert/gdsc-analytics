@@ -27,8 +27,6 @@
  * Provide classes for constructing Google Analytics Measurement Protocol parameters.
  * 
  * @since 2.0
- * @see <a href=
- *      "https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters">Measurement
- *      Protocol Parameter Reference</a>
+ * @see <a href= "http://goo.gl/a8d4RP">Measurement Protocol Parameter Reference</a>
  */
 package uk.ac.sussex.gdsc.analytics.parameters;

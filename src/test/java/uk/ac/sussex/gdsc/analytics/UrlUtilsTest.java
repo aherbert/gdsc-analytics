@@ -23,32 +23,27 @@
  * #L%
  */
 
-package uk.ac.sussex.gdsc.analytics.parameters;
+package uk.ac.sussex.gdsc.analytics;
 
-import java.util.Locale;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-/**
- * Adds parameter {@code ul} to a URL.
- * 
- * @see <a href="http://goo.gl/a8d4RP#ul">User Language</a>
- */
-public class UserLanguageParameter extends StringParameter {
+@SuppressWarnings("javadoc")
+public class UrlUtilsTest {
+  @Test
+  public void testProxy() {
+    // Test various proxy addresses
+    // Valid
+    Assertions.assertNotNull(UrlUtils.getProxy("http://localhost:80"));
+    Assertions.assertNotNull(UrlUtils.getProxy("https://localhost:80"));
+    Assertions.assertNotNull(UrlUtils.getProxy("localhost:80"));
+    Assertions.assertNotNull(UrlUtils.getProxy("https://localhost:80/more/stuff"));
 
-  /**
-   * Instantiates a new instance.
-   *
-   * @param userLanguage the user language
-   */
-  public UserLanguageParameter(String userLanguage) {
-    super("&ul", userLanguage);
-  }
-
-  /**
-   * Instantiates a new instance using the default locale.
-   *
-   * @see Locale#toLanguageTag()
-   */
-  public UserLanguageParameter() {
-    super("&ul", Locale.getDefault().toLanguageTag());
+    // Invalid
+    Assertions.assertNull(UrlUtils.getProxy(null));
+    Assertions.assertNull(UrlUtils.getProxy(""));
+    Assertions.assertNull(UrlUtils.getProxy("localhost"));
+    Assertions.assertNull(UrlUtils.getProxy("http://localhost"));
+    Assertions.assertNull(UrlUtils.getProxy("http://localhost :80"));
   }
 }

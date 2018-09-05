@@ -29,12 +29,8 @@ package uk.ac.sussex.gdsc.analytics.parameters;
  * Stores a named indexed {@code String} parameter, e.g. {@code key+keyId=value} where
  * {@code key+keyId} is the equivalent of the string result of adding the key and the key Id.
  * 
- * @see <a
- *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#cd_">Custom
- *      Dimension</a>
- * @see <a
- *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#cg_">Content
- *      Group</a>
+ * @see <a href="http://goo.gl/a8d4RP#cd_">Custom Dimension</a>
+ * @see <a href="http://goo.gl/a8d4RP#cg_">Content Group</a>
  */
 public class IndexedStringParameter extends StringParameter {
   /** The index. */

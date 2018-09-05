@@ -28,9 +28,7 @@ package uk.ac.sussex.gdsc.analytics.parameters;
 /**
  * Stores a custom metric parameter.
  * 
- * @see <a
- *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#cm_">Custom
- *      Metric</a>
+ * @see <a href="http://goo.gl/a8d4RP#cm_">Custom Metric</a>
  */
 public final class CustomMetricParameter extends IntParameter {
   /** The index. */

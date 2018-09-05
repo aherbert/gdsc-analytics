@@ -41,7 +41,7 @@ interface HttpConnectionProvider {
    * Open a connection.
    *
    * @param url the url (assumed to be a HTTP/HTTPS protocol)
-   * @param proxy the proxy
+   * @param proxy the proxy (may be null)
    * @return the http URL connection
    * @throws IOException Signals that an I/O exception has occurred.
    * @throws ClassCastException If the connection cannot be cast to a HttpURLConnection

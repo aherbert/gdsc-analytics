@@ -30,9 +30,7 @@ import java.util.Locale;
 /**
  * Stores valid values for session control.
  * 
- * @see <a
- *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#sc">Session
- *      Control</a>
+ * @see <a href="http://goo.gl/a8d4RP#sc">Session Control</a>
  */
 public enum SessionControlParameter implements FormattedParameter {
   /** Forces a new session to start with this hit. */

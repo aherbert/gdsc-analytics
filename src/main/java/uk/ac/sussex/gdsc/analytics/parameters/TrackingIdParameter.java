@@ -30,9 +30,7 @@ package uk.ac.sussex.gdsc.analytics.parameters;
  * 
  * <p>The format is UA-XXXX-Y.
  * 
- * @see <a
- *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#tid">Tracking
- *      Id</a>
+ * @see <a href="http://goo.gl/a8d4RP#tid">Tracking Id</a>
  */
 public class TrackingIdParameter extends StringParameter {
 

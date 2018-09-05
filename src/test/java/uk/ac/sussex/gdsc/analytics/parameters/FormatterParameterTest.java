@@ -35,34 +35,34 @@ import org.junit.jupiter.api.Test;
 @SuppressWarnings("javadoc")
 public class FormatterParameterTest {
   @Test
-  public void testFormatPostString() {
+  public void testToPostString() {
     // With empty
     FormattedParameter fp = (sb) -> {
       // Do nothing
     };
-    Assertions.assertEquals("", fp.formatPostString());
+    Assertions.assertEquals("", fp.toPostString());
 
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (int i = 0; i < 5; i++) {
       final String name = TestUtils.randomName(rg, 10);
       fp = (sb) -> sb.append('&').append(name);
-      Assertions.assertEquals(name, fp.formatPostString());
+      Assertions.assertEquals(name, fp.toPostString());
     }
   }
 
   @Test
-  public void testFormatGetString() {
+  public void testToGetString() {
     // With empty
     FormattedParameter fp = (sb) -> {
       // Do nothing
     };
-    Assertions.assertEquals("", fp.formatGetString());
+    Assertions.assertEquals("", fp.toGetString());
 
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (int i = 0; i < 5; i++) {
       final String name = TestUtils.randomName(rg, 10);
       fp = (sb) -> sb.append('&').append(name);
-      Assertions.assertEquals("?" + name, fp.formatGetString());
+      Assertions.assertEquals("?" + name, fp.toGetString());
     }
   }
 
@@ -75,8 +75,8 @@ public class FormatterParameterTest {
     FormattedParameter fp2 = fp.simplify();
     Assertions.assertNotSame(fp, fp2);
     Assertions.assertEquals("", TestUtils.callAppendTo(fp2));
-    Assertions.assertEquals("", fp2.formatPostString());
-    Assertions.assertEquals("", fp2.formatGetString());
+    Assertions.assertEquals("", fp2.toPostString());
+    Assertions.assertEquals("", fp2.toGetString());
     Assertions.assertSame(fp2, fp2.simplify());
 
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
@@ -84,15 +84,15 @@ public class FormatterParameterTest {
       final String name = TestUtils.randomName(rg, 10);
       fp = (sb) -> sb.append('&').append(name);
       String appendTo = TestUtils.callAppendTo(fp);
-      String postString = fp.formatPostString();
-      String getString = fp.formatGetString();
+      String postString = fp.toPostString();
+      String getString = fp.toGetString();
       Assertions.assertEquals(name, postString);
       Assertions.assertEquals("?" + name, getString);
       fp2 = fp.simplify();
       Assertions.assertNotSame(fp, fp2);
       Assertions.assertEquals(appendTo, TestUtils.callAppendTo(fp2));
-      Assertions.assertEquals(postString, fp2.formatPostString());
-      Assertions.assertEquals(getString, fp2.formatGetString());
+      Assertions.assertEquals(postString, fp2.toPostString());
+      Assertions.assertEquals(getString, fp2.toGetString());
       Assertions.assertSame(fp2, fp2.simplify());
     }
   }
@@ -101,8 +101,8 @@ public class FormatterParameterTest {
   public void testEmpty() {
     FormattedParameter fp = FormattedParameter.empty();
     Assertions.assertEquals("", TestUtils.callAppendTo(fp));
-    Assertions.assertEquals("", fp.formatPostString());
-    Assertions.assertEquals("", fp.formatGetString());
+    Assertions.assertEquals("", fp.toPostString());
+    Assertions.assertEquals("", fp.toGetString());
     Assertions.assertSame(fp, fp.simplify());
     FormattedParameter fp2 = FormattedParameter.empty();
     Assertions.assertNotSame(fp, fp2);

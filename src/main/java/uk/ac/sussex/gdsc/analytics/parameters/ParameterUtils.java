@@ -109,9 +109,7 @@ public final class ParameterUtils {
    * @param trackingId the tracking id
    * @return the string
    * @throws IllegalArgumentException If the format is not valid
-   * @see <a
-   *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#tid">Tracking
-   *      Id</a>
+   * @see <a href="http://goo.gl/a8d4RP#tid">Tracking Id</a>
    */
   public static String validateTrackingId(String trackingId) throws IllegalArgumentException {
     if (!Pattern.matches("[A-Z]{2}-[0-9]{4,}-[0-9]", trackingId)) {

@@ -25,17 +25,16 @@
 
 package uk.ac.sussex.gdsc.analytics;
 
+import uk.ac.sussex.gdsc.analytics.parameters.Parameters;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.UnknownHostException;
 
 /**
  * This class exists to determine what happens when there is no Internet connection. This can be
@@ -46,7 +45,7 @@ import java.net.UnknownHostException;
 public class ConnectionTest {
 
   // Do not use disabled as then there are test skipped warnings.
-  //@org.junit.jupiter.api.Test
+  // @org.junit.jupiter.api.Test
   public void testConnection() {
     final Logger logger = Logger.getLogger(ConnectionTest.class.getName());
     HttpURLConnection connection = null;
@@ -68,7 +67,7 @@ public class ConnectionTest {
     }
   }
 
-  //@org.junit.jupiter.api.Test
+  // @org.junit.jupiter.api.Test
   public void testConnection2() throws IOException {
     isInternetAvailable();
   }
@@ -90,16 +89,38 @@ public class ConnectionTest {
     }
   }
 
+  // @org.junit.jupiter.api.Test
+  public void testValidate() {
+    final String trackingId = "UA-12345-6"; // Your Google Analytics tracking ID
+    final String userId = "Anything";
+
+    final GoogleAnalyticsClient ga = GoogleAnalyticsClient.createBuilder(trackingId)
+        .setUserId(userId).setDebug(true).setSecure(true).build();
+
+    // Submit requests
+    String documentHostName = "www.abc.com";
+    String documentPath = "/path/within/application/";
+    Parameters parameters = ga.pageview(documentHostName, documentPath).build();
+    HttpReponseContent content = new HttpReponseContent();
+    DispatchStatus status = ga.getHitDispatcher().send(parameters.toPostString(), 0, content);
+    System.out.println(status);
+    System.out.println(content.getBytesAsText());
+  }
+
+
   /**
    * Demo of using the tracker. This code is placed in the project README.md file.
    */
+  //@formatter:off
   public void demo() {
     // Create the tracker
-    final String trackingId = "AAA-123-456"; // Your Google Analytics tracking ID
+    final String trackingId = "UA-12345-6"; // Your Google Analytics tracking ID
     final String userId = "Anything";
 
     final GoogleAnalyticsClient ga =
-        GoogleAnalyticsClient.createBuilder(trackingId).setUserId(userId).build();
+        GoogleAnalyticsClient.createBuilder(trackingId)
+                             .setUserId(userId)
+                             .build();
 
     // Submit requests
     String documentHostName = "www.abc.com";
@@ -107,6 +128,6 @@ public class ConnectionTest {
     ga.pageview(documentHostName, documentPath).send();
 
     // Shutdown
-    ga.shutdown();
+    ga.getExecutorService().shutdown();
   }
 }
