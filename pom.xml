@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
@@ -82,6 +81,7 @@ Measurement protocol to collect usage information about a Java application.
     <assertj-core.version>3.11.0</assertj-core.version>
     <mockito-core.version>2.21.0</mockito-core.version>
     <spotbugs.version>3.1.6</spotbugs.version>
+    <pmd.version>6.7.0</pmd.version>
     <!-- Maven -->
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
@@ -180,6 +180,23 @@ Measurement protocol to collect usage information about a Java application.
           <artifactId>maven-site-plugin</artifactId>
           <version>${maven-site-plugin.version}</version>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-pmd-plugin</artifactId>
+          <version>${maven-pmd-plugin.version}</version>
+          <dependencies>
+            <dependency>
+              <groupId>net.sourceforge.pmd</groupId>
+              <artifactId>pmd-core</artifactId>
+              <version>${pmd.version}</version>
+            </dependency>
+            <dependency>
+              <groupId>net.sourceforge.pmd</groupId>
+              <artifactId>pmd-java</artifactId>
+              <version>${pmd.version}</version>
+            </dependency>
+          </dependencies>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
@@ -263,7 +280,6 @@ Measurement protocol to collect usage information about a Java application.
       </plugin>
       <plugin>
         <artifactId>maven-pmd-plugin</artifactId>
-        <version>${maven-pmd-plugin.version}</version>
         <configuration>
           <targetJdk>${maven.compiler.target}</targetJdk>
           <skipEmptyReport>false</skipEmptyReport>
@@ -504,8 +520,7 @@ Measurement protocol to collect usage information about a Java application.
                 <goals>
                   <goal>check</goal>
                 </goals>
-                <!-- Currently the same as the jacoco profile but halts on 
-                  failure -->
+                <!-- Currently the same as the jacoco profile but halts on failure -->
                 <configuration>
                   <rules>
                     <rule>
