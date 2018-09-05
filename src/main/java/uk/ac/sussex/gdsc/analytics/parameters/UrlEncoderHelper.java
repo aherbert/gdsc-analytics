@@ -137,20 +137,18 @@ public final class UrlEncoderHelper {
    * @return the string
    */
   private static String spaceEncode(String string) {
-    String result;
-    if (string.indexOf(SPACE) != NO_INDEX) {
-      // Switch space to '+'
-      final char[] chars = string.toCharArray();
-      for (int i = 0; i < chars.length; i++) {
-        if (chars[i] == SPACE) {
-          chars[i] = PLUS;
-        }
-      }
-      result = new String(chars);
-    } else {
-      result = string;
+    if (string.indexOf(SPACE) == NO_INDEX) {
+      // No substitution required
+      return string;
     }
-    return result;
+    // Switch space to '+'
+    final char[] chars = string.toCharArray();
+    for (int i = 0; i < chars.length; i++) {
+      if (chars[i] == SPACE) {
+        chars[i] = PLUS;
+      }
+    }
+    return new String(chars);
   }
 
   /**
