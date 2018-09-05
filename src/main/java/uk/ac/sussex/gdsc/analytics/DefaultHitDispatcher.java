@@ -27,9 +27,7 @@ package uk.ac.sussex.gdsc.analytics;
 
 import uk.ac.sussex.gdsc.analytics.parameters.QueueTimeParameter;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
@@ -148,8 +146,16 @@ public class DefaultHitDispatcher implements HitDispatcher {
     return new DefaultHitDispatcher(url, null, null, sharedIoException);
   }
 
+  /**
+   * {@inheritDoc}
+   * 
+   * <p>The callback is invoked after the hit has been sent and
+   * {@link HttpURLConnection#getResponseCode()} has returned successfully.
+   * 
+   * @see HitDispatcher#send(java.lang.String, long, HttpUrlConnectionCallback)
+   */
   @Override
-  public DispatchStatus send(String hit, long timestamp, HttpReponseContent responseContent) {
+  public DispatchStatus send(String hit, long timestamp, HttpUrlConnectionCallback callback) {
     // Do nothing if disabled
     if (isDisabled()) {
       return DispatchStatus.DISABLED;
@@ -181,39 +187,29 @@ public class DefaultHitDispatcher implements HitDispatcher {
         os.write(out);
       }
       final int responseCode = connection.getResponseCode();
-      if (responseContent != null) {
-        responseContent.setResponseCode(responseCode);
-        responseContent.setResponseMessage(connection.getResponseMessage());
-        responseContent.setHeaderFields(connection.getHeaderFields());
-
-        // Read byte data assuming UTF-8.
-        try (final InputStream inputStream = connection.getInputStream()) {
-          final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-          int readCount;
-          final byte[] data = new byte[1024];
-          while ((readCount = inputStream.read(data, 0, data.length)) != -1) {
-            buffer.write(data, 0, readCount);
-          }
-          buffer.flush();
-          responseContent.setBytes(buffer.toByteArray());
-        }
+      if (callback != null) {
+        callback.process(connection);
       }
+
+      //////////////////////////////////////
+      // Note: Valid on 31-Aug-2018
+      // https://developers.google.com/analytics/devguides/collection/protocol/v1/validating-hits
+      // "The Google Analytics Measurement Protocol does not return HTTP error codes".
+      // So the response code will ALWAYS be HTTP_OK.
+      // However since the connection may be to something else via the connection provider,
+      // or Google change this response in the future we process the result anyway.
+      //////////////////////////////////////
+
       if (responseCode == HttpURLConnection.HTTP_OK) {
-        logger.log(Level.FINE, () -> String.format("Tracking success for url '%s'", request));
+        if (logger.isLoggable(Level.FINE)) {
+          logger.log(Level.FINE, () -> String.format("Tracking success for url '%s'", request));
+        }
         // This is a success. All other returns are false.
         return DispatchStatus.COMPLETE;
       }
-      // Note: Valid on 31-Aug-2018
-      // https://developers.google.com/analytics/devguides/collection/protocol/v1/validating-hits
-      // "The Google Analytics Measurement Protocol does not return HTTP error codes"
-      // This is unlikely to happen so log a warning but don't disable the tracker.
-      // If Google change their response in the future this logging will serve
-      // as notice to update the code to do something more appropriate.
       logger.log(Level.WARNING, () -> String
           .format("Error requesting url '%s', received response code %d", request, responseCode));
-    } catch (
-
-    final UnknownHostException ex) {
+    } catch (final UnknownHostException ex) {
       setLastIoException(ex);
       // Occurs when disconnected from the Internet so this is not severe
       logger.log(Level.WARNING, () -> String.format("Unknown host: %s", ex.getMessage()));
@@ -227,6 +223,7 @@ public class DefaultHitDispatcher implements HitDispatcher {
         connection.disconnect();
       }
     }
+    // Get here only on error
     return DispatchStatus.ERROR;
   }
 

@@ -89,7 +89,7 @@ public class ConnectionTest {
     }
   }
 
-  // @org.junit.jupiter.api.Test
+  @org.junit.jupiter.api.Test
   public void testValidate() {
     final String trackingId = "UA-12345-6"; // Your Google Analytics tracking ID
     final String userId = "Anything";
@@ -101,9 +101,11 @@ public class ConnectionTest {
     String documentHostName = "www.abc.com";
     String documentPath = "/path/within/application/";
     Parameters parameters = ga.pageview(documentHostName, documentPath).build();
-    HttpReponseContent content = new HttpReponseContent();
+    DefaultHttpUrlConnectionCallback content = new DefaultHttpUrlConnectionCallback();
     DispatchStatus status = ga.getHitDispatcher().send(parameters.toPostString(), 0, content);
     System.out.println(status);
+    System.out.println(content.getResponseCode());
+      System.out.println(content.getContentType());
     System.out.println(content.getBytesAsText());
   }
 

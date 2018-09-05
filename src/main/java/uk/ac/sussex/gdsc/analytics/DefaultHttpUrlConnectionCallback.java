@@ -25,37 +25,29 @@
 
 package uk.ac.sussex.gdsc.analytics;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Map;
 
 /**
- * Stores details of the response from a HTTP connection.
+ * Stores details of the response from a HTTP connection that are relevant for Google Analytics.
  */
-public class HttpReponseContent {
+public class DefaultHttpUrlConnectionCallback implements HttpUrlConnectionCallback {
 
+  /** The buffer size when reading the input stream. */
+  private static final int BUFFER_SIZE = 1024;
+  
   /** The response code. */
   private int responseCode;
 
-  /** The response message. */
-  private String responseMessage;
-
-  /** The header fields. */
-  private Map<String, List<String>> headerFields;
+  /** The content type. */
+  private String contentType;
 
   /** The bytes that were read from the connection input. */
   private byte[] bytes;
-
-  /**
-   * Sets the response code.
-   *
-   * @param responseCode the new response code
-   */
-  public void setResponseCode(int responseCode) {
-    this.responseCode = responseCode;
-  }
 
   /**
    * Gets the response code.
@@ -68,50 +60,13 @@ public class HttpReponseContent {
   }
 
   /**
-   * Gets the response message.
+   * Gets the content type.
    *
-   * @return the response message
-   * @see HttpURLConnection#getResponseMessage()
+   * @return the content type
+   * @see HttpURLConnection#getContentType()
    */
-  public String getResponseMessage() {
-    return responseMessage;
-  }
-
-  /**
-   * Sets the response message.
-   *
-   * @param responseMessage the new response message
-   */
-  public void setResponseMessage(String responseMessage) {
-    this.responseMessage = responseMessage;
-  }
-
-  /**
-   * Sets the header fields.
-   *
-   * @param headerFields the header fields
-   */
-  public void setHeaderFields(Map<String, List<String>> headerFields) {
-    this.headerFields = headerFields;
-  }
-
-  /**
-   * Gets the header fields.
-   *
-   * @return the header fields
-   * @see URLConnection#getHeaderFields()
-   */
-  public Map<String, List<String>> getHeaderFields() {
-    return headerFields;
-  }
-
-  /**
-   * Sets the bytes.
-   *
-   * @param bytes the new bytes
-   */
-  public void setBytes(byte[] bytes) {
-    this.bytes = bytes;
+  public String getContentType() {
+    return contentType;
   }
 
   /**
@@ -131,12 +86,42 @@ public class HttpReponseContent {
    * @return the bytes as text (or null if no bytes)
    */
   public String getBytesAsText() {
-    if (bytes == null) {
+    if (bytes == null || contentType == null) {
       return null;
     }
-    // TODO This should be better encapsulated to check the bytes are actually a charset
-    // The standard Google Analytics server returns a gif image
-    // The validation Google Analytics server returns UTF-8 text
-    return new String(bytes, StandardCharsets.UTF_8);
+    // The standard Google Analytics server returns a gif image.
+    // The validation Google Analytics server returns utf-8 text.
+    return (contentType.endsWith("charset=utf-8"))
+        // This is expected
+        ? new String(bytes, StandardCharsets.UTF_8)
+        : null;
+  }
+
+  @Override
+  public void process(HttpURLConnection connection) throws IOException {
+    reset();
+    responseCode = connection.getResponseCode();
+    contentType = connection.getContentType();
+
+    // Read byte data assuming UTF-8.
+    try (final InputStream inputStream = connection.getInputStream()) {
+      final ByteArrayOutputStream buffer = new ByteArrayOutputStream(BUFFER_SIZE);
+      int readCount;
+      final byte[] data = new byte[BUFFER_SIZE];
+      while ((readCount = inputStream.read(data, 0, data.length)) != -1) {
+        buffer.write(data, 0, readCount);
+      }
+      buffer.flush();
+      bytes = buffer.toByteArray();
+    }
+  }
+
+  /**
+   * Reset the collected properties to the defaults for the Java type.
+   */
+  public void reset() {
+    responseCode = 0;
+    contentType = null;
+    bytes = null;
   }
 }

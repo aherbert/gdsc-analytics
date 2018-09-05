@@ -46,16 +46,19 @@ public interface HitDispatcher {
    * validation server does provide response output.
    * 
    * <p>The timestamp can be used to add a queue time parameter to the hit.
+   * 
+   * <p>The callback should be called after the hit has been sent and can be used to interrogate the
+   * response from the remote server.
    *
    * @param hit the hit
    * @param timestamp the timestamp when the hit occurred
-   * @param responseContent the response content (set to null to ignore)
+   * @param callback the callback
    * @return the dispatch status
    * @see <a
    *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/validating-hits">Validating
    *      Hits</a>
    */
-  DispatchStatus send(String hit, long timestamp, HttpReponseContent responseContent);
+  DispatchStatus send(String hit, long timestamp, HttpUrlConnectionCallback callback);
 
   /**
    * Send the hit to Google Analytics.
