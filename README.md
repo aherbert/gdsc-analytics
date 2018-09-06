@@ -22,7 +22,8 @@ Functionality includes:
 Example:
 
 ```java
-import uk.ac.sussex.gdsc.analytics.*;
+import uk.ac.sussex.gdsc.analytics.GoogleAnalyticsTracker;
+import uk.ac.sussex.gdsc.analytics.GoogleAnalyticsTracker.*;
 
 // Create the tracker
 String trackingId = "AAA-123-456"; // Your Google Analytics tracking ID
@@ -36,7 +37,7 @@ GoogleAnalyticsTracker tracker = new GoogleAnalyticsTracker(cp);
 RequestParameters rp = new RequestParameters(HitType.PAGEVIEW);
 rp.setDocumentPath("/path/within/application/");
 rp.setDocumentTitle("Test Page");
-tracker.send(rp);
+tracker.makeCustomRequest(rp);
 ```
 
 This would create a protocol parameter string of:
@@ -86,6 +87,13 @@ whenever a plugin is run. To comply with the
 - All data collected is anonymous and cannot be linked to an individual
 - The GDSC ImageJ plugins allow tracking to be disabled
 
+Testing
+-------
+
+The code has been tested using:
+- [AssertJ](http://joel-costigliola.github.io/assertj/) for URL parameter testing
+- [Mockito](https://site.mockito.org/) for HTTP connection testing of all conditions including various mocked failures
+- [JUnit 5](https://junit.org/junit5/) for everything else
 
 ###### Owner(s) ######
 Alex Herbert
