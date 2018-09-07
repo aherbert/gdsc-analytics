@@ -47,34 +47,32 @@ public enum ProtocolSpecification implements ParameterSpecification {
   DATA_SOURCE("Data Source", "ds", ValueType.TEXT, 0),
   /** @see <a href= "http://goo.gl/a8d4RP#qt">Queue Time</a> */
   QUEUE_TIME("Queue Time", "qt", ValueType.INTEGER, 0),
+  /** @see <a href= "http://goo.gl/a8d4RP#z">Cache Buster</a> */
+  CACHE_BUSTER("Cache Buster", "z", ValueType.TEXT, 0),
 
   /////////////////////////
   // User
   /////////////////////////
-  /** @see <a href= "http://goo.gl/a8d4RP#z">Cache Buster</a> */
-  CACHE_BUSTER("Cache Buster", "z", ValueType.TEXT, 0),
-  /** @see <a href= "http://goo.gl/a8d4RP#z">Cache Buster</a> */
-  CACHE_BUSTER_INT("Cache Buster", "z", ValueType.INTEGER, 0),
   /** @see <a href= "http://goo.gl/a8d4RP#cid">Client ID</a> */
   CLIENT_ID("Client ID", "cid", ValueType.TEXT, 0),
+  /** @see <a href= "http://goo.gl/a8d4RP#uid">User ID</a> */
+  USER_ID("User ID", "uid", ValueType.TEXT, 0),
 
   /////////////////////////
   // Session
   /////////////////////////
-  /** @see <a href= "http://goo.gl/a8d4RP#uid">User ID</a> */
-  USER_ID("User ID", "uid", ValueType.TEXT, 0),
   /** @see <a href= "http://goo.gl/a8d4RP#sc">Session Control</a> */
   SESSION_CONTROL("Session Control", "sc", ValueType.TEXT, 0),
   /** @see <a href= "http://goo.gl/a8d4RP#uip">IP Override</a> */
   IP_OVERRIDE("IP Override", "uip", ValueType.TEXT, 0),
   /** @see <a href= "http://goo.gl/a8d4RP#ua">User Agent Override</a> */
   USER_AGENT_OVERRIDE("User Agent Override", "ua", ValueType.TEXT, 0),
+  /** @see <a href= "http://goo.gl/a8d4RP#geoid">Geographical Override</a> */
+  GEOGRAPHICAL_OVERRIDE("Geographical Override", "geoid", ValueType.TEXT, 0),
 
   /////////////////////////
   // Traffic Sources
   /////////////////////////
-  /** @see <a href= "http://goo.gl/a8d4RP#geoid">Geographical Override</a> */
-  GEOGRAPHICAL_OVERRIDE("Geographical Override", "geoid", ValueType.TEXT, 0),
   /** @see <a href= "http://goo.gl/a8d4RP#dr">Document Referrer</a> */
   DOCUMENT_REFERRER("Document Referrer", "dr", ValueType.TEXT, 2048),
   /** @see <a href= "http://goo.gl/a8d4RP#cn">Campaign Name</a> */
@@ -91,12 +89,12 @@ public enum ProtocolSpecification implements ParameterSpecification {
   CAMPAIGN_ID("Campaign ID", "ci", ValueType.TEXT, 100),
   /** @see <a href= "http://goo.gl/a8d4RP#gclid">Google Ads ID</a> */
   GOOGLE_ADS_ID("Google Ads ID", "gclid", ValueType.TEXT, 0),
+  /** @see <a href= "http://goo.gl/a8d4RP#dclid">Google Display Ads ID</a> */
+  GOOGLE_DISPLAY_ADS_ID("Google Display Ads ID", "dclid", ValueType.TEXT, 0),
 
   /////////////////////////
   // System Info
   /////////////////////////
-  /** @see <a href= "http://goo.gl/a8d4RP#dclid">Google Display Ads ID</a> */
-  GOOGLE_DISPLAY_ADS_ID("Google Display Ads ID", "dclid", ValueType.TEXT, 0),
   /** @see <a href= "http://goo.gl/a8d4RP#sr">Screen Resolution</a> */
   SCREEN_RESOLUTION("Screen Resolution", "sr", ValueType.TEXT, 20),
   /** @see <a href= "http://goo.gl/a8d4RP#vp">Viewport size</a> */
@@ -109,20 +107,20 @@ public enum ProtocolSpecification implements ParameterSpecification {
   USER_LANGUAGE("User Language", "ul", ValueType.TEXT, 20),
   /** @see <a href= "http://goo.gl/a8d4RP#je">Java Enabled</a> */
   JAVA_ENABLED("Java Enabled", "je", ValueType.BOOLEAN, 0),
+  /** @see <a href= "http://goo.gl/a8d4RP#fl">Flash Version</a> */
+  FLASH_VERSION("Flash Version", "fl", ValueType.TEXT, 20),
 
   /////////////////////////
   // Hit
   /////////////////////////
-  /** @see <a href= "http://goo.gl/a8d4RP#fl">Flash Version</a> */
-  FLASH_VERSION("Flash Version", "fl", ValueType.TEXT, 20),
   /** @see <a href= "http://goo.gl/a8d4RP#t">Hit type</a> */
   HIT_TYPE("Hit type", "t", ValueType.TEXT, 0),
+  /** @see <a href= "http://goo.gl/a8d4RP#ni">Non-Interaction Hit</a> */
+  NON_INTERACTION_HIT("Non-Interaction Hit", "ni", ValueType.BOOLEAN, 0),
 
   /////////////////////////
   // Content Information
   /////////////////////////
-  /** @see <a href= "http://goo.gl/a8d4RP#ni">Non-Interaction Hit</a> */
-  NON_INTERACTION_HIT("Non-Interaction Hit", "ni", ValueType.BOOLEAN, 0),
   /** @see <a href= "http://goo.gl/a8d4RP#dl">Document location URL</a> */
   DOCUMENT_LOCATION_URL("Document location URL", "dl", ValueType.TEXT, 2048),
   /** @see <a href= "http://goo.gl/a8d4RP#dh">Document Host Name</a> */
@@ -135,36 +133,36 @@ public enum ProtocolSpecification implements ParameterSpecification {
   SCREEN_NAME("Screen Name", "cd", ValueType.TEXT, 2048, HitType.SCREENVIEW),
   /** @see <a href= "http://goo.gl/a8d4RP#cg_">Content Group</a> */
   CONTENT_GROUP("Content Group", "cg_", ValueType.TEXT, 100),
+  /** @see <a href= "http://goo.gl/a8d4RP#linkid">Link ID</a> */
+  LINK_ID("Link ID", "linkid", ValueType.TEXT, 0),
 
   /////////////////////////
   // App Tracking
   /////////////////////////
-  /** @see <a href= "http://goo.gl/a8d4RP#linkid">Link ID</a> */
-  LINK_ID("Link ID", "linkid", ValueType.TEXT, 0),
   /** @see <a href= "http://goo.gl/a8d4RP#an">Application Name</a> */
   APPLICATION_NAME("Application Name", "an", ValueType.TEXT, 100),
   /** @see <a href= "http://goo.gl/a8d4RP#aid">Application ID</a> */
   APPLICATION_ID("Application ID", "aid", ValueType.TEXT, 150),
   /** @see <a href= "http://goo.gl/a8d4RP#av">Application Version</a> */
   APPLICATION_VERSION("Application Version", "av", ValueType.TEXT, 100),
+  /** @see <a href= "http://goo.gl/a8d4RP#aiid">Application Installer ID</a> */
+  APPLICATION_INSTALLER_ID("Application Installer ID", "aiid", ValueType.TEXT, 150),
 
   /////////////////////////
   // Event Tracking
   /////////////////////////
-  /** @see <a href= "http://goo.gl/a8d4RP#aiid">Application Installer ID</a> */
-  APPLICATION_INSTALLER_ID("Application Installer ID", "aiid", ValueType.TEXT, 150),
   /** @see <a href= "http://goo.gl/a8d4RP#ec">Event Category</a> */
   EVENT_CATEGORY("Event Category", "ec", ValueType.TEXT, 150, HitType.EVENT),
   /** @see <a href= "http://goo.gl/a8d4RP#ea">Event Action</a> */
   EVENT_ACTION("Event Action", "ea", ValueType.TEXT, 500, HitType.EVENT),
   /** @see <a href= "http://goo.gl/a8d4RP#el">Event Label</a> */
   EVENT_LABEL("Event Label", "el", ValueType.TEXT, 500, HitType.EVENT),
+  /** @see <a href= "http://goo.gl/a8d4RP#ev">Event Value</a> */
+  EVENT_VALUE("Event Value", "ev", ValueType.INTEGER, 0, HitType.EVENT),
 
   /////////////////////////
   // E-Commerce
   /////////////////////////
-  /** @see <a href= "http://goo.gl/a8d4RP#ev">Event Value</a> */
-  EVENT_VALUE("Event Value", "ev", ValueType.INTEGER, 0, HitType.EVENT),
   /** @see <a href= "http://goo.gl/a8d4RP#ti">Transaction ID</a> */
   TRANSACTION_ID("Transaction ID", "ti", ValueType.TEXT, 500, HitType.TRANSACTION, HitType.ITEM),
   /** @see <a href= "http://goo.gl/a8d4RP#ta">Transaction Affiliation</a> */
@@ -183,12 +181,12 @@ public enum ProtocolSpecification implements ParameterSpecification {
   ITEM_QUANTITY("Item Quantity", "iq", ValueType.INTEGER, 0, HitType.ITEM),
   /** @see <a href= "http://goo.gl/a8d4RP#ic">Item Code</a> */
   ITEM_CODE("Item Code", "ic", ValueType.TEXT, 500, HitType.ITEM),
+  /** @see <a href= "http://goo.gl/a8d4RP#iv">Item Category</a> */
+  ITEM_CATEGORY("Item Category", "iv", ValueType.TEXT, 500, HitType.ITEM),
 
   /////////////////////////
   // Enhanced E-Commerce
   /////////////////////////
-  /** @see <a href= "http://goo.gl/a8d4RP#iv">Item Category</a> */
-  ITEM_CATEGORY("Item Category", "iv", ValueType.TEXT, 500, HitType.ITEM),
   /** @see <a href= "http://goo.gl/a8d4RP#pr_id">Product SKU</a> */
   PRODUCT_SKU("Product SKU", "pr_id", ValueType.TEXT, 500),
   /** @see <a href= "http://goo.gl/a8d4RP#pr_nm">Product Name</a> */
@@ -251,22 +249,22 @@ public enum ProtocolSpecification implements ParameterSpecification {
   PROMOTION_POSITION("Promotion Position", "promo_ps", ValueType.TEXT, 0),
   /** @see <a href= "http://goo.gl/a8d4RP#promoa">Promotion Action</a> */
   PROMOTION_ACTION("Promotion Action", "promoa", ValueType.TEXT, 0),
+  /** @see <a href= "http://goo.gl/a8d4RP#cu">Currency Code</a> */
+  CURRENCY_CODE("Currency Code", "cu", ValueType.TEXT, 10),
 
   /////////////////////////
   // Social Interactions
   /////////////////////////
-  /** @see <a href= "http://goo.gl/a8d4RP#cu">Currency Code</a> */
-  CURRENCY_CODE("Currency Code", "cu", ValueType.TEXT, 10),
   /** @see <a href= "http://goo.gl/a8d4RP#sn">Social Network</a> */
   SOCIAL_NETWORK("Social Network", "sn", ValueType.TEXT, 50, HitType.SOCIAL),
   /** @see <a href= "http://goo.gl/a8d4RP#sa">Social Action</a> */
   SOCIAL_ACTION("Social Action", "sa", ValueType.TEXT, 50, HitType.SOCIAL),
+  /** @see <a href= "http://goo.gl/a8d4RP#st">Social Action Target</a> */
+  SOCIAL_ACTION_TARGET("Social Action Target", "st", ValueType.TEXT, 2048, HitType.SOCIAL),
 
   /////////////////////////
   // Timing
   /////////////////////////
-  /** @see <a href= "http://goo.gl/a8d4RP#st">Social Action Target</a> */
-  SOCIAL_ACTION_TARGET("Social Action Target", "st", ValueType.TEXT, 2048, HitType.SOCIAL),
   /** @see <a href= "http://goo.gl/a8d4RP#utc">User timing category</a> */
   USER_TIMING_CATEGORY("User timing category", "utc", ValueType.TEXT, 150, HitType.TIMING),
   /** @see <a href= "http://goo.gl/a8d4RP#utv">User timing variable name</a> */
@@ -289,30 +287,32 @@ public enum ProtocolSpecification implements ParameterSpecification {
   SERVER_RESPONSE_TIME("Server Response Time", "srt", ValueType.INTEGER, 0, HitType.TIMING),
   /** @see <a href= "http://goo.gl/a8d4RP#dit">DOM Interactive Time</a> */
   DOM_INTERACTIVE_TIME("DOM Interactive Time", "dit", ValueType.INTEGER, 0, HitType.TIMING),
+  /** @see <a href= "http://goo.gl/a8d4RP#clt">Content Load Time</a> */
+  CONTENT_LOAD_TIME("Content Load Time", "clt", ValueType.INTEGER, 0, HitType.TIMING),
 
   /////////////////////////
   // Exceptions
   /////////////////////////
-  /** @see <a href= "http://goo.gl/a8d4RP#clt">Content Load Time</a> */
-  CONTENT_LOAD_TIME("Content Load Time", "clt", ValueType.INTEGER, 0, HitType.TIMING),
   /** @see <a href= "http://goo.gl/a8d4RP#exd">Exception Description</a> */
   EXCEPTION_DESCRIPTION("Exception Description", "exd", ValueType.TEXT, 150, HitType.EXCEPTION),
+  /** @see <a href= "http://goo.gl/a8d4RP#exf">Is Exception Fatal?</a> */
+  IS_EXCEPTION_FATAL("Is Exception Fatal?", "exf", ValueType.BOOLEAN, 0, HitType.EXCEPTION),
 
   /////////////////////////
   // Custom Dimensions / Metrics
   /////////////////////////
-  /** @see <a href= "http://goo.gl/a8d4RP#exf">Is Exception Fatal?</a> */
-  IS_EXCEPTION_FATAL("Is Exception Fatal?", "exf", ValueType.BOOLEAN, 0, HitType.EXCEPTION),
   /** @see <a href= "http://goo.gl/a8d4RP#cd_">Custom Dimension</a> */
   CUSTOM_DIMENSION("Custom Dimension", "cd_", ValueType.TEXT, 150),
+  /** @see <a href= "http://goo.gl/a8d4RP#cm_">Custom Metric</a> */
+  CUSTOM_METRIC("Custom Metric", "cm_", ValueType.NUMBER, 0),
 
   /////////////////////////
   // Content Experiments
   /////////////////////////
-  /** @see <a href= "http://goo.gl/a8d4RP#cm_">Custom Metric</a> */
-  CUSTOM_METRIC("Custom Metric", "cm_", ValueType.NUMBER, 0),
   /** @see <a href= "http://goo.gl/a8d4RP#xid">Experiment ID</a> */
   EXPERIMENT_ID("Experiment ID", "xid", ValueType.TEXT, 40),
+  /** @see <a href= "http://goo.gl/a8d4RP#xvar">Experiment Variant</a> */
+  EXPERIMENT_VARIANT("Experiment Variant", "xvar", ValueType.TEXT, 0),
   // @formatter:off
   ;
 
