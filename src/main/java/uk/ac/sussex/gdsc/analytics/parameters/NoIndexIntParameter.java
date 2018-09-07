@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public
- * License adouble with this program.  If not, see
+ * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
@@ -26,26 +26,43 @@
 package uk.ac.sussex.gdsc.analytics.parameters;
 
 /**
- * A generic currency parameter for a {@link Parameter} with zero indexes.
+ * A generic integer parameter for a {@link ParameterSpecification} with zero indexes.
  * 
- * <p>Stores the currency value as a {@code double}.
+ * <p>Stores the integer value as a {@code int}.
  */
-public class CurrencyParameter extends NoIndexParameter {
+public class NoIndexIntParameter extends NoIndexParameter {
+
+  /** The required value type. */
+  private static final ValueType REQUIRED = ValueType.INTEGER;
 
   /** The value. */
-  private final double value;
+  private final int value;
 
   /**
-   * Instantiates a new text parameter.
+   * Creates a new instance.
    *
-   * @param parameter the parameter
+   * @param specification the specification
    * @param value the value
    * @throws IncorrectCountException If the parameter index count is not zero
-   * @throws IncorrectValueTypeException If the parameter type is incorrect
+   * @throws IncorrectValueTypeException If the parameter value type is incorrect
    */
-  public CurrencyParameter(Parameter parameter, double value) {
-    super(parameter);
-    ParameterUtils.compatibleValueType(ValueType.CURRENCY, parameter.getValueType());
+  public NoIndexIntParameter(ParameterSpecification specification, int value) {
+    super(specification);
+    ParameterUtils.compatibleValueType(REQUIRED, specification);
+    this.value = value;
+  }
+
+  /**
+   * Creates a new instance.
+   *
+   * @param specification the specification
+   * @param value the value
+   * @throws IncorrectCountException If the parameter index count is not zero
+   * @throws IncorrectValueTypeException If the parameter value type is incorrect
+   */
+  public NoIndexIntParameter(ProtocolSpecification specification, int value) {
+    super(specification);
+    ParameterUtils.compatibleValueType(REQUIRED, specification);
     this.value = value;
   }
 
@@ -54,12 +71,12 @@ public class CurrencyParameter extends NoIndexParameter {
    *
    * @return the value
    */
-  public double getValue() {
+  public final int getValue() {
     return value;
   }
 
   @Override
   public StringBuilder formatTo(StringBuilder sb) {
-    return appendNameEquals(sb).append(getValue());
-  }  
+    return appendNameEquals(sb).append(value);
+  }
 }

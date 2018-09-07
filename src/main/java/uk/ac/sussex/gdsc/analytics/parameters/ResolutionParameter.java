@@ -40,13 +40,13 @@ public final class ResolutionParameter extends NoIndexParameter {
   private final int height;
 
   /**
-   * Instantiates a new resolution parameter.
+   * Creates a new instance.
    *
    * @param parameter the parameter
    * @param width the width
    * @param height the height
    */
-  public ResolutionParameter(Parameter parameter, int width, int height) {
+  public ResolutionParameter(ParameterSpecification parameter, int width, int height) {
     super(parameter);
     this.width = width;
     this.height = height;

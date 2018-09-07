@@ -54,12 +54,12 @@ public final class HitTypeParameter implements FormattedParameter {
   private final char[] chars;
 
   /**
-   * Instantiates a new hit type parameter.
+   * Creates a new instance.
    */
   private HitTypeParameter(HitType hitType) {
     final StringBuilder sb = new StringBuilder();
-    sb.append(Parameter.HIT_TYPE.getNameFormat());
-    sb.append(ParameterUtils.EQUAL);
+    sb.append(ProtocolSpecification.HIT_TYPE.getNameFormatRef());
+    sb.append(Constants.EQUAL);
     sb.append(hitType.toString());
     chars = ParameterUtils.getChars(sb);
   }

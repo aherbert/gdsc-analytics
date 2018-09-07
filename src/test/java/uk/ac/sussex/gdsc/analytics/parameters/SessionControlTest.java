@@ -25,32 +25,16 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
-import uk.ac.sussex.gdsc.analytics.TestUtils;
-
-import org.apache.commons.rng.UniformRandomProvider;
-import org.apache.commons.rng.simple.RandomSource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class StringParameterTest {
-  @SuppressWarnings("unused")
+public class SessionControlTest {
   @Test
-  public void testConstructor() {
-    Assertions.assertThrows(NullPointerException.class, () -> {
-      new StringParameter("&name", null);
-    });
-  }
-
-  @Test
-  public void testFormat() {
-    final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
-    for (int i = 0; i < 5; i++) {
-      String name = TestUtils.randomName(rg, 3);
-      String value = TestUtils.randomName(rg, 3);
-      StringParameter sp = new StringParameter("&" + name, value);
-      Assertions.assertEquals(String.format("&%s=%s", name, value), TestUtils.callFormatTo(sp));
-      Assertions.assertEquals(value, sp.getValue());
-    }
+  public void testToString() {
+    // TODO Make sure we cover all the values by checking SessionControl.values() 
+    
+    Assertions.assertEquals("start", SessionControl.START.toString());
+    Assertions.assertEquals("end", SessionControl.END.toString());
   }
 }

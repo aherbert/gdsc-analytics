@@ -26,24 +26,44 @@
 package uk.ac.sussex.gdsc.analytics.parameters;
 
 /**
- * Base class to implements the {@link FormattedParameter} interface for a {@link Parameter} with
+ * Base class to implements the {@link FormattedParameter} interface for a {@link ParameterSpecification} with
  * no indexes.
  */
 abstract class NoIndexParameter extends BaseParameter {
 
+  /** The expected number of indexes */
+  private static final int EXPECTED = 0;
+  
   /**
    * Create a new instance.
    *
-   * @param parameter the parameter
+   * @param specification the specification
    * @throws IncorrectCountException If the index count is not zero
    */
-  public NoIndexParameter(Parameter parameter) {
-    super(parameter);
-    ParameterUtils.validateCount(parameter.getNumberOfIndexes(), 0);
+  public NoIndexParameter(ParameterSpecification specification) {
+    super(specification);
+    ParameterUtils.validateCount(EXPECTED, specification);
+  }
+
+  /**
+   * Create a new instance.
+   *
+   * @param specification the specification
+   * @throws IncorrectCountException If the index count is not zero
+   */
+  public NoIndexParameter(ProtocolSpecification specification) {
+    super(specification);
+    ParameterUtils.validateCount(EXPECTED, specification);
   }
 
   @Override
   protected StringBuilder appendNameEquals(StringBuilder sb) {
-    return sb.append(getParameter().getNameFormat()).append(ParameterUtils.EQUAL);
+    if (protocolSpecification != null) {
+      // Direct access to the char array
+      sb.append(protocolSpecification.getNameFormatRef());
+    } else {
+      sb.append(getParameterSpecification().getNameFormat());
+    }
+    return sb.append(Constants.EQUAL);
   }
 }

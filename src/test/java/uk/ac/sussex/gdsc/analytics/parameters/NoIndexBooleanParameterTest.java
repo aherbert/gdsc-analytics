@@ -25,7 +25,7 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
-import java.util.regex.Pattern;
+import uk.ac.sussex.gdsc.analytics.TestUtils;
 
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.simple.RandomSource;
@@ -33,22 +33,29 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class QueueTimeParameterTest {
+public class NoIndexBooleanParameterTest {
+  @SuppressWarnings("unused")
+  @Test
+  public void testConstructor() {
+    Assertions.assertThrows(NullPointerException.class, () -> {
+      new NoIndexBooleanParameter(null, false);
+    });
+  }
+
   @Test
   public void testFormat() {
-    final long timestamp = System.currentTimeMillis();
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
-    Pattern pattern = Pattern.compile("^qt=-?[0-9]+$");
-    StringBuilder sb = new StringBuilder();
-    for (int i = 0; i < 3; i++) {
-      long stamp = timestamp - rg.nextInt(1000);
-      QueueTimeParameter qt = new QueueTimeParameter(stamp);
-      String s = qt.format();
-      Assertions.assertTrue(pattern.matcher(s).matches(), s);
-      Assertions.assertEquals(stamp, qt.getTimestamp());
-      sb.setLength(0);
-      QueueTimeParameter.appendTo(sb, timestamp);
-      Assertions.assertTrue(pattern.matcher(sb).matches(), s);
+    for (int i = 0; i < 5; i++) {
+      String name = TestUtils.randomName(rg, 3);
+      boolean value = rg.nextBoolean();
+      NoIndexBooleanParameter param =
+          new NoIndexBooleanParameter(TestUtils.newBooleanParameterSpecification(name), value);
+      Assertions.assertEquals(String.format("%s=%c", name, (value) ? '1' : '0'), param.format());
+      Assertions.assertEquals(value, param.getValue());
+
+      param = new NoIndexBooleanParameter(ProtocolSpecification.ANONYMIZE_IP, value);
+      Assertions.assertEquals(String.format("aip=%c", (value) ? '1' : '0'), param.format());
+      Assertions.assertEquals(value, param.getValue());
     }
   }
 }

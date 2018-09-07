@@ -25,8 +25,6 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
-import java.util.Locale;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -34,9 +32,15 @@ import org.junit.jupiter.api.Test;
 public class HitTypeTest {
   @Test
   public void testToString() {
-    for (final HitType ht : HitType.values()) {
-      String expected = String.valueOf(ht).toLowerCase(Locale.getDefault());
-      Assertions.assertEquals(expected, ht.toString());
-    }
+    // TODO Make sure we cover all the values by checking HitType.values() 
+    
+    Assertions.assertEquals("event", HitType.EVENT.toString());
+    Assertions.assertEquals("exception", HitType.EXCEPTION.toString());
+    Assertions.assertEquals("item", HitType.ITEM.toString());
+    Assertions.assertEquals("pageview", HitType.PAGEVIEW.toString());
+    Assertions.assertEquals("screenview", HitType.SCREENVIEW.toString());
+    Assertions.assertEquals("social", HitType.SOCIAL.toString());
+    Assertions.assertEquals("timing", HitType.TIMING.toString());
+    Assertions.assertEquals("transaction", HitType.TRANSACTION.toString());
   }
 }

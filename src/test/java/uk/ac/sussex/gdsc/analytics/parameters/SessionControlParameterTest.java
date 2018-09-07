@@ -25,27 +25,14 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
-import uk.ac.sussex.gdsc.analytics.TestUtils;
-import uk.ac.sussex.gdsc.analytics.parameters.SessionControlParameter;
-
-import java.util.Locale;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
 public class SessionControlParameterTest {
   @Test
-  public void testToString() {
-    for (final SessionControlParameter ht : SessionControlParameter.values()) {
-      String expected = String.valueOf(ht).toLowerCase(Locale.getDefault());
-      Assertions.assertEquals(expected, ht.toString());
-    }
-  }
-
-  @Test
   public void testFormat() {
-    Assertions.assertEquals("&sc=end", TestUtils.callFormatTo(SessionControlParameter.END));
-    Assertions.assertEquals("&sc=start", TestUtils.callFormatTo(SessionControlParameter.START));
+    Assertions.assertEquals("sc=end", SessionControlParameter.END.format());
+    Assertions.assertEquals("sc=start", SessionControlParameter.START.format());
   }
 }

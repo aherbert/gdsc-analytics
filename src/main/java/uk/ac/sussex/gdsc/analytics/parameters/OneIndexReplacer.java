@@ -32,7 +32,7 @@ public class OneIndexReplacer {
 
   /** The expected number of indexes */
   private static final int EXPECTED = 1;
-  
+
   /** The format. */
   private final char[] format;
 
@@ -48,16 +48,36 @@ public class OneIndexReplacer {
   /**
    * Create a new instance.
    *
+   * @param nameFormat the name format
+   * @throws IncorrectCountException If the index count is not one
+   */
+  public OneIndexReplacer(CharSequence nameFormat) {
+    this(ParameterUtils.getChars(nameFormat));
+  }
+
+  /**
+   * Create a new instance.
+   *
    * @param parameter the parameter
    * @throws IncorrectCountException If the index count is not one
    */
-  public OneIndexReplacer(Parameter parameter) {
-    format = parameter.getNameFormat();
+  public OneIndexReplacer(ProtocolSpecification parameter) {
+    this(parameter.getNameFormatRef());
+  }
+
+  /**
+   * Create a new instance.
+   *
+   * @param parameter the parameter
+   * @throws IncorrectCountException If the index count is not one
+   */
+  private OneIndexReplacer(char[] format) {
+    this.format = format;
     // Find the positions
     int current = 0;
     int next;
     int count = 0;
-    next = ParameterUtils.nextIndexCharacter(format, current);
+    next = ParameterUtils.nextUnderscore(format, current);
     if (next == ParameterUtils.NO_POSITION) {
       throw new IncorrectCountException(EXPECTED, count);
     }
@@ -67,7 +87,7 @@ public class OneIndexReplacer {
     current = next + 1;
     position1 = current;
 
-    next = ParameterUtils.nextIndexCharacter(format, current);
+    next = ParameterUtils.nextUnderscore(format, current);
     if (next != ParameterUtils.NO_POSITION) {
       throw new IncorrectCountException(EXPECTED, count + 1);
     }

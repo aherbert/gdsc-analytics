@@ -3,3 +3,5 @@
 .classpath
 .settings
 /reference/*.htm*
+/reference/*.java
+/reference/*.txt

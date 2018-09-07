@@ -28,29 +28,71 @@ package uk.ac.sussex.gdsc.analytics.parameters;
 import java.util.Objects;
 
 /**
- * Base class to implements the {@link FormattedParameter} interface for a {@link Parameter}.
+ * Base class to implements the {@link FormattedParameter} interface for a
+ * {@link ParameterSpecification}.
  */
 abstract class BaseParameter implements FormattedParameter {
 
-  /** The parameter. */
-  private final Parameter parameter;
+  /** The parameter specification. */
+  private final ParameterSpecification specification;
+
+  /**
+   * A reference to the parameter specification specification if it is a {@link ProtocolSpecification}.
+   * 
+   * <p>Used when a {@link ProtocolSpecification} was passed in the constructor.
+   * 
+   * <p>Protected to allow package sub-class to handle the defined API and custom specifications
+   * differently.
+   */
+  protected final ProtocolSpecification protocolSpecification;
 
   /**
    * Create a new instance.
    *
-   * @param parameter the parameter
+   * @param specification the specification specification
    */
-  public BaseParameter(Parameter parameter) {
-    this.parameter = Objects.requireNonNull(parameter, "Parameter");
+  public BaseParameter(ParameterSpecification specification) {
+    this.specification = Objects.requireNonNull(specification, "Parameter");
+    this.protocolSpecification =
+        (specification instanceof ProtocolSpecification) ? (ProtocolSpecification) specification : null;
   }
 
   /**
-   * Gets the parameter.
+   * Create a new instance.
    *
-   * @return the parameter
+   * @param specification the specification specification
    */
-  public Parameter getParameter() {
-    return parameter;
+  public BaseParameter(ProtocolSpecification specification) {
+    this.specification = Objects.requireNonNull(specification, "Parameter");
+    this.protocolSpecification = specification;
+  }
+
+  /**
+   * Gets the parameter specification.
+   * 
+   * <p>This may be a {@link ProtocolSpecification} instance indicating that the specification is
+   * part of the core API.
+   *
+   * <p>Otherwise this is a custom parameter specification.
+   * 
+   * @return the parameter specification
+   * @see #isProtocolSpecification()
+   */
+  public final ParameterSpecification getParameterSpecification() {
+    return specification;
+  }
+
+  /**
+   * Checks if the {@link ParameterSpecification} is a {@link ProtocolSpecification}.
+   * 
+   * <p>If false then the {@link ParameterSpecification} is a custom implementation not defined
+   * within {@link ProtocolSpecification} API reference.
+   *
+   * @return true if a protocol specification
+   * @see #getParameterSpecification()
+   */
+  public final boolean isProtocolSpecification() {
+    return protocolSpecification != null;
   }
 
   /**
@@ -60,7 +102,7 @@ abstract class BaseParameter implements FormattedParameter {
    * This is the {@code name} component of a {@code name=value} pair for the
    * {@link FormattedParameter#formatTo(StringBuilder)} interface method.
    * 
-   * <p>The {@code name} is expected be a correctly formatted parameter key for a URL, i.e. special
+   * <p>The {@code name} is expected be a correctly formatted parameterSpecification key for a URL, i.e. special
    * characters must be encoded.
    *
    * @param sb the string builder

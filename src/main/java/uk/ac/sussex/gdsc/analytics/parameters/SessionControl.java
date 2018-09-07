@@ -25,8 +25,6 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
-import java.util.Locale;
-
 /**
  * Defines session control values for the Google Analytics Measurement Protocol.
  * 
@@ -34,18 +32,20 @@ import java.util.Locale;
  */
 public enum SessionControl {
   /** Forces a new session to start with this hit. */
-  START,
+  START("start"),
   /** Forces the current session to end with this hit. */
-  END;
+  END("end");
 
   /** The name. */
   private final String name;
 
   /**
    * Instantiates a new hit type.
+   *
+   * @param name the name
    */
-  private SessionControl() {
-    this.name = super.toString().toLowerCase(Locale.getDefault());
+  private SessionControl(String name) {
+    this.name = name;
   }
 
   /*

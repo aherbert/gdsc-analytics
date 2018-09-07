@@ -32,23 +32,26 @@ import java.util.Locale;
  * 
  * @see <a href="http://goo.gl/a8d4RP#ul">User Language</a>
  */
-public class UserLanguageParameter extends TextParameter {
+public class UserLanguageParameter extends NoIndexTextParameter {
 
   /**
-   * Instantiates a new instance.
+   * Creates a new instance.
+   * 
+   * <p>Converts the language tag to a best case representation.
    *
-   * @param userLanguage the user language
+   * @param languageTag the language tag
+   * @see Locale#forLanguageTag(String)
    */
-  public UserLanguageParameter(String userLanguage) {
-    super(Parameter.USER_LANGUAGE, userLanguage);
+  public UserLanguageParameter(String languageTag) {
+    super(ProtocolSpecification.USER_LANGUAGE, Locale.forLanguageTag(languageTag).toLanguageTag());
   }
 
   /**
-   * Instantiates a new instance using the default locale.
+   * Creates a new instance.using the default locale.
    *
    * @see Locale#toLanguageTag()
    */
   public UserLanguageParameter() {
-    super(Parameter.USER_LANGUAGE, Locale.getDefault().toLanguageTag());
+    super(ProtocolSpecification.USER_LANGUAGE, Locale.getDefault().toLanguageTag());
   }
 }

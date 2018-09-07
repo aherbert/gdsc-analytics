@@ -36,6 +36,9 @@ import java.util.logging.Logger;
  * <p>Checks for any characters that require encoding and handles the simple case of changing ' '
  * (space) to '+'. Otherwise tÏhe actual encoding is performed by
  * {@link URLEncoder#encode(String, String)}.
+ * 
+ * @see <a href="https://www.ietf.org/rfc/rfc2396.txt">RFC 2396: Uniform Resource Identifiers (URI):
+ *      Generic Syntax</a>
  */
 public final class UrlEncoderHelper {
 
@@ -159,8 +162,7 @@ public final class UrlEncoderHelper {
    * @return The encoded string
    * @throws UnsupportedEncodingRuntimeException If the encoding is not supported
    */
-  static String urlEncode(String string, String encoding)
-      throws UnsupportedEncodingRuntimeException {
+  static String urlEncode(String string, String encoding) {
     try {
       return URLEncoder.encode(string, encoding);
     } catch (final UnsupportedEncodingException ex) {

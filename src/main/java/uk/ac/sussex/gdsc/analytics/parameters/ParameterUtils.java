@@ -25,6 +25,8 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
+import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 /**
@@ -32,22 +34,10 @@ import java.util.regex.Pattern;
  */
 public final class ParameterUtils {
 
-  /** The '<strong>{@code =}</strong>' (Equal) character. */
-  public static final char EQUAL = '=';
-
-  /** The '<strong>{@code &}</strong>' (Ampersand) character. */
-  public static final char AND = '&';
-
-  /**
-   * The character used to identify an index within the name format for the {@code name=value}
-   * parameter pair.
-   */
-  public static final char INDEX_CHARACTER = Parameter.INDEX_CHARACTER;
-
   /**
    * Use to indicate no position in a character array. Set to -1.
    */
-  public static final int NO_POSITION = -1;
+  static final int NO_POSITION = -1;
 
   /**
    * No public construction.
@@ -134,15 +124,16 @@ public final class ParameterUtils {
   }
 
   /**
-   * Validate the count.
+   * Validate the index count in the specification.
    *
    * @param expected the expected count
-   * @param observed the observed count
+   * @param specification the specification
    * @throws IncorrectCountException If the expected and observed do not match
    */
-  public static void validateCount(int expected, int observed) {
+  static void validateCount(int expected, ParameterSpecification specification) {
+    final int observed = specification.getNumberOfIndexes();
     if (expected != observed) {
-      throw new IncorrectCountException(expected, observed);
+      throw new IncorrectCountException(expected, observed, specification.getFormalName());
     }
   }
 
@@ -153,28 +144,32 @@ public final class ParameterUtils {
    * <p>Note that if the expected type is text then this method does not throw, i.e. it checks for
    * compatible value types.
    * 
-   * @param expected the expected count
-   * @param observed the observed count
+   * @param expected the expected value type
+   * @param specification the specification
    * @throws IncorrectValueTypeException If the expected and observed do not match
    */
-  public static void compatibleValueType(ValueType expected, ValueType observed) {
+  static void compatibleValueType(ValueType expected, ParameterSpecification specification) {
     // Text is compatible with any other type
-    if (expected != ValueType.TEXT && expected != observed) {
-      throw new IncorrectValueTypeException(expected, observed);
+    if (expected != ValueType.TEXT) {
+      ValueType observed = specification.getValueType();
+      if (expected != observed) {
+        throw new IncorrectValueTypeException(expected, observed, specification.getFormalName());
+      }
     }
   }
 
   /**
-   * Find the next position of the index character in the value, starting from the given index.
+   * Find the next position of the underscore character in the value, starting from the given index.
    *
    * @param value the value
    * @param fromIndex the from index (should be positive)
    * @return the position (or {@link #NO_POSITION} if not found)
+   * @see Constants#UNDERSCORE
    */
-  static int nextIndexCharacter(char[] value, int fromIndex) {
+  static int nextUnderscore(char[] value, int fromIndex) {
     final int max = value.length;
     for (int i = fromIndex; i < max; i++) {
-      if (value[i] == INDEX_CHARACTER) {
+      if (value[i] == Constants.UNDERSCORE) {
         return i;
       }
     }
@@ -203,5 +198,79 @@ public final class ParameterUtils {
     // This will pass through Strings but if a StringBuilder
     // the dedicated method above should be called.
     return sequence.toString().toCharArray();
+  }
+
+  /**
+   * Count the number of indexes in the name format.
+   * 
+   * <p>Indexes use the {@code _} (underscore) character.
+   * 
+   * <p>This assumes that all the characters are below
+   * {@link Character#MIN_SUPPLEMENTARY_CODE_POINT}, i.e. this is not a string with supplementary
+   * characters.
+   *
+   * @param nameFormat the name format
+   * @return the count
+   * @see Constants#UNDERSCORE
+   */
+  public static int countIndexes(CharSequence nameFormat) {
+    int count = 0;
+    if (nameFormat != null) {
+      for (int i = nameFormat.length(); i-- > 0;) {
+        if (nameFormat.charAt(i) == Constants.UNDERSCORE) {
+          count++;
+        }
+      }
+    }
+    return count;
+  }
+
+  /**
+   * Append the number value to the {@link StringBuilder}.
+   * 
+   * <p>If the number has an integer representation then this is used instead.
+   *
+   * @param sb the string builder
+   * @param value the value
+   * @return the string builder
+   */
+  public static StringBuilder appendNumberTo(StringBuilder sb, double value) {
+    final double floor = Math.floor(value);
+    if (floor == value) {
+      sb.append((long) floor);
+    } else {
+      sb.append(value);
+    }
+    return sb;
+  }
+
+  /**
+   * Append the currency value to the {@link StringBuilder}.
+   * 
+   * <p>Current the format expected for Google Analytics current is unknown. This uses
+   * {@link NumberFormat#getCurrencyInstance()}.
+   *
+   * @param sb the string builder
+   * @param locale the locale
+   * @param value the value
+   * @return the string builder
+   */
+  public static StringBuilder appendCurrencyTo(StringBuilder sb, Locale locale, double value) {
+    final NumberFormat formatter = NumberFormat.getCurrencyInstance(locale);
+    // It is unclear what to pass for the field position when appending to a
+    // StringBuilder. The formatter uses package level classes that do nothing
+    // if you pass them to the format(double) method:
+    // Just call the default to get a string then copy the output.
+    return sb.append(formatter.format(value));
+  }
+
+  /**
+   * Checks if the string is not empty.
+   *
+   * @param string the string
+   * @return true, if is not empty
+   */
+  public static boolean isNotEmpty(String string) {
+    return string != null && string.length() > 0;
   }
 }

@@ -40,13 +40,16 @@ public enum ValueType {
   /** A text value. */
   TEXT,
   /** A current value. */
-  CURRENCY;
+  CURRENCY,
+  /** A number value. */
+  NUMBER
+  ;
 
   /** The name. */
   private final String name;
 
   /**
-   * Instantiates a new hit type.
+   * Instantiates a new value type.
    */
   private ValueType() {
     this.name = super.toString().toLowerCase(Locale.getDefault());

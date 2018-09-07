@@ -221,7 +221,7 @@ public class Parameters implements FormattedParameter {
      */
     public B add(String name, String value) throws IllegalArgumentException {
       ParameterUtils.requireNotEmpty(name, "name is empty");
-      return addParameter(new StringParameter(name, value));
+      return addParameter(new CustomParameter(name, value));
     }
 
     ////////////////////////////////////////////////////////
@@ -270,7 +270,8 @@ public class Parameters implements FormattedParameter {
      * @see <a href="http://goo.gl/a8d4RP#aip">Anonymize IP</a>
      */
     public B addAnonymizeIp(boolean anonymizeIp) {
-      return addParameter(new BooleanParameter("&aip", anonymizeIp));
+      return addParameter(
+          new NoIndexBooleanParameter(ProtocolSpecification.ANONYMIZE_IP, anonymizeIp));
     }
 
     /**
@@ -281,7 +282,7 @@ public class Parameters implements FormattedParameter {
      * @see <a href="http://goo.gl/a8d4RP#ds">Data Source</a>
      */
     public B addDataSource(String dataSource) {
-      return addParameter(new StringParameter("&ds", dataSource));
+      return addParameter(new NoIndexTextParameter(ProtocolSpecification.DATA_SOURCE, dataSource));
     }
 
     /**
@@ -328,7 +329,7 @@ public class Parameters implements FormattedParameter {
      * @throws IllegalArgumentException if not a valid UUID
      * @see <a href="http://goo.gl/a8d4RP#cid">Client Id</a>
      */
-    public B addClientId(String clientId) throws IllegalArgumentException {
+    public B addClientId(String clientId) {
       return addParameter(new ClientIdParameter(clientId));
     }
 
@@ -357,9 +358,9 @@ public class Parameters implements FormattedParameter {
      * @throws IllegalArgumentException if the user id is empty
      * @see <a href="http://goo.gl/a8d4RP#uid">User Id</a>
      */
-    public B addUserId(String userId) throws IllegalArgumentException {
+    public B addUserId(String userId) {
       ParameterUtils.requireNotEmpty(userId, "User Id is empty");
-      return addParameter(new StringParameter("&uid", userId));
+      return addParameter(new NoIndexTextParameter(ProtocolSpecification.USER_ID, userId));
     }
 
     ////////////////////////////////////////////////////////
@@ -394,7 +395,8 @@ public class Parameters implements FormattedParameter {
      * @see <a href="http://goo.gl/a8d4RP#sr">Screen Resolution</a>
      */
     public B addScreenResolution(int width, int height) {
-      return addParameter(new ResolutionParameter("&sr", width, height));
+      return addParameter(
+          new ResolutionParameter(ProtocolSpecification.SCREEN_RESOLUTION, width, height));
     }
 
     /**
@@ -407,7 +409,8 @@ public class Parameters implements FormattedParameter {
     public B addScreenResolution() {
       final Dimension d = SystemUtils.getScreenSize();
       if (d != null) {
-        addParameter(new ResolutionParameter("&sr", d.width, d.height));
+        addParameter(
+            new ResolutionParameter(ProtocolSpecification.SCREEN_RESOLUTION, d.width, d.height));
       }
       return self;
     }
@@ -421,7 +424,8 @@ public class Parameters implements FormattedParameter {
      * @see <a href="http://goo.gl/a8d4RP#vp">Viewport Size</a>
      */
     public B addViewportSize(int width, int height) {
-      return addParameter(new ResolutionParameter("&vp", width, height));
+      return addParameter(
+          new ResolutionParameter(ProtocolSpecification.VIEWPORT_SIZE, width, height));
     }
 
     /**
@@ -432,7 +436,8 @@ public class Parameters implements FormattedParameter {
      * @see <a href="http://goo.gl/a8d4RP#de">Document Encoding</a>
      */
     public B addDocumentEncoding(String documentEncoding) {
-      return addParameter(new StringParameter("&de", documentEncoding));
+      return addParameter(
+          new NoIndexTextParameter(ProtocolSpecification.DOCUMENT_ENCODING, documentEncoding));
     }
 
     /**
@@ -443,7 +448,8 @@ public class Parameters implements FormattedParameter {
      * @see <a href="http://goo.gl/a8d4RP#sd">Screen Colors</a>
      */
     public B addScreenColors(String screenColorDepth) {
-      return addParameter(new StringParameter("&sd", screenColorDepth));
+      return addParameter(
+          new NoIndexTextParameter(ProtocolSpecification.SCREEN_COLORS, screenColorDepth));
     }
 
     /**
@@ -475,7 +481,8 @@ public class Parameters implements FormattedParameter {
      * @see <a href="http://goo.gl/a8d4RP#je">Java Enabled</a>
      */
     public B addJavaEnabled(boolean javaEnabled) {
-      return addParameter(new BooleanParameter("&je", javaEnabled));
+      return addParameter(
+          new NoIndexBooleanParameter(ProtocolSpecification.JAVA_ENABLED, javaEnabled));
     }
 
     /**
@@ -486,7 +493,8 @@ public class Parameters implements FormattedParameter {
      * @see <a href="http://goo.gl/a8d4RP#fl">Flash Version</a>
      */
     public B addFlashVersion(String flashVersion) {
-      return addParameter(new StringParameter("&fl", flashVersion));
+      return addParameter(
+          new NoIndexTextParameter(ProtocolSpecification.FLASH_VERSION, flashVersion));
     }
 
     ////////////////////////////////////////////////////////
@@ -512,7 +520,8 @@ public class Parameters implements FormattedParameter {
      * @see <a href="http://goo.gl/a8d4RP#ni">Non-Interaction Hit</a>
      */
     public B addNonInteractionHit(boolean nonInteractive) {
-      return addParameter(new BooleanParameter("&ni", nonInteractive));
+      return addParameter(
+          new NoIndexBooleanParameter(ProtocolSpecification.NON_INTERACTION_HIT, nonInteractive));
     }
 
     ////////////////////////////////////////////////////////
@@ -531,7 +540,9 @@ public class Parameters implements FormattedParameter {
      * @see <a href="http://goo.gl/a8d4RP#dl">Document Location Url</a>
      */
     public B addDocumentLocationUrl(String documentLocationUrl) {
-      return addParameter(new StringParameter("&dl", documentLocationUrl));
+      // TODO - dedicated parameter for this
+      return addParameter(new NoIndexTextParameter(ProtocolSpecification.DOCUMENT_LOCATION_URL,
+          documentLocationUrl));
     }
 
     /**
@@ -545,7 +556,8 @@ public class Parameters implements FormattedParameter {
      * @see <a href="http://goo.gl/a8d4RP#dl">Document Host Name</a>
      */
     public B addDocumentHostName(String documentHostName) {
-      return addParameter(new StringParameter("&dh", documentHostName));
+      return addParameter(
+          new NoIndexTextParameter(ProtocolSpecification.DOCUMENT_HOST_NAME, documentHostName));
     }
 
     /**
@@ -563,7 +575,8 @@ public class Parameters implements FormattedParameter {
       if (documentPath.charAt(0) != FORWARDSLASH) {
         throw new IllegalArgumentException("Document path should begin with '/'");
       }
-      return addParameter(new StringParameter("&dp", documentPath));
+      return addParameter(
+          new NoIndexTextParameter(ProtocolSpecification.DOCUMENT_PATH, documentPath));
     }
 
     /**
@@ -574,7 +587,8 @@ public class Parameters implements FormattedParameter {
      * @see <a href="http://goo.gl/a8d4RP#dt">Document Title</a>
      */
     public B addDocumentTitle(String documentTitle) {
-      return addParameter(new StringParameter("&dt", documentTitle));
+      return addParameter(
+          new NoIndexTextParameter(ProtocolSpecification.DOCUMENT_TITLE, documentTitle));
     }
 
     /**
@@ -588,7 +602,7 @@ public class Parameters implements FormattedParameter {
      * @see <a href="http://goo.gl/a8d4RP#cd">Screen Name</a>
      */
     public B addScreenName(String screenName) {
-      return addParameter(new StringParameter("&cd", screenName));
+      return addParameter(new NoIndexTextParameter(ProtocolSpecification.SCREEN_NAME, screenName));
     }
 
     /**
@@ -600,7 +614,8 @@ public class Parameters implements FormattedParameter {
      * @see <a href="http://goo.gl/a8d4RP#cg_">Content Group</a>
      */
     public B addContentGroup(int groupIndex, String contentGroup) {
-      return addParameter(new IndexedStringParameter("&cg", groupIndex, contentGroup));
+      return addParameter(
+          new OneIndexTextParameter(ProtocolSpecification.CONTENT_GROUP, groupIndex, contentGroup));
     }
 
     /**
@@ -611,7 +626,7 @@ public class Parameters implements FormattedParameter {
      * @see <a href="http://goo.gl/a8d4RP#linkid">Link ID</a>
      */
     public B addLinkeId(String linkId) {
-      return addParameter(new StringParameter("&linkid", linkId));
+      return addParameter(new NoIndexTextParameter(ProtocolSpecification.LINK_ID, linkId));
     }
 
     ////////////////////////////////////////////////////////
@@ -629,7 +644,8 @@ public class Parameters implements FormattedParameter {
      * @see <a href="http://goo.gl/a8d4RP#an">Application Name</a>
      */
     public B addApplicationName(String applicationName) {
-      return addParameter(new StringParameter("&an", applicationName));
+      return addParameter(
+          new NoIndexTextParameter(ProtocolSpecification.APPLICATION_NAME, applicationName));
     }
 
     /**
@@ -640,7 +656,8 @@ public class Parameters implements FormattedParameter {
      * @see <a href="http://goo.gl/a8d4RP#aid">Application Id</a>
      */
     public B addApplicationId(String applicationId) {
-      return addParameter(new StringParameter("&aid", applicationId));
+      return addParameter(
+          new NoIndexTextParameter(ProtocolSpecification.APPLICATION_ID, applicationId));
     }
 
     /**
@@ -651,7 +668,8 @@ public class Parameters implements FormattedParameter {
      * @see <a href="http://goo.gl/a8d4RP#av">Application Version</a>
      */
     public B addApplicationVersion(String applicationVersion) {
-      return addParameter(new StringParameter("&av", applicationVersion));
+      return addParameter(
+          new NoIndexTextParameter(ProtocolSpecification.APPLICATION_VERSION, applicationVersion));
     }
 
     /**
@@ -662,7 +680,8 @@ public class Parameters implements FormattedParameter {
      * @see <a href="http://goo.gl/a8d4RP#aiid">Application Installer ID</a>
      */
     public B addApplicationInstallerId(String applicationInstallerId) {
-      return addParameter(new StringParameter("&aiid", applicationInstallerId));
+      return addParameter(new NoIndexTextParameter(ProtocolSpecification.APPLICATION_INSTALLER_ID,
+          applicationInstallerId));
     }
 
     ////////////////////////////////////////////////////////
@@ -681,7 +700,8 @@ public class Parameters implements FormattedParameter {
      */
     public B addEventCategory(String eventCategory) throws IllegalArgumentException {
       ParameterUtils.requireNotEmpty(eventCategory, "Event category is empty");
-      return addParameter(new StringParameter("&ec", eventCategory));
+      return addParameter(
+          new NoIndexTextParameter(ProtocolSpecification.EVENT_CATEGORY, eventCategory));
     }
 
     /**
@@ -696,7 +716,8 @@ public class Parameters implements FormattedParameter {
      */
     public B addEventAction(String eventAction) throws IllegalArgumentException {
       ParameterUtils.requireNotEmpty(eventAction, "Event action is empty");
-      return addParameter(new StringParameter("&ea", eventAction));
+      return addParameter(
+          new NoIndexTextParameter(ProtocolSpecification.EVENT_ACTION, eventAction));
     }
 
     /**
@@ -707,7 +728,7 @@ public class Parameters implements FormattedParameter {
      * @see <a href="http://goo.gl/a8d4RP#el">Event Label</a>
      */
     public B addEventLabel(String eventLabel) {
-      return addParameter(new StringParameter("&el", eventLabel));
+      return addParameter(new NoIndexTextParameter(ProtocolSpecification.EVENT_LABEL, eventLabel));
     }
 
     /**
@@ -722,7 +743,7 @@ public class Parameters implements FormattedParameter {
      */
     public B addEventValue(int eventValue) throws IllegalArgumentException {
       ParameterUtils.requirePositive(eventValue, "Event value");
-      return addParameter(new IntParameter("&ev", eventValue));
+      return addParameter(new NoIndexIntParameter(ProtocolSpecification.EVENT_VALUE, eventValue));
     }
 
     ////////////////////////////////////////////////////////
@@ -751,7 +772,8 @@ public class Parameters implements FormattedParameter {
      * @see <a href="http://goo.gl/a8d4RP#utc">User timing category</a>
      */
     public B addUserTimingCategory(String userTimingCategory) {
-      return addParameter(new StringParameter("&utc", userTimingCategory));
+      return addParameter(
+          new NoIndexTextParameter(ProtocolSpecification.USER_TIMING_CATEGORY, userTimingCategory));
     }
 
     /**
@@ -764,7 +786,8 @@ public class Parameters implements FormattedParameter {
      * @see <a href="http://goo.gl/a8d4RP#utv">User timing variable name</a>
      */
     public B addUserTimingVariableName(String userTimingVariableName) {
-      return addParameter(new StringParameter("&utv", userTimingVariableName));
+      return addParameter(new NoIndexTextParameter(ProtocolSpecification.USER_TIMING_VARIABLE_NAME,
+          userTimingVariableName));
     }
 
     /**
@@ -777,7 +800,8 @@ public class Parameters implements FormattedParameter {
      * @see <a href="http://goo.gl/a8d4RP#utt">User timing time</a>
      */
     public B addUserTimingTime(int userTimingTime) {
-      return addParameter(new IntParameter("&utt", userTimingTime));
+      return addParameter(
+          new NoIndexIntParameter(ProtocolSpecification.USER_TIMING_TIME, userTimingTime));
     }
 
     /**
@@ -788,7 +812,8 @@ public class Parameters implements FormattedParameter {
      * @see <a href="http://goo.gl/a8d4RP#utl">User timing label</a>
      */
     public B addUserTimingLabel(String userTimingLabel) {
-      return addParameter(new StringParameter("&utl", userTimingLabel));
+      return addParameter(
+          new NoIndexTextParameter(ProtocolSpecification.USER_TIMING_LABEL, userTimingLabel));
     }
 
     /**
@@ -799,7 +824,8 @@ public class Parameters implements FormattedParameter {
      * @see <a href="http://goo.gl/a8d4RP#plt">Page load time</a>
      */
     public B addPageLoadTime(int pageLoadTime) {
-      return addParameter(new IntParameter("&plt", pageLoadTime));
+      return addParameter(
+          new NoIndexIntParameter(ProtocolSpecification.PAGE_LOAD_TIME, pageLoadTime));
     }
 
     /**
@@ -810,7 +836,7 @@ public class Parameters implements FormattedParameter {
      * @see <a href="http://goo.gl/a8d4RP#dns">DNS time</a>
      */
     public B addDnsTime(int dnsTime) {
-      return addParameter(new IntParameter("&dns", dnsTime));
+      return addParameter(new NoIndexIntParameter(ProtocolSpecification.DNS_TIME, dnsTime));
     }
 
     /**
@@ -821,7 +847,8 @@ public class Parameters implements FormattedParameter {
      * @see <a href="http://goo.gl/a8d4RP#pdt">Page download time</a>
      */
     public B addPageDownloadTime(int pageDownloadTime) {
-      return addParameter(new IntParameter("&pdt", pageDownloadTime));
+      return addParameter(
+          new NoIndexIntParameter(ProtocolSpecification.PAGE_DOWNLOAD_TIME, pageDownloadTime));
     }
 
     /**
@@ -832,7 +859,8 @@ public class Parameters implements FormattedParameter {
      * @see <a href="http://goo.gl/a8d4RP#rrt">Redirect response time</a>
      */
     public B addRedirectResponseTime(int redirectResponseTime) {
-      return addParameter(new IntParameter("&rrt", redirectResponseTime));
+      return addParameter(new NoIndexIntParameter(ProtocolSpecification.REDIRECT_RESPONSE_TIME,
+          redirectResponseTime));
     }
 
     /**
@@ -843,7 +871,8 @@ public class Parameters implements FormattedParameter {
      * @see <a href="http://goo.gl/a8d4RP#tcp">TCP connect time</a>
      */
     public B addTcpConnectTime(int tcpConnectTime) {
-      return addParameter(new IntParameter("&tcp", tcpConnectTime));
+      return addParameter(
+          new NoIndexIntParameter(ProtocolSpecification.TCP_CONNECT_TIME, tcpConnectTime));
     }
 
     /**
@@ -854,7 +883,8 @@ public class Parameters implements FormattedParameter {
      * @see <a href="http://goo.gl/a8d4RP#srt">Server response time</a>
      */
     public B addServerResponseTime(int serverResponseTime) {
-      return addParameter(new IntParameter("&srt", serverResponseTime));
+      return addParameter(
+          new NoIndexIntParameter(ProtocolSpecification.SERVER_RESPONSE_TIME, serverResponseTime));
     }
 
     /**
@@ -865,7 +895,8 @@ public class Parameters implements FormattedParameter {
      * @see <a href="http://goo.gl/a8d4RP#dit">DOM interactive time</a>
      */
     public B addDomInteractiveTime(int domInteractiveTime) {
-      return addParameter(new IntParameter("&dit", domInteractiveTime));
+      return addParameter(
+          new NoIndexIntParameter(ProtocolSpecification.DOM_INTERACTIVE_TIME, domInteractiveTime));
     }
 
     /**
@@ -876,7 +907,8 @@ public class Parameters implements FormattedParameter {
      * @see <a href="http://goo.gl/a8d4RP#clt">Content load time</a>
      */
     public B addContentLoadTime(int contentLoadTime) {
-      return addParameter(new IntParameter("&clt", contentLoadTime));
+      return addParameter(
+          new NoIndexIntParameter(ProtocolSpecification.CONTENT_LOAD_TIME, contentLoadTime));
     }
 
     ////////////////////////////////////////////////////////
@@ -891,7 +923,8 @@ public class Parameters implements FormattedParameter {
      * @see <a href="http://goo.gl/a8d4RP#exd">Exception Description</a>
      */
     public B addExceptionDescription(String exceptionDescription) {
-      return addParameter(new StringParameter("&exd", exceptionDescription));
+      return addParameter(new NoIndexTextParameter(ProtocolSpecification.EXCEPTION_DESCRIPTION,
+          exceptionDescription));
     }
 
     /**
@@ -902,7 +935,8 @@ public class Parameters implements FormattedParameter {
      * @see <a href="http://goo.gl/a8d4RP#exd">Is Exception Fatal</a>
      */
     public B addIsExceptionFatal(boolean exceptionFatal) {
-      return addParameter(new BooleanParameter("&exf", exceptionFatal));
+      return addParameter(
+          new NoIndexBooleanParameter(ProtocolSpecification.IS_EXCEPTION_FATAL, exceptionFatal));
     }
 
     ////////////////////////////////////////////////////////
@@ -918,7 +952,8 @@ public class Parameters implements FormattedParameter {
      * @see <a href="http://goo.gl/a8d4RP#cd_">Custom Dimension</a>
      */
     public B addCustomDimension(int index, String value) {
-      return addParameter(new CustomDimensionParameter(index, value));
+      return addParameter(
+          new OneIndexTextParameter(ProtocolSpecification.CUSTOM_DIMENSION, index, value));
     }
 
     /**
@@ -930,7 +965,8 @@ public class Parameters implements FormattedParameter {
      * @see <a href="http://goo.gl/a8d4RP#cm_">Custom Metric</a>
      */
     public B addCustomMetric(int index, int value) {
-      return addParameter(new CustomMetricParameter(index, value));
+      return addParameter(
+          new OneIndexNumberParameter(ProtocolSpecification.CUSTOM_METRIC, index, value));
     }
 
     ////////////////////////////////////////////////////////

@@ -26,12 +26,12 @@
 package uk.ac.sussex.gdsc.analytics.parameters;
 
 /**
- * Class to replace a three occurrences of the index marker character with index values.
+ * Class to replace three occurrences of the index marker character with index values.
  */
 public class ThreeIndexReplacer {
 
   /** The expectd number of indexes */
-  private final static int EXPECTED = 3;
+  private static final int EXPECTED = 3;
 
   /** The format. */
   private final char[] format;
@@ -60,16 +60,36 @@ public class ThreeIndexReplacer {
   /**
    * Create a new instance.
    *
+   * @param nameFormat the name format
+   * @throws IncorrectCountException If the index count is not three
+   */
+  public ThreeIndexReplacer(CharSequence nameFormat) {
+    this(ParameterUtils.getChars(nameFormat));
+  }
+
+  /**
+   * Create a new instance.
+   *
    * @param parameter the parameter
    * @throws IncorrectCountException If the index count is not three
    */
-  public ThreeIndexReplacer(Parameter parameter) {
-    format = parameter.getNameFormat();
+  public ThreeIndexReplacer(ProtocolSpecification parameter) {
+    this(parameter.getNameFormatRef());
+  }
+
+  /**
+   * Create a new instance.
+   *
+   * @param format the format
+   * @throws IncorrectCountException If the index count is not three
+   */
+  private ThreeIndexReplacer(char[] format) {
+    this.format = format;
     // Find the positions
     int current = 0;
     int next;
     int count = 0;
-    next = ParameterUtils.nextIndexCharacter(format, current);
+    next = ParameterUtils.nextUnderscore(format, current);
     if (next == ParameterUtils.NO_POSITION) {
       throw new IncorrectCountException(EXPECTED, count);
     }
@@ -79,7 +99,7 @@ public class ThreeIndexReplacer {
     current = next + 1;
     position1 = current;
 
-    next = ParameterUtils.nextIndexCharacter(format, current);
+    next = ParameterUtils.nextUnderscore(format, current);
     if (next == ParameterUtils.NO_POSITION) {
       throw new IncorrectCountException(EXPECTED, count);
     }
@@ -89,7 +109,7 @@ public class ThreeIndexReplacer {
     current = next + 1;
     position2 = current;
 
-    next = ParameterUtils.nextIndexCharacter(format, current);
+    next = ParameterUtils.nextUnderscore(format, current);
     if (next == ParameterUtils.NO_POSITION) {
       throw new IncorrectCountException(EXPECTED, count);
     }
@@ -99,7 +119,7 @@ public class ThreeIndexReplacer {
     current = next + 1;
     position3 = current;
 
-    next = ParameterUtils.nextIndexCharacter(format, current);
+    next = ParameterUtils.nextUnderscore(format, current);
     if (next != ParameterUtils.NO_POSITION) {
       throw new IncorrectCountException(EXPECTED, count + 1);
     }

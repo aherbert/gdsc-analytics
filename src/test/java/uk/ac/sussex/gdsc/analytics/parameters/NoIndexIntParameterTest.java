@@ -33,17 +33,29 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class BooleanParameterTest {
+public class NoIndexIntParameterTest {
+  @SuppressWarnings("unused")
+  @Test
+  public void testConstructor() {
+    Assertions.assertThrows(NullPointerException.class, () -> {
+      new NoIndexIntParameter(null, 0);
+    });
+  }
+  
   @Test
   public void testFormat() {
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (int i = 0; i < 5; i++) {
       String name = TestUtils.randomName(rg, 3);
-      boolean value = rg.nextBoolean();
-      BooleanParameter bp = new BooleanParameter("&" + name, value);
-      Assertions.assertEquals(String.format("&%s=%c", name, (value) ? '1' : '0'),
-          TestUtils.callFormatTo(bp));
-      Assertions.assertEquals(value, bp.isValue());
+      int value = rg.nextInt();
+      NoIndexIntParameter param =
+          new NoIndexIntParameter(TestUtils.newIntParameterSpecification(name), value);
+      Assertions.assertEquals(String.format("%s=%d", name, value), param.format());
+      Assertions.assertEquals(value, param.getValue());
+
+      param = new NoIndexIntParameter(ProtocolSpecification.QUEUE_TIME, value);
+      Assertions.assertEquals(String.format("qt=%d", value), param.format());
+      Assertions.assertEquals(value, param.getValue());
     }
   }
 }

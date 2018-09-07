@@ -43,14 +43,14 @@ public class SessionControlParameter implements FormattedParameter {
   private final char[] chars;
 
   /**
-   * Instantiates a new session control parameter.
+   * Creates a new instance.
    *
    * @param sessionControl the session control
    */
   private SessionControlParameter(SessionControl sessionControl) {
     final StringBuilder sb = new StringBuilder();
-    sb.append(Parameter.SESSION_CONTROL.getNameFormat());
-    sb.append(ParameterUtils.EQUAL);
+    sb.append(ProtocolSpecification.SESSION_CONTROL.getNameFormatRef());
+    sb.append(Constants.EQUAL);
     sb.append(sessionControl.toString());
     chars = ParameterUtils.getChars(sb);
   }

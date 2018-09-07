@@ -25,27 +25,22 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
-import uk.ac.sussex.gdsc.analytics.TestUtils;
-
-import org.apache.commons.rng.UniformRandomProvider;
-import org.apache.commons.rng.simple.RandomSource;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
 public class ResolutionParameterTest {
   @Test
   public void testFormat() {
-    final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
-    for (int i = 0; i < 5; i++) {
-      String name = TestUtils.randomName(rg, 3);
-      int width = rg.nextInt(1920);
-      int height = rg.nextInt(1080);
-      ResolutionParameter rp = new ResolutionParameter("&" + name, width, height);
-      Assertions.assertEquals(String.format("&%s=%dx%d", name, width, height),
-          TestUtils.callFormatTo(rp));
-      Assertions.assertEquals(width, rp.getWidth());
-      Assertions.assertEquals(height, rp.getHeight());
-    }
+//    final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
+//    for (int i = 0; i < 5; i++) {
+//      String name = TestUtils.randomName(rg, 3);
+//      int width = rg.nextInt(1920);
+//      int height = rg.nextInt(1080);
+//      ResolutionParameter rp = new ResolutionParameter("&" + name, width, height);
+//      Assertions.assertEquals(String.format("&%s=%dx%d", name, width, height),
+//          TestUtils.callFormatTo(rp));
+//      Assertions.assertEquals(width, rp.getWidth());
+//      Assertions.assertEquals(height, rp.getHeight());
+//    }
   }
 }

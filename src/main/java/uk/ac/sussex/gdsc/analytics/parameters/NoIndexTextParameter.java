@@ -28,24 +28,44 @@ package uk.ac.sussex.gdsc.analytics.parameters;
 import java.util.Objects;
 
 /**
- * A generic text parameter for a {@link Parameter} with zero indexes.
+ * A generic text parameter for a {@link ParameterSpecification} with zero indexes.
  */
-public class TextParameter extends NoIndexParameter {
+public class NoIndexTextParameter extends NoIndexParameter {
+
+  /** The required value type. */
+  private static final ValueType REQUIRED = ValueType.TEXT;
 
   /** The value. */
   private final String value;
 
+  /** The encoded value. */
+  private String encodedValue;
+
   /**
    * Creates a new instance.
    *
-   * @param parameter the parameter
+   * @param specification the specification
    * @param value the value
    * @throws IncorrectCountException If the parameter index count is not zero
    * @throws IncorrectValueTypeException If the parameter value type is incorrect
    */
-  public TextParameter(Parameter parameter, String value) {
-    super(parameter);
-    ParameterUtils.compatibleValueType(ValueType.TEXT, parameter.getValueType());
+  public NoIndexTextParameter(ParameterSpecification specification, String value) {
+    super(specification);
+    ParameterUtils.compatibleValueType(REQUIRED, specification);
+    this.value = Objects.requireNonNull(value, "Value");
+  }
+
+  /**
+   * Creates a new instance.
+   *
+   * @param specification the specification
+   * @param value the value
+   * @throws IncorrectCountException If the parameter index count is not zero
+   * @throws IncorrectValueTypeException If the parameter value type is incorrect
+   */
+  public NoIndexTextParameter(ProtocolSpecification specification, String value) {
+    super(specification);
+    ParameterUtils.compatibleValueType(REQUIRED, specification);
     this.value = Objects.requireNonNull(value, "Value");
   }
 
@@ -54,12 +74,17 @@ public class TextParameter extends NoIndexParameter {
    *
    * @return the value
    */
-  public String getValue() {
+  public final String getValue() {
     return value;
   }
 
   @Override
   public StringBuilder formatTo(StringBuilder sb) {
-    return appendNameEquals(sb).append(UrlEncoderHelper.encode(getValue()));
+    String encoded = encodedValue;
+    if (encoded == null) {
+      encoded = UrlEncoderHelper.encode(value);
+      encodedValue = encoded;
+    }
+    return appendNameEquals(sb).append(encoded);
   }
 }

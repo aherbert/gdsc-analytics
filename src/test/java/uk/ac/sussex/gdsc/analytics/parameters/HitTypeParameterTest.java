@@ -25,8 +25,6 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
-import uk.ac.sussex.gdsc.analytics.TestUtils;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -35,14 +33,13 @@ public class HitTypeParameterTest {
 
   @Test
   public void testFormat() {
-    Assertions.assertEquals("&ht=event", TestUtils.callFormatTo(HitTypeParameter.EVENT));
-    Assertions.assertEquals("&ht=exception", TestUtils.callFormatTo(HitTypeParameter.EXCEPTION));
-    Assertions.assertEquals("&ht=item", TestUtils.callFormatTo(HitTypeParameter.ITEM));
-    Assertions.assertEquals("&ht=pageview", TestUtils.callFormatTo(HitTypeParameter.PAGEVIEW));
-    Assertions.assertEquals("&ht=screenview", TestUtils.callFormatTo(HitTypeParameter.SCREENVIEW));
-    Assertions.assertEquals("&ht=social", TestUtils.callFormatTo(HitTypeParameter.SOCIAL));
-    Assertions.assertEquals("&ht=timing", TestUtils.callFormatTo(HitTypeParameter.TIMING));
-    Assertions.assertEquals("&ht=transaction",
-        TestUtils.callFormatTo(HitTypeParameter.TRANSACTION));
+    Assertions.assertEquals("t=event", HitTypeParameter.EVENT.format());
+    Assertions.assertEquals("t=exception", HitTypeParameter.EXCEPTION.format());
+    Assertions.assertEquals("t=item", HitTypeParameter.ITEM.format());
+    Assertions.assertEquals("t=pageview", HitTypeParameter.PAGEVIEW.format());
+    Assertions.assertEquals("t=screenview", HitTypeParameter.SCREENVIEW.format());
+    Assertions.assertEquals("t=social", HitTypeParameter.SOCIAL.format());
+    Assertions.assertEquals("t=timing", HitTypeParameter.TIMING.format());
+    Assertions.assertEquals("t=transaction", HitTypeParameter.TRANSACTION.format());
   }
 }

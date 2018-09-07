@@ -39,13 +39,13 @@ public class QueueTimeParameter extends NoIndexParameter {
   private final long timestamp;
 
   /**
-   * Instantiates a new queue time parameter using the provide timestamp to mark when the hit
+   * Creates a new instance.using the provide timestamp to mark when the hit
    * occurred.
    *
    * @param timestamp the timestamp
    */
   public QueueTimeParameter(long timestamp) {
-    super(Parameter.QUEUE_TIME);
+    super(ProtocolSpecification.QUEUE_TIME);
     this.timestamp = timestamp;
   }
 
@@ -75,7 +75,7 @@ public class QueueTimeParameter extends NoIndexParameter {
    * @param timestamp the timestamp when the hit occurred (in milliseconds)
    */
   public static void appendTo(StringBuilder sb, long timestamp) {
-    sb.append(Parameter.QUEUE_TIME.getNameFormat()).append(ParameterUtils.EQUAL)
+    sb.append(ProtocolSpecification.QUEUE_TIME.getNameFormat()).append(Constants.EQUAL)
         .append(System.currentTimeMillis() - timestamp);
   }
 }

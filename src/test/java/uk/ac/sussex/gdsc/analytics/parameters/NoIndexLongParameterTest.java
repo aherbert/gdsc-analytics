@@ -33,16 +33,29 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class IntParameterTest {
+public class NoIndexLongParameterTest {
+  @SuppressWarnings("unused")
+  @Test
+  public void testConstructor() {
+    Assertions.assertThrows(NullPointerException.class, () -> {
+      new NoIndexLongParameter(null, 0);
+    });
+  }
+  
   @Test
   public void testFormat() {
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (int i = 0; i < 5; i++) {
       String name = TestUtils.randomName(rg, 3);
-      int value = rg.nextInt();
-      IntParameter ip = new IntParameter("&" + name, value);
-      Assertions.assertEquals(String.format("&%s=%d", name, value), TestUtils.callFormatTo(ip));
-      Assertions.assertEquals(value, ip.getValue());
+      long value = rg.nextLong();
+      NoIndexLongParameter param =
+          new NoIndexLongParameter(TestUtils.newIntParameterSpecification(name), value);
+      Assertions.assertEquals(String.format("%s=%d", name, value), param.format());
+      Assertions.assertEquals(value, param.getValue());
+
+      param = new NoIndexLongParameter(ProtocolSpecification.QUEUE_TIME, value);
+      Assertions.assertEquals(String.format("qt=%d", value), param.format());
+      Assertions.assertEquals(value, param.getValue());
     }
   }
 }

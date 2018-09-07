@@ -40,14 +40,14 @@ public class ProtocolVersionParameter implements FormattedParameter {
   private final char[] chars;
 
   /**
-   * Instantiates a new protocol version parameter.
+   * Creates a new instance.
    *
    * @param version the version
    */
   private ProtocolVersionParameter(ProtocolVersion version) {
     final StringBuilder sb = new StringBuilder();
-    sb.append(Parameter.PROTOCOL_VERSION.getNameFormat());
-    sb.append(ParameterUtils.EQUAL);
+    sb.append(ProtocolSpecification.PROTOCOL_VERSION.getNameFormat());
+    sb.append(Constants.EQUAL);
     sb.append(version.getVersion());
     chars = ParameterUtils.getChars(sb);
   }

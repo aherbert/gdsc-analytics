@@ -32,7 +32,7 @@ package uk.ac.sussex.gdsc.analytics.parameters;
  * 
  * @see <a href="http://goo.gl/a8d4RP#tid">Tracking Id</a>
  */
-public class TrackingIdParameter extends TextParameter {
+public class TrackingIdParameter extends NoIndexTextParameter {
 
   /**
    * Instantiates a new instance.
@@ -43,6 +43,6 @@ public class TrackingIdParameter extends TextParameter {
    * @throws IllegalArgumentException if tracking ID is invalid
    */
   public TrackingIdParameter(String trackingId) {
-    super(Parameter.TRACKING_ID, ParameterUtils.validateTrackingId(trackingId));
+    super(ProtocolSpecification.TRACKING_ID, ParameterUtils.validateTrackingId(trackingId));
   }
 }

@@ -29,19 +29,23 @@ import java.util.EnumMap;
 
 /**
  * Base class to implements the {@link FormattedParameter} interface for a
- * {@link ParameterSpecification} with 1 index.
+ * {@link ParameterSpecification} with 3 indexes.
  */
-abstract class OneIndexParameter extends BaseParameter {
+abstract class ThreeIndexParameter extends BaseParameter {
 
   /** The expected number of indexes */
-  private static final int EXPECTED = 1;
-  
+  private static final int EXPECTED = 3;
+
   /** Cache replacers for all the parameters. */
-  private static final EnumMap<ProtocolSpecification, OneIndexReplacer> map =
+  private static final EnumMap<ProtocolSpecification, ThreeIndexReplacer> map =
       new EnumMap<>(ProtocolSpecification.class);
 
-  /** The index. */
-  private final int index;
+  /** The first index. */
+  private final int index1;
+  /** The second index. */
+  private final int index2;
+  /** The third index. */
+  private final int index3;
 
   /**
    * The index replacer.
@@ -49,67 +53,95 @@ abstract class OneIndexParameter extends BaseParameter {
    * <p>This is from the the cache if the parameter is a {@link ProtocolSpecification}, otherwise it
    * is a custom generated replacer unique to this instance.
    */
-  private OneIndexReplacer indexReplacer;
+  private ThreeIndexReplacer indexReplacer;
 
   /**
    * Create a new instance.
    *
    * @param specification the specification
-   * @param index the index
-   * @throws IncorrectCountException If the index count is not one
+   * @param index1 the first index
+   * @param index2 the second index
+   * @param index3 the third index
+   * @throws IncorrectCountException If the index count is not three
    * @throws IllegalArgumentException If the index is strictly positive
    */
-  public OneIndexParameter(ParameterSpecification specification, int index) {
+  public ThreeIndexParameter(ParameterSpecification specification, int index1, int index2,
+      int index3) {
     super(specification);
     ParameterUtils.validateCount(EXPECTED, specification);
-    this.index = ParameterUtils.requireStrictlyPositive(index, "Index");
+    this.index1 = ParameterUtils.requireStrictlyPositive(index1, "Index1");
+    this.index2 = ParameterUtils.requireStrictlyPositive(index2, "Index2");
+    this.index3 = ParameterUtils.requireStrictlyPositive(index3, "Index3");
   }
 
   /**
    * Create a new instance.
    *
    * @param specification the specification
-   * @param index the index
-   * @throws IncorrectCountException If the index count is not one
+   * @param index1 the first index
+   * @param index2 the second index
+   * @param index3 the third index
+   * @throws IncorrectCountException If the index count is not three
    * @throws IllegalArgumentException If the index is strictly positive
    */
-  public OneIndexParameter(ProtocolSpecification specification, int index) {
+  public ThreeIndexParameter(ProtocolSpecification specification, int index1, int index2,
+      int index3) {
     super(specification);
     ParameterUtils.validateCount(EXPECTED, specification);
-    this.index = ParameterUtils.requireStrictlyPositive(index, "Index");
+    this.index1 = ParameterUtils.requireStrictlyPositive(index1, "Index1");
+    this.index2 = ParameterUtils.requireStrictlyPositive(index2, "Index2");
+    this.index3 = ParameterUtils.requireStrictlyPositive(index3, "Index3");
   }
 
   /**
-   * Gets the index.
+   * Gets the first index.
    *
-   * @return the index
+   * @return the first index
    */
-  public int getIndex() {
-    return index;
+  public int getIndex1() {
+    return index1;
+  }
+
+  /**
+   * Gets the second index.
+   *
+   * @return the second index
+   */
+  public int getIndex2() {
+    return index2;
+  }
+
+  /**
+   * Gets the third index.
+   *
+   * @return the third index
+   */
+  public int getIndex3() {
+    return index3;
   }
 
   @Override
   protected StringBuilder appendNameEquals(StringBuilder sb) {
-    OneIndexReplacer replacer = this.indexReplacer;
+    ThreeIndexReplacer replacer = this.indexReplacer;
     if (replacer == null) {
       // Use a cache of the defined protocol formats
       if (protocolSpecification != null) {
-        replacer = map.computeIfAbsent(protocolSpecification, OneIndexParameter::newReplacer);
+        replacer = map.computeIfAbsent(protocolSpecification, ThreeIndexParameter::newReplacer);
       } else {
-        replacer = new OneIndexReplacer(getParameterSpecification().getNameFormat());
+        replacer = new ThreeIndexReplacer(getParameterSpecification().getNameFormat());
       }
       indexReplacer = replacer;
     }
-    return replacer.replaceTo(sb, index).append(Constants.EQUAL);
+    return replacer.replaceTo(sb, index1, index2, index3).append(Constants.EQUAL);
   }
 
   /**
    * Create a new replacer.
    *
    * @param parameter the parameter
-   * @return the one index replacer
+   * @return the three index replacer
    */
-  private static OneIndexReplacer newReplacer(ProtocolSpecification parameter) {
-    return new OneIndexReplacer(parameter);
+  private static ThreeIndexReplacer newReplacer(ProtocolSpecification parameter) {
+    return new ThreeIndexReplacer(parameter);
   }
 }

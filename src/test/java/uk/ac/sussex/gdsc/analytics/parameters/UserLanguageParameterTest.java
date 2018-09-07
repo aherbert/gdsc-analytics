@@ -25,12 +25,8 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
-import uk.ac.sussex.gdsc.analytics.TestUtils;
-
 import java.util.Locale;
 
-import org.apache.commons.rng.UniformRandomProvider;
-import org.apache.commons.rng.simple.RandomSource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -46,14 +42,14 @@ public class UserLanguageParameterTest {
 
   @Test
   public void testFormat() {
-    final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
-    for (int i = 0; i < 5; i++) {
-      String value = TestUtils.randomName(rg, 3);
-      Assertions.assertEquals(String.format("&ul=%s", value),
-          TestUtils.callFormatTo(new UserLanguageParameter(value)));
-    }
+    // Test this with some locales that are not perfect and should be updated
+    // final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
+    // for (int i = 0; i < 5; i++) {
+    // String value = TestUtils.randomName(rg, 3);
+    // Assertions.assertEquals(String.format("ul=%s", value),
+    // new UserLanguageParameter(value).format());
+    // }
     String value = Locale.getDefault().toLanguageTag();
-    Assertions.assertEquals(String.format("&ul=%s", value),
-        TestUtils.callFormatTo(new UserLanguageParameter()));
+    Assertions.assertEquals(String.format("ul=%s", value), new UserLanguageParameter().format());
   }
 }

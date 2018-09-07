@@ -26,7 +26,6 @@
 package uk.ac.sussex.gdsc.analytics.parameters;
 
 import uk.ac.sussex.gdsc.analytics.TestUtils;
-import uk.ac.sussex.gdsc.analytics.parameters.CustomDimensionParameter;
 
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.simple.RandomSource;
@@ -34,15 +33,15 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class CustomDimensionTest {
+public class NoIndexTextParameterTest {
   @SuppressWarnings("unused")
   @Test
   public void testConstructor() {
     Assertions.assertThrows(NullPointerException.class, () -> {
-      new CustomDimensionParameter(1, null);
+      new NoIndexTextParameter(TestUtils.newTextParameterSpecification("Test"), null);
     });
-    Assertions.assertThrows(IllegalArgumentException.class, () -> {
-      new CustomDimensionParameter(0, "value");
+    Assertions.assertThrows(NullPointerException.class, () -> {
+      new NoIndexTextParameter(null, "Value");
     });
   }
 
@@ -50,12 +49,16 @@ public class CustomDimensionTest {
   public void testFormat() {
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (int i = 0; i < 5; i++) {
-      int index = 1 + rg.nextInt(20);
+      String name = TestUtils.randomName(rg, 3);
       String value = TestUtils.randomName(rg, 3);
-      CustomDimensionParameter cd = new CustomDimensionParameter(index, value);
-      Assertions.assertEquals(String.format("&cd%d=%s", index, value), TestUtils.callFormatTo(cd));
-      Assertions.assertEquals(index, cd.getIndex());
-      Assertions.assertEquals(value, cd.getValue());
+      NoIndexTextParameter param =
+          new NoIndexTextParameter(TestUtils.newTextParameterSpecification(name), value);
+      Assertions.assertEquals(String.format("%s=%s", name, value), param.format());
+      Assertions.assertEquals(value, param.getValue());
+
+      param = new NoIndexTextParameter(ProtocolSpecification.DATA_SOURCE, value);
+      Assertions.assertEquals(String.format("ds=%s", value), param.format());
+      Assertions.assertEquals(value, param.getValue());
     }
   }
 }

@@ -25,8 +25,6 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
-import java.util.Locale;
-
 /**
  * Defines hit type values for the Google Analytics Measurement Protocol.
  * 
@@ -34,30 +32,33 @@ import java.util.Locale;
  */
 public enum HitType {
   /** The pageview hit-type. */
-  PAGEVIEW,
+  PAGEVIEW("pageview"),
   /** The screenview hit-type. */
-  SCREENVIEW,
+  SCREENVIEW("screenview"),
   /** The event hit-type. */
-  EVENT,
+  EVENT("event"),
   /** The transaction hit-type. */
-  TRANSACTION,
+  TRANSACTION("transaction"),
   /** The item hit-type. */
-  ITEM,
+  ITEM("item"),
   /** The social hit-type. */
-  SOCIAL,
+  SOCIAL("social"),
   /** The exception hit-type. */
-  EXCEPTION,
+  EXCEPTION("exception"),
   /** The timing hit-type. */
-  TIMING;
+  TIMING("timing"),
+  ;
 
   /** The name. */
   private final String name;
 
   /**
    * Instantiates a new hit type.
+   *
+   * @param name the name
    */
-  private HitType() {
-    this.name = super.toString().toLowerCase(Locale.getDefault());
+  private HitType(String name) {
+    this.name = name;
   }
 
   /*

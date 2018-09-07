@@ -33,12 +33,15 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class IndexedStringParameterTest {
+public class OneIndexTextParameterTest {
   @SuppressWarnings("unused")
   @Test
   public void testConstructor() {
     Assertions.assertThrows(NullPointerException.class, () -> {
-      new IndexedStringParameter("&name", 1, null);
+      new OneIndexTextParameter(TestUtils.newTextParameterSpecification("test_", 0), 1, null);
+    });
+    Assertions.assertThrows(NullPointerException.class, () -> {
+      new OneIndexTextParameter(null, 1, "test");
     });
   }
 
@@ -49,11 +52,11 @@ public class IndexedStringParameterTest {
       String name = TestUtils.randomName(rg, 3);
       int index = 1 + rg.nextInt(20);
       String value = TestUtils.randomName(rg, 3);
-      IndexedStringParameter ip = new IndexedStringParameter("&" + name, index, value);
-      Assertions.assertEquals(String.format("&%s%d=%s", name, index, value),
-          TestUtils.callFormatTo(ip));
-      Assertions.assertEquals(index, ip.getIndex());
-      Assertions.assertEquals(value, ip.getValue());
+      OneIndexTextParameter param = new OneIndexTextParameter(
+          TestUtils.newTextParameterSpecification(name + "_", 0), index, value);
+      Assertions.assertEquals(String.format("%s%d=%s", name, index, value), param.format());
+      Assertions.assertEquals(index, param.getIndex());
+      Assertions.assertEquals(value, param.getValue());
     }
   }
 }

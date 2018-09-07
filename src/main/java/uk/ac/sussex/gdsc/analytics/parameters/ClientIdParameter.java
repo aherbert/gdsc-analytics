@@ -34,31 +34,31 @@ import java.util.UUID;
  * 
  * @see <a href="http://goo.gl/a8d4RP#cid">Client Id</a>
  */
-public class ClientIdParameter extends TextParameter {
+public class ClientIdParameter extends NoIndexTextParameter {
 
   /**
-   * Instantiates a new instance.
+   * Creates a new instance.
    * 
    * <p>The value should be a random UUID (version 4) as described in <a
    * href="http://www.ietf.org/rfc/rfc4122.txt">RFC 4122</a>.
-   *
+   * 
    * @param clientId the client id
    * @throws IllegalArgumentException If not a valid UUID
    * @see UUID#fromString(String)
    */
   public ClientIdParameter(String clientId) {
-    super(Parameter.CLIENT_ID, clientId);
+    super(ProtocolSpecification.CLIENT_ID, clientId);
     // Try and parse the client Id to a UUID to test it is valid
     UUID.fromString(clientId);
   }
 
   /**
-   * Instantiates a new instance using the string representation of the UUID.
+   * Creates a new instance.using the string representation of the UUID.
    *
    * @param clientId the client id
    * @see UUID#toString()
    */
   public ClientIdParameter(UUID clientId) {
-    super(Parameter.CLIENT_ID, clientId.toString());
+    super(ProtocolSpecification.CLIENT_ID, clientId.toString());
   }
 }

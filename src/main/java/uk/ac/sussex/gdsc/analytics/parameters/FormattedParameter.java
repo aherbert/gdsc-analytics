@@ -28,6 +28,12 @@ package uk.ac.sussex.gdsc.analytics.parameters;
 /**
  * Appends formatted parameter or parameters to a URL.
  * 
+ * <p>The parameters are expected to add one or more {@code name=value} pairs. Strings should be
+ * appropriately URL encoded.
+ * 
+ * <p>If multiple pairs are added then the '<strong>&amp;</strong>' character is expected to
+ * separate each pair, e.g. {@code name=value&name2=value2}.
+ * 
  * <p>This is a functional interface whose functional method is {@link #appendTo2(StringBuilder)}.
  */
 @FunctionalInterface
@@ -70,7 +76,7 @@ public interface FormattedParameter {
    */
   default StringBuilder appendTo2(StringBuilder sb) {
     if (sb.length() != 0) {
-      sb.append(ParameterUtils.AND);
+      sb.append(Constants.AND);
     }
     return formatTo(sb);
   }

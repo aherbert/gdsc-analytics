@@ -38,7 +38,9 @@ public enum ProtocolVersion {
   private final int version;
 
   /**
-   * Instantiates a new hit type.
+   * Instantiates a new protocol version.
+   *
+   * @param version the version
    */
   private ProtocolVersion(int version) {
     this.version = version;

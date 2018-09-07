@@ -54,16 +54,36 @@ public class TwoIndexReplacer {
   /**
    * Create a new instance.
    *
+   * @param nameFormat the name format
+   * @throws IncorrectCountException If the index count is not two
+   */
+  public TwoIndexReplacer(CharSequence nameFormat) {
+    this(ParameterUtils.getChars(nameFormat));
+  }
+
+  /**
+   * Create a new instance.
+   *
    * @param parameter the parameter
    * @throws IncorrectCountException If the index count is not two
    */
-  public TwoIndexReplacer(Parameter parameter) {
-    format = parameter.getNameFormat();
+  public TwoIndexReplacer(ProtocolSpecification parameter) {
+    this(parameter.getNameFormatRef());
+  }
+
+  /**
+   * Create a new instance.
+   *
+   * @param format the format
+   * @throws IncorrectCountException If the index count is not two
+   */
+  private TwoIndexReplacer(char[] format) {
+    this.format = format;
     // Find the positions
     int current = 0;
     int next;
     int count = 0;
-    next = ParameterUtils.nextIndexCharacter(format, current);
+    next = ParameterUtils.nextUnderscore(format, current);
     if (next == ParameterUtils.NO_POSITION) {
       throw new IncorrectCountException(EXPECTED, count);
     }
@@ -73,7 +93,7 @@ public class TwoIndexReplacer {
     current = next + 1;
     position1 = current;
 
-    next = ParameterUtils.nextIndexCharacter(format, current);
+    next = ParameterUtils.nextUnderscore(format, current);
     if (next == ParameterUtils.NO_POSITION) {
       throw new IncorrectCountException(EXPECTED, count);
     }
@@ -83,7 +103,7 @@ public class TwoIndexReplacer {
     current = next + 1;
     position2 = current;
 
-    next = ParameterUtils.nextIndexCharacter(format, current);
+    next = ParameterUtils.nextUnderscore(format, current);
     if (next != ParameterUtils.NO_POSITION) {
       throw new IncorrectCountException(EXPECTED, count + 1);
     }

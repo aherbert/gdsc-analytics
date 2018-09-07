@@ -26,40 +26,37 @@
 package uk.ac.sussex.gdsc.analytics.parameters;
 
 /**
- * A generic boolean parameter for a {@link Parameter} with zero indexes.
- * 
- * <p>Stores the boolean value as a {@code boolean}.
+ * Contains constants.
  */
-public class BooleanParameter extends NoIndexParameter {
-
-  /** The value. */
-  private final Boolean value;
+public final class Constants {
 
   /**
-   * Creates a new instance.
-   *
-   * @param parameter the parameter
-   * @param value the value
-   * @throws IncorrectCountException If the parameter index count is not zero
-   * @throws IncorrectValueTypeException If the parameter value type is incorrect
+   * The '<strong>{@code =}</strong>' (Equal) character.
+   * 
+   * <p>Used to to create a {@code name=value} pair for a URL.
    */
-  public BooleanParameter(Parameter parameter, Boolean value) {
-    super(parameter);
-    ParameterUtils.compatibleValueType(ValueType.BOOLEAN, parameter.getValueType());
-    this.value = value;
-  }
+  public static final char EQUAL = '=';
 
   /**
-   * Gets the value.
-   *
-   * @return the value
+   * The '<strong>{@code &}</strong>' (Ampersand) character.
+   * 
+   * <p>Used to join {@code name=value} pairs for a URL, e.g. {@code name=value&name2=value2}.
    */
-  public Boolean getValue() {
-    return value;
-  }
+  public static final char AND = '&';
 
-  @Override
-  public StringBuilder formatTo(StringBuilder sb) {
-    return appendNameEquals(sb).append((getValue()) ? '1' : '0');
+  /**
+   * The '<strong>{@code _}</strong>' (Underscore) character.
+   * 
+   * <p>The character used to identify an index within the name format for the {@code name=value}
+   * parameter pair, e.g. {@code cm_} where {@code _} is the index of the custom metric {@code cm}
+   * parameter.
+   */
+  public static final char UNDERSCORE = '_';
+
+  /**
+   * No public construction.
+   */
+  private Constants() {
+    // Do nothing
   }
 }

@@ -190,11 +190,9 @@ public class ParametersTest {
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (int i = 0; i < 5; i++) {
       long currentTime = System.currentTimeMillis() - rg.nextInt(1000);
-      final int queueTime = rg.nextInt(1000);
-      HitBuilder<URL> builder = new HitBuilder<URL>(HitTypeParameter.PAGEVIEW, currentTime) {
+      HitBuilder<URL> builder = new HitBuilder<URL>(null, HitTypeParameter.PAGEVIEW, currentTime) {
         @Override
         public URL send() {
-          addQueueTime(queueTime);
           try {
             return createURL(build());
           } catch (MalformedURLException ex) {
@@ -211,10 +209,9 @@ public class ParametersTest {
                        .addDocumentTitle(documentTitle)
                        .send();
       Assertions.assertThat(url)
-      .hasParameter("ht", "pageview")
+      .hasParameter("t", "pageview")
       .hasParameter("dp", documentPath)
       .hasParameter("dt", documentTitle)
-      .hasParameter("qt", Integer.toString(queueTime))
       ;
       // @formatter:on
     }

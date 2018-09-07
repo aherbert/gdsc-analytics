@@ -41,6 +41,9 @@ public class IncorrectCountException extends RuntimeException {
   /** The required index count. */
   private final int observed;
 
+  /** The detail message. */
+  private final String detailMessage;
+
   /**
    * Instantiates a new incorrect index count exception.
    *
@@ -48,8 +51,20 @@ public class IncorrectCountException extends RuntimeException {
    * @param observed the observed value
    */
   public IncorrectCountException(int expected, int observed) {
+    this(expected, observed, null);
+  }
+
+  /**
+   * Instantiates a new incorrect index count exception.
+   *
+   * @param expected the expected value
+   * @param observed the observed value
+   * @param detailMessage the detail message
+   */
+  public IncorrectCountException(int expected, int observed, String detailMessage) {
     this.expected = expected;
     this.observed = observed;
+    this.detailMessage = detailMessage;
   }
 
   /**
@@ -72,6 +87,10 @@ public class IncorrectCountException extends RuntimeException {
 
   @Override
   public String getMessage() {
-    return String.format("Incorrect count: expected %d, observed = %d", expected, observed);
+    String msg = String.format("Incorrect count: expected <%d>, observed <%d>", expected, observed);
+    if (ParameterUtils.isNotEmpty(detailMessage)) {
+      msg += ": " + detailMessage;
+    }
+    return msg;
   }
 }

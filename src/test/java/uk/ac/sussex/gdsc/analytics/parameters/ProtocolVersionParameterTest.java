@@ -25,15 +25,13 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
-import uk.ac.sussex.gdsc.analytics.TestUtils;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class Version1ParameterTest {
+public class ProtocolVersionParameterTest {
   @Test
   public void testFormat() {
-    Assertions.assertEquals("&v=1", TestUtils.callFormatTo(Version1Parameter.getDefaultInstance()));
+    Assertions.assertEquals("v=1", ProtocolVersionParameter.V1.format());
   }
 }

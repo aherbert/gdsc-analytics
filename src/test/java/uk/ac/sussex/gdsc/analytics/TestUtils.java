@@ -25,7 +25,10 @@
 
 package uk.ac.sussex.gdsc.analytics;
 
+import uk.ac.sussex.gdsc.analytics.parameters.CustomParameterSpecification;
 import uk.ac.sussex.gdsc.analytics.parameters.FormattedParameter;
+import uk.ac.sussex.gdsc.analytics.parameters.ParameterSpecification;
+import uk.ac.sussex.gdsc.analytics.parameters.ValueType;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -105,5 +108,67 @@ public class TestUtils {
       }
     }
     return new String(chars);
+  }
+
+  /**
+   * New boolean parameter specification.
+   *
+   * @param nameFormat the name format
+   * @return the parameter specification
+   */
+  public static ParameterSpecification newBooleanParameterSpecification(String nameFormat) {
+    return new CustomParameterSpecification("Custom Boolean", nameFormat, ValueType.BOOLEAN, 0);
+  }
+
+  /**
+   * New int parameter specification.
+   *
+   * @param nameFormat the name format
+   * @return the parameter specification
+   */
+  public static ParameterSpecification newIntParameterSpecification(String nameFormat) {
+    return new CustomParameterSpecification("Custom Integer", nameFormat, ValueType.INTEGER, 0);
+  }
+
+  /**
+   * New number parameter specification.
+   *
+   * @param nameFormat the name format
+   * @return the parameter specification
+   */
+  public static ParameterSpecification newNumberParameterSpecification(String nameFormat) {
+    return new CustomParameterSpecification("Custom Number", nameFormat, ValueType.NUMBER, 0);
+  }
+
+  /**
+   * New currency number parameter specification.
+   *
+   * @param nameFormat the name format
+   * @return the parameter specification
+   */
+  public static ParameterSpecification newCurrencyParameterSpecification(String nameFormat) {
+    return new CustomParameterSpecification("Custom Currency", nameFormat, ValueType.CURRENCY, 0);
+  }
+
+  /**
+   * New currency text parameter specification.
+   *
+   * @param nameFormat the name format
+   * @return the parameter specification
+   */
+  public static ParameterSpecification newTextParameterSpecification(String nameFormat) {
+    return new CustomParameterSpecification("Custom Text", nameFormat, ValueType.TEXT, 0);
+  }
+
+  /**
+   * New currency text parameter specification.
+   *
+   * @param nameFormat the name format
+   * @param length the length
+   * @return the parameter specification
+   */
+  public static ParameterSpecification newTextParameterSpecification(String nameFormat,
+      int length) {
+    return new CustomParameterSpecification("Custom Text", nameFormat, ValueType.TEXT, length);
   }
 }

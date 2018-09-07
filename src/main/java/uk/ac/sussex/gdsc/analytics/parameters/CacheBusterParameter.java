@@ -36,12 +36,12 @@ import java.util.concurrent.ThreadLocalRandom;
  * 
  * @see <a href="http://goo.gl/a8d4RP#z">Cache Buster</a>
  */
-public class CacheBusterParameter extends IntParameter {
+public class CacheBusterParameter extends NoIndexIntParameter {
 
   /**
    * Creates a new instance with a random integer for the cache buster.
    */
   public CacheBusterParameter() {
-    super(Parameter.CACHE_BUSTER, ThreadLocalRandom.current().nextInt());
+    super(ProtocolSpecification.CACHE_BUSTER_INT, ThreadLocalRandom.current().nextInt());
   }
 }

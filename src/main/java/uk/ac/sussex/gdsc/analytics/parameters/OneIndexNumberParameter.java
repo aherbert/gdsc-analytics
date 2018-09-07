@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public
- * License along with this program.  If not, see
+ * License adouble with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
@@ -26,26 +26,45 @@
 package uk.ac.sussex.gdsc.analytics.parameters;
 
 /**
- * A generic integer parameter for a {@link Parameter} with zero indexes.
+ * A generic number parameter for a {@link ParameterSpecification} with one index.
  * 
- * <p>Stores the integer value as a {@code long}.
+ * <p>Stores the number value as a {@code double}.
  */
-public class LongParameter extends NoIndexParameter {
+public class OneIndexNumberParameter extends OneIndexParameter {
+
+  /** The required value type. */
+  private static final ValueType REQUIRED = ValueType.NUMBER;
 
   /** The value. */
-  private final long value;
+  private final double value;
 
   /**
    * Creates a new instance.
    *
-   * @param parameter the parameter
+   * @param specification the specification
+   * @param index the index
    * @param value the value
    * @throws IncorrectCountException If the parameter index count is not zero
    * @throws IncorrectValueTypeException If the parameter value type is incorrect
    */
-  public LongParameter(Parameter parameter, long value) {
-    super(parameter);
-    ParameterUtils.compatibleValueType(ValueType.INTEGER, parameter.getValueType());
+  public OneIndexNumberParameter(ParameterSpecification specification, int index, double value) {
+    super(specification, index);
+    ParameterUtils.compatibleValueType(REQUIRED, specification);
+    this.value = value;
+  }
+
+  /**
+   * Creates a new instance.
+   *
+   * @param specification the specification
+   * @param index the index
+   * @param value the value
+   * @throws IncorrectCountException If the parameter index count is not zero
+   * @throws IncorrectValueTypeException If the parameter value type is incorrect
+   */
+  public OneIndexNumberParameter(ProtocolSpecification specification, int index, double value) {
+    super(specification, index);
+    ParameterUtils.compatibleValueType(REQUIRED, specification);
     this.value = value;
   }
 
@@ -54,12 +73,14 @@ public class LongParameter extends NoIndexParameter {
    *
    * @return the value
    */
-  public long getValue() {
+  public final double getValue() {
     return value;
   }
 
   @Override
   public StringBuilder formatTo(StringBuilder sb) {
-    return appendNameEquals(sb).append(getValue());
+    appendNameEquals(sb);
+    ParameterUtils.appendNumberTo(sb, value);
+    return sb;
   }
 }

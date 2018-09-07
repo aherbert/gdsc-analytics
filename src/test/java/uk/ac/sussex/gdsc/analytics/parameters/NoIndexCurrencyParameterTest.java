@@ -26,7 +26,9 @@
 package uk.ac.sussex.gdsc.analytics.parameters;
 
 import uk.ac.sussex.gdsc.analytics.TestUtils;
-import uk.ac.sussex.gdsc.analytics.parameters.CustomMetricParameter;
+
+import java.text.NumberFormat;
+import java.util.Locale;
 
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.simple.RandomSource;
@@ -34,25 +36,40 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class CustomMetricTest {
+public class NoIndexCurrencyParameterTest {
   @SuppressWarnings("unused")
   @Test
   public void testConstructor() {
-    Assertions.assertThrows(IllegalArgumentException.class, () -> {
-      new CustomMetricParameter(0, 10);
+    Assertions.assertThrows(NullPointerException.class, () -> {
+      new NoIndexCurrencyParameter(TestUtils.newCurrencyParameterSpecification("Test"), null, 0);
+    });
+    Assertions.assertThrows(NullPointerException.class, () -> {
+      new NoIndexCurrencyParameter(null, Locale.getDefault(), 0);
     });
   }
 
   @Test
   public void testFormat() {
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
+    // TODO - also test with a non default locale
+    Locale locale = Locale.getDefault();
+
     for (int i = 0; i < 5; i++) {
-      int index = 1 + rg.nextInt(20);
-      int value = 1 + rg.nextInt(50);
-      CustomMetricParameter cm = new CustomMetricParameter(index, value);
-      Assertions.assertEquals(String.format("&cm%d=%s", index, value), TestUtils.callFormatTo(cm));
-      Assertions.assertEquals(index, cm.getIndex());
-      Assertions.assertEquals(value, cm.getValue());
+      String name = TestUtils.randomName(rg, 3);
+      double value = rg.nextDouble();
+
+      NumberFormat formatter = NumberFormat.getCurrencyInstance(locale);
+      String valueString = formatter.format(value);
+
+      NoIndexCurrencyParameter param = new NoIndexCurrencyParameter(
+          TestUtils.newCurrencyParameterSpecification(name), locale, value);
+      Assertions.assertEquals(String.format("%s=%s", name, valueString), param.format());
+      Assertions.assertEquals(value, param.getValue());
+
+      param =
+          new NoIndexCurrencyParameter(ProtocolSpecification.TRANSACTION_REVENUE, locale, value);
+      Assertions.assertEquals(String.format("tr=%s", valueString), param.format());
+      Assertions.assertEquals(value, param.getValue());
     }
   }
 }

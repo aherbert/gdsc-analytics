@@ -25,8 +25,6 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
-import uk.ac.sussex.gdsc.analytics.TestUtils;
-
 import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.Assertions;
@@ -37,9 +35,9 @@ public class CacheBusterParameterTest {
   @Test
   public void testFormat() {
     CacheBusterParameter cb = new CacheBusterParameter();
-    Pattern pattern = Pattern.compile("^&z=-?[0-9]+$");
+    Pattern pattern = Pattern.compile("^z=-?[0-9]+$");
     for (int i = 0; i < 10; i++) {
-      String s = TestUtils.callFormatTo(cb);
+      String s = cb.format();
       Assertions.assertTrue(pattern.matcher(s).matches(), s);
     }
   }

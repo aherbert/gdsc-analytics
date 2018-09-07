@@ -25,28 +25,41 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
+import java.util.Objects;
+
 /**
- * A generic integer parameter for a {@link Parameter} with zero indexes.
+ * A custom parameter to implements the {@link FormattedParameter} interface.
  * 
- * <p>Stores the integer value as a {@code int}.
+ * <p>Both the name and value will be URL encoded.
  */
-public class IntParameter extends NoIndexParameter {
+public class CustomParameter implements FormattedParameter {
+
+  /** The name. */
+  private final String name;
 
   /** The value. */
-  private final int value;
+  private final String value;
 
   /**
    * Creates a new instance.
    *
-   * @param parameter the parameter
+   * @param name the name
    * @param value the value
    * @throws IncorrectCountException If the parameter index count is not zero
    * @throws IncorrectValueTypeException If the parameter value type is incorrect
    */
-  public IntParameter(Parameter parameter, int value) {
-    super(parameter);
-    ParameterUtils.compatibleValueType(ValueType.INTEGER, parameter.getValueType());
-    this.value = value;
+  public CustomParameter(String name, String value) {
+    this.name = Objects.requireNonNull(name, "Name");
+    this.value = Objects.requireNonNull(value, "Value");
+  }
+
+  /**
+   * Gets the name.
+   *
+   * @return the name
+   */
+  public String getName() {
+    return name;
   }
 
   /**
@@ -54,12 +67,13 @@ public class IntParameter extends NoIndexParameter {
    *
    * @return the value
    */
-  public int getValue() {
+  public final String getValue() {
     return value;
   }
 
   @Override
   public StringBuilder formatTo(StringBuilder sb) {
-    return appendNameEquals(sb).append(getValue());
+    return sb.append(UrlEncoderHelper.encode(name)).append(Constants.EQUAL)
+        .append(UrlEncoderHelper.encode(value));
   }
 }

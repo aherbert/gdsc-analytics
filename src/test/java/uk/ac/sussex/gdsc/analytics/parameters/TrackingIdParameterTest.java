@@ -25,8 +25,6 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
-import uk.ac.sussex.gdsc.analytics.TestUtils;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -48,8 +46,8 @@ public class TrackingIdParameterTest {
   @Test
   public void testFormat() {
     for (String trackingId : new String[] {"UA-1234-6", "UA-123456789-6"}) {
-      Assertions.assertEquals(String.format("&tid=%s", trackingId),
-          TestUtils.callFormatTo(new TrackingIdParameter(trackingId)));
+      Assertions.assertEquals(String.format("tid=%s", trackingId),
+          new TrackingIdParameter(trackingId).format());
     }
   }
 }

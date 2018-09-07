@@ -25,24 +25,48 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
-import uk.ac.sussex.gdsc.analytics.TestUtils;
+/**
+ * Defines product action values for the Google Analytics Measurement Protocol.
+ * 
+ * @see <a href="http://goo.gl/a8d4RP#pa">Product Action</a>
+ */
+public enum ProductAction {
+  /** The detail product action. */
+  DETAIL("detail"),
+  /** The click product action. */
+  CLICK("click"),
+  /** The add product action. */
+  ADD("add"),
+  /** The remove product action. */
+  REMOVE("remove"),
+  /** The checkout product action. */
+  CHECKOUT("checkout"),
+  /** The checkout option product action. */
+  CHECKOUT_OPTION("checkout_option"),
+  /** The purchase product action. */
+  PURCHASE("purchase"),
+  /** The refund product action. */
+  REFUND("refund");
 
-import org.apache.commons.rng.UniformRandomProvider;
-import org.apache.commons.rng.simple.RandomSource;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+  /** The name. */
+  private final String name;
 
-@SuppressWarnings("javadoc")
-public class DoubleParameterTest {
-  @Test
-  public void testFormat() {
-    final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
-    for (int i = 0; i < 5; i++) {
-      String name = TestUtils.randomName(rg, 3);
-      double value = rg.nextDouble();
-      CurrencyParameter dp = new CurrencyParameter("&" + name, value);
-      Assertions.assertEquals(String.format("&%s=%s", name, value), TestUtils.callFormatTo(dp));
-      Assertions.assertEquals(value, dp.getValue());
-    }
+  /**
+   * Instantiates a new product action.
+   *
+   * @param name the name
+   */
+  private ProductAction(String name) {
+    this.name = name;
+  }
+
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.lang.Enum#toString()
+   */
+  @Override
+  public String toString() {
+    return name;
   }
 }
