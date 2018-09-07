@@ -33,7 +33,7 @@ import java.util.EnumMap;
  */
 abstract class TwoIndexParameter extends BaseParameter {
 
-  /** The expected number of indexes */
+  /** The expected number of indexes. */
   private static final int EXPECTED = 2;
 
   /** Cache replacers for all the parameters. */

@@ -39,7 +39,7 @@ public class DefaultHttpUrlConnectionCallback implements HttpUrlConnectionCallba
 
   /** The buffer size when reading the input stream. */
   private static final int BUFFER_SIZE = 1024;
-  
+
   /** The response code. */
   private int responseCode;
 

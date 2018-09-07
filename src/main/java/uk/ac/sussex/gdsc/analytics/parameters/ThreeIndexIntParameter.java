@@ -49,7 +49,8 @@ public class ThreeIndexIntParameter extends ThreeIndexParameter {
    * @throws IncorrectCountException If the parameter index count is not zero
    * @throws IncorrectValueTypeException If the parameter value type is incorrect
    */
-  public ThreeIndexIntParameter(ParameterSpecification specification, int index1, int index2, int index3, int value) {
+  public ThreeIndexIntParameter(ParameterSpecification specification, int index1, int index2,
+      int index3, int value) {
     super(specification, index1, index2, index3);
     ParameterUtils.compatibleValueType(REQUIRED, specification);
     this.value = value;
@@ -66,7 +67,8 @@ public class ThreeIndexIntParameter extends ThreeIndexParameter {
    * @throws IncorrectCountException If the parameter index count is not zero
    * @throws IncorrectValueTypeException If the parameter value type is incorrect
    */
-  public ThreeIndexIntParameter(ProtocolSpecification specification, int index1, int index2, int index3, int value) {
+  public ThreeIndexIntParameter(ProtocolSpecification specification, int index1, int index2,
+      int index3, int value) {
     super(specification, index1, index2, index3);
     ParameterUtils.compatibleValueType(REQUIRED, specification);
     this.value = value;

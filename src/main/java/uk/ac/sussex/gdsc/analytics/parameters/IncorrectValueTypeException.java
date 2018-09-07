@@ -78,7 +78,8 @@ public class IncorrectValueTypeException extends RuntimeException {
 
   @Override
   public String getMessage() {
-    String msg = String.format("Incorrect value type: expected <%s>, observed <%s>", expected, observed);
+    String msg =
+        String.format("Incorrect value type: expected <%s>, observed <%s>", expected, observed);
     if (ParameterUtils.isNotEmpty(detailMessage)) {
       msg += ": " + detailMessage;
     }

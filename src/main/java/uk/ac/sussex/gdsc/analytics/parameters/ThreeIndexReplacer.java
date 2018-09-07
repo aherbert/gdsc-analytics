@@ -30,7 +30,7 @@ package uk.ac.sussex.gdsc.analytics.parameters;
  */
 public class ThreeIndexReplacer {
 
-  /** The expectd number of indexes */
+  /** The expected number of indexes. */
   private static final int EXPECTED = 3;
 
   /** The format. */

@@ -86,7 +86,7 @@ public class NoIndexCurrencyParameter extends NoIndexParameter {
   public final Locale getLocale() {
     return locale;
   }
-  
+
   /**
    * Gets the value.
    *

@@ -30,7 +30,7 @@ package uk.ac.sussex.gdsc.analytics.parameters;
  */
 public class OneIndexReplacer {
 
-  /** The expected number of indexes */
+  /** The expected number of indexes. */
   private static final int EXPECTED = 1;
 
   /** The format. */

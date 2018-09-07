@@ -33,9 +33,9 @@ import java.util.EnumMap;
  */
 abstract class OneIndexParameter extends BaseParameter {
 
-  /** The expected number of indexes */
+  /** The expected number of indexes. */
   private static final int EXPECTED = 1;
-  
+
   /** Cache replacers for all the parameters. */
   private static final EnumMap<ProtocolSpecification, OneIndexReplacer> map =
       new EnumMap<>(ProtocolSpecification.class);

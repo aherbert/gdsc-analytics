@@ -33,7 +33,7 @@ import java.util.EnumMap;
  */
 abstract class ThreeIndexParameter extends BaseParameter {
 
-  /** The expected number of indexes */
+  /** The expected number of indexes. */
   private static final int EXPECTED = 3;
 
   /** Cache replacers for all the parameters. */

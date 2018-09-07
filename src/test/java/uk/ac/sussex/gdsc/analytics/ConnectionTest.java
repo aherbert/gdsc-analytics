@@ -105,7 +105,7 @@ public class ConnectionTest {
     DispatchStatus status = ga.getHitDispatcher().send(parameters.format(), 0, content);
     System.out.println(status);
     System.out.println(content.getResponseCode());
-      System.out.println(content.getContentType());
+    System.out.println(content.getContentType());
     System.out.println(content.getBytesAsText());
   }
 

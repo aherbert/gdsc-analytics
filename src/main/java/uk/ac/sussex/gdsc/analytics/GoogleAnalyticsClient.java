@@ -522,7 +522,8 @@ public class GoogleAnalyticsClient {
      * <p>This value is used to create a default hit dispatcher and is ignored if the hit dispatcher
      * is provided.
      * 
-     * <p>Note: Setting this value will set the hit dispatcher to null if the property value is different.
+     * <p>Note: Setting this value will set the hit dispatcher to null if the property value is
+     * different.
      *
      * @param secure true for HTTPS
      * @return the builder
@@ -554,7 +555,8 @@ public class GoogleAnalyticsClient {
      * <p>This value is used to create a default hit dispatcher and is ignored if the hit dispatcher
      * is provided.
      * 
-     * <p>Note: Setting this value will set the hit dispatcher to null if the property value is different.
+     * <p>Note: Setting this value will set the hit dispatcher to null if the property value is
+     * different.
      *
      * @param debug the new debug
      * @return the builder

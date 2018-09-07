@@ -37,7 +37,8 @@ abstract class BaseParameter implements FormattedParameter {
   private final ParameterSpecification specification;
 
   /**
-   * A reference to the parameter specification specification if it is a {@link ProtocolSpecification}.
+   * A reference to the parameter specification specification if it is a
+   * {@link ProtocolSpecification}.
    * 
    * <p>Used when a {@link ProtocolSpecification} was passed in the constructor.
    * 
@@ -54,7 +55,8 @@ abstract class BaseParameter implements FormattedParameter {
   public BaseParameter(ParameterSpecification specification) {
     this.specification = Objects.requireNonNull(specification, "Parameter");
     this.protocolSpecification =
-        (specification instanceof ProtocolSpecification) ? (ProtocolSpecification) specification : null;
+        (specification instanceof ProtocolSpecification) ? (ProtocolSpecification) specification
+            : null;
   }
 
   /**
@@ -99,11 +101,11 @@ abstract class BaseParameter implements FormattedParameter {
    * Append "{@code name=}" to the {@link StringBuilder}. The '{@code =}' (equals) character must be
    * included.
    * 
-   * This is the {@code name} component of a {@code name=value} pair for the
+   * <p>This is the {@code name} component of a {@code name=value} pair for the
    * {@link FormattedParameter#formatTo(StringBuilder)} interface method.
    * 
-   * <p>The {@code name} is expected be a correctly formatted parameterSpecification key for a URL, i.e. special
-   * characters must be encoded.
+   * <p>The {@code name} is expected be a correctly formatted parameterSpecification key for a URL,
+   * i.e. special characters must be encoded.
    *
    * @param sb the string builder
    * @return the string builder

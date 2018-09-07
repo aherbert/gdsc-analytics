@@ -32,7 +32,8 @@ package uk.ac.sussex.gdsc.analytics.parameters;
  */
 public class ProtocolVersionParameter implements FormattedParameter {
   /** The protocol version 1 parameter. */
-  public static final ProtocolVersionParameter V1 = new ProtocolVersionParameter(ProtocolVersion.V1);
+  public static final ProtocolVersionParameter V1 =
+      new ProtocolVersionParameter(ProtocolVersion.V1);
 
   /**
    * The formatted parameter string used for the {@link FormattedParameter} interface.

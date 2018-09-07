@@ -26,14 +26,14 @@
 package uk.ac.sussex.gdsc.analytics.parameters;
 
 /**
- * Base class to implements the {@link FormattedParameter} interface for a {@link ParameterSpecification} with
- * no indexes.
+ * Base class to implements the {@link FormattedParameter} interface for a
+ * {@link ParameterSpecification} with no indexes.
  */
 abstract class NoIndexParameter extends BaseParameter {
 
-  /** The expected number of indexes */
+  /** The expected number of indexes. */
   private static final int EXPECTED = 0;
-  
+
   /**
    * Create a new instance.
    *

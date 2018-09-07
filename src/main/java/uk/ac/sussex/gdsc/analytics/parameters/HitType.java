@@ -46,8 +46,7 @@ public enum HitType {
   /** The exception hit-type. */
   EXCEPTION("exception"),
   /** The timing hit-type. */
-  TIMING("timing"),
-  ;
+  TIMING("timing"),;
 
   /** The name. */
   private final String name;

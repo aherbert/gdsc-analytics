@@ -42,8 +42,7 @@ public enum ValueType {
   /** A current value. */
   CURRENCY,
   /** A number value. */
-  NUMBER
-  ;
+  NUMBER;
 
   /** The name. */
   private final String name;
