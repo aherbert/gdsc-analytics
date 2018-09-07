@@ -29,15 +29,21 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class SessionControlTest {
+public class ValueTypeTest {
   @Test
   public void testToString() {
     int count = 0;
-    Assertions.assertEquals("start", SessionControl.START.toString());
+    Assertions.assertEquals("boolean", ValueType.BOOLEAN.toString());
     count++;
-    Assertions.assertEquals("end", SessionControl.END.toString());
+    Assertions.assertEquals("integer", ValueType.INTEGER.toString());
+    count++;
+    Assertions.assertEquals("text", ValueType.TEXT.toString());
+    count++;
+    Assertions.assertEquals("number", ValueType.NUMBER.toString());
+    count++;
+    Assertions.assertEquals("currency", ValueType.CURRENCY.toString());
     count++;
     // Make sure we cover all the values
-    Assertions.assertEquals(SessionControl.values().length, count);
+    Assertions.assertEquals(ValueType.values().length, count);
   }
 }

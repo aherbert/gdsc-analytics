@@ -373,7 +373,7 @@ public enum ProtocolSpecification implements ParameterSpecification {
     this.nameFormat = nameFormat;
     this.valueType = valueType;
     this.maxLength = maxLength;
-    this.supportedHitTypes = supportedHitTypes;
+    this.supportedHitTypes = supportedHitTypes.clone();
     this.numberOfIndexes = ParameterUtils.countIndexes(nameFormat);
   }
 
@@ -415,6 +415,7 @@ public enum ProtocolSpecification implements ParameterSpecification {
 
   @Override
   public HitType[] getSupportedHitTypes() {
-    return (supportedHitTypes == null) ? null : supportedHitTypes.clone();
+    // This will not be null
+    return supportedHitTypes.clone();
   }
 }

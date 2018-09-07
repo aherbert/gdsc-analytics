@@ -54,6 +54,8 @@ public class NoIndexTextParameterTest {
       NoIndexTextParameter param =
           new NoIndexTextParameter(TestUtils.newTextParameterSpecification(name), value);
       Assertions.assertEquals(String.format("%s=%s", name, value), param.format());
+      // Repeat as this checks the cache version is the same
+      Assertions.assertEquals(String.format("%s=%s", name, value), param.format());
       Assertions.assertEquals(value, param.getValue());
 
       param = new NoIndexTextParameter(ProtocolSpecification.DATA_SOURCE, value);

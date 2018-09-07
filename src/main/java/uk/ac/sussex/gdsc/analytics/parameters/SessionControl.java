@@ -44,7 +44,7 @@ public enum SessionControl {
    *
    * @param name the name
    */
-  private SessionControl(String name) {
+  SessionControl(String name) {
     this.name = name;
   }
 

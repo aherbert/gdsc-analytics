@@ -33,7 +33,6 @@ import uk.ac.sussex.gdsc.analytics.parameters.Parameters.HitBuilder;
 import uk.ac.sussex.gdsc.analytics.parameters.Parameters.ParametersBuilder;
 import uk.ac.sussex.gdsc.analytics.parameters.Parameters.PartialBuilder;
 import uk.ac.sussex.gdsc.analytics.parameters.Parameters.RequiredBuilder;
-import uk.ac.sussex.gdsc.analytics.parameters.QueueTimeParameter;
 import uk.ac.sussex.gdsc.analytics.parameters.SessionControlParameter;
 
 import java.util.Objects;
@@ -387,9 +386,9 @@ public class GoogleAnalyticsClient {
      *
      * <p>If {@code null} then a default dispatcher will be created using the values for
      * {@link #isSecure()} and {@link #isDebug()}.
-     * 
+     *
      * @see DefaultHitDispatcher#getDefault(boolean, boolean)
-     * 
+     *
      * @return the hit dispatcher
      */
     public HitDispatcher getOrCreateHitDispatcher() {
@@ -405,7 +404,7 @@ public class GoogleAnalyticsClient {
      * Sets the hit dispatcher used to send hit requests. Defaults to {@code null}.
      *
      * <p>If {@code null} then a default dispatcher will be used.
-     * 
+     *
      * @param hitDispatcher the hit dispatcher
      * @return the builder
      * @see DefaultHitDispatcher#getDefault(boolean, boolean)
@@ -445,7 +444,7 @@ public class GoogleAnalyticsClient {
      * @return the builder
      */
     public Builder setPerHitParameters(FormattedParameter perHitParameters) {
-      PartialBuilder<Builder> builder = Parameters.newPartialBuilder(this);
+      final PartialBuilder<Builder> builder = Parameters.newPartialBuilder(this);
       builder.add(perHitParameters);
       this.perHitParameters = builder;
       return this;
@@ -475,7 +474,7 @@ public class GoogleAnalyticsClient {
      * @return the builder
      */
     public Builder setPerSessionParameters(FormattedParameter perSessionParameters) {
-      PartialBuilder<Builder> builder = Parameters.newPartialBuilder(this);
+      final PartialBuilder<Builder> builder = Parameters.newPartialBuilder(this);
       builder.add(perSessionParameters);
       this.perSessionParameters = builder;
       return this;
@@ -518,10 +517,10 @@ public class GoogleAnalyticsClient {
 
     /**
      * Sets to true to use a secure connection (HTTPS).
-     * 
+     *
      * <p>This value is used to create a default hit dispatcher and is ignored if the hit dispatcher
      * is provided.
-     * 
+     *
      * <p>Note: Setting this value will set the hit dispatcher to null if the property value is
      * different.
      *
@@ -551,10 +550,10 @@ public class GoogleAnalyticsClient {
 
     /**
      * Sets the debug flag. Set to true to use the Google Analytics debug server.
-     * 
+     *
      * <p>This value is used to create a default hit dispatcher and is ignored if the hit dispatcher
      * is provided.
-     * 
+     *
      * <p>Note: Setting this value will set the hit dispatcher to null if the property value is
      * different.
      *
@@ -662,7 +661,7 @@ public class GoogleAnalyticsClient {
    * <p>The user is responsible for ensuring all the required parameters for the hit are added.
    * These may be added to the hit builder or may already be part of the client or session
    * parameters.
-   * 
+   *
    * @param hitType the hit type
    * @return the hit builder
    */
@@ -871,11 +870,11 @@ public class GoogleAnalyticsClient {
 
   /**
    * Gets the executor service.
-   * 
+   *
    * <p>This can be used to permanently shutdown the client.
-   * 
+   *
    * <p>Warning: The service may be shared among client instances so use with care!
-   * 
+   *
    * <p>Fast on/off switching of the client can be done using {@link #setIgnore(boolean)}.
    *
    * @return the executor service
@@ -889,11 +888,11 @@ public class GoogleAnalyticsClient {
    * Gets the hit dispatcher.
    *
    * <p>This can be used to permanently disable the client.
-   * 
+   *
    * <p>Warning: The dispatcher may be shared among client instances so use with care!
-   * 
+   *
    * <p>Fast on/off switching of the client can be done using {@link #setIgnore(boolean)}.
-   * 
+   *
    * @return the hit dispatcher
    * @see #setIgnore(boolean)
    */

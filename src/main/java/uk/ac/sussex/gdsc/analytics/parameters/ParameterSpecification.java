@@ -90,6 +90,8 @@ public interface ParameterSpecification {
    * <p>Otherwise this specifies the maximum bytes for the {@code value} part of the parameter
    * {@code name=value} pair.
    * 
+   * <p>The default is {@code 0}.
+   * 
    * @return the max length
    */
   default int getMaxLength() {
@@ -99,13 +101,16 @@ public interface ParameterSpecification {
   /**
    * Gets the supported hit types for the parameter.
    *
-   * <p>If null then all types are supported. Otherwise the supported types are returned.
+   * <p>If null (or empty) then all types are supported. Otherwise the supported types are returned.
+   * 
+   * <p>The default is an empty array.
    * 
    * @return the supported hit types
    * @see #isSupported(HitType)
    */
   default HitType[] getSupportedHitTypes() {
-    return null;
+    // Return of null is documented as allowed.
+    return new HitType[0];
   }
 
   /**
@@ -120,7 +125,7 @@ public interface ParameterSpecification {
    */
   default boolean isSupported(HitType hitType) {
     final HitType[] supportedHitTypes = getSupportedHitTypes();
-    if (supportedHitTypes == null) {
+    if (supportedHitTypes == null || supportedHitTypes.length == 0) {
       // Don't support the null hit type!
       return hitType != null;
     }

@@ -63,25 +63,24 @@ public final class SystemUtils {
    * @see <a href="http://imagej.nih.gov/ij/">Image J</a>
    */
   static Dimension getScreenSize(String osName) {
-    Dimension result;
     if (GraphicsEnvironment.isHeadless()) {
-      result = null;
+      return null;
+    }
+    Dimension result;
+    // GraphicsEnvironment.getConfigurations is *very* slow on Windows
+    if (isWindows(osName)) {
+      result = Toolkit.getDefaultToolkit().getScreenSize();
     } else {
-      // GraphicsEnvironment.getConfigurations is *very* slow on Windows
-      if (isWindows(osName)) {
-        result = Toolkit.getDefaultToolkit().getScreenSize();
+      // Can't use Toolkit.getScreenSize() on Linux because it returns
+      // size of all displays rather than just the primary display.
+      final GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+      final GraphicsDevice[] gd = ge.getScreenDevices();
+      final GraphicsConfiguration[] gc = gd[0].getConfigurations();
+      final Rectangle bounds = gc[0].getBounds();
+      if ((bounds.x == 0 && bounds.y == 0) || (isLinux(osName) && gc.length > 1)) {
+        result = new Dimension(bounds.width, bounds.height);
       } else {
-        // Can't use Toolkit.getScreenSize() on Linux because it returns
-        // size of all displays rather than just the primary display.
-        final GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        final GraphicsDevice[] gd = ge.getScreenDevices();
-        final GraphicsConfiguration[] gc = gd[0].getConfigurations();
-        final Rectangle bounds = gc[0].getBounds();
-        if ((bounds.x == 0 && bounds.y == 0) || (isLinux(osName) && gc.length > 1)) {
-          result = new Dimension(bounds.width, bounds.height);
-        } else {
-          result = Toolkit.getDefaultToolkit().getScreenSize();
-        }
+        result = Toolkit.getDefaultToolkit().getScreenSize();
       }
     }
     return result;

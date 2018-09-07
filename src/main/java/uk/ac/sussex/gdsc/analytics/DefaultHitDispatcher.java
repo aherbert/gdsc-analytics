@@ -170,8 +170,11 @@ public class DefaultHitDispatcher implements HitDispatcher {
           "application/x-www-form-urlencoded; charset=utf-8");
       // Build the request
       CharSequence request;
-      // Add the queue time offset
-      if (timestamp != 0) {
+      if (timestamp == 0) {
+        // No queue time offset
+        request = hit;
+      } else {
+        // Add the queue time offset
         StringBuilder sb;
         if (hit instanceof StringBuilder) {
           sb = (StringBuilder) hit;
@@ -180,8 +183,6 @@ public class DefaultHitDispatcher implements HitDispatcher {
         }
         QueueTimeParameter.appendTo(sb, timestamp);
         request = sb;
-      } else {
-        request = hit;
       }
       // Send the request
       final byte[] out = request.toString().getBytes(StandardCharsets.UTF_8);

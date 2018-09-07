@@ -34,7 +34,7 @@ package uk.ac.sussex.gdsc.analytics.parameters;
  * <p>If multiple pairs are added then the '<strong>&amp;</strong>' character is expected to
  * separate each pair, e.g. {@code name=value&name2=value2}.
  * 
- * <p>This is a functional interface whose functional method is {@link #appendTo2(StringBuilder)}.
+ * <p>This is a functional interface whose functional method is {@link #appendTo(StringBuilder)}.
  */
 @FunctionalInterface
 public interface FormattedParameter {
@@ -52,11 +52,11 @@ public interface FormattedParameter {
    * start. It should be assumed the {@link StringBuilder} is empty.
    * 
    * <p>Parameters can be added to an existing URL using the function
-   * {@link #appendTo2(StringBuilder)}.
+   * {@link #appendTo(StringBuilder)}.
    *
    * @param sb the string builder
    * @return the string builder
-   * @see #appendTo2(StringBuilder)
+   * @see #appendTo(StringBuilder)
    */
   StringBuilder formatTo(StringBuilder sb);
 
@@ -69,12 +69,12 @@ public interface FormattedParameter {
    * and calls {@link #formatTo(StringBuilder)}.
    * 
    * <p>This method allows consecutive {@link FormattedParameter} instances to be formatted to the
-   * same {@link StringBuilder} using repeats calls to {@link #appendTo2(StringBuilder)}.
+   * same {@link StringBuilder} using repeats calls to {@link #appendTo(StringBuilder)}.
    *
    * @param sb the string builder
    * @return the string builder
    */
-  default StringBuilder appendTo2(StringBuilder sb) {
+  default StringBuilder appendTo(StringBuilder sb) {
     if (sb.length() != 0) {
       sb.append(Constants.AND);
     }
@@ -156,7 +156,7 @@ public interface FormattedParameter {
       }
 
       @Override
-      public StringBuilder appendTo2(StringBuilder sb) {
+      public StringBuilder appendTo(StringBuilder sb) {
         return sb;
       }
 

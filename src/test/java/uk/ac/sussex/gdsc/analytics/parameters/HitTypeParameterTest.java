@@ -33,13 +33,24 @@ public class HitTypeParameterTest {
 
   @Test
   public void testFormat() {
+    int count = 0;
     Assertions.assertEquals("t=event", HitTypeParameter.EVENT.format());
+    count++;
     Assertions.assertEquals("t=exception", HitTypeParameter.EXCEPTION.format());
+    count++;
     Assertions.assertEquals("t=item", HitTypeParameter.ITEM.format());
+    count++;
     Assertions.assertEquals("t=pageview", HitTypeParameter.PAGEVIEW.format());
+    count++;
     Assertions.assertEquals("t=screenview", HitTypeParameter.SCREENVIEW.format());
+    count++;
     Assertions.assertEquals("t=social", HitTypeParameter.SOCIAL.format());
+    count++;
     Assertions.assertEquals("t=timing", HitTypeParameter.TIMING.format());
+    count++;
     Assertions.assertEquals("t=transaction", HitTypeParameter.TRANSACTION.format());
+    count++;
+    // Make sure we cover all the values
+    Assertions.assertEquals(HitType.values().length, count);
   }
 }

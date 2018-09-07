@@ -64,6 +64,7 @@ public class NoIndexCurrencyParameterTest {
       NoIndexCurrencyParameter param = new NoIndexCurrencyParameter(
           TestUtils.newCurrencyParameterSpecification(name), locale, value);
       Assertions.assertEquals(String.format("%s=%s", name, valueString), param.format());
+      Assertions.assertEquals(locale, param.getLocale());
       Assertions.assertEquals(value, param.getValue());
 
       param =

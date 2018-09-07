@@ -27,42 +27,58 @@ package uk.ac.sussex.gdsc.analytics.parameters;
 
 import uk.ac.sussex.gdsc.analytics.TestUtils;
 
-import org.apache.commons.rng.UniformRandomProvider;
-import org.apache.commons.rng.simple.RandomSource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+/**
+ * This BaseParameter class is abstract. But has some functionality that can be tested with a dummy
+ * sub-class. .
+ */
 @SuppressWarnings("javadoc")
-public class OneIndexTextParameterTest {
+public class BaseParameterTest {
+
+  private static class MockBaseParameter extends BaseParameter {
+    public MockBaseParameter(ParameterSpecification specification) {
+      super(specification);
+    }
+
+    public MockBaseParameter(ProtocolSpecification specification) {
+      super(specification);
+    }
+
+    @Override
+    public StringBuilder formatTo(StringBuilder sb) {
+      return sb;
+    }
+
+    @Override
+    protected StringBuilder appendNameEquals(StringBuilder sb) {
+      return sb;
+    }
+  }
+
   @SuppressWarnings("unused")
   @Test
   public void testConstructor() {
     Assertions.assertThrows(NullPointerException.class, () -> {
-      new OneIndexTextParameter(TestUtils.newTextParameterSpecification("test_", 0), 1, null);
+      new MockBaseParameter((ParameterSpecification) null);
     });
     Assertions.assertThrows(NullPointerException.class, () -> {
-      new OneIndexTextParameter(null, 1, "test");
+      new MockBaseParameter((ProtocolSpecification) null);
     });
   }
 
   @Test
-  public void testFormat() {
-    final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
-    for (int i = 0; i < 5; i++) {
-      String name = TestUtils.randomName(rg, 3);
-      int index = 1 + rg.nextInt(20);
-      String value = TestUtils.randomName(rg, 3);
-      OneIndexTextParameter param = new OneIndexTextParameter(
-          TestUtils.newTextParameterSpecification(name + "_", 0), index, value);
-      Assertions.assertEquals(String.format("%s%d=%s", name, index, value), param.format());
-      // Repeat as this checks the cache version is the same
-      Assertions.assertEquals(String.format("%s%d=%s", name, index, value), param.format());
-      Assertions.assertEquals(index, param.getIndex());
-      Assertions.assertEquals(value, param.getValue());
+  public void testIsProtocolSpecification() {
+    MockBaseParameter param = new MockBaseParameter(ProtocolSpecification.PROTOCOL_VERSION);
+    Assertions.assertTrue(param.isProtocolSpecification());
 
-      param = new OneIndexTextParameter(ProtocolSpecification.CUSTOM_DIMENSION, index, value);
-      Assertions.assertEquals(String.format("cd%d=%s", index, value), param.format());
-      Assertions.assertEquals(value, param.getValue());
-    }
+    ParameterSpecification spec = ProtocolSpecification.PROTOCOL_VERSION;
+    param = new MockBaseParameter(spec);
+    Assertions.assertTrue(param.isProtocolSpecification());
+
+    spec = TestUtils.newBooleanParameterSpecification("name");
+    param = new MockBaseParameter(spec);
+    Assertions.assertFalse(param.isProtocolSpecification());
   }
 }

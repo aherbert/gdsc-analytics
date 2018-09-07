@@ -26,7 +26,6 @@
 package uk.ac.sussex.gdsc.analytics;
 
 import uk.ac.sussex.gdsc.analytics.parameters.CustomParameterSpecification;
-import uk.ac.sussex.gdsc.analytics.parameters.FormattedParameter;
 import uk.ac.sussex.gdsc.analytics.parameters.ParameterSpecification;
 import uk.ac.sussex.gdsc.analytics.parameters.ValueType;
 

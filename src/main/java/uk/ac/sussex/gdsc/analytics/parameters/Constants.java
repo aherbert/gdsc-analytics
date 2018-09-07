@@ -54,6 +54,13 @@ public final class Constants {
   public static final char UNDERSCORE = '_';
 
   /**
+   * The '<strong>{@code /}</strong>' (forward slash) character.
+   * 
+   * <p>The character required at the start of a document path for a URL.
+   */
+  public static final char FORWARD_SLASH = '/';
+
+  /**
    * No public construction.
    */
   private Constants() {

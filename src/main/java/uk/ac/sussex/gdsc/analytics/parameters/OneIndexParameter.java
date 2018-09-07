@@ -25,8 +25,6 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
-import java.util.EnumMap;
-
 /**
  * Base class to implements the {@link FormattedParameter} interface for a
  * {@link ParameterSpecification} with 1 index.
@@ -35,10 +33,6 @@ abstract class OneIndexParameter extends BaseParameter {
 
   /** The expected number of indexes. */
   private static final int EXPECTED = 1;
-
-  /** Cache replacers for all the parameters. */
-  private static final EnumMap<ProtocolSpecification, OneIndexReplacer> map =
-      new EnumMap<>(ProtocolSpecification.class);
 
   /** The index. */
   private final int index;
@@ -94,22 +88,13 @@ abstract class OneIndexParameter extends BaseParameter {
     if (replacer == null) {
       // Use a cache of the defined protocol formats
       if (protocolSpecification != null) {
-        replacer = map.computeIfAbsent(protocolSpecification, OneIndexParameter::newReplacer);
+        replacer =
+            (OneIndexReplacer) IndexReplacerFactory.createIndexReplacer(protocolSpecification);
       } else {
         replacer = new OneIndexReplacer(getParameterSpecification().getNameFormat());
       }
       indexReplacer = replacer;
     }
     return replacer.replaceTo(sb, index).append(Constants.EQUAL);
-  }
-
-  /**
-   * Create a new replacer.
-   *
-   * @param parameter the parameter
-   * @return the one index replacer
-   */
-  private static OneIndexReplacer newReplacer(ProtocolSpecification parameter) {
-    return new OneIndexReplacer(parameter);
   }
 }

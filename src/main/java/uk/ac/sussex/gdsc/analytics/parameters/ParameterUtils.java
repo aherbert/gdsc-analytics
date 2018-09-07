@@ -127,6 +127,19 @@ public final class ParameterUtils {
    * Validate the index count in the specification.
    *
    * @param expected the expected count
+   * @param observed the observed
+   * @throws IncorrectCountException If the expected and observed do not match
+   */
+  static void validateCount(int expected, int observed) {
+    if (expected != observed) {
+      throw new IncorrectCountException(expected, observed);
+    }
+  }
+
+  /**
+   * Validate the index count in the specification.
+   *
+   * @param expected the expected count
    * @param specification the specification
    * @throws IncorrectCountException If the expected and observed do not match
    */

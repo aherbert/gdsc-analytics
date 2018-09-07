@@ -30,7 +30,7 @@ package uk.ac.sussex.gdsc.analytics.parameters;
  * 
  * @see <a href="http://goo.gl/a8d4RP#pa">Product Action</a>
  */
-public class ProductActionParameter implements FormattedParameter {
+public final class ProductActionParameter implements FormattedParameter {
   /** The detail product action parameter. */
   public static final ProductActionParameter DETAIL =
       new ProductActionParameter(ProductAction.DETAIL);
@@ -66,10 +66,12 @@ public class ProductActionParameter implements FormattedParameter {
    * @param productAction the product action
    */
   private ProductActionParameter(ProductAction productAction) {
-    final StringBuilder sb = new StringBuilder();
-    sb.append(ProtocolSpecification.PRODUCT_ACTION.getNameFormatRef());
-    sb.append(Constants.EQUAL);
-    sb.append(productAction.toString());
+    //@formmater:off
+    final StringBuilder sb = new StringBuilder()
+        .append(ProtocolSpecification.PRODUCT_ACTION.getNameFormatRef())
+        .append(Constants.EQUAL)
+        .append(productAction.toString());
+    //@formmater:on
     chars = ParameterUtils.getChars(sb);
   }
 

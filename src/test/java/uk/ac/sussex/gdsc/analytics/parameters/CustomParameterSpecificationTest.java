@@ -33,36 +33,44 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class OneIndexTextParameterTest {
+public class CustomParameterSpecificationTest {
   @SuppressWarnings("unused")
   @Test
   public void testConstructor() {
+    String formalName = "formalName";
+    String nameFormat = "name";
+    ValueType valueType = ValueType.TEXT;
+    int maxLength = 0;
+    new CustomParameterSpecification(formalName, nameFormat, valueType, maxLength);
     Assertions.assertThrows(NullPointerException.class, () -> {
-      new OneIndexTextParameter(TestUtils.newTextParameterSpecification("test_", 0), 1, null);
+      new CustomParameterSpecification(null, nameFormat, valueType, maxLength);
     });
     Assertions.assertThrows(NullPointerException.class, () -> {
-      new OneIndexTextParameter(null, 1, "test");
+      new CustomParameterSpecification(formalName, null, valueType, maxLength);
+    });
+    Assertions.assertThrows(NullPointerException.class, () -> {
+      new CustomParameterSpecification(formalName, nameFormat, null, maxLength);
     });
   }
 
   @Test
-  public void testFormat() {
+  public void testProperties() {
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
-    for (int i = 0; i < 5; i++) {
-      String name = TestUtils.randomName(rg, 3);
-      int index = 1 + rg.nextInt(20);
-      String value = TestUtils.randomName(rg, 3);
-      OneIndexTextParameter param = new OneIndexTextParameter(
-          TestUtils.newTextParameterSpecification(name + "_", 0), index, value);
-      Assertions.assertEquals(String.format("%s%d=%s", name, index, value), param.format());
-      // Repeat as this checks the cache version is the same
-      Assertions.assertEquals(String.format("%s%d=%s", name, index, value), param.format());
-      Assertions.assertEquals(index, param.getIndex());
-      Assertions.assertEquals(value, param.getValue());
-
-      param = new OneIndexTextParameter(ProtocolSpecification.CUSTOM_DIMENSION, index, value);
-      Assertions.assertEquals(String.format("cd%d=%s", index, value), param.format());
-      Assertions.assertEquals(value, param.getValue());
+    for (ValueType valueType : ValueType.values()) {
+      String formalName = TestUtils.randomName(rg, 3);
+      String nameFormat = TestUtils.randomName(rg, 3);
+      int maxLength = rg.nextInt(100);
+      CustomParameterSpecification spec =
+          new CustomParameterSpecification(formalName, nameFormat, valueType, maxLength);
+      Assertions.assertEquals(formalName, spec.getFormalName());
+      Assertions.assertEquals(nameFormat, spec.getNameFormat());
+      Assertions.assertEquals(valueType, spec.getValueType());
+      Assertions.assertEquals(maxLength, spec.getMaxLength());
     }
+
+    CustomParameterSpecification spec = new CustomParameterSpecification("", "", ValueType.TEXT, 0,
+        HitType.EVENT, HitType.EXCEPTION);
+    Assertions.assertArrayEquals(new HitType[] {HitType.EVENT, HitType.EXCEPTION},
+        spec.getSupportedHitTypes());
   }
 }

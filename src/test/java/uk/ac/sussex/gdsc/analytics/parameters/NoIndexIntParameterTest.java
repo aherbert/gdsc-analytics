@@ -41,7 +41,7 @@ public class NoIndexIntParameterTest {
       new NoIndexIntParameter(null, 0);
     });
   }
-  
+
   @Test
   public void testFormat() {
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);

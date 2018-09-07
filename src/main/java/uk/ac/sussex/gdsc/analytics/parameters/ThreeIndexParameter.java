@@ -25,8 +25,6 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
-import java.util.EnumMap;
-
 /**
  * Base class to implements the {@link FormattedParameter} interface for a
  * {@link ParameterSpecification} with 3 indexes.
@@ -35,10 +33,6 @@ abstract class ThreeIndexParameter extends BaseParameter {
 
   /** The expected number of indexes. */
   private static final int EXPECTED = 3;
-
-  /** Cache replacers for all the parameters. */
-  private static final EnumMap<ProtocolSpecification, ThreeIndexReplacer> map =
-      new EnumMap<>(ProtocolSpecification.class);
 
   /** The first index. */
   private final int index1;
@@ -126,22 +120,13 @@ abstract class ThreeIndexParameter extends BaseParameter {
     if (replacer == null) {
       // Use a cache of the defined protocol formats
       if (protocolSpecification != null) {
-        replacer = map.computeIfAbsent(protocolSpecification, ThreeIndexParameter::newReplacer);
+        replacer =
+            (ThreeIndexReplacer) IndexReplacerFactory.createIndexReplacer(protocolSpecification);
       } else {
         replacer = new ThreeIndexReplacer(getParameterSpecification().getNameFormat());
       }
       indexReplacer = replacer;
     }
     return replacer.replaceTo(sb, index1, index2, index3).append(Constants.EQUAL);
-  }
-
-  /**
-   * Create a new replacer.
-   *
-   * @param parameter the parameter
-   * @return the three index replacer
-   */
-  private static ThreeIndexReplacer newReplacer(ProtocolSpecification parameter) {
-    return new ThreeIndexReplacer(parameter);
   }
 }

@@ -29,15 +29,27 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class SessionControlTest {
+public class ProductActionTest {
   @Test
   public void testToString() {
     int count = 0;
-    Assertions.assertEquals("start", SessionControl.START.toString());
+    Assertions.assertEquals("add", ProductAction.ADD.toString());
     count++;
-    Assertions.assertEquals("end", SessionControl.END.toString());
+    Assertions.assertEquals("checkout", ProductAction.CHECKOUT.toString());
+    count++;
+    Assertions.assertEquals("checkout_option", ProductAction.CHECKOUT_OPTION.toString());
+    count++;
+    Assertions.assertEquals("click", ProductAction.CLICK.toString());
+    count++;
+    Assertions.assertEquals("detail", ProductAction.DETAIL.toString());
+    count++;
+    Assertions.assertEquals("purchase", ProductAction.PURCHASE.toString());
+    count++;
+    Assertions.assertEquals("refund", ProductAction.REFUND.toString());
+    count++;
+    Assertions.assertEquals("remove", ProductAction.REMOVE.toString());
     count++;
     // Make sure we cover all the values
-    Assertions.assertEquals(SessionControl.values().length, count);
+    Assertions.assertEquals(ProductAction.values().length, count);
   }
 }

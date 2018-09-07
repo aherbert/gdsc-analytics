@@ -30,7 +30,7 @@ package uk.ac.sussex.gdsc.analytics.parameters;
  * 
  * @see <a href="http://goo.gl/a8d4RP#sc">Session Control</a>
  */
-public class ProtocolVersionParameter implements FormattedParameter {
+public final class ProtocolVersionParameter implements FormattedParameter {
   /** The protocol version 1 parameter. */
   public static final ProtocolVersionParameter V1 =
       new ProtocolVersionParameter(ProtocolVersion.V1);
@@ -46,10 +46,12 @@ public class ProtocolVersionParameter implements FormattedParameter {
    * @param version the version
    */
   private ProtocolVersionParameter(ProtocolVersion version) {
-    final StringBuilder sb = new StringBuilder();
-    sb.append(ProtocolSpecification.PROTOCOL_VERSION.getNameFormat());
-    sb.append(Constants.EQUAL);
-    sb.append(version.getVersion());
+    //@formmater:off
+    final StringBuilder sb = new StringBuilder()
+        .append(ProtocolSpecification.PROTOCOL_VERSION.getNameFormat())
+        .append(Constants.EQUAL)
+        .append(version.getVersion());
+    //@formmater:off
     chars = ParameterUtils.getChars(sb);
   }
 

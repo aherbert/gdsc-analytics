@@ -25,19 +25,35 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
+import java.util.HashSet;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class SessionControlTest {
+public class ProtocolSpecificationTest {
   @Test
-  public void testToString() {
-    int count = 0;
-    Assertions.assertEquals("start", SessionControl.START.toString());
-    count++;
-    Assertions.assertEquals("end", SessionControl.END.toString());
-    count++;
-    // Make sure we cover all the values
-    Assertions.assertEquals(SessionControl.values().length, count);
+  public void testIsSupported() {
+    // This never gets hit by the code but we should check it works
+    Assertions.assertFalse(ProtocolSpecification.PROTOCOL_VERSION.isSupported(null));
+    for (HitType ht : HitType.values()) {
+      Assertions.assertTrue(ProtocolSpecification.PROTOCOL_VERSION.isSupported(ht));
+      Assertions.assertEquals(ht == HitType.EVENT,
+          ProtocolSpecification.EVENT_ACTION.isSupported(ht));
+    }
+  }
+
+  @Test
+  public void testGetMaxLength() {
+    // Just check there are different values
+    HashSet<Integer> set = new HashSet<>();
+    for (ProtocolSpecification spec : ProtocolSpecification.values()) {
+      int max = spec.getMaxLength();
+      if (spec.getValueType() != ValueType.TEXT) {
+        Assertions.assertEquals(0, max);
+      }
+      set.add(max);
+    }
+    Assertions.assertTrue(set.size() > 1, "All max lengths are the same");
   }
 }

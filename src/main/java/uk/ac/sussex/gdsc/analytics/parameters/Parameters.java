@@ -28,6 +28,7 @@ package uk.ac.sussex.gdsc.analytics.parameters;
 import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -56,7 +57,7 @@ public class Parameters implements FormattedParameter {
   @Override
   public StringBuilder formatTo(StringBuilder sb) {
     for (final FormattedParameter fp : formattedParameters) {
-      fp.appendTo2(sb);
+      sb = fp.appendTo(sb);
     }
     return sb;
   }
@@ -309,7 +310,7 @@ public class Parameters implements FormattedParameter {
      * @see <a href="http://goo.gl/a8d4RP#z">Cache Buster</a>
      */
     public B addCacheBuster() {
-      return addParameter(new CacheBusterParameter());
+      return addParameter(CacheBusterParameter.getDefaultInstance());
     }
 
     ////////////////////////////////////////////////////////
@@ -455,12 +456,12 @@ public class Parameters implements FormattedParameter {
     /**
      * Adds the user language.
      *
-     * @param userLanguage the user language
+     * @param locale the locale
      * @return the builder
      * @see <a href="http://goo.gl/a8d4RP#ul">User Language</a>
      */
-    public B addUserLanguage(String userLanguage) {
-      return addParameter(new UserLanguageParameter(userLanguage));
+    public B addUserLanguage(Locale locale) {
+      return addParameter(new UserLanguageParameter(locale));
     }
 
     /**
@@ -540,7 +541,7 @@ public class Parameters implements FormattedParameter {
      * @see <a href="http://goo.gl/a8d4RP#dl">Document Location Url</a>
      */
     public B addDocumentLocationUrl(String documentLocationUrl) {
-      // TODO - dedicated parameter for this
+      // TODO - dedicated parameter for this to prefix with '/'
       return addParameter(new NoIndexTextParameter(ProtocolSpecification.DOCUMENT_LOCATION_URL,
           documentLocationUrl));
     }

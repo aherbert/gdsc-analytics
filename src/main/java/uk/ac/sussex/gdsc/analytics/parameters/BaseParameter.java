@@ -33,6 +33,9 @@ import java.util.Objects;
  */
 abstract class BaseParameter implements FormattedParameter {
 
+  /** Used to assigned null to the protocol specification. */
+  private static final ProtocolSpecification NONE = null;
+
   /** The parameter specification. */
   private final ParameterSpecification specification;
 
@@ -56,7 +59,7 @@ abstract class BaseParameter implements FormattedParameter {
     this.specification = Objects.requireNonNull(specification, "Parameter");
     this.protocolSpecification =
         (specification instanceof ProtocolSpecification) ? (ProtocolSpecification) specification
-            : null;
+            : NONE;
   }
 
   /**
@@ -94,7 +97,7 @@ abstract class BaseParameter implements FormattedParameter {
    * @see #getParameterSpecification()
    */
   public final boolean isProtocolSpecification() {
-    return protocolSpecification != null;
+    return protocolSpecification != NONE;
   }
 
   /**

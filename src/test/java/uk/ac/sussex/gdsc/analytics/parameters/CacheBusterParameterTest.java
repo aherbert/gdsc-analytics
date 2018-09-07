@@ -25,20 +25,58 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
+import uk.ac.sussex.gdsc.analytics.TestUtils;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Pattern;
 
+import org.apache.commons.rng.UniformRandomProvider;
+import org.apache.commons.rng.simple.RandomSource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
 public class CacheBusterParameterTest {
+  @SuppressWarnings("unused")
+  @Test
+  public void testConstructor() {
+    Assertions.assertThrows(NullPointerException.class, () -> {
+      new CacheBusterParameter(null);
+    });
+  }
+
+
   @Test
   public void testFormat() {
-    CacheBusterParameter cb = new CacheBusterParameter();
+    // Create random strings to append
+    final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
+    ArrayList<String> list = new ArrayList<>();
+    for (int i = 0; i < 5; i++) {
+      list.add(TestUtils.randomName(rg, 3));
+    }
+    // This does not have to be thread safe but works anyway
+    final AtomicInteger counter = new AtomicInteger();
+    CacheBusterParameter cb = new CacheBusterParameter((sb) -> {
+      return sb.append(list.get(counter.getAndIncrement()));
+    });
+    for (int i = 0; i < list.size(); i++) {
+      String s = cb.format();
+      Assertions.assertEquals("z=" + list.get(i), s);
+    }
+  }
+
+  @Test
+  public void testGetDefaultInstance() {
+    CacheBusterParameter cb = CacheBusterParameter.getDefaultInstance();
     Pattern pattern = Pattern.compile("^z=-?[0-9]+$");
+    HashSet<String> set = new HashSet<>();
     for (int i = 0; i < 10; i++) {
       String s = cb.format();
       Assertions.assertTrue(pattern.matcher(s).matches(), s);
+      set.add(s);
     }
+    Assertions.assertTrue(set.size() > 1, "Not a random cache buster");
   }
 }

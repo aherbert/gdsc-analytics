@@ -32,7 +32,12 @@ import org.junit.jupiter.api.Test;
 public class SessionControlParameterTest {
   @Test
   public void testFormat() {
+    int count = 0;
     Assertions.assertEquals("sc=end", SessionControlParameter.END.format());
+    count++;
     Assertions.assertEquals("sc=start", SessionControlParameter.START.format());
+    count++;
+    // Make sure we cover all the values
+    Assertions.assertEquals(SessionControl.values().length, count);
   }
 }

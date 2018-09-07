@@ -35,19 +35,16 @@ import java.util.Locale;
 public class UserLanguageParameter extends NoIndexTextParameter {
 
   /**
-   * Creates a new instance.
-   * 
-   * <p>Converts the language tag to a best case representation.
+   * Creates a new instance using the specified locale
    *
-   * @param languageTag the language tag
-   * @see Locale#forLanguageTag(String)
+   * @param locale the locale
    */
-  public UserLanguageParameter(String languageTag) {
-    super(ProtocolSpecification.USER_LANGUAGE, Locale.forLanguageTag(languageTag).toLanguageTag());
+  public UserLanguageParameter(Locale locale) {
+    super(ProtocolSpecification.USER_LANGUAGE, locale.toLanguageTag());
   }
 
   /**
-   * Creates a new instance.using the default locale.
+   * Creates a new instance using the default locale.
    *
    * @see Locale#toLanguageTag()
    */

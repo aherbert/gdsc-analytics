@@ -56,7 +56,7 @@ public enum ProductAction {
    *
    * @param name the name
    */
-  private ProductAction(String name) {
+  ProductAction(String name) {
     this.name = name;
   }
 

@@ -28,22 +28,10 @@ package uk.ac.sussex.gdsc.analytics.parameters;
 /**
  * Class to replace a single occurrence of the index marker character with an index value.
  */
-public class OneIndexReplacer {
+public class OneIndexReplacer extends IndexReplacer {
 
   /** The expected number of indexes. */
   private static final int EXPECTED = 1;
-
-  /** The format. */
-  private final char[] format;
-
-  /** Length before the first index character in the format. */
-  private final int length0;
-
-  /** The position after first index character in the format. */
-  private final int position1;
-
-  /** Length after the first index character in the format. */
-  private final int length1;
 
   /**
    * Create a new instance.
@@ -52,55 +40,21 @@ public class OneIndexReplacer {
    * @throws IncorrectCountException If the index count is not one
    */
   public OneIndexReplacer(CharSequence nameFormat) {
-    this(ParameterUtils.getChars(nameFormat));
+    super(nameFormat);
+    ParameterUtils.validateCount(EXPECTED, getNumberOfIndexes());
   }
 
   /**
    * Create a new instance.
    *
-   * @param parameter the parameter
+   * <p>Package scope. The public version is to use a factory method.
+   * 
+   * @param specification the specification
    * @throws IncorrectCountException If the index count is not one
    */
-  public OneIndexReplacer(ProtocolSpecification parameter) {
-    this(parameter.getNameFormatRef());
-  }
-
-  /**
-   * Create a new instance.
-   *
-   * @param parameter the parameter
-   * @throws IncorrectCountException If the index count is not one
-   */
-  private OneIndexReplacer(char[] format) {
-    this.format = format;
-    // Find the positions
-    int current = 0;
-    int next;
-    int count = 0;
-    next = ParameterUtils.nextUnderscore(format, current);
-    if (next == ParameterUtils.NO_POSITION) {
-      throw new IncorrectCountException(EXPECTED, count);
-    }
-    // Count 1
-    count++;
-    length0 = next - current;
-    current = next + 1;
-    position1 = current;
-
-    next = ParameterUtils.nextUnderscore(format, current);
-    if (next != ParameterUtils.NO_POSITION) {
-      throw new IncorrectCountException(EXPECTED, count + 1);
-    }
-    length1 = format.length - current;
-  }
-
-  /**
-   * Gets the format.
-   *
-   * @return the format
-   */
-  public String getFormat() {
-    return new String(format);
+  OneIndexReplacer(ProtocolSpecification specification) {
+    super(specification);
+    ParameterUtils.validateCount(EXPECTED, specification);
   }
 
   /**
@@ -116,11 +70,11 @@ public class OneIndexReplacer {
   public StringBuilder replaceTo(StringBuilder sb, int index) {
     // No formats should have the index at the start, i.e. length0 == 0.
     //@formatter:off
-    sb.append(format, 0, length0)
+    sb.append(format, 0, ranges[0])
       .append(index);
     // Some formats do not have any character after the last index
-    if (length1 != 0) {
-      sb.append(format, position1, length1);
+    if (ranges[2] != 0) {
+      sb.append(format, ranges[1], ranges[2]);
     }
     return sb;
   }

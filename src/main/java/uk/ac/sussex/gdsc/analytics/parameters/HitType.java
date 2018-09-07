@@ -56,7 +56,7 @@ public enum HitType {
    *
    * @param name the name
    */
-  private HitType(String name) {
+  HitType(String name) {
     this.name = name;
   }
 

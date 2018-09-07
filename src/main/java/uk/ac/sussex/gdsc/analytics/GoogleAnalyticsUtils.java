@@ -32,7 +32,7 @@ import java.util.logging.Logger;
 /**
  * Contains utilities for Google Analytics.
  */
-public class GoogleAnalyticsUtils {
+public final class GoogleAnalyticsUtils {
 
   /** The logger. */
   private static final Logger logger = Logger.getLogger(GoogleAnalyticsUtils.class.getName());

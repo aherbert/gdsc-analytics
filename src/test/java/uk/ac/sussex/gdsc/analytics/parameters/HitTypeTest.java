@@ -32,15 +32,24 @@ import org.junit.jupiter.api.Test;
 public class HitTypeTest {
   @Test
   public void testToString() {
-    // TODO Make sure we cover all the values by checking HitType.values() 
-    
+    int count = 0;
     Assertions.assertEquals("event", HitType.EVENT.toString());
+    count++;
     Assertions.assertEquals("exception", HitType.EXCEPTION.toString());
+    count++;
     Assertions.assertEquals("item", HitType.ITEM.toString());
+    count++;
     Assertions.assertEquals("pageview", HitType.PAGEVIEW.toString());
+    count++;
     Assertions.assertEquals("screenview", HitType.SCREENVIEW.toString());
+    count++;
     Assertions.assertEquals("social", HitType.SOCIAL.toString());
+    count++;
     Assertions.assertEquals("timing", HitType.TIMING.toString());
+    count++;
     Assertions.assertEquals("transaction", HitType.TRANSACTION.toString());
+    count++;
+    // Make sure we cover all the values
+    Assertions.assertEquals(HitType.values().length, count);
   }
 }

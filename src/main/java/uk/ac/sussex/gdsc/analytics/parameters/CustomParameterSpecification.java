@@ -25,6 +25,8 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
+import java.util.Objects;
+
 /**
  * Contains a custom parameter specification for the Google Analytics Measurement Protocol.
  */
@@ -33,7 +35,9 @@ public class CustomParameterSpecification implements ParameterSpecification {
   /** The formal name. */
   private final String formalName;
 
-  /** The formalName format for the formalName part of the {@code formalName=value} pair. */
+  /**
+   * The formalName format for the formalName part of the {@code formalName=value} pair.
+   */
   private final String nameFormat;
 
   /** The number of indices. */
@@ -67,11 +71,11 @@ public class CustomParameterSpecification implements ParameterSpecification {
    */
   public CustomParameterSpecification(String formalName, String nameFormat, ValueType valueType,
       int maxLength, HitType... supportedHitTypes) {
-    this.formalName = formalName;
-    this.nameFormat = nameFormat;
-    this.valueType = valueType;
+    this.formalName = Objects.requireNonNull(formalName, "Formal name");
+    this.nameFormat = Objects.requireNonNull(nameFormat, "Name format");
+    this.valueType = Objects.requireNonNull(valueType, "Value type");
     this.maxLength = maxLength;
-    this.supportedHitTypes = supportedHitTypes;
+    this.supportedHitTypes = supportedHitTypes.clone();
     this.numberOfIndexes = ParameterUtils.countIndexes(nameFormat);
   }
 
@@ -102,6 +106,6 @@ public class CustomParameterSpecification implements ParameterSpecification {
 
   @Override
   public HitType[] getSupportedHitTypes() {
-    return (supportedHitTypes == null) ? null : supportedHitTypes.clone();
+    return supportedHitTypes.clone();
   }
 }

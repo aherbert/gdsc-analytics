@@ -43,8 +43,8 @@ public class FormatterParameterTest {
     {
       FormattedParameter fp = (sb) -> sb;
       StringBuilder sb = new StringBuilder();
-      Assertions.assertEquals("", fp.appendTo2(sb).toString());
-      Assertions.assertEquals("", fp.appendTo2(sb).toString());
+      Assertions.assertEquals("", fp.appendTo(sb).toString());
+      Assertions.assertEquals("", fp.appendTo(sb).toString());
     }
 
     // When something is added
@@ -53,9 +53,9 @@ public class FormatterParameterTest {
       final String name = TestUtils.randomName(rg, 10);
       FormattedParameter fp = (sb) -> sb.append(name);
       StringBuilder sb = new StringBuilder();
-      Assertions.assertEquals(name, fp.appendTo2(sb).toString());
+      Assertions.assertEquals(name, fp.appendTo(sb).toString());
       // When something is added an '&' character is used to separate them
-      Assertions.assertEquals(name + "&" + name, fp.appendTo2(sb).toString());
+      Assertions.assertEquals(name + "&" + name, fp.appendTo(sb).toString());
     }
   }
 

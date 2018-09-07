@@ -50,7 +50,7 @@ public enum ValueType {
   /**
    * Instantiates a new value type.
    */
-  private ValueType() {
+  ValueType() {
     this.name = super.toString().toLowerCase(Locale.getDefault());
   }
 

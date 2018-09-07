@@ -58,11 +58,11 @@ abstract class NoIndexParameter extends BaseParameter {
 
   @Override
   protected StringBuilder appendNameEquals(StringBuilder sb) {
-    if (protocolSpecification != null) {
+    if (protocolSpecification == null) {
+      sb.append(getParameterSpecification().getNameFormat());
+    } else {
       // Direct access to the char array
       sb.append(protocolSpecification.getNameFormatRef());
-    } else {
-      sb.append(getParameterSpecification().getNameFormat());
     }
     return sb.append(Constants.EQUAL);
   }

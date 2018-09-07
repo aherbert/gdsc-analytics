@@ -42,14 +42,12 @@ public class UserLanguageParameterTest {
 
   @Test
   public void testFormat() {
-    // Test this with some locales that are not perfect and should be updated
-    // final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
-    // for (int i = 0; i < 5; i++) {
-    // String value = TestUtils.randomName(rg, 3);
-    // Assertions.assertEquals(String.format("ul=%s", value),
-    // new UserLanguageParameter(value).format());
-    // }
     String value = Locale.getDefault().toLanguageTag();
     Assertions.assertEquals(String.format("ul=%s", value), new UserLanguageParameter().format());
+    for (Locale locale : new Locale[] {Locale.FRENCH, Locale.GERMAN, Locale.UK}) {
+      value = locale.toLanguageTag();
+      Assertions.assertEquals(String.format("ul=%s", value),
+          new UserLanguageParameter(locale).format());
+    }
   }
 }

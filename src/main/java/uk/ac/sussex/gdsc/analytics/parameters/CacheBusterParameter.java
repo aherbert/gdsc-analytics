@@ -25,23 +25,71 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.function.UnaryOperator;
 
 /**
  * Adds a cache buster parameter when using the HTTP GET method.
  * 
  * <p>This should be the last parameter in a URL.
  * 
- * <p>The class is thread safe as it uses {@link ThreadLocalRandom} to generate the random integer.
- * 
  * @see <a href="http://goo.gl/a8d4RP#z">Cache Buster</a>
  */
-public class CacheBusterParameter extends NoIndexIntParameter {
+public class CacheBusterParameter extends NoIndexParameter {
+
+  /** The default instance. */
+  private static final CacheBusterParameter defaultInstance = new CacheBusterParameter();
+
+  /** The random appender. */
+  private final UnaryOperator<StringBuilder> randomAppender;
+
+  /**
+   * Creates a new instance with the provided operator to add random text to the StringBuilder.
+   *
+   * @param randomAppender the random appender
+   */
+  public CacheBusterParameter(UnaryOperator<StringBuilder> randomAppender) {
+    super(ProtocolSpecification.CACHE_BUSTER);
+    // This is here in case the API changes.
+    // This class assumes it can be anything.
+    ParameterUtils.compatibleValueType(ValueType.TEXT, ProtocolSpecification.CACHE_BUSTER);
+    this.randomAppender = Objects.requireNonNull(randomAppender, "Random appender");
+  }
 
   /**
    * Creates a new instance with a random integer for the cache buster.
    */
-  public CacheBusterParameter() {
-    super(ProtocolSpecification.CACHE_BUSTER_INT, ThreadLocalRandom.current().nextInt());
+  private CacheBusterParameter() {
+    this(CacheBusterParameter::addRandomNumber);
+  }
+
+  /**
+   * Adds random number to the string builder.
+   *
+   * @param sb the string builder
+   * @return the string builder
+   */
+  public static StringBuilder addRandomNumber(StringBuilder sb) {
+    return sb.append(ThreadLocalRandom.current().nextInt());
+  }
+
+  /**
+   * Gets a default instance.
+   *
+   * <p>The class is thread safe as it uses {@link ThreadLocalRandom} to generate the random an
+   * integer to append as the cache buster.
+   * 
+   * @return the default instance
+   */
+  public static CacheBusterParameter getDefaultInstance() {
+    return defaultInstance;
+  }
+
+  @Override
+  public StringBuilder formatTo(StringBuilder sb) {
+    // These can be chained but it is more readable in sequence
+    appendNameEquals(sb);
+    return randomAppender.apply(sb);
   }
 }

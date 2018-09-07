@@ -42,7 +42,7 @@ public enum ProtocolVersion {
    *
    * @param version the version
    */
-  private ProtocolVersion(int version) {
+  ProtocolVersion(int version) {
     this.version = version;
   }
 
