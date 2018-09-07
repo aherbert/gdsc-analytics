@@ -73,19 +73,6 @@ public class TestUtils {
   }
 
   /**
-   * Call {@link FormattedParameter#appendTo(StringBuilder)} and return the string from a fresh
-   * StringBuilder.
-   *
-   * @param parameter the parameter
-   * @return the string
-   */
-  public static String callAppendTo(FormattedParameter parameter) {
-    final StringBuilder sb = new StringBuilder();
-    parameter.appendTo(sb);
-    return sb.toString();
-  }
-
-  /**
    * Gets a random alphanumeric name.
    *
    * @param rg the random generator

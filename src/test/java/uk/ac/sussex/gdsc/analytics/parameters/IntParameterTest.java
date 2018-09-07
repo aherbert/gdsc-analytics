@@ -41,7 +41,7 @@ public class IntParameterTest {
       String name = TestUtils.randomName(rg, 3);
       int value = rg.nextInt();
       IntParameter ip = new IntParameter("&" + name, value);
-      Assertions.assertEquals(String.format("&%s=%d", name, value), TestUtils.callAppendTo(ip));
+      Assertions.assertEquals(String.format("&%s=%d", name, value), TestUtils.callFormatTo(ip));
       Assertions.assertEquals(value, ip.getValue());
     }
   }

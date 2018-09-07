@@ -28,13 +28,13 @@ package uk.ac.sussex.gdsc.analytics.parameters;
 import java.util.UUID;
 
 /**
- * Adds parameter {@code cid} to a URL.
+ * Adds the Client ID (cid) parameter.
  * 
  * <p>This field is required if User ID (uid) is not specified in the request.
  * 
  * @see <a href="http://goo.gl/a8d4RP#cid">Client Id</a>
  */
-public class ClientIdParameter extends StringParameter {
+public class ClientIdParameter extends TextParameter {
 
   /**
    * Instantiates a new instance.
@@ -46,8 +46,8 @@ public class ClientIdParameter extends StringParameter {
    * @throws IllegalArgumentException If not a valid UUID
    * @see UUID#fromString(String)
    */
-  public ClientIdParameter(String clientId) throws IllegalArgumentException {
-    super("&cid", clientId);
+  public ClientIdParameter(String clientId) {
+    super(Parameter.CLIENT_ID, clientId);
     // Try and parse the client Id to a UUID to test it is valid
     UUID.fromString(clientId);
   }
@@ -59,6 +59,6 @@ public class ClientIdParameter extends StringParameter {
    * @see UUID#toString()
    */
   public ClientIdParameter(UUID clientId) {
-    super("&cid", clientId.toString());
+    super(Parameter.CLIENT_ID, clientId.toString());
   }
 }

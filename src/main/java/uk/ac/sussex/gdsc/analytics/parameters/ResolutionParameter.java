@@ -26,9 +26,12 @@
 package uk.ac.sussex.gdsc.analytics.parameters;
 
 /**
- * Stores a named {@code int} parameter.
+ * A generic resolution parameter that adds {@code name=(width)x(height)} parameter.
  */
-public final class ResolutionParameter extends NamedParameter {
+public final class ResolutionParameter extends NoIndexParameter {
+
+  /** The '<strong>{@code x}</strong>' character. */
+  private static final char X = 'x';
 
   /** The width. */
   private final int width;
@@ -37,14 +40,14 @@ public final class ResolutionParameter extends NamedParameter {
   private final int height;
 
   /**
-   * Instantiates a new custom dimension.
+   * Instantiates a new resolution parameter.
    *
-   * @param name the name
+   * @param parameter the parameter
    * @param width the width
    * @param height the height
    */
-  public ResolutionParameter(String name, int width, int height) {
-    super(name);
+  public ResolutionParameter(Parameter parameter, int width, int height) {
+    super(parameter);
     this.width = width;
     this.height = height;
   }
@@ -68,7 +71,7 @@ public final class ResolutionParameter extends NamedParameter {
   }
 
   @Override
-  public void appendTo(StringBuilder sb) {
-    FormattedParameterHelper.appendResolution(sb, getName(), width, height);
+  public StringBuilder formatTo(StringBuilder sb) {
+    return appendNameEquals(sb).append(width).append(X).append(height);
   }
 }

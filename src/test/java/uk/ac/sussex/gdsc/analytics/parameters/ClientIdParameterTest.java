@@ -54,9 +54,9 @@ public class ClientIdParameterTest {
     String uuid2 = "00112233-4455-6677-8899-aabbccddeeff";
     for (String clientId : new String[] {uuid1, uuid2}) {
       Assertions.assertEquals(String.format("&cid=%s", clientId),
-          TestUtils.callAppendTo(new ClientIdParameter(clientId)));
+          TestUtils.callFormatTo(new ClientIdParameter(clientId)));
       Assertions.assertEquals(String.format("&cid=%s", clientId),
-          TestUtils.callAppendTo(new ClientIdParameter(UUID.fromString(clientId))));
+          TestUtils.callFormatTo(new ClientIdParameter(UUID.fromString(clientId))));
     }
   }
 }

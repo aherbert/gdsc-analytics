@@ -25,38 +25,36 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
+import java.util.Locale;
+
 /**
- * Stores a custom metric parameter.
+ * Defines session control values for the Google Analytics Measurement Protocol.
  * 
- * @see <a href="http://goo.gl/a8d4RP#cm_">Custom Metric</a>
+ * @see <a href="http://goo.gl/a8d4RP#sc">Session Control</a>
  */
-public final class CustomMetricParameter extends IntParameter {
-  /** The index. */
-  private final int index;
+public enum SessionControl {
+  /** Forces a new session to start with this hit. */
+  START,
+  /** Forces the current session to end with this hit. */
+  END;
+
+  /** The name. */
+  private final String name;
 
   /**
-   * Instantiates a new custom metric.
-   *
-   * @param index the index
-   * @param value the value
-   * @throws IllegalArgumentException If the index is not strictly positive
+   * Instantiates a new hit type.
    */
-  public CustomMetricParameter(int index, int value) throws IllegalArgumentException {
-    super("&cm", value);
-    this.index = ParameterUtils.requireStrictlyPositive(index, "index");
+  private SessionControl() {
+    this.name = super.toString().toLowerCase(Locale.getDefault());
   }
 
-  /**
-   * Gets the index.
+  /*
+   * (non-Javadoc)
    *
-   * @return the index
+   * @see java.lang.Enum#toString()
    */
-  public int getIndex() {
-    return index;
-  }
-
   @Override
-  public void appendTo(StringBuilder sb) {
-    FormattedParameterHelper.append(sb, getName(), index, getValue());
+  public String toString() {
+    return name;
   }
 }

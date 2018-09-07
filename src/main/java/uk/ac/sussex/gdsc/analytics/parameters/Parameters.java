@@ -53,17 +53,12 @@ public class Parameters implements FormattedParameter {
     this.formattedParameters = formattedParameters;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see
-   * uk.ac.sussex.gdsc.analytics.parameters.FormattedParameter#formatTo(java.lang.StringBuilder)
-   */
   @Override
-  public void appendTo(StringBuilder sb) {
+  public StringBuilder formatTo(StringBuilder sb) {
     for (final FormattedParameter fp : formattedParameters) {
-      fp.appendTo(sb);
+      fp.appendTo2(sb);
     }
+    return sb;
   }
 
   /**
@@ -71,16 +66,15 @@ public class Parameters implements FormattedParameter {
    * 
    * <p>The format is UA-XXXX-Y.
    * 
-   * <p>This is a specialist builder to ensure the the tracking Id and client/user Id required for
-   * all hits are included.
+   * <p>This is a specialist builder to ensure the version, tracking Id and client/user Id required
+   * for all hits are included.
    *
    * @param trackingId the tracking id
    * @return the builder
    * @throws IllegalArgumentException if tracking ID is invalid
    * @see <a href="http://goo.gl/a8d4RP#tid">Tracking Id</a>
    */
-  public static RequiredBuilder newRequiredBuilder(String trackingId)
-      throws IllegalArgumentException {
+  public static RequiredBuilder newRequiredBuilder(String trackingId) {
     return new RequiredBuilder(trackingId);
   }
 
@@ -249,7 +243,7 @@ public class Parameters implements FormattedParameter {
      * @see <a href="http://goo.gl/a8d4RP#v">Protocol Version</a>
      */
     public B addVersion() {
-      return addParameter(Version1Parameter.getDefaultInstance());
+      return addParameter(ProtocolVersionParameter.V1);
     }
 
     /**
@@ -1148,13 +1142,21 @@ public class Parameters implements FormattedParameter {
 
     /**
      * Creates a new hit builder.
+     * 
+     * <p>The provided formatted parameter is added as the first parameter if it is not null. It can
+     * be used to specify parameters that are required for each hit.
      *
+     * @param formattedParameter the formatted parameter
      * @param hitType the hit type
      * @param timestamp the timestamp
      */
-    protected HitBuilder(HitTypeParameter hitType, long timestamp) {
+    protected HitBuilder(FormattedParameter formattedParameter, HitTypeParameter hitType,
+        long timestamp) {
       super(HitBuilder.class);
       this.timestamp = timestamp;
+      if (formattedParameter != null) {
+        add(formattedParameter);
+      }
       addHitType(hitType);
     }
 

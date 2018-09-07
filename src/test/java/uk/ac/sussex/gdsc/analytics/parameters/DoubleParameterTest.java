@@ -40,8 +40,8 @@ public class DoubleParameterTest {
     for (int i = 0; i < 5; i++) {
       String name = TestUtils.randomName(rg, 3);
       double value = rg.nextDouble();
-      DoubleParameter dp = new DoubleParameter("&" + name, value);
-      Assertions.assertEquals(String.format("&%s=%s", name, value), TestUtils.callAppendTo(dp));
+      CurrencyParameter dp = new CurrencyParameter("&" + name, value);
+      Assertions.assertEquals(String.format("&%s=%s", name, value), TestUtils.callFormatTo(dp));
       Assertions.assertEquals(value, dp.getValue());
     }
   }

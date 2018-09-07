@@ -32,6 +32,23 @@ import java.util.regex.Pattern;
  */
 public final class ParameterUtils {
 
+  /** The '<strong>{@code =}</strong>' (Equal) character. */
+  public static final char EQUAL = '=';
+
+  /** The '<strong>{@code &}</strong>' (Ampersand) character. */
+  public static final char AND = '&';
+
+  /**
+   * The character used to identify an index within the name format for the {@code name=value}
+   * parameter pair.
+   */
+  public static final char INDEX_CHARACTER = Parameter.INDEX_CHARACTER;
+
+  /**
+   * Use to indicate no position in a character array. Set to -1.
+   */
+  public static final int NO_POSITION = -1;
+
   /**
    * No public construction.
    */
@@ -47,8 +64,7 @@ public final class ParameterUtils {
    * @return the string
    * @throws IllegalArgumentException If the string is empty
    */
-  public static String requireNotEmpty(String string, String message)
-      throws IllegalArgumentException {
+  public static String requireNotEmpty(String string, String message) {
     if (string == null || string.length() == 0) {
       throw new IllegalArgumentException(message);
     }
@@ -63,7 +79,7 @@ public final class ParameterUtils {
    * @return the value
    * @throws IllegalArgumentException If the value is negative
    */
-  public static int requirePositive(int value, String message) throws IllegalArgumentException {
+  public static int requirePositive(int value, String message) {
     if (value < 0) {
       throw new IllegalArgumentException(message);
     }
@@ -78,7 +94,7 @@ public final class ParameterUtils {
    * @return the value
    * @throws IllegalArgumentException If the value is negative
    */
-  public static long requirePositive(long value, String message) throws IllegalArgumentException {
+  public static long requirePositive(long value, String message) {
     if (value < 0) {
       throw new IllegalArgumentException(message);
     }
@@ -93,8 +109,7 @@ public final class ParameterUtils {
    * @return the value
    * @throws IllegalArgumentException If the value is not strictly positive ({@code >0})
    */
-  public static int requireStrictlyPositive(int value, String message)
-      throws IllegalArgumentException {
+  public static int requireStrictlyPositive(int value, String message) {
     if (value <= 0) {
       throw new IllegalArgumentException(message);
     }
@@ -111,10 +126,82 @@ public final class ParameterUtils {
    * @throws IllegalArgumentException If the format is not valid
    * @see <a href="http://goo.gl/a8d4RP#tid">Tracking Id</a>
    */
-  public static String validateTrackingId(String trackingId) throws IllegalArgumentException {
+  public static String validateTrackingId(String trackingId) {
     if (!Pattern.matches("[A-Z]{2}-[0-9]{4,}-[0-9]", trackingId)) {
       throw new IllegalArgumentException("Invalid tracking id: " + trackingId);
     }
     return trackingId;
+  }
+
+  /**
+   * Validate the count.
+   *
+   * @param expected the expected count
+   * @param observed the observed count
+   * @throws IncorrectCountException If the expected and observed do not match
+   */
+  public static void validateCount(int expected, int observed) {
+    if (expected != observed) {
+      throw new IncorrectCountException(expected, observed);
+    }
+  }
+
+  /**
+   * Validate the value types are compatible. This is used to ensure that the {@code value} appended
+   * to a {@code name=value} pair is compatible.
+   * 
+   * <p>Note that if the expected type is text then this method does not throw, i.e. it checks for
+   * compatible value types.
+   * 
+   * @param expected the expected count
+   * @param observed the observed count
+   * @throws IncorrectValueTypeException If the expected and observed do not match
+   */
+  public static void compatibleValueType(ValueType expected, ValueType observed) {
+    // Text is compatible with any other type
+    if (expected != ValueType.TEXT && expected != observed) {
+      throw new IncorrectValueTypeException(expected, observed);
+    }
+  }
+
+  /**
+   * Find the next position of the index character in the value, starting from the given index.
+   *
+   * @param value the value
+   * @param fromIndex the from index (should be positive)
+   * @return the position (or {@link #NO_POSITION} if not found)
+   */
+  static int nextIndexCharacter(char[] value, int fromIndex) {
+    final int max = value.length;
+    for (int i = fromIndex; i < max; i++) {
+      if (value[i] == INDEX_CHARACTER) {
+        return i;
+      }
+    }
+    return NO_POSITION;
+  }
+
+  /**
+   * Gets the chars from the {@link StringBuilder}.
+   *
+   * @param sb the string builder
+   * @return the chars
+   */
+  public static char[] getChars(StringBuilder sb) {
+    final char[] chars = new char[sb.length()];
+    sb.getChars(0, sb.length(), chars, 0);
+    return chars;
+  }
+
+  /**
+   * Gets the chars from the {@link CharSequence}.
+   *
+   * @param sequence the sequence
+   * @return the chars
+   */
+  public static char[] getChars(CharSequence sequence) {
+    // This will pass through Strings but if a StringBuilder
+    // the dedicated method above should be called.
+    return sequence.toString().toCharArray();
   }
 }

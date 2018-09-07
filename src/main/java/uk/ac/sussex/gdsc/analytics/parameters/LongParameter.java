@@ -26,14 +26,14 @@
 package uk.ac.sussex.gdsc.analytics.parameters;
 
 /**
- * A generic boolean parameter for a {@link Parameter} with zero indexes.
+ * A generic integer parameter for a {@link Parameter} with zero indexes.
  * 
- * <p>Stores the boolean value as a {@code boolean}.
+ * <p>Stores the integer value as a {@code long}.
  */
-public class BooleanParameter extends NoIndexParameter {
+public class LongParameter extends NoIndexParameter {
 
   /** The value. */
-  private final Boolean value;
+  private final long value;
 
   /**
    * Creates a new instance.
@@ -43,9 +43,9 @@ public class BooleanParameter extends NoIndexParameter {
    * @throws IncorrectCountException If the parameter index count is not zero
    * @throws IncorrectValueTypeException If the parameter value type is incorrect
    */
-  public BooleanParameter(Parameter parameter, Boolean value) {
+  public LongParameter(Parameter parameter, long value) {
     super(parameter);
-    ParameterUtils.compatibleValueType(ValueType.BOOLEAN, parameter.getValueType());
+    ParameterUtils.compatibleValueType(ValueType.INTEGER, parameter.getValueType());
     this.value = value;
   }
 
@@ -54,12 +54,12 @@ public class BooleanParameter extends NoIndexParameter {
    *
    * @return the value
    */
-  public Boolean getValue() {
+  public long getValue() {
     return value;
   }
 
   @Override
   public StringBuilder formatTo(StringBuilder sb) {
-    return appendNameEquals(sb).append((getValue()) ? '1' : '0');
+    return appendNameEquals(sb).append(getValue());
   }
 }

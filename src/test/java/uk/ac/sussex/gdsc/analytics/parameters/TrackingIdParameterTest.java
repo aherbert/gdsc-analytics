@@ -49,7 +49,7 @@ public class TrackingIdParameterTest {
   public void testFormat() {
     for (String trackingId : new String[] {"UA-1234-6", "UA-123456789-6"}) {
       Assertions.assertEquals(String.format("&tid=%s", trackingId),
-          TestUtils.callAppendTo(new TrackingIdParameter(trackingId)));
+          TestUtils.callFormatTo(new TrackingIdParameter(trackingId)));
     }
   }
 }

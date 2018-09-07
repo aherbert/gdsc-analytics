@@ -28,11 +28,11 @@ package uk.ac.sussex.gdsc.analytics.parameters;
 import java.util.Locale;
 
 /**
- * Adds parameter {@code ul} to a URL.
+ * Adds the User Language (ul) parameter.
  * 
  * @see <a href="http://goo.gl/a8d4RP#ul">User Language</a>
  */
-public class UserLanguageParameter extends StringParameter {
+public class UserLanguageParameter extends TextParameter {
 
   /**
    * Instantiates a new instance.
@@ -40,7 +40,7 @@ public class UserLanguageParameter extends StringParameter {
    * @param userLanguage the user language
    */
   public UserLanguageParameter(String userLanguage) {
-    super("&ul", userLanguage);
+    super(Parameter.USER_LANGUAGE, userLanguage);
   }
 
   /**
@@ -49,6 +49,6 @@ public class UserLanguageParameter extends StringParameter {
    * @see Locale#toLanguageTag()
    */
   public UserLanguageParameter() {
-    super("&ul", Locale.getDefault().toLanguageTag());
+    super(Parameter.USER_LANGUAGE, Locale.getDefault().toLanguageTag());
   }
 }

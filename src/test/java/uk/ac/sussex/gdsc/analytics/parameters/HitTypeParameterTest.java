@@ -26,33 +26,23 @@
 package uk.ac.sussex.gdsc.analytics.parameters;
 
 import uk.ac.sussex.gdsc.analytics.TestUtils;
-import uk.ac.sussex.gdsc.analytics.parameters.HitTypeParameter;
-
-import java.util.Locale;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
 public class HitTypeParameterTest {
-  @Test
-  public void testToString() {
-    for (final HitTypeParameter ht : HitTypeParameter.values()) {
-      String expected = String.valueOf(ht).toLowerCase(Locale.getDefault());
-      Assertions.assertEquals(expected, ht.toString());
-    }
-  }
 
   @Test
   public void testFormat() {
-    Assertions.assertEquals("&ht=event", TestUtils.callAppendTo(HitTypeParameter.EVENT));
-    Assertions.assertEquals("&ht=exception", TestUtils.callAppendTo(HitTypeParameter.EXCEPTION));
-    Assertions.assertEquals("&ht=item", TestUtils.callAppendTo(HitTypeParameter.ITEM));
-    Assertions.assertEquals("&ht=pageview", TestUtils.callAppendTo(HitTypeParameter.PAGEVIEW));
-    Assertions.assertEquals("&ht=screenview", TestUtils.callAppendTo(HitTypeParameter.SCREENVIEW));
-    Assertions.assertEquals("&ht=social", TestUtils.callAppendTo(HitTypeParameter.SOCIAL));
-    Assertions.assertEquals("&ht=timing", TestUtils.callAppendTo(HitTypeParameter.TIMING));
+    Assertions.assertEquals("&ht=event", TestUtils.callFormatTo(HitTypeParameter.EVENT));
+    Assertions.assertEquals("&ht=exception", TestUtils.callFormatTo(HitTypeParameter.EXCEPTION));
+    Assertions.assertEquals("&ht=item", TestUtils.callFormatTo(HitTypeParameter.ITEM));
+    Assertions.assertEquals("&ht=pageview", TestUtils.callFormatTo(HitTypeParameter.PAGEVIEW));
+    Assertions.assertEquals("&ht=screenview", TestUtils.callFormatTo(HitTypeParameter.SCREENVIEW));
+    Assertions.assertEquals("&ht=social", TestUtils.callFormatTo(HitTypeParameter.SOCIAL));
+    Assertions.assertEquals("&ht=timing", TestUtils.callFormatTo(HitTypeParameter.TIMING));
     Assertions.assertEquals("&ht=transaction",
-        TestUtils.callAppendTo(HitTypeParameter.TRANSACTION));
+        TestUtils.callFormatTo(HitTypeParameter.TRANSACTION));
   }
 }

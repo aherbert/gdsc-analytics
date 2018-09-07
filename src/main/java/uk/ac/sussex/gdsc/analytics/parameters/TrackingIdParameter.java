@@ -26,13 +26,13 @@
 package uk.ac.sussex.gdsc.analytics.parameters;
 
 /**
- * Adds parameter {@code tid} to a URL.
+ * Adds the Tracking ID (tid) parameter.
  * 
  * <p>The format is UA-XXXX-Y.
  * 
  * @see <a href="http://goo.gl/a8d4RP#tid">Tracking Id</a>
  */
-public class TrackingIdParameter extends StringParameter {
+public class TrackingIdParameter extends TextParameter {
 
   /**
    * Instantiates a new instance.
@@ -42,7 +42,7 @@ public class TrackingIdParameter extends StringParameter {
    * @param trackingId the tracking id
    * @throws IllegalArgumentException if tracking ID is invalid
    */
-  public TrackingIdParameter(String trackingId) throws IllegalArgumentException {
-    super("&tid", ParameterUtils.validateTrackingId(trackingId));
+  public TrackingIdParameter(String trackingId) {
+    super(Parameter.TRACKING_ID, ParameterUtils.validateTrackingId(trackingId));
   }
 }

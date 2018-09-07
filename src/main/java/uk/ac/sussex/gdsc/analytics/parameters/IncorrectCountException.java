@@ -25,38 +25,53 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
-import java.util.Objects;
-
 /**
- * Stores a named {@link String} parameter.
+ * Thrown when the expected count did not match the observed count.
  */
-public class StringParameter extends NamedParameter {
-
-  /** The value. */
-  private final String value;
+public class IncorrectCountException extends RuntimeException {
 
   /**
-   * Instantiates a new instance.
-   *
-   * @param name the name
-   * @param value the value
+   * The serial version ID.
    */
-  public StringParameter(String name, String value) {
-    super(name);
-    this.value = Objects.requireNonNull(value, "Value is null");
+  private static final long serialVersionUID = -4676291340013989132L;
+
+  /** The index count. */
+  private final int expected;
+
+  /** The required index count. */
+  private final int observed;
+
+  /**
+   * Instantiates a new incorrect index count exception.
+   *
+   * @param expected the expected value
+   * @param observed the observed value
+   */
+  public IncorrectCountException(int expected, int observed) {
+    this.expected = expected;
+    this.observed = observed;
   }
 
   /**
-   * Gets the value.
+   * Gets the expected.
    *
-   * @return the value
+   * @return the expected
    */
-  public final String getValue() {
-    return value;
+  public int getExpected() {
+    return expected;
+  }
+
+  /**
+   * Gets the observed.
+   *
+   * @return the observed
+   */
+  public int getObserved() {
+    return observed;
   }
 
   @Override
-  public void appendTo(StringBuilder sb) {
-    FormattedParameterHelper.append(sb, getName(), value);
+  public String getMessage() {
+    return String.format("Incorrect count: expected %d, observed = %d", expected, observed);
   }
 }

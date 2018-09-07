@@ -25,41 +25,46 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
-/**
- * A generic boolean parameter for a {@link Parameter} with zero indexes.
- * 
- * <p>Stores the boolean value as a {@code boolean}.
- */
-public class BooleanParameter extends NoIndexParameter {
+import java.util.Objects;
 
-  /** The value. */
-  private final Boolean value;
+/**
+ * Base class to implements the {@link FormattedParameter} interface for a {@link Parameter}.
+ */
+abstract class BaseParameter implements FormattedParameter {
+
+  /** The parameter. */
+  private final Parameter parameter;
 
   /**
-   * Creates a new instance.
+   * Create a new instance.
    *
    * @param parameter the parameter
-   * @param value the value
-   * @throws IncorrectCountException If the parameter index count is not zero
-   * @throws IncorrectValueTypeException If the parameter value type is incorrect
    */
-  public BooleanParameter(Parameter parameter, Boolean value) {
-    super(parameter);
-    ParameterUtils.compatibleValueType(ValueType.BOOLEAN, parameter.getValueType());
-    this.value = value;
+  public BaseParameter(Parameter parameter) {
+    this.parameter = Objects.requireNonNull(parameter, "Parameter");
   }
 
   /**
-   * Gets the value.
+   * Gets the parameter.
    *
-   * @return the value
+   * @return the parameter
    */
-  public Boolean getValue() {
-    return value;
+  public Parameter getParameter() {
+    return parameter;
   }
 
-  @Override
-  public StringBuilder formatTo(StringBuilder sb) {
-    return appendNameEquals(sb).append((getValue()) ? '1' : '0');
-  }
+  /**
+   * Append "{@code name=}" to the {@link StringBuilder}. The '{@code =}' (equals) character must be
+   * included.
+   * 
+   * This is the {@code name} component of a {@code name=value} pair for the
+   * {@link FormattedParameter#formatTo(StringBuilder)} interface method.
+   * 
+   * <p>The {@code name} is expected be a correctly formatted parameter key for a URL, i.e. special
+   * characters must be encoded.
+   *
+   * @param sb the string builder
+   * @return the string builder
+   */
+  protected abstract StringBuilder appendNameEquals(StringBuilder sb);
 }

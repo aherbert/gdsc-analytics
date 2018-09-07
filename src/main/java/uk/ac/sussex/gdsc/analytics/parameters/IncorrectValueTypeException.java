@@ -26,36 +26,52 @@
 package uk.ac.sussex.gdsc.analytics.parameters;
 
 /**
- * Adds parameter {@code v=1} to a URL.
- * 
- * @see <a href="http://goo.gl/a8d4RP#v">Protocol Version</a>
+ * Thrown when the expected value type did not match the observed value type.
  */
-public final class Version1Parameter implements FormattedParameter {
+public class IncorrectValueTypeException extends RuntimeException {
 
-  /** The default instance. */
-  private static final Version1Parameter DEFAULT_INSTANCE = new Version1Parameter();
   /**
-   * The version characters. Used as a alternative to {@link StringBuilder#append(String)} to avoid
-   * the lengths checks within that method.
+   * The serial version ID.
    */
-  private static final char[] VERSION = "&v=1".toCharArray();
+  private static final long serialVersionUID = 5804629685439288868L;
+
+  /** The index count. */
+  private final ValueType expected;
+
+  /** The required index count. */
+  private final ValueType observed;
 
   /**
-   * No public constructor.
-   */
-  private Version1Parameter() {}
-
-  /**
-   * Gets the default instance.
+   * Instantiates a new incorrect index value type exception.
    *
-   * @return the default instance
+   * @param expected the expected value
+   * @param observed the observed value
    */
-  public static Version1Parameter getDefaultInstance() {
-    return DEFAULT_INSTANCE;
+  public IncorrectValueTypeException(ValueType expected, ValueType observed) {
+    this.expected = expected;
+    this.observed = observed;
+  }
+
+  /**
+   * Gets the expected.
+   *
+   * @return the expected
+   */
+  public ValueType getExpected() {
+    return expected;
+  }
+
+  /**
+   * Gets the observed.
+   *
+   * @return the observed
+   */
+  public ValueType getObserved() {
+    return observed;
   }
 
   @Override
-  public void appendTo(StringBuilder sb) {
-    sb.append(VERSION);
+  public String getMessage() {
+    return String.format("Incorrect value type: expected %s, observed = %s", expected, observed);
   }
 }

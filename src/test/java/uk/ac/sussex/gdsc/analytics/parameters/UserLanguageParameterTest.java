@@ -50,10 +50,10 @@ public class UserLanguageParameterTest {
     for (int i = 0; i < 5; i++) {
       String value = TestUtils.randomName(rg, 3);
       Assertions.assertEquals(String.format("&ul=%s", value),
-          TestUtils.callAppendTo(new UserLanguageParameter(value)));
+          TestUtils.callFormatTo(new UserLanguageParameter(value)));
     }
     String value = Locale.getDefault().toLanguageTag();
     Assertions.assertEquals(String.format("&ul=%s", value),
-        TestUtils.callAppendTo(new UserLanguageParameter()));
+        TestUtils.callFormatTo(new UserLanguageParameter()));
   }
 }

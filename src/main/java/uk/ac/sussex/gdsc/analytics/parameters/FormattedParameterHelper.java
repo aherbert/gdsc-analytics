@@ -104,16 +104,4 @@ public final class FormattedParameterHelper {
   public static void append(StringBuilder sb, String key, int keyId, int value) {
     sb.append(key).append(keyId).append('=').append(value);
   }
-
-  /**
-   * Append {@code key=width x height} (without the spaces).
-   *
-   * @param sb the string builder
-   * @param key the key
-   * @param width the width
-   * @param height the height
-   */
-  public static void appendResolution(StringBuilder sb, String key, int width, int height) {
-    sb.append(key).append('=').append(width).append('x').append(height);
-  }
 }

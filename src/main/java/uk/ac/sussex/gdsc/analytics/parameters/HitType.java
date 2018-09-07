@@ -25,41 +25,48 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
+import java.util.Locale;
+
 /**
- * A generic boolean parameter for a {@link Parameter} with zero indexes.
+ * Defines hit type values for the Google Analytics Measurement Protocol.
  * 
- * <p>Stores the boolean value as a {@code boolean}.
+ * @see <a href="http://goo.gl/a8d4RP#t">Hit type</a>
  */
-public class BooleanParameter extends NoIndexParameter {
+public enum HitType {
+  /** The pageview hit-type. */
+  PAGEVIEW,
+  /** The screenview hit-type. */
+  SCREENVIEW,
+  /** The event hit-type. */
+  EVENT,
+  /** The transaction hit-type. */
+  TRANSACTION,
+  /** The item hit-type. */
+  ITEM,
+  /** The social hit-type. */
+  SOCIAL,
+  /** The exception hit-type. */
+  EXCEPTION,
+  /** The timing hit-type. */
+  TIMING;
 
-  /** The value. */
-  private final Boolean value;
+  /** The name. */
+  private final String name;
 
   /**
-   * Creates a new instance.
-   *
-   * @param parameter the parameter
-   * @param value the value
-   * @throws IncorrectCountException If the parameter index count is not zero
-   * @throws IncorrectValueTypeException If the parameter value type is incorrect
+   * Instantiates a new hit type.
    */
-  public BooleanParameter(Parameter parameter, Boolean value) {
-    super(parameter);
-    ParameterUtils.compatibleValueType(ValueType.BOOLEAN, parameter.getValueType());
-    this.value = value;
+  private HitType() {
+    this.name = super.toString().toLowerCase(Locale.getDefault());
   }
 
-  /**
-   * Gets the value.
+  /*
+   * (non-Javadoc)
    *
-   * @return the value
+   * @see java.lang.Enum#toString()
    */
-  public Boolean getValue() {
-    return value;
-  }
-
   @Override
-  public StringBuilder formatTo(StringBuilder sb) {
-    return appendNameEquals(sb).append((getValue()) ? '1' : '0');
+  public String toString() {
+    return name;
   }
 }

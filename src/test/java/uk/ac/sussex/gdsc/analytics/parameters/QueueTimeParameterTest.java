@@ -45,7 +45,7 @@ public class QueueTimeParameterTest {
     for (int i = 0; i < 3; i++) {
       long stamp = timestamp - rg.nextInt(1000);
       QueueTimeParameter qt = new QueueTimeParameter(stamp);
-      String s = TestUtils.callAppendTo(qt);
+      String s = TestUtils.callFormatTo(qt);
       Assertions.assertTrue(pattern.matcher(s).matches(), s);
       Assertions.assertEquals(stamp, qt.getValue());
       sb.setLength(0);

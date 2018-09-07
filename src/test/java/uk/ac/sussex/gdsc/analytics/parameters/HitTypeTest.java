@@ -25,41 +25,18 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
-/**
- * A generic boolean parameter for a {@link Parameter} with zero indexes.
- * 
- * <p>Stores the boolean value as a {@code boolean}.
- */
-public class BooleanParameter extends NoIndexParameter {
+import java.util.Locale;
 
-  /** The value. */
-  private final Boolean value;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-  /**
-   * Creates a new instance.
-   *
-   * @param parameter the parameter
-   * @param value the value
-   * @throws IncorrectCountException If the parameter index count is not zero
-   * @throws IncorrectValueTypeException If the parameter value type is incorrect
-   */
-  public BooleanParameter(Parameter parameter, Boolean value) {
-    super(parameter);
-    ParameterUtils.compatibleValueType(ValueType.BOOLEAN, parameter.getValueType());
-    this.value = value;
-  }
-
-  /**
-   * Gets the value.
-   *
-   * @return the value
-   */
-  public Boolean getValue() {
-    return value;
-  }
-
-  @Override
-  public StringBuilder formatTo(StringBuilder sb) {
-    return appendNameEquals(sb).append((getValue()) ? '1' : '0');
+@SuppressWarnings("javadoc")
+public class HitTypeTest {
+  @Test
+  public void testToString() {
+    for (final HitType ht : HitType.values()) {
+      String expected = String.valueOf(ht).toLowerCase(Locale.getDefault());
+      Assertions.assertEquals(expected, ht.toString());
+    }
   }
 }

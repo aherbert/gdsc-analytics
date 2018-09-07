@@ -25,47 +25,38 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
-import java.util.Locale;
-
 /**
- * Stores valid values for session control.
+ * Implements the {@link FormattedParameter} interface for {@link SessionControl}.
  * 
  * @see <a href="http://goo.gl/a8d4RP#sc">Session Control</a>
  */
-public enum SessionControlParameter implements FormattedParameter {
-  /** Forces a new session to start with this hit. */
-  START,
-  /** Forces the current session to end with this hit. */
-  END;
-
-  /** The name. */
-  private final String name;
+public class SessionControlParameter implements FormattedParameter {
+  /** The session start parameter. */
+  public static final SessionControlParameter START =
+      new SessionControlParameter(SessionControl.START);
+  /** The session end parameter. */
+  public static final SessionControlParameter END = new SessionControlParameter(SessionControl.END);
 
   /**
-   * The parameter string used for the {@link FormattedParameter} interface.
+   * The formatted parameter string used for the {@link FormattedParameter} interface.
    */
-  private final char[] parameter;
+  private final char[] chars;
 
   /**
-   * Instantiates a new hit type.
-   */
-  private SessionControlParameter() {
-    this.name = super.toString().toLowerCase(Locale.getDefault());
-    parameter = ("&sc=" + name).toCharArray();
-  }
-
-  /*
-   * (non-Javadoc)
+   * Instantiates a new session control parameter.
    *
-   * @see java.lang.Enum#toString()
+   * @param sessionControl the session control
    */
-  @Override
-  public String toString() {
-    return name;
+  private SessionControlParameter(SessionControl sessionControl) {
+    final StringBuilder sb = new StringBuilder();
+    sb.append(Parameter.SESSION_CONTROL.getNameFormat());
+    sb.append(ParameterUtils.EQUAL);
+    sb.append(sessionControl.toString());
+    chars = ParameterUtils.getChars(sb);
   }
 
   @Override
-  public void appendTo(StringBuilder sb) {
-    sb.append(parameter);
+  public StringBuilder formatTo(StringBuilder sb) {
+    return sb.append(chars);
   }
 }

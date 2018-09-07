@@ -26,40 +26,24 @@
 package uk.ac.sussex.gdsc.analytics.parameters;
 
 /**
- * A generic boolean parameter for a {@link Parameter} with zero indexes.
- * 
- * <p>Stores the boolean value as a {@code boolean}.
+ * Base class to implements the {@link FormattedParameter} interface for a {@link Parameter} with
+ * no indexes.
  */
-public class BooleanParameter extends NoIndexParameter {
-
-  /** The value. */
-  private final Boolean value;
+abstract class NoIndexParameter extends BaseParameter {
 
   /**
-   * Creates a new instance.
+   * Create a new instance.
    *
    * @param parameter the parameter
-   * @param value the value
-   * @throws IncorrectCountException If the parameter index count is not zero
-   * @throws IncorrectValueTypeException If the parameter value type is incorrect
+   * @throws IncorrectCountException If the index count is not zero
    */
-  public BooleanParameter(Parameter parameter, Boolean value) {
+  public NoIndexParameter(Parameter parameter) {
     super(parameter);
-    ParameterUtils.compatibleValueType(ValueType.BOOLEAN, parameter.getValueType());
-    this.value = value;
-  }
-
-  /**
-   * Gets the value.
-   *
-   * @return the value
-   */
-  public Boolean getValue() {
-    return value;
+    ParameterUtils.validateCount(parameter.getNumberOfIndexes(), 0);
   }
 
   @Override
-  public StringBuilder formatTo(StringBuilder sb) {
-    return appendNameEquals(sb).append((getValue()) ? '1' : '0');
+  protected StringBuilder appendNameEquals(StringBuilder sb) {
+    return sb.append(getParameter().getNameFormat()).append(ParameterUtils.EQUAL);
   }
 }

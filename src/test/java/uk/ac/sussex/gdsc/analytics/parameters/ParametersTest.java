@@ -47,7 +47,6 @@ public class ParametersTest {
   String clientId = "123e4567-e89b-12d3-a456-426655440000";
   String clientId2 = "00112233-4455-6677-8899-aabbccddeeff";
   String userId = "Mr. Test";
-  String host = "http://www.abc.com";
 
   @Test
   public void testRequiredBuilder() throws MalformedURLException {
@@ -249,13 +248,13 @@ public class ParametersTest {
   }
 
   /**
-   * Creates the URL using a dummy hostname and adding the formatted GET string.
+   * Creates the URL using a dummy hostname and adding the formatted string for a GET request.
    *
    * @param parameters the parameters
    * @return the url
    * @throws MalformedURLException the malformed URL exception
    */
-  private URL createURL(Parameters parameters) throws MalformedURLException {
-    return new URL(host + parameters.toGetString());
+  private static URL createURL(Parameters parameters) throws MalformedURLException {
+    return new URL("http://www.abc.com?" + parameters.format());
   }
 }

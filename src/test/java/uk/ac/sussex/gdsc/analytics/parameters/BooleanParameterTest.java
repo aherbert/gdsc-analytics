@@ -42,7 +42,7 @@ public class BooleanParameterTest {
       boolean value = rg.nextBoolean();
       BooleanParameter bp = new BooleanParameter("&" + name, value);
       Assertions.assertEquals(String.format("&%s=%c", name, (value) ? '1' : '0'),
-          TestUtils.callAppendTo(bp));
+          TestUtils.callFormatTo(bp));
       Assertions.assertEquals(value, bp.isValue());
     }
   }

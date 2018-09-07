@@ -26,21 +26,26 @@
 package uk.ac.sussex.gdsc.analytics.parameters;
 
 /**
- * Stores a named {@code int} parameter.
+ * A generic integer parameter for a {@link Parameter} with zero indexes.
+ * 
+ * <p>Stores the integer value as a {@code int}.
  */
-public class IntParameter extends NamedParameter {
+public class IntParameter extends NoIndexParameter {
 
   /** The value. */
   private final int value;
 
   /**
-   * Instantiates a new instance.
+   * Creates a new instance.
    *
-   * @param name the name
+   * @param parameter the parameter
    * @param value the value
+   * @throws IncorrectCountException If the parameter index count is not zero
+   * @throws IncorrectValueTypeException If the parameter value type is incorrect
    */
-  public IntParameter(String name, int value) {
-    super(name);
+  public IntParameter(Parameter parameter, int value) {
+    super(parameter);
+    ParameterUtils.compatibleValueType(ValueType.INTEGER, parameter.getValueType());
     this.value = value;
   }
 
@@ -49,12 +54,12 @@ public class IntParameter extends NamedParameter {
    *
    * @return the value
    */
-  public final int getValue() {
+  public int getValue() {
     return value;
   }
 
   @Override
-  public void appendTo(StringBuilder sb) {
-    FormattedParameterHelper.append(sb, getName(), value);
+  public StringBuilder formatTo(StringBuilder sb) {
+    return appendNameEquals(sb).append(getValue());
   }
 }

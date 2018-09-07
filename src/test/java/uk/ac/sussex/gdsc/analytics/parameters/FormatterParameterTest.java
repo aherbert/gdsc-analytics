@@ -34,77 +34,92 @@ import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
 public class FormatterParameterTest {
-  @Test
-  public void testToPostString() {
-    // With empty
-    FormattedParameter fp = (sb) -> {
-      // Do nothing
-    };
-    Assertions.assertEquals("", fp.toPostString());
 
+  // Test the default methods
+
+  @Test
+  public void testAppendTo() {
+    // When nothing is added
+    {
+      FormattedParameter fp = (sb) -> sb;
+      StringBuilder sb = new StringBuilder();
+      Assertions.assertEquals("", fp.appendTo2(sb).toString());
+      Assertions.assertEquals("", fp.appendTo2(sb).toString());
+    }
+
+    // When something is added
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (int i = 0; i < 5; i++) {
       final String name = TestUtils.randomName(rg, 10);
-      fp = (sb) -> sb.append('&').append(name);
-      Assertions.assertEquals(name, fp.toPostString());
+      FormattedParameter fp = (sb) -> sb.append(name);
+      StringBuilder sb = new StringBuilder();
+      Assertions.assertEquals(name, fp.appendTo2(sb).toString());
+      // When something is added an '&' character is used to separate them
+      Assertions.assertEquals(name + "&" + name, fp.appendTo2(sb).toString());
     }
   }
 
   @Test
-  public void testToGetString() {
+  public void testFormat() {
     // With empty
-    FormattedParameter fp = (sb) -> {
-      // Do nothing
-    };
-    Assertions.assertEquals("", fp.toGetString());
+    FormattedParameter fp = (sb) -> sb;
+    Assertions.assertEquals("", fp.format());
 
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (int i = 0; i < 5; i++) {
       final String name = TestUtils.randomName(rg, 10);
-      fp = (sb) -> sb.append('&').append(name);
-      Assertions.assertEquals("?" + name, fp.toGetString());
+      fp = (sb) -> sb.append(name);
+      Assertions.assertEquals(name, fp.format());
     }
   }
 
   @Test
-  public void testSimplify() {
+  public void testFreeze() {
     // With empty
-    FormattedParameter fp = (sb) -> {
-      // Do nothing
-    };
-    FormattedParameter fp2 = fp.simplify();
+    FormattedParameter fp = (sb) -> sb;
+    FormattedParameter fp2 = fp.freeze();
     Assertions.assertNotSame(fp, fp2);
-    Assertions.assertEquals("", TestUtils.callAppendTo(fp2));
-    Assertions.assertEquals("", fp2.toPostString());
-    Assertions.assertEquals("", fp2.toGetString());
-    Assertions.assertSame(fp2, fp2.simplify());
+    Assertions.assertEquals("", callFormatTo(fp2));
+    Assertions.assertEquals("", fp2.format());
+    Assertions.assertSame(fp2, fp2.freeze());
 
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (int i = 0; i < 5; i++) {
       final String name = TestUtils.randomName(rg, 10);
-      fp = (sb) -> sb.append('&').append(name);
-      String appendTo = TestUtils.callAppendTo(fp);
-      String postString = fp.toPostString();
-      String getString = fp.toGetString();
-      Assertions.assertEquals(name, postString);
-      Assertions.assertEquals("?" + name, getString);
-      fp2 = fp.simplify();
+      fp = (sb) -> sb.append(name);
+      String appendToString = callFormatTo(fp);
+      String formatString = fp.format();
+      Assertions.assertEquals(name, fp.format());
+      fp2 = fp.freeze();
       Assertions.assertNotSame(fp, fp2);
-      Assertions.assertEquals(appendTo, TestUtils.callAppendTo(fp2));
-      Assertions.assertEquals(postString, fp2.toPostString());
-      Assertions.assertEquals(getString, fp2.toGetString());
-      Assertions.assertSame(fp2, fp2.simplify());
+      Assertions.assertEquals(appendToString, callFormatTo(fp2));
+      Assertions.assertEquals(formatString, fp2.format());
+      Assertions.assertSame(fp2, fp2.freeze());
     }
   }
 
   @Test
   public void testEmpty() {
     FormattedParameter fp = FormattedParameter.empty();
-    Assertions.assertEquals("", TestUtils.callAppendTo(fp));
-    Assertions.assertEquals("", fp.toPostString());
-    Assertions.assertEquals("", fp.toGetString());
-    Assertions.assertSame(fp, fp.simplify());
+    Assertions.assertEquals("", callFormatTo(fp));
+    Assertions.assertEquals("", fp.format());
+    Assertions.assertSame(fp, fp.freeze());
     FormattedParameter fp2 = FormattedParameter.empty();
     Assertions.assertNotSame(fp, fp2);
+  }
+
+  /**
+   * Call {@link FormattedParameter#formatTo(StringBuilder)} and return the string from a fresh
+   * StringBuilder.
+   * 
+   * <p>This is
+   *
+   * @param parameter the parameter
+   * @return the string
+   */
+  public static String callFormatTo(FormattedParameter parameter) {
+    final StringBuilder sb = new StringBuilder();
+    parameter.formatTo(sb);
+    return sb.toString();
   }
 }

@@ -26,29 +26,34 @@
 package uk.ac.sussex.gdsc.analytics.parameters;
 
 /**
- * Base class for named parameter.
+ * Implements the {@link FormattedParameter} interface for {@link ProtocolVersion}.
+ * 
+ * @see <a href="http://goo.gl/a8d4RP#sc">Session Control</a>
  */
-abstract class NamedParameter implements FormattedParameter {
-  /** The name. */
-  private final String name;
+public class ProtocolVersionParameter implements FormattedParameter {
+  /** The protocol version 1 parameter. */
+  public static final ProtocolVersionParameter V1 = new ProtocolVersionParameter(ProtocolVersion.V1);
 
   /**
-   * Instantiates a new named parameter.
-   * 
-   * <p>Note the name is not checked if it is null or empty.
-   *
-   * @param name the name
+   * The formatted parameter string used for the {@link FormattedParameter} interface.
    */
-  public NamedParameter(String name) {
-    this.name = name;
+  private final char[] chars;
+
+  /**
+   * Instantiates a new protocol version parameter.
+   *
+   * @param version the version
+   */
+  private ProtocolVersionParameter(ProtocolVersion version) {
+    final StringBuilder sb = new StringBuilder();
+    sb.append(Parameter.PROTOCOL_VERSION.getNameFormat());
+    sb.append(ParameterUtils.EQUAL);
+    sb.append(version.getVersion());
+    chars = ParameterUtils.getChars(sb);
   }
 
-  /**
-   * Gets the name of the parameter.
-   *
-   * @return the name
-   */
-  public final String getName() {
-    return name;
+  @Override
+  public StringBuilder formatTo(StringBuilder sb) {
+    return sb.append(chars);
   }
 }

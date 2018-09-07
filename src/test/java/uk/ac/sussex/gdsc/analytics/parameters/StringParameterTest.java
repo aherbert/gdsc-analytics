@@ -49,7 +49,7 @@ public class StringParameterTest {
       String name = TestUtils.randomName(rg, 3);
       String value = TestUtils.randomName(rg, 3);
       StringParameter sp = new StringParameter("&" + name, value);
-      Assertions.assertEquals(String.format("&%s=%s", name, value), TestUtils.callAppendTo(sp));
+      Assertions.assertEquals(String.format("&%s=%s", name, value), TestUtils.callFormatTo(sp));
       Assertions.assertEquals(value, sp.getValue());
     }
   }

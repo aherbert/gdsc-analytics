@@ -102,7 +102,7 @@ public class ConnectionTest {
     String documentPath = "/path/within/application/";
     Parameters parameters = ga.pageview(documentHostName, documentPath).build();
     DefaultHttpUrlConnectionCallback content = new DefaultHttpUrlConnectionCallback();
-    DispatchStatus status = ga.getHitDispatcher().send(parameters.toPostString(), 0, content);
+    DispatchStatus status = ga.getHitDispatcher().send(parameters.format(), 0, content);
     System.out.println(status);
     System.out.println(content.getResponseCode());
       System.out.println(content.getContentType());

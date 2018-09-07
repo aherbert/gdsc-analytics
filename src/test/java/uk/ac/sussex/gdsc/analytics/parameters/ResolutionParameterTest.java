@@ -43,7 +43,7 @@ public class ResolutionParameterTest {
       int height = rg.nextInt(1080);
       ResolutionParameter rp = new ResolutionParameter("&" + name, width, height);
       Assertions.assertEquals(String.format("&%s=%dx%d", name, width, height),
-          TestUtils.callAppendTo(rp));
+          TestUtils.callFormatTo(rp));
       Assertions.assertEquals(width, rp.getWidth());
       Assertions.assertEquals(height, rp.getHeight());
     }

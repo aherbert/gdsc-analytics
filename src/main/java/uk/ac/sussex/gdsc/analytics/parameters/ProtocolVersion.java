@@ -26,41 +26,30 @@
 package uk.ac.sussex.gdsc.analytics.parameters;
 
 /**
- * Stores a named indexed {@code String} parameter, e.g. {@code key+keyId=value} where
- * {@code key+keyId} is the equivalent of the string result of adding the key and the key Id.
+ * Defines version values for the Google Analytics Measurement Protocol.
  * 
- * @see <a href="http://goo.gl/a8d4RP#cd_">Custom Dimension</a>
- * @see <a href="http://goo.gl/a8d4RP#cg_">Content Group</a>
+ * @see <a href="http://goo.gl/a8d4RP#v">Version</a>
  */
-public class IndexedStringParameter extends StringParameter {
-  /** The index. */
-  private final int index;
+public enum ProtocolVersion {
+  /** Version 1. */
+  V1(1);
+
+  /** The version. */
+  private final int version;
 
   /**
-   * Instantiates a new instance.
-   *
-   * @param name the name
-   * @param index the index
-   * @param value the value
-   * @throws IllegalArgumentException If the index is not strictly positive
+   * Instantiates a new hit type.
    */
-  public IndexedStringParameter(String name, int index, String value)
-      throws IllegalArgumentException {
-    super(name, value);
-    this.index = ParameterUtils.requireStrictlyPositive(index, "index");
+  private ProtocolVersion(int version) {
+    this.version = version;
   }
 
   /**
-   * Gets the index.
+   * Gets the version.
    *
-   * @return the index
+   * @return the version
    */
-  public int getIndex() {
-    return index;
-  }
-
-  @Override
-  public void appendTo(StringBuilder sb) {
-    FormattedParameterHelper.append(sb, getName(), index, getValue());
+  public int getVersion() {
+    return version;
   }
 }

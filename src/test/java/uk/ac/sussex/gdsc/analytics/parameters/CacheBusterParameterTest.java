@@ -39,7 +39,7 @@ public class CacheBusterParameterTest {
     CacheBusterParameter cb = new CacheBusterParameter();
     Pattern pattern = Pattern.compile("^&z=-?[0-9]+$");
     for (int i = 0; i < 10; i++) {
-      String s = TestUtils.callAppendTo(cb);
+      String s = TestUtils.callFormatTo(cb);
       Assertions.assertTrue(pattern.matcher(s).matches(), s);
     }
   }

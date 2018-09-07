@@ -25,59 +25,47 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
-import java.util.Locale;
-
 /**
- * Stores valid values for a hit type.
+ * Implements the {@link FormattedParameter} interface for {@link HitType}.
  * 
  * @see <a href="http://goo.gl/a8d4RP#t">Hit type</a>
  */
-public enum HitTypeParameter implements FormattedParameter {
+public final class HitTypeParameter implements FormattedParameter {
   /** The pageview hit-type. */
-  PAGEVIEW,
+  public static final HitTypeParameter PAGEVIEW = new HitTypeParameter(HitType.PAGEVIEW);
   /** The screenview hit-type. */
-  SCREENVIEW,
+  public static final HitTypeParameter SCREENVIEW = new HitTypeParameter(HitType.SCREENVIEW);
   /** The event hit-type. */
-  EVENT,
+  public static final HitTypeParameter EVENT = new HitTypeParameter(HitType.EVENT);
   /** The transaction hit-type. */
-  TRANSACTION,
+  public static final HitTypeParameter TRANSACTION = new HitTypeParameter(HitType.TRANSACTION);
   /** The item hit-type. */
-  ITEM,
+  public static final HitTypeParameter ITEM = new HitTypeParameter(HitType.ITEM);
   /** The social hit-type. */
-  SOCIAL,
+  public static final HitTypeParameter SOCIAL = new HitTypeParameter(HitType.SOCIAL);
   /** The exception hit-type. */
-  EXCEPTION,
+  public static final HitTypeParameter EXCEPTION = new HitTypeParameter(HitType.EXCEPTION);
   /** The timing hit-type. */
-  TIMING;
-
-  /** The name. */
-  private final String name;
+  public static final HitTypeParameter TIMING = new HitTypeParameter(HitType.TIMING);
 
   /**
-   * The parameter string used for the {@link FormattedParameter} interface.
+   * The formatted parameter string used for the {@link FormattedParameter} interface.
    */
-  private final char[] parameter;
+  private final char[] chars;
 
   /**
-   * Instantiates a new hit type.
+   * Instantiates a new hit type parameter.
    */
-  private HitTypeParameter() {
-    this.name = super.toString().toLowerCase(Locale.getDefault());
-    parameter = ("&ht=" + name).toCharArray();
-  }
-
-  /*
-   * (non-Javadoc)
-   *
-   * @see java.lang.Enum#toString()
-   */
-  @Override
-  public String toString() {
-    return name;
+  private HitTypeParameter(HitType hitType) {
+    final StringBuilder sb = new StringBuilder();
+    sb.append(Parameter.HIT_TYPE.getNameFormat());
+    sb.append(ParameterUtils.EQUAL);
+    sb.append(hitType.toString());
+    chars = ParameterUtils.getChars(sb);
   }
 
   @Override
-  public void appendTo(StringBuilder sb) {
-    sb.append(parameter);
+  public StringBuilder formatTo(StringBuilder sb) {
+    return sb.append(chars);
   }
 }

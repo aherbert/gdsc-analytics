@@ -33,38 +33,34 @@ package uk.ac.sussex.gdsc.analytics.parameters;
  * 
  * @see <a href="http://goo.gl/a8d4RP#qt">Queue Time</a>
  */
-public class QueueTimeParameter implements FormattedParameter {
+public class QueueTimeParameter extends NoIndexParameter {
+
+  /** The timestamp. */
+  private final long timestamp;
 
   /**
-   * The name prefix characters. Used as a alternative to {@link StringBuilder#append(String)} to
-   * avoid the lengths checks within that method.
-   */
-  private static final char[] PREFIX = "&qt=".toCharArray();
-
-  /** The value. */
-  private final long value;
-
-  /**
-   * Instantiates a new instance.
+   * Instantiates a new queue time parameter using the provide timestamp to mark when the hit
+   * occurred.
    *
-   * @param value the value
+   * @param timestamp the timestamp
    */
-  public QueueTimeParameter(long value) {
-    this.value = value;
+  public QueueTimeParameter(long timestamp) {
+    super(Parameter.QUEUE_TIME);
+    this.timestamp = timestamp;
   }
 
   /**
-   * Gets the value.
+   * Gets the timestamp when the hit occurred.
    *
-   * @return the value
+   * @return the timestamp
    */
-  public final long getValue() {
-    return value;
+  public long getTimestamp() {
+    return timestamp;
   }
 
   @Override
-  public void appendTo(StringBuilder sb) {
-    sb.append(PREFIX).append(value);
+  public StringBuilder formatTo(StringBuilder sb) {
+    return appendNameEquals(sb).append(System.currentTimeMillis() - timestamp);
   }
 
   /**
@@ -79,6 +75,7 @@ public class QueueTimeParameter implements FormattedParameter {
    * @param timestamp the timestamp when the hit occurred (in milliseconds)
    */
   public static void appendTo(StringBuilder sb, long timestamp) {
-    sb.append(PREFIX).append(System.currentTimeMillis() - timestamp);
+    sb.append(Parameter.QUEUE_TIME.getNameFormat()).append(ParameterUtils.EQUAL)
+        .append(System.currentTimeMillis() - timestamp);
   }
 }

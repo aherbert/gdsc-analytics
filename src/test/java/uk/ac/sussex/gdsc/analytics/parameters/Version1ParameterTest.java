@@ -34,6 +34,6 @@ import org.junit.jupiter.api.Test;
 public class Version1ParameterTest {
   @Test
   public void testFormat() {
-    Assertions.assertEquals("&v=1", TestUtils.callAppendTo(Version1Parameter.getDefaultInstance()));
+    Assertions.assertEquals("&v=1", TestUtils.callFormatTo(Version1Parameter.getDefaultInstance()));
   }
 }

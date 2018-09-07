@@ -35,7 +35,7 @@ import java.io.IOException;
  * <p>Any errors should be caught and stored as an {@link IOException} to be retrieved using
  * {@link #getLastIoException()}.
  * 
- * <p>The hit may be generated using {@link FormattedParameter#toPostString()}.
+ * <p>The hit may be generated using {@link FormattedParameter#format()}.
  */
 public interface HitDispatcher {
 
@@ -58,7 +58,7 @@ public interface HitDispatcher {
    *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/validating-hits">Validating
    *      Hits</a>
    */
-  DispatchStatus send(String hit, long timestamp, HttpUrlConnectionCallback callback);
+  DispatchStatus send(CharSequence hit, long timestamp, HttpUrlConnectionCallback callback);
 
   /**
    * Send the hit to Google Analytics.
@@ -75,7 +75,7 @@ public interface HitDispatcher {
    *      href="https://developers.google.com/analytics/devguides/collection/protocol/v1/validating-hits">Validating
    *      Hits</a>
    */
-  default DispatchStatus send(String hit, long timestamp) {
+  default DispatchStatus send(CharSequence hit, long timestamp) {
     return send(hit, timestamp, null);
   }
 

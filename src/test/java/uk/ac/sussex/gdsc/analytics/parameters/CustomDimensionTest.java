@@ -53,7 +53,7 @@ public class CustomDimensionTest {
       int index = 1 + rg.nextInt(20);
       String value = TestUtils.randomName(rg, 3);
       CustomDimensionParameter cd = new CustomDimensionParameter(index, value);
-      Assertions.assertEquals(String.format("&cd%d=%s", index, value), TestUtils.callAppendTo(cd));
+      Assertions.assertEquals(String.format("&cd%d=%s", index, value), TestUtils.callFormatTo(cd));
       Assertions.assertEquals(index, cd.getIndex());
       Assertions.assertEquals(value, cd.getValue());
     }

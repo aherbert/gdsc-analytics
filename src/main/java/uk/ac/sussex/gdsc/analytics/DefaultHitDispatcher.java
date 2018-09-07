@@ -152,10 +152,10 @@ public class DefaultHitDispatcher implements HitDispatcher {
    * <p>The callback is invoked after the hit has been sent and
    * {@link HttpURLConnection#getResponseCode()} has returned successfully.
    * 
-   * @see HitDispatcher#send(java.lang.String, long, HttpUrlConnectionCallback)
+   * @see HitDispatcher#send(CharSequence, long, HttpUrlConnectionCallback)
    */
   @Override
-  public DispatchStatus send(String hit, long timestamp, HttpUrlConnectionCallback callback) {
+  public DispatchStatus send(CharSequence hit, long timestamp, HttpUrlConnectionCallback callback) {
     // Do nothing if disabled
     if (isDisabled()) {
       return DispatchStatus.DISABLED;
@@ -169,17 +169,22 @@ public class DefaultHitDispatcher implements HitDispatcher {
       connection.setRequestProperty("Content-Type",
           "application/x-www-form-urlencoded; charset=utf-8");
       // Build the request
-      String request;
+      CharSequence request;
+      // Add the queue time offset
       if (timestamp != 0) {
-        final StringBuilder sb = new StringBuilder(hit);
-        // Add the queue time offset
+        StringBuilder sb;
+        if (hit instanceof StringBuilder) {
+          sb = (StringBuilder) hit;
+        } else {
+          sb = new StringBuilder(hit);
+        }
         QueueTimeParameter.appendTo(sb, timestamp);
-        request = sb.toString();
+        request = sb;
       } else {
         request = hit;
       }
       // Send the request
-      final byte[] out = request.getBytes(StandardCharsets.UTF_8);
+      final byte[] out = request.toString().getBytes(StandardCharsets.UTF_8);
       final int length = out.length;
       connection.setFixedLengthStreamingMode(length);
       connection.connect();

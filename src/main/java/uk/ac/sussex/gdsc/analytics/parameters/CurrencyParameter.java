@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public
- * License along with this program.  If not, see
+ * License adouble with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
@@ -26,20 +26,40 @@
 package uk.ac.sussex.gdsc.analytics.parameters;
 
 /**
- * Stores a custom dimension parameter.
+ * A generic currency parameter for a {@link Parameter} with zero indexes.
  * 
- * @see <a href="http://goo.gl/a8d4RP#cd_">Custom Dimension</a>
+ * <p>Stores the currency value as a {@code double}.
  */
-public final class CustomDimensionParameter extends IndexedStringParameter {
+public class CurrencyParameter extends NoIndexParameter {
+
+  /** The value. */
+  private final double value;
 
   /**
-   * Instantiates a new custom dimension.
+   * Instantiates a new text parameter.
    *
-   * @param index the index
+   * @param parameter the parameter
    * @param value the value
-   * @throws IllegalArgumentException If the index is not strictly positive
+   * @throws IncorrectCountException If the parameter index count is not zero
+   * @throws IncorrectValueTypeException If the parameter type is incorrect
    */
-  public CustomDimensionParameter(int index, String value) throws IllegalArgumentException {
-    super("&cd", index, value);
+  public CurrencyParameter(Parameter parameter, double value) {
+    super(parameter);
+    ParameterUtils.compatibleValueType(ValueType.CURRENCY, parameter.getValueType());
+    this.value = value;
   }
+
+  /**
+   * Gets the value.
+   *
+   * @return the value
+   */
+  public double getValue() {
+    return value;
+  }
+
+  @Override
+  public StringBuilder formatTo(StringBuilder sb) {
+    return appendNameEquals(sb).append(getValue());
+  }  
 }

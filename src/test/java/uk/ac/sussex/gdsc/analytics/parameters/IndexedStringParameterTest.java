@@ -51,7 +51,7 @@ public class IndexedStringParameterTest {
       String value = TestUtils.randomName(rg, 3);
       IndexedStringParameter ip = new IndexedStringParameter("&" + name, index, value);
       Assertions.assertEquals(String.format("&%s%d=%s", name, index, value),
-          TestUtils.callAppendTo(ip));
+          TestUtils.callFormatTo(ip));
       Assertions.assertEquals(index, ip.getIndex());
       Assertions.assertEquals(value, ip.getValue());
     }

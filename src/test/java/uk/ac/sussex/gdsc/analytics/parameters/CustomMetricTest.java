@@ -50,7 +50,7 @@ public class CustomMetricTest {
       int index = 1 + rg.nextInt(20);
       int value = 1 + rg.nextInt(50);
       CustomMetricParameter cm = new CustomMetricParameter(index, value);
-      Assertions.assertEquals(String.format("&cm%d=%s", index, value), TestUtils.callAppendTo(cm));
+      Assertions.assertEquals(String.format("&cm%d=%s", index, value), TestUtils.callFormatTo(cm));
       Assertions.assertEquals(index, cm.getIndex());
       Assertions.assertEquals(value, cm.getValue());
     }

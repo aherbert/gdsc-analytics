@@ -25,15 +25,15 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
+import java.util.Objects;
+
 /**
- * A generic boolean parameter for a {@link Parameter} with zero indexes.
- * 
- * <p>Stores the boolean value as a {@code boolean}.
+ * A generic text parameter for a {@link Parameter} with zero indexes.
  */
-public class BooleanParameter extends NoIndexParameter {
+public class TextParameter extends NoIndexParameter {
 
   /** The value. */
-  private final Boolean value;
+  private final String value;
 
   /**
    * Creates a new instance.
@@ -43,10 +43,10 @@ public class BooleanParameter extends NoIndexParameter {
    * @throws IncorrectCountException If the parameter index count is not zero
    * @throws IncorrectValueTypeException If the parameter value type is incorrect
    */
-  public BooleanParameter(Parameter parameter, Boolean value) {
+  public TextParameter(Parameter parameter, String value) {
     super(parameter);
-    ParameterUtils.compatibleValueType(ValueType.BOOLEAN, parameter.getValueType());
-    this.value = value;
+    ParameterUtils.compatibleValueType(ValueType.TEXT, parameter.getValueType());
+    this.value = Objects.requireNonNull(value, "Value");
   }
 
   /**
@@ -54,12 +54,12 @@ public class BooleanParameter extends NoIndexParameter {
    *
    * @return the value
    */
-  public Boolean getValue() {
+  public String getValue() {
     return value;
   }
 
   @Override
   public StringBuilder formatTo(StringBuilder sb) {
-    return appendNameEquals(sb).append((getValue()) ? '1' : '0');
+    return appendNameEquals(sb).append(UrlEncoderHelper.encode(getValue()));
   }
 }

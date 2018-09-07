@@ -75,6 +75,10 @@ public class GoogleAnalyticsClient {
    * Used when ignoring requests due to {@link DispatchStatus#SHUTDOWN}.
    */
   private static final DispatchFuture FUTURE_SHUTDOWN = new DispatchFuture(DispatchStatus.SHUTDOWN);
+
+  /** The initial size for the buffer used for the hit string. */
+  private static final int HIT_BUFFER_SIZE = 512;
+
   /**
    * The executor service for dispatching background requests.
    */
@@ -83,12 +87,8 @@ public class GoogleAnalyticsClient {
   /** The hit dispatcher. */
   private final HitDispatcher hitDispatcher;
 
-  /**
-   * The client parameters. These are sent with each hit.
-   *
-   * <p>Stored as a string that is used to initialise the hit {@code StringBuilder}.
-   */
-  private final String clientParameters;
+  /** The client parameters. These are sent with each hit. */
+  private final FormattedParameter clientParameters;
 
   /** The session parameters. These are sent with each new session. */
   private final FormattedParameter sessionParameters;
@@ -156,9 +156,8 @@ public class GoogleAnalyticsClient {
      * Builds the {@link GoogleAnalyticsClient}.
      *
      * @return the google analytics client
-     * @throws MalformedUrlRuntimeException If the URL was malformed
      */
-    public GoogleAnalyticsClient build() throws MalformedUrlRuntimeException {
+    public GoogleAnalyticsClient build() {
 
       // This will work if user/client Id are null as it generates a random UUID
       final RequiredBuilder clientBuilder = Parameters.newRequiredBuilder(trackingId);
@@ -175,34 +174,15 @@ public class GoogleAnalyticsClient {
       if (perHitParameters != null) {
         clientBuilder.add(perHitParameters.build());
       }
+
+      // Fix the parameters
+      final FormattedParameter clientParameters = clientBuilder.build();
       final FormattedParameter sessionParameters =
           (perSessionParameters == null) ? FormattedParameter.empty()
               : perSessionParameters.build();
 
-      // Set up the dispatcher.
-      if (hitDispatcher == null) {
-        hitDispatcher = DefaultHitDispatcher.getDefault(isSecure(), isDebug());
-      }
-
-      return new GoogleAnalyticsClient(clientBuilder.build(), sessionParameters, sessionTimeout,
-          createExecutorService(), hitDispatcher);
-    }
-
-    /**
-     * Creates the executor service.
-     *
-     * @return the executor service
-     */
-    private ExecutorService createExecutorService() {
-      if (executorService == null) {
-        final ThreadFactory tf = new BackgroundThreadFactory(threadPriority);
-        if (threadCount <= 0) {
-          executorService = Executors.newCachedThreadPool(tf);
-        } else {
-          executorService = Executors.newFixedThreadPool(threadCount);
-        }
-      }
-      return executorService;
+      return new GoogleAnalyticsClient(clientParameters, sessionParameters, getSessionTimeout(),
+          getOrCreateExecutorService(), getOrCreateHitDispatcher());
     }
 
     /**
@@ -311,7 +291,7 @@ public class GoogleAnalyticsClient {
     /**
      * Sets the thread count for the default executor service.
      *
-     * <p>If set to zero then a cached thread pool is used. Otherwise a fixed thread pool is used.
+     * <p>If positive a fixed thread pool is used. Otherwise a cached thread pool is used.
      *
      * <p>This is ignored if the executor service is provided.
      *
@@ -360,8 +340,19 @@ public class GoogleAnalyticsClient {
      * @see #setThreadCount(int)
      * @see #setThreadPriority(int)
      */
-    public ExecutorService getExecutorService() {
-      return executorService;
+    public ExecutorService getOrCreateExecutorService() {
+      ExecutorService es = executorService;
+      if (es == null) {
+        final ThreadFactory tf = new BackgroundThreadFactory(getThreadPriority());
+        final int localThreadCount = getThreadCount();
+        if (localThreadCount > 0) {
+          es = Executors.newFixedThreadPool(localThreadCount);
+        } else {
+          es = Executors.newCachedThreadPool(tf);
+        }
+        executorService = es;
+      }
+      return es;
     }
 
     /**
@@ -394,23 +385,30 @@ public class GoogleAnalyticsClient {
     /**
      * Gets the hit dispatcher used to send hit requests.
      *
-     * <p>If {@code null} then a default dispatcher will be used.
+     * <p>If {@code null} then a default dispatcher will be created using the values for
+     * {@link #isSecure()} and {@link #isDebug()}.
+     * 
+     * @see DefaultHitDispatcher#getDefault(boolean, boolean)
      * 
      * @return the hit dispatcher
      */
-    public HitDispatcher getHitDispatcher() {
-      return hitDispatcher;
+    public HitDispatcher getOrCreateHitDispatcher() {
+      HitDispatcher hd = hitDispatcher;
+      if (hd == null) {
+        hd = DefaultHitDispatcher.getDefault(isSecure(), isDebug());
+        hitDispatcher = hd;
+      }
+      return hd;
     }
 
     /**
      * Sets the hit dispatcher used to send hit requests. Defaults to {@code null}.
      *
-     * <p>If {@code null} then a default dispatcher will be used. The default is shared at the
-     * system level default allowing a single point of control over hit requests.
+     * <p>If {@code null} then a default dispatcher will be used.
      * 
      * @param hitDispatcher the hit dispatcher
      * @return the builder
-     * @see DefaultHitDispatcher
+     * @see DefaultHitDispatcher#getDefault(boolean, boolean)
      */
     public Builder setHitDispatcher(HitDispatcher hitDispatcher) {
       this.hitDispatcher = hitDispatcher;
@@ -426,10 +424,12 @@ public class GoogleAnalyticsClient {
      * @return the per-hit parameters
      */
     public PartialBuilder<Builder> getOrCreatePerHitParameters() {
-      if (perHitParameters == null) {
-        perHitParameters = Parameters.newPartialBuilder(this);
+      PartialBuilder<Builder> builder = perHitParameters;
+      if (builder == null) {
+        builder = Parameters.newPartialBuilder(this);
+        perHitParameters = builder;
       }
-      return perHitParameters;
+      return builder;
     }
 
     /**
@@ -445,8 +445,9 @@ public class GoogleAnalyticsClient {
      * @return the builder
      */
     public Builder setPerHitParameters(FormattedParameter perHitParameters) {
-      this.perHitParameters = Parameters.newPartialBuilder(this);
-      this.perHitParameters.add(perHitParameters);
+      PartialBuilder<Builder> builder = Parameters.newPartialBuilder(this);
+      builder.add(perHitParameters);
+      this.perHitParameters = builder;
       return this;
     }
 
@@ -456,10 +457,12 @@ public class GoogleAnalyticsClient {
      * @return the per-session parameters
      */
     public PartialBuilder<Builder> getOrCreatePerSessionParameters() {
-      if (perSessionParameters == null) {
-        perSessionParameters = Parameters.newPartialBuilder(this);
+      PartialBuilder<Builder> builder = perSessionParameters;
+      if (builder == null) {
+        builder = Parameters.newPartialBuilder(this);
+        perSessionParameters = builder;
       }
-      return perSessionParameters;
+      return builder;
     }
 
     /**
@@ -472,8 +475,9 @@ public class GoogleAnalyticsClient {
      * @return the builder
      */
     public Builder setPerSessionParameters(FormattedParameter perSessionParameters) {
-      this.perSessionParameters = Parameters.newPartialBuilder(this);
-      this.perSessionParameters.add(perSessionParameters);
+      PartialBuilder<Builder> builder = Parameters.newPartialBuilder(this);
+      builder.add(perSessionParameters);
+      this.perSessionParameters = builder;
       return this;
     }
 
@@ -503,6 +507,9 @@ public class GoogleAnalyticsClient {
     /**
      * Checks if is using a secure connection (HTTPS).
      *
+     * <p>This value is used to create a default hit dispatcher and is ignored if the hit dispatcher
+     * is provided.
+     *
      * @return true if is secure
      */
     public boolean isSecure() {
@@ -511,17 +518,29 @@ public class GoogleAnalyticsClient {
 
     /**
      * Sets to true to use a secure connection (HTTPS).
+     * 
+     * <p>This value is used to create a default hit dispatcher and is ignored if the hit dispatcher
+     * is provided.
+     * 
+     * <p>Note: Setting this value will set the hit dispatcher to null if the property value is different.
      *
      * @param secure true for HTTPS
      * @return the builder
+     * @see #getOrCreateHitDispatcher()
      */
     public Builder setSecure(boolean secure) {
+      if (secure != this.secure) {
+        hitDispatcher = null;
+      }
       this.secure = secure;
       return this;
     }
 
     /**
      * Check the debug flag. Set to true to use the Google Analytics debug server.
+     *
+     * <p>This value is used to create a default hit dispatcher and is ignored if the hit dispatcher
+     * is provided.
      *
      * @return true, if is debug
      */
@@ -531,11 +550,20 @@ public class GoogleAnalyticsClient {
 
     /**
      * Sets the debug flag. Set to true to use the Google Analytics debug server.
+     * 
+     * <p>This value is used to create a default hit dispatcher and is ignored if the hit dispatcher
+     * is provided.
+     * 
+     * <p>Note: Setting this value will set the hit dispatcher to null if the property value is different.
      *
      * @param debug the new debug
      * @return the builder
+     * @see #getOrCreateHitDispatcher()
      */
     public Builder setDebug(boolean debug) {
+      if (debug != this.debug) {
+        hitDispatcher = null;
+      }
       this.debug = debug;
       return this;
     }
@@ -557,7 +585,7 @@ public class GoogleAnalyticsClient {
      * @param timestamp the timestamp
      */
     private GoogleAnalyticsHitBuilder(HitTypeParameter hitType, long timestamp) {
-      super(hitType, timestamp);
+      super(clientParameters, hitType, timestamp);
     }
 
     /*
@@ -588,8 +616,8 @@ public class GoogleAnalyticsClient {
     this.executorService = Objects.requireNonNull(executorService, "Executor service");
     this.hitDispatcher = Objects.requireNonNull(hitDispatcher, "Hit dispatcher");
     // Generate state
-    this.clientParameters = clientParameters.toPostString();
-    this.sessionParameters = sessionParameters.simplify();
+    this.clientParameters = clientParameters.freeze();
+    this.sessionParameters = sessionParameters.freeze();
     session = new Session(timeout);
   }
 
@@ -910,10 +938,8 @@ public class GoogleAnalyticsClient {
       return DispatchStatus.DISABLED;
     }
     // Build the request
-    final StringBuilder sb = new StringBuilder(clientParameters);
-    parameters.appendTo(sb);
-    // Add the queue time offset
-    QueueTimeParameter.appendTo(sb, timestamp);
-    return hitDispatcher.send(sb.toString(), 0);
+    final StringBuilder sb = new StringBuilder(HIT_BUFFER_SIZE);
+    parameters.formatTo(sb);
+    return hitDispatcher.send(sb, timestamp);
   }
 }

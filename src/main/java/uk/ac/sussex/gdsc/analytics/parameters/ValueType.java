@@ -18,43 +18,47 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public
- * License adouble with this program.  If not, see
+ * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * #L%
  */
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
+import java.util.Locale;
+
 /**
- * Stores a named {@code double} parameter.
+ * Defines value types for the Google Analytics Measurement Protocol.
+ * 
+ * @see <a href= "http://goo.gl/a8d4RP">Measurement Protocol Parameter Reference</a>
  */
-public class DoubleParameter extends NamedParameter {
+public enum ValueType {
+  /** An integer value. */
+  INTEGER,
+  /** An boolean value. */
+  BOOLEAN,
+  /** A text value. */
+  TEXT,
+  /** A current value. */
+  CURRENCY;
 
-  /** The value. */
-  private final double value;
-
-  /**
-   * Instantiates a new instance.
-   *
-   * @param name the name
-   * @param value the value
-   */
-  public DoubleParameter(String name, double value) {
-    super(name);
-    this.value = value;
-  }
+  /** The name. */
+  private final String name;
 
   /**
-   * Gets the value.
-   *
-   * @return the value
+   * Instantiates a new hit type.
    */
-  public final double getValue() {
-    return value;
+  private ValueType() {
+    this.name = super.toString().toLowerCase(Locale.getDefault());
   }
 
+  /*
+   * (non-Javadoc)
+   *
+   * @see java.lang.Enum#toString()
+   */
   @Override
-  public void appendTo(StringBuilder sb) {
-    FormattedParameterHelper.append(sb, getName(), value);
+  public String toString() {
+    return name;
   }
 }

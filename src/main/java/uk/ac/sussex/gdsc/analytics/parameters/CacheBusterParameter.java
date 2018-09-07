@@ -28,9 +28,9 @@ package uk.ac.sussex.gdsc.analytics.parameters;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * Adds parameter {@code z} with a random integer to a URL.
+ * Adds a cache buster parameter when using the HTTP GET method.
  * 
- * <p>To be used as a cache buster parameter when using the HTTP GET method.
+ * <p>This should be the last parameter in a URL.
  * 
  * <p>The class is thread safe as it uses {@link ThreadLocalRandom} to generate the random integer.
  * 
@@ -39,9 +39,9 @@ import java.util.concurrent.ThreadLocalRandom;
 public class CacheBusterParameter extends IntParameter {
 
   /**
-   * Instantiates a new instance.
+   * Creates a new instance with a random integer for the cache buster.
    */
   public CacheBusterParameter() {
-    super("&z", ThreadLocalRandom.current().nextInt());
+    super(Parameter.CACHE_BUSTER, ThreadLocalRandom.current().nextInt());
   }
 }

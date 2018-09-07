@@ -45,7 +45,7 @@ public class SessionControlParameterTest {
 
   @Test
   public void testFormat() {
-    Assertions.assertEquals("&sc=end", TestUtils.callAppendTo(SessionControlParameter.END));
-    Assertions.assertEquals("&sc=start", TestUtils.callAppendTo(SessionControlParameter.START));
+    Assertions.assertEquals("&sc=end", TestUtils.callFormatTo(SessionControlParameter.END));
+    Assertions.assertEquals("&sc=start", TestUtils.callFormatTo(SessionControlParameter.START));
   }
 }
