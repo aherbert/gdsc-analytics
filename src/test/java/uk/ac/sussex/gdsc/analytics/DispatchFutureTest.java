@@ -23,26 +23,24 @@
  * #L%
  */
 
-package uk.ac.sussex.gdsc.analytics.parameters;
+package uk.ac.sussex.gdsc.analytics;
 
-import org.apache.commons.rng.UniformRandomProvider;
-import org.apache.commons.rng.simple.RandomSource;
+import java.util.concurrent.TimeUnit;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class ResolutionParameterTest {
+public class DispatchFutureTest {
   @Test
-  public void testFormat() {
-    final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
-    for (int i = 0; i < 5; i++) {
-      int width = rg.nextInt(1920);
-      int height = rg.nextInt(1080);
-      ResolutionParameter rp =
-          new ResolutionParameter(ProtocolSpecification.SCREEN_RESOLUTION, width, height);
-      Assertions.assertEquals(String.format("sr=%dx%d", width, height), rp.format());
-      Assertions.assertEquals(width, rp.getWidth());
-      Assertions.assertEquals(height, rp.getHeight());
+  public void testProperties() {
+    for (DispatchStatus status : DispatchStatus.values()) {
+      DispatchFuture future = new DispatchFuture(status);
+      Assertions.assertEquals(status, future.getStatus());
+      Assertions.assertEquals(status, future.get());
+      Assertions.assertEquals(status, future.get(1000, TimeUnit.SECONDS));
+      Assertions.assertFalse(future.isCancelled());
+      Assertions.assertTrue(future.isDone());
     }
   }
 }

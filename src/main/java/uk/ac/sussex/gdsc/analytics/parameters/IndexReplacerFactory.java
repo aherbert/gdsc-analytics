@@ -46,11 +46,12 @@ public final class IndexReplacerFactory {
   /**
    * Creates the index replacer.
    * 
-   * <p>This method is guarunteed to return a dedicated 1, 2, or 3 index replacer if required by the
-   * specification.
+   * <p>This method is guaranteed to return a dedicated 0, 1, 2, or 3 index replacer if required by
+   * the specification.
    *
    * @param specification the specification
    * @return the index replacer
+   * @see NoIndexReplacer
    * @see OneIndexReplacer
    * @see TwoIndexReplacer
    * @see ThreeIndexReplacer
@@ -66,6 +67,9 @@ public final class IndexReplacerFactory {
    * @return the index replacer
    */
   private static IndexReplacer newReplacer(ProtocolSpecification specification) {
+    if (specification.getNumberOfIndexes() == 0) {
+      return new NoIndexReplacer(specification);
+    }
     if (specification.getNumberOfIndexes() == 1) {
       return new OneIndexReplacer(specification);
     }

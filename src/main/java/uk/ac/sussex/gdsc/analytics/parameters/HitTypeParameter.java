@@ -59,7 +59,7 @@ public final class HitTypeParameter implements FormattedParameter {
   private HitTypeParameter(HitType hitType) {
     //@formmater:off
     final StringBuilder sb = new StringBuilder()
-        .append(ProtocolSpecification.HIT_TYPE.getNameFormatRef())
+        .append(ProtocolSpecification.HIT_TYPE.getNameFormat())
         .append(Constants.EQUAL)
         .append(hitType.toString());
     //@formmater:on

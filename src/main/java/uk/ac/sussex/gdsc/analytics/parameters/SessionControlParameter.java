@@ -50,7 +50,7 @@ public final class SessionControlParameter implements FormattedParameter {
   private SessionControlParameter(SessionControl sessionControl) {
     //@formmater:off
     final StringBuilder sb = new StringBuilder()
-        .append(ProtocolSpecification.SESSION_CONTROL.getNameFormatRef())
+        .append(ProtocolSpecification.SESSION_CONTROL.getNameFormat())
         .append(Constants.EQUAL)
         .append(sessionControl.toString());
     //@formmater:on

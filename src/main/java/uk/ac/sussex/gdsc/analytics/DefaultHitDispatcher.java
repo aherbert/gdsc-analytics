@@ -138,11 +138,11 @@ public class DefaultHitDispatcher implements HitDispatcher {
    * @param secure the secure
    * @param debug the debug
    * @return the default
-   * @see GoogleAnalyticsUtils#getGoogleAnalyticsUrl(boolean, boolean)
+   * @see UrlUtils#getGoogleAnalyticsUrl(boolean, boolean)
    */
   public static DefaultHitDispatcher getDefault(boolean secure, boolean debug) {
     // This URL should be effectively final as it is set using System properties
-    final URL url = GoogleAnalyticsUtils.getGoogleAnalyticsUrl(secure, debug);
+    final URL url = UrlUtils.getGoogleAnalyticsUrl(secure, debug);
     return new DefaultHitDispatcher(url, null, null, sharedIoException);
   }
 
@@ -159,6 +159,9 @@ public class DefaultHitDispatcher implements HitDispatcher {
     // Do nothing if disabled
     if (isDisabled()) {
       return DispatchStatus.DISABLED;
+    }
+    if (hit == null) {
+      throw new NullPointerException("Hit was null");
     }
     HttpURLConnection connection = null;
     try {
@@ -199,8 +202,10 @@ public class DefaultHitDispatcher implements HitDispatcher {
 
       //////////////////////////////////////
       // Note: Valid on 31-Aug-2018
+      // ----
       // https://developers.google.com/analytics/devguides/collection/protocol/v1/validating-hits
       // "The Google Analytics Measurement Protocol does not return HTTP error codes".
+      // ----
       // So the response code will ALWAYS be HTTP_OK.
       // However since the connection may be to something else via the connection provider,
       // or Google change this response in the future we process the result anyway.

@@ -41,7 +41,14 @@ public class NoIndexTextParameterTest {
       new NoIndexTextParameter(TestUtils.newTextParameterSpecification("Test"), null);
     });
     Assertions.assertThrows(NullPointerException.class, () -> {
-      new NoIndexTextParameter(null, "Value");
+      new NoIndexTextParameter((ParameterSpecification) null, "Value");
+    });
+
+    Assertions.assertThrows(NullPointerException.class, () -> {
+      new NoIndexTextParameter(ProtocolSpecification.PROTOCOL_VERSION, null);
+    });
+    Assertions.assertThrows(NullPointerException.class, () -> {
+      new NoIndexTextParameter((ProtocolSpecification) null, "Value");
     });
   }
 

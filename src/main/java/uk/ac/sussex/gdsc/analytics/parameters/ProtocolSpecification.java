@@ -327,15 +327,8 @@ public enum ProtocolSpecification implements ParameterSpecification {
   /** The formal name. */
   private final String formalName;
 
-  /** The formalName format for the formalName part of the {@code formalName=value} pair. */
+  /** The name format for the name part of the {@code name=value} pair. */
   private final String nameFormat;
-
-  /** 
-   * A char array containing the formalName format string characters.
-   * 
-   * <p>This is used to provide faster access to the format at the package level.
-   */
-  private final char[] format;
 
   /** The number of indices. */
   private final int numberOfIndexes;
@@ -346,7 +339,7 @@ public enum ProtocolSpecification implements ParameterSpecification {
   /**
    * The max length of the text.
    * 
-   * <p>This applies {@code value} part of the parameter {@code formalName=value} pair.
+   * <p>This applies {@code value} part of the parameter {@code name=value} pair.
    */
   private final int maxLength;
 
@@ -369,7 +362,6 @@ public enum ProtocolSpecification implements ParameterSpecification {
   private ProtocolSpecification(String formalName, String nameFormat, ValueType valueType, int maxLength,
       HitType... supportedHitTypes) {
     this.formalName = formalName;
-    this.format = nameFormat.toCharArray();
     this.nameFormat = nameFormat;
     this.valueType = valueType;
     this.maxLength = maxLength;
@@ -382,19 +374,10 @@ public enum ProtocolSpecification implements ParameterSpecification {
     return formalName;
   }
 
-  /**
-   * WARNING: Package level direct access to the formalName format character array. This should not be modified!
-   * 
-   * @return the name format
-   */
-  char[] getNameFormatRef() {
-    // TODO - Build the code so that it is appropriately signed and cannot be added to by
-    // externals
-    return format;
-  }
-
   @Override
-  public CharSequence getNameFormat() {
+  public String getNameFormat() {
+    // Note: The interface requires a generic CharSequence but this 
+    // explicitly returns a String
     return nameFormat;
   }
 

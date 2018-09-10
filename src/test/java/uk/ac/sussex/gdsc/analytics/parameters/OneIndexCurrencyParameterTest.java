@@ -36,22 +36,31 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class NoIndexCurrencyParameterTest {
+public class OneIndexCurrencyParameterTest {
   @SuppressWarnings("unused")
   @Test
   public void testConstructor() {
+    ParameterSpecification spec = TestUtils.newCurrencyParameterSpecification("Test_");
+    int index = 1;
     Assertions.assertThrows(NullPointerException.class, () -> {
-      new NoIndexCurrencyParameter(TestUtils.newCurrencyParameterSpecification("Test"), null, 0);
+      new OneIndexCurrencyParameter(spec, null, index, 0);
     });
     Assertions.assertThrows(NullPointerException.class, () -> {
-      new NoIndexCurrencyParameter(ProtocolSpecification.TRANSACTION_REVENUE, null, 0);
+      new OneIndexCurrencyParameter((ParameterSpecification) null, Locale.getDefault(), index, 0);
+    });
+    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+      new OneIndexCurrencyParameter(spec, Locale.getDefault(), 0, 0);
     });
 
+    ProtocolSpecification spec2 = ProtocolSpecification.PRODUCT_PRICE;
     Assertions.assertThrows(NullPointerException.class, () -> {
-      new NoIndexCurrencyParameter((ProtocolSpecification) null, Locale.getDefault(), 0);
+      new OneIndexCurrencyParameter(spec2, null, index, 0);
     });
     Assertions.assertThrows(NullPointerException.class, () -> {
-      new NoIndexCurrencyParameter((ParameterSpecification) null, Locale.getDefault(), 0);
+      new OneIndexCurrencyParameter((ProtocolSpecification) null, Locale.getDefault(), index, 0);
+    });
+    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+      new OneIndexCurrencyParameter(spec2, Locale.getDefault(), 0, 0);
     });
   }
 
@@ -61,20 +70,24 @@ public class NoIndexCurrencyParameterTest {
     for (Locale locale : new Locale[] {Locale.getDefault(), Locale.FRANCE}) {
       for (int i = 0; i < 5; i++) {
         String name = TestUtils.randomName(rg, 3);
+        int index = 1 + rg.nextInt(200);
         double value = rg.nextDouble();
 
         NumberFormat formatter = NumberFormat.getCurrencyInstance(locale);
         String valueString = formatter.format(value);
 
-        NoIndexCurrencyParameter param = new NoIndexCurrencyParameter(
-            TestUtils.newCurrencyParameterSpecification(name), locale, value);
-        Assertions.assertEquals(String.format("%s=%s", name, valueString), param.format());
+        OneIndexCurrencyParameter param = new OneIndexCurrencyParameter(
+            TestUtils.newCurrencyParameterSpecification(name + "_"), locale, index, value);
+        Assertions.assertEquals(String.format("%s%d=%s", name, index, valueString), param.format());
         Assertions.assertEquals(locale, param.getLocale());
+        Assertions.assertEquals(index, param.getIndex());
         Assertions.assertEquals(value, param.getValue());
 
-        param =
-            new NoIndexCurrencyParameter(ProtocolSpecification.TRANSACTION_REVENUE, locale, value);
-        Assertions.assertEquals(String.format("tr=%s", valueString), param.format());
+        param = new OneIndexCurrencyParameter(ProtocolSpecification.PRODUCT_PRICE, locale, index,
+            value);
+        Assertions.assertEquals(String.format("pr%dpr=%s", index, valueString), param.format());
+        Assertions.assertEquals(locale, param.getLocale());
+        Assertions.assertEquals(index, param.getIndex());
         Assertions.assertEquals(value, param.getValue());
       }
     }

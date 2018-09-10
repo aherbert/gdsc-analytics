@@ -192,7 +192,7 @@ public final class ParameterUtils {
   /**
    * Gets the chars from the {@link StringBuilder}.
    *
-   * @param sb the string builder
+   * @param sb the string builder (must not be null)
    * @return the chars
    */
   public static char[] getChars(StringBuilder sb) {
@@ -203,13 +203,18 @@ public final class ParameterUtils {
 
   /**
    * Gets the chars from the {@link CharSequence}.
+   * 
+   * <p>If the argument is {@code] null} then an empty array is returned.
    *
    * @param sequence the sequence
    * @return the chars
    */
   public static char[] getChars(CharSequence sequence) {
-    // This will pass through Strings but if a StringBuilder
-    // the dedicated method above should be called.
+    if (sequence == null) {
+      return Constants.EMPTY_CHARS;
+    }
+    // All CharSequences implement toString() to return 
+    // the String containing the sequence
     return sequence.toString().toCharArray();
   }
 

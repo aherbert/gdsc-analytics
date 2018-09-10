@@ -26,10 +26,12 @@
 package uk.ac.sussex.gdsc.analytics.parameters;
 
 /**
- * Base class to implements the {@link FormattedParameter} interface for a
- * {@link ParameterSpecification} with no indexes.
+ * Class to perform no replacement of the index marker character within the name format.
+ * 
+ * <p>This is provided to allow all the name formats within the {@link ProtocolSpecification} to be
+ * handled by specialisations of the {@link IndexReplacer}, i.e. those with 0, 1, 2, or 3 indexes.
  */
-abstract class NoIndexParameter extends BaseParameter {
+public class NoIndexReplacer extends IndexReplacer {
 
   /** The expected number of indexes. */
   private static final int EXPECTED = 0;
@@ -37,35 +39,35 @@ abstract class NoIndexParameter extends BaseParameter {
   /**
    * Create a new instance.
    *
-   * @param specification the specification
-   * @throws IncorrectCountException If the index count is not zero
+   * @param nameFormat the name format
+   * @throws IncorrectCountException If the index count is not zerp
    */
-  public NoIndexParameter(ParameterSpecification specification) {
-    super(specification);
-    ParameterUtils.validateCount(EXPECTED, specification);
+  public NoIndexReplacer(CharSequence nameFormat) {
+    super(nameFormat);
+    ParameterUtils.validateCount(EXPECTED, getNumberOfIndexes());
   }
 
   /**
    * Create a new instance.
    *
+   * <p>Package scope. The public version is to use a factory method.
+   * 
    * @param specification the specification
    * @throws IncorrectCountException If the index count is not zero
    */
-  public NoIndexParameter(ProtocolSpecification specification) {
+  NoIndexReplacer(ProtocolSpecification specification) {
     super(specification);
     ParameterUtils.validateCount(EXPECTED, specification);
   }
 
-  @Override
-  protected StringBuilder appendNameEquals(StringBuilder sb) {
-    if (protocolSpecification == null) {
-      sb.append(getParameterSpecification().getNameFormat());
-    } else {
-      // Direct access to the char array
-      NoIndexReplacer replacer =
-          (NoIndexReplacer) IndexReplacerFactory.createIndexReplacer(protocolSpecification);
-      replacer.replaceTo(sb);
-    }
-    return sb.append(Constants.EQUAL);
+  /**
+   * Do not replace the index marker character in the format string. Write the format string
+   * directly to the {@link StringBuilder}.
+   *
+   * @param sb the string builder
+   * @return the string builder
+   */
+  public StringBuilder replaceTo(StringBuilder sb) {
+    return sb.append(format);
   }
 }

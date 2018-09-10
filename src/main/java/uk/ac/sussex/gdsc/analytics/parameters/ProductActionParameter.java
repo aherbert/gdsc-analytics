@@ -68,7 +68,7 @@ public final class ProductActionParameter implements FormattedParameter {
   private ProductActionParameter(ProductAction productAction) {
     //@formmater:off
     final StringBuilder sb = new StringBuilder()
-        .append(ProtocolSpecification.PRODUCT_ACTION.getNameFormatRef())
+        .append(ProtocolSpecification.PRODUCT_ACTION.getNameFormat())
         .append(Constants.EQUAL)
         .append(productAction.toString());
     //@formmater:on

@@ -38,7 +38,10 @@ public class NoIndexLongParameterTest {
   @Test
   public void testConstructor() {
     Assertions.assertThrows(NullPointerException.class, () -> {
-      new NoIndexLongParameter(null, 0);
+      new NoIndexLongParameter((ParameterSpecification) null, 0);
+    });
+    Assertions.assertThrows(NullPointerException.class, () -> {
+      new NoIndexLongParameter((ProtocolSpecification) null, 0);
     });
   }
 

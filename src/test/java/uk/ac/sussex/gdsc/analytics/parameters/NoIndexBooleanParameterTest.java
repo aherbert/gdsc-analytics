@@ -38,7 +38,10 @@ public class NoIndexBooleanParameterTest {
   @Test
   public void testConstructor() {
     Assertions.assertThrows(NullPointerException.class, () -> {
-      new NoIndexBooleanParameter(null, false);
+      new NoIndexBooleanParameter((ParameterSpecification) null, true);
+    });
+    Assertions.assertThrows(NullPointerException.class, () -> {
+      new NoIndexBooleanParameter((ProtocolSpecification) null, true);
     });
   }
 

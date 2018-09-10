@@ -46,4 +46,73 @@ public class UrlUtilsTest {
     Assertions.assertNull(UrlUtils.getProxy("http://localhost"));
     Assertions.assertNull(UrlUtils.getProxy("http://localhost :80"));
   }
+
+  @Test
+  public void testGetGoogleAnalyticsUrl() {
+    Assertions.assertEquals(UrlUtils.DEFAULT_GOOGLE_ANALYTICS_PROTOCOL, UrlUtils.getProtocol());
+    Assertions.assertEquals(UrlUtils.DEFAULT_GOOGLE_ANALYTICS_SECURE_PROTOCOL,
+        UrlUtils.getSecureProtocol());
+    Assertions.assertEquals(UrlUtils.DEFAULT_GOOGLE_ANALYTICS_HOSTNAME, UrlUtils.getHostname());
+    Assertions.assertEquals(UrlUtils.DEFAULT_GOOGLE_ANALYTICS_FILE, UrlUtils.getFile());
+    Assertions.assertEquals(UrlUtils.DEFAULT_GOOGLE_ANALYTICS_DEBUG_FILE, UrlUtils.getDebugFile());
+
+    String hostname = "hostname";
+    String file = "/file";
+    String debugFile = "/debugFile";
+    System.setProperty(UrlUtils.PROPERTY_GOOGLE_ANALYTICS_HOSTNAME, hostname);
+    System.setProperty(UrlUtils.PROPERTY_GOOGLE_ANALYTICS_FILE, file);
+    System.setProperty(UrlUtils.PROPERTY_GOOGLE_ANALYTICS_DEBUG_FILE, debugFile);
+
+    UrlUtils.refreshSystemProperties();
+
+    // non-secure, non-debug
+    Assertions.assertEquals("http://" + hostname + file,
+        UrlUtils.getGoogleAnalyticsUrl(false, false).toString());
+
+    // secure, non-debug
+    Assertions.assertEquals("https://" + hostname + file,
+        UrlUtils.getGoogleAnalyticsUrl(true, false).toString());
+
+    // non-secure, debug - Still uses https
+    Assertions.assertEquals("https://" + hostname + debugFile,
+        UrlUtils.getGoogleAnalyticsUrl(false, true).toString());
+
+    // secure, debug
+    Assertions.assertEquals("https://" + hostname + debugFile,
+        UrlUtils.getGoogleAnalyticsUrl(true, true).toString());
+
+    // Test throws an exception with bad format
+    System.setProperty(UrlUtils.PROPERTY_GOOGLE_ANALYTICS_PROTOCOL, "foo");
+    System.setProperty(UrlUtils.PROPERTY_GOOGLE_ANALYTICS_SECURE_PROTOCOL, "bar");
+
+    UrlUtils.refreshSystemProperties();
+
+    // Non-secure
+    MalformedUrlRuntimeException ex =
+        Assertions.assertThrows(MalformedUrlRuntimeException.class, () -> {
+          UrlUtils.getGoogleAnalyticsUrl(false, false);
+        });
+    Assertions.assertTrue(ex.getMessage().contains("unknown protocol: foo"));
+    // Secure
+    ex = Assertions.assertThrows(MalformedUrlRuntimeException.class, () -> {
+      UrlUtils.getGoogleAnalyticsUrl(true, false);
+    });
+    Assertions.assertTrue(ex.getMessage().contains("unknown protocol: bar"));
+
+    // Reset
+    System.clearProperty(UrlUtils.PROPERTY_GOOGLE_ANALYTICS_PROTOCOL);
+    System.clearProperty(UrlUtils.PROPERTY_GOOGLE_ANALYTICS_SECURE_PROTOCOL);
+    System.clearProperty(UrlUtils.PROPERTY_GOOGLE_ANALYTICS_HOSTNAME);
+    System.clearProperty(UrlUtils.PROPERTY_GOOGLE_ANALYTICS_FILE);
+    System.clearProperty(UrlUtils.PROPERTY_GOOGLE_ANALYTICS_DEBUG_FILE);
+
+    UrlUtils.refreshSystemProperties();
+
+    Assertions.assertEquals(UrlUtils.DEFAULT_GOOGLE_ANALYTICS_PROTOCOL, UrlUtils.getProtocol());
+    Assertions.assertEquals(UrlUtils.DEFAULT_GOOGLE_ANALYTICS_SECURE_PROTOCOL,
+        UrlUtils.getSecureProtocol());
+    Assertions.assertEquals(UrlUtils.DEFAULT_GOOGLE_ANALYTICS_HOSTNAME, UrlUtils.getHostname());
+    Assertions.assertEquals(UrlUtils.DEFAULT_GOOGLE_ANALYTICS_FILE, UrlUtils.getFile());
+    Assertions.assertEquals(UrlUtils.DEFAULT_GOOGLE_ANALYTICS_DEBUG_FILE, UrlUtils.getDebugFile());
+  }
 }

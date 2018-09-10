@@ -61,6 +61,16 @@ public final class Constants {
   public static final char FORWARD_SLASH = '/';
 
   /**
+   * The empty string "".
+   */
+  public static final String EMPTY_STRING = "";
+
+  /**
+   * A zero length char array.
+   */
+  public static final char[] EMPTY_CHARS = new char[0];
+
+  /**
    * No public construction.
    */
   private Constants() {

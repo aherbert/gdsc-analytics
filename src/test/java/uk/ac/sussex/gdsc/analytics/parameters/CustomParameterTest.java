@@ -27,48 +27,40 @@ package uk.ac.sussex.gdsc.analytics.parameters;
 
 import uk.ac.sussex.gdsc.analytics.TestUtils;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.simple.RandomSource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class OneIndexTextParameterTest {
+public class CustomParameterTest {
   @SuppressWarnings("unused")
   @Test
   public void testConstructor() {
-    ParameterSpecification spec = TestUtils.newTextParameterSpecification("test_", 0);
-    int index = 1;
-    String value = "test";
+    String name = "name";
+    String value = "value";
     Assertions.assertThrows(NullPointerException.class, () -> {
-      new OneIndexTextParameter(spec, index, null);
+      new CustomParameter(null, value);
     });
     Assertions.assertThrows(NullPointerException.class, () -> {
-      new OneIndexTextParameter(null, 1, value);
-    });
-    Assertions.assertThrows(IllegalArgumentException.class, () -> {
-      new OneIndexTextParameter(spec, 0, value);
+      new CustomParameter(name, null);
     });
   }
 
   @Test
-  public void testFormat() {
+  public void testFormat() throws UnsupportedEncodingException {
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (int i = 0; i < 5; i++) {
-      String name = TestUtils.randomName(rg, 3);
-      int index = 1 + rg.nextInt(20);
-      String value = TestUtils.randomName(rg, 3);
-      OneIndexTextParameter param = new OneIndexTextParameter(
-          TestUtils.newTextParameterSpecification(name + "_", 0), index, value);
-      Assertions.assertEquals(String.format("%s%d=%s", name, index, value), param.format());
-      // Repeat as this checks the cache version is the same
-      Assertions.assertEquals(String.format("%s%d=%s", name, index, value), param.format());
-      Assertions.assertEquals(index, param.getIndex());
-      Assertions.assertEquals(value, param.getValue());
-
-      param = new OneIndexTextParameter(ProtocolSpecification.CUSTOM_DIMENSION, index, value);
-      Assertions.assertEquals(String.format("cd%d=%s", index, value), param.format());
-      Assertions.assertEquals(value, param.getValue());
+      String name = TestUtils.randomPath(rg, 5);
+      String value = TestUtils.randomPath(rg, 5);
+      CustomParameter cp = new CustomParameter(name, value);
+      Assertions.assertEquals(String.format("%s=%s", URLEncoder.encode(name, "utf-8"),
+          URLEncoder.encode(value, "utf-8")), cp.format());
+      Assertions.assertEquals(name, cp.getName());
+      Assertions.assertEquals(value, cp.getValue());
     }
   }
 }

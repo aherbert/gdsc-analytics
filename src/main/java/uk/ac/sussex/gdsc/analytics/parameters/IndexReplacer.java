@@ -66,12 +66,13 @@ public class IndexReplacer {
   /**
    * Create a new instance.
    * 
-   * <p>Package scope. The public version is to use a factory method.
+   * <p>Package scope. The public version is to use a factory method forcing the compiled
+   * replacement pattern to be cached.
    *
    * @param specification the specification
    */
   IndexReplacer(ProtocolSpecification specification) {
-    this.format = specification.getNameFormatRef();
+    this.format = specification.getNameFormat().toCharArray();
     this.numberOfIndexes = specification.getNumberOfIndexes();
     ranges = new int[numberOfIndexes * 2 + 1];
     initialise();

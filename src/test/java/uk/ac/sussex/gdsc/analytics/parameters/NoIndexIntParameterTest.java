@@ -38,7 +38,10 @@ public class NoIndexIntParameterTest {
   @Test
   public void testConstructor() {
     Assertions.assertThrows(NullPointerException.class, () -> {
-      new NoIndexIntParameter(null, 0);
+      new NoIndexIntParameter((ParameterSpecification) null, 0);
+    });
+    Assertions.assertThrows(NullPointerException.class, () -> {
+      new NoIndexIntParameter((ProtocolSpecification) null, 0);
     });
   }
 

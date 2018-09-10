@@ -119,5 +119,36 @@ public class ParameterSpecificationTest {
     for (HitType ht : HitType.values()) {
       Assertions.assertEquals(ht == HitType.EVENT || ht == HitType.ITEM, spec.isSupported(ht));
     }
+
+    spec = new ParameterSpecification() {
+
+      @Override
+      public String getFormalName() {
+        return null;
+      }
+
+      @Override
+      public CharSequence getNameFormat() {
+        return "test_1and_2";
+      }
+
+      @Override
+      public HitType[] getSupportedHitTypes() {
+        // Explicitly return null
+        return null;
+      }
+
+      @Override
+      public ValueType getValueType() {
+        return null;
+      }
+    };
+    Assertions.assertNull(spec.getSupportedHitTypes());
+    // Don't support null
+    Assertions.assertEquals(false, spec.isSupported(null));
+    // Support all
+    for (HitType ht : HitType.values()) {
+      Assertions.assertTrue(spec.isSupported(ht));
+    }
   }
 }

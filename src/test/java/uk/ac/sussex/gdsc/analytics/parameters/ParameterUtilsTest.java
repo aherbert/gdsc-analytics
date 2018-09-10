@@ -120,7 +120,7 @@ public class ParameterUtilsTest {
   }
 
   @Test
-  public void testValidateCount() {
+  public void testValidateCountWithParameterSpecification() {
     // Test different sizes
     ArrayList<ProtocolSpecification> list = new ArrayList<>();
     list.add(ProtocolSpecification.PROTOCOL_VERSION); // 0
@@ -134,10 +134,35 @@ public class ParameterUtilsTest {
       });
       Assertions.assertEquals(expected, e.getExpected());
       Assertions.assertEquals(spec.getNumberOfIndexes(), e.getObserved());
-
+      Assertions.assertTrue(e.getMessage().contains("<" + expected + ">"));
+      Assertions.assertTrue(e.getMessage().contains("<" + spec.getNumberOfIndexes() + ">"));
+      Assertions.assertTrue(e.getMessage().contains(spec.getFormalName()));
     }
     for (ProtocolSpecification spec : ProtocolSpecification.values()) {
       ParameterUtils.validateCount(spec.getNumberOfIndexes(), spec);
+    }
+  }
+
+  @Test
+  public void testValidateCount() {
+    IncorrectCountException e;
+    e = Assertions.assertThrows(IncorrectCountException.class, () -> {
+      ParameterUtils.validateCount(1, 2);
+    });
+    Assertions.assertEquals(1, e.getExpected());
+    Assertions.assertEquals(2, e.getObserved());
+    Assertions.assertTrue(e.getMessage().contains("<1>"));
+    Assertions.assertTrue(e.getMessage().contains("<2>"));
+    e = Assertions.assertThrows(IncorrectCountException.class, () -> {
+      ParameterUtils.validateCount(2, 1);
+    });
+    Assertions.assertEquals(2, e.getExpected());
+    Assertions.assertEquals(1, e.getObserved());
+    Assertions.assertTrue(e.getMessage().contains("<1>"));
+    Assertions.assertTrue(e.getMessage().contains("<2>"));
+
+    for (int i = 0; i < 5; i++) {
+      ParameterUtils.validateCount(i, i);
     }
   }
 
@@ -166,9 +191,20 @@ public class ParameterUtilsTest {
               });
           Assertions.assertEquals(expected, e.getExpected());
           Assertions.assertEquals(spec2.getValueType(), e.getObserved());
+          Assertions.assertTrue(e.getMessage().contains("<" + expected + ">"));
+          Assertions.assertTrue(e.getMessage().contains("<" + spec2.getValueType() + ">"));
+          Assertions.assertTrue(e.getMessage().contains(spec2.getFormalName()));
         }
       }
     }
+
+    // There is no code to test the IncorrectValueTypeException
+    // without a detail message. Add a quick test here.
+    final ValueType expected = ValueType.TEXT;
+    final ValueType observed = ValueType.BOOLEAN;
+    IncorrectValueTypeException ex = new IncorrectValueTypeException(expected, observed, null);
+    Assertions.assertTrue(ex.getMessage().contains("<" + expected + ">"));
+    Assertions.assertTrue(ex.getMessage().contains("<" + observed + ">"));
   }
 
   @Test
@@ -201,14 +237,32 @@ public class ParameterUtilsTest {
   }
 
   @Test
-  public void testGetChars() {
+  public void testGetCharsWithStringBuilder() {
+    Assertions.assertThrows(NullPointerException.class, () -> {
+      ParameterUtils.getChars((StringBuilder) null);
+    });
+
+    final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
+    for (int i = 0; i < 5; i++) {
+      String name = TestUtils.randomName(rg, 5);
+      StringBuilder sb = new StringBuilder(name);
+      char[] expected = name.toCharArray();
+      Assertions.assertArrayEquals(expected, ParameterUtils.getChars(sb));
+    }
+  }
+
+
+  @Test
+  public void testGetCharsWithCharSequence() {
+    Assertions.assertArrayEquals(new char[0], ParameterUtils.getChars((CharSequence) null));
+
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (int i = 0; i < 5; i++) {
       String name = TestUtils.randomName(rg, 5);
       StringBuilder sb = new StringBuilder(name);
       char[] expected = name.toCharArray();
       Assertions.assertArrayEquals(expected, ParameterUtils.getChars(name));
-      Assertions.assertArrayEquals(expected, ParameterUtils.getChars(sb));
+      Assertions.assertArrayEquals(expected, ParameterUtils.getChars((CharSequence) sb));
     }
   }
 
