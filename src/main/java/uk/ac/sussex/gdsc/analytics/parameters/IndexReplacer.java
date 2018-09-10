@@ -7,19 +7,23 @@
  * %%
  * Copyright (C) 2010 - 2018 Alex Herbert
  * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
- * You should have received a copy of the GNU General Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  * #L%
  */
 
@@ -27,7 +31,7 @@ package uk.ac.sussex.gdsc.analytics.parameters;
 
 /**
  * Class to replace occurrences of the index marker character with index values.
- * 
+ *
  * @see Constants#UNDERSCORE
  */
 public class IndexReplacer {
@@ -40,13 +44,13 @@ public class IndexReplacer {
 
   /**
    * Contains alternating lengths and positions in the format array.
-   * 
+   *
    * <p>The first item is the length before the first index character in the format.
-   * 
+   *
    * <p>The second item is the position after the first index character.
-   * 
+   *
    * <p>On so on until the final item is the length after the last index character.
-   * 
+   *
    * <p>The array will be size {@code numberOfIndexes * 2 + 1}.
    */
   protected final int[] ranges;
@@ -65,7 +69,7 @@ public class IndexReplacer {
 
   /**
    * Create a new instance.
-   * 
+   *
    * <p>Package scope. The public version is to use a factory method forcing the compiled
    * replacement pattern to be cached.
    *
@@ -118,7 +122,7 @@ public class IndexReplacer {
   /**
    * Replace the index marker character in the format string with the given indexes and write the
    * result to the {@link StringBuilder}.
-   * 
+   *
    * <p>E.g. replace {@code il_pi_cd_} with {@code il2pi5cd4} for indexes 2, 5 and 4.
    *
    * <p>Must be called with the correct number of index arguments.

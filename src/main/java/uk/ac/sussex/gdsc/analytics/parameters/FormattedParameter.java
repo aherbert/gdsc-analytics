@@ -7,19 +7,23 @@
  * %%
  * Copyright (C) 2010 - 2018 Alex Herbert
  * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
- * You should have received a copy of the GNU General Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  * #L%
  */
 
@@ -27,13 +31,13 @@ package uk.ac.sussex.gdsc.analytics.parameters;
 
 /**
  * Appends formatted parameter or parameters to a URL.
- * 
+ *
  * <p>The parameters are expected to add one or more {@code name=value} pairs. Strings should be
  * appropriately URL encoded.
- * 
+ *
  * <p>If multiple pairs are added then the '<strong>&amp;</strong>' character is expected to
  * separate each pair, e.g. {@code name=value&name2=value2}.
- * 
+ *
  * <p>This is a functional interface whose functional method is {@link #appendTo(StringBuilder)}.
  */
 @FunctionalInterface
@@ -41,16 +45,16 @@ public interface FormattedParameter {
 
   /**
    * Format the parameter(s) to the provided {@link StringBuilder}.
-   * 
+   *
    * <p>The parameters are expected to add one or more {@code name=value} pairs. {@code value}
    * Strings should be appropriately URL encoded.
-   * 
+   *
    * <p>If multiple pairs are added then the '<strong>&amp;</strong>' character is expected to
    * separate each pair, e.g. {@code name=value&name2=value2}.
-   * 
+   *
    * <p>Note: The '<strong>&amp;</strong>' character <strong>must not</strong> be included at the
    * start. It should be assumed the {@link StringBuilder} is empty.
-   * 
+   *
    * <p>Parameters can be added to an existing URL using the function
    * {@link #appendTo(StringBuilder)}.
    *
@@ -62,12 +66,12 @@ public interface FormattedParameter {
 
   /**
    * Append parameter(s) to the existing URL within the provided {@link StringBuilder}.
-   * 
+   *
    * <p>If the {@link StringBuilder} is empty this calls {@link #formatTo(StringBuilder)}.
-   * 
+   *
    * <p>If the {@link StringBuilder} is not empty this adds the '<strong>&amp;</strong>' character
    * and calls {@link #formatTo(StringBuilder)}.
-   * 
+   *
    * <p>This method allows consecutive {@link FormattedParameter} instances to be formatted to the
    * same {@link StringBuilder} using repeats calls to {@link #appendTo(StringBuilder)}.
    *
@@ -83,7 +87,7 @@ public interface FormattedParameter {
 
   /**
    * Return the formatted string.
-   * 
+   *
    * <p>The default implementation creates a new {@link StringBuilder} and calls
    * {@link #formatTo(StringBuilder)} to obtain the string.
    *
@@ -95,14 +99,14 @@ public interface FormattedParameter {
 
   /**
    * Creates a fixed version of the {@link FormattedParameter}.
-   * 
+   *
    * <p>The default implementation creates a formatted string of the parameter(s) using
    * {@link #formatTo(StringBuilder)} and returns a {@link FormattedParameter} containing the
    * formatted string.
    *
    * <p>This is a utility method that can be used to freeze a complex collection of parameters to a
    * fixed version.
-   * 
+   *
    * @return the string
    */
   default FormattedParameter freeze() {
@@ -141,7 +145,7 @@ public interface FormattedParameter {
 
   /**
    * Create an empty {@link FormattedParameter}.
-   * 
+   *
    * <p>The returned implementation will behave as if the parameters where the empty String
    * {@code ""}.
    *

@@ -7,19 +7,23 @@
  * %%
  * Copyright (C) 2010 - 2018 Alex Herbert
  * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
- * You should have received a copy of the GNU General Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  * #L%
  */
 
@@ -27,9 +31,9 @@ package uk.ac.sussex.gdsc.analytics.parameters;
 
 /**
  * Defines a parameter specification for the Google Analytics Measurement Protocol.
- * 
+ *
  * <p>Parameters are expected to be {@code name=value} pairs.
- * 
+ *
  * @see <a href= "http://goo.gl/a8d4RP">Measurement Protocol Parameter Reference</a>
  */
 public interface ParameterSpecification {
@@ -43,14 +47,14 @@ public interface ParameterSpecification {
 
   /**
    * Gets the format for the {@code name} part of the parameter {@code name=value} pair.
-   * 
+   *
    * <p>This can contain zero of more indexes. Indexes will be identified with the {@code _}
    * character, for example {@code pr_cc} for Product Coupon Code where the {@code _} represents the
    * product index.
-   * 
+   *
    * <p>WARNING: It is assumed the format will not required URL encoding. The format should contain
    * only URL safe ASCII characters as defined in UFC 2396.
-   * 
+   *
    * @return the name format
    * @see <a href= "http://goo.gl/a8d4RP#pr_cc">Product Coupon Code</a>
    * @see #getNumberOfIndexes()
@@ -62,7 +66,7 @@ public interface ParameterSpecification {
 
   /**
    * Gets the number of indexes.
-   * 
+   *
    * <p>This is a count of the number of {@code _} (underscore) characters within the name format.
    *
    * @return the number of indexes
@@ -84,14 +88,14 @@ public interface ParameterSpecification {
    * Gets the max length for the parameter value.
    *
    * <p>It is only relevant for {@link ValueType#TEXT} parameters.
-   * 
+   *
    * <p>If zero then any length is allowed.
-   * 
+   *
    * <p>Otherwise this specifies the maximum bytes for the {@code value} part of the parameter
    * {@code name=value} pair.
-   * 
+   *
    * <p>The default is {@code 0}.
-   * 
+   *
    * @return the max length
    */
   default int getMaxLength() {
@@ -102,9 +106,9 @@ public interface ParameterSpecification {
    * Gets the supported hit types for the parameter.
    *
    * <p>If null (or empty) then all types are supported. Otherwise the supported types are returned.
-   * 
+   *
    * <p>The default is an empty array.
-   * 
+   *
    * @return the supported hit types
    * @see #isSupported(HitType)
    */
@@ -115,11 +119,11 @@ public interface ParameterSpecification {
 
   /**
    * Checks the hit type is supported.
-   * 
+   *
    * <p>If the argument is {@code null} then this will return {@code false}. The exception to this
    * is if the {@code null} hit type is present in the array returned from
    * {@link #getSupportedHitTypes()}.
-   * 
+   *
    * @param hitType the hit type
    * @return true, if is supported
    */

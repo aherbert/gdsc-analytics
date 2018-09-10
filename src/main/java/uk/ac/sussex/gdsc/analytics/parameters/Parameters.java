@@ -7,19 +7,23 @@
  * %%
  * Copyright (C) 2010 - 2018 Alex Herbert
  * %%
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as
- * published by the Free Software Foundation, either version 3 of the
- * License, or (at your option) any later version.
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
  *
- * You should have received a copy of the GNU General Public
- * License along with this program.  If not, see
- * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
  * #L%
  */
 
@@ -34,7 +38,7 @@ import java.util.UUID;
 
 /**
  * Contains Google Analytics Measurement Protocol parameters.
- * 
+ *
  * <p>Note that although not enforced the set of {@code name=value} URL parameters should have
  * unique {@code name} tags. If not the hit may not be correctly processed by Google Analytics.
  *
@@ -64,9 +68,9 @@ public class Parameters implements FormattedParameter {
 
   /**
    * Create a new {@link RequiredBuilder} with the given Google Analytics tracking id.
-   * 
+   *
    * <p>The format is UA-XXXX-Y.
-   * 
+   *
    * <p>This is a specialist builder to ensure the version, tracking Id and client/user Id required
    * for all hits are included.
    *
@@ -82,44 +86,44 @@ public class Parameters implements FormattedParameter {
   //@formatter:off
   /**
    * Create a new {@link PartialBuilder}.
-   * 
+   *
    * <p>This is a specialist builder to ensure the parameters required for each hit (version,
    * tracking Id; and client/user Id) are not duplicated when adding additional parameters.
-   * 
+   *
    * <p>The {@link PartialBuilder} provide support for using a typed parent to allow chaining:
-   * 
+   *
    * <pre>
-   * // Simple parent builder 
+   * // Simple parent builder
    * public class ParentBuilder {
-   * 
+   *
    *   private PartialBuilder&lt;ParentBuilder&gt; parameters;
-   * 
+   *
    *   public ParentBuilder() {
    *     parameters = Parameters.newPartialBuilder(this);
    *   }
-   * 
+   *
    *   public ParentBuilder doSomething() {
    *     // ... something useful
    *     return this;
    *   }
-   * 
+   *
    *   public PartialBuilder&lt;ParentBuilder&gt; getParameters() {
    *     return parameters;
    *   }
-   * 
+   *
    *   public Parameters build() {
    *     return parameters.build();
    *   }
    * }
-   * 
-   * // Example chaining: 
+   *
+   * // Example chaining:
    * Parameters parameters = new ParentBuilder()
    *     .doSomething()
    *     .getParameters().addUserId("Mr.Demo")
    *                     .getParent()
    *     .build();
    * </pre>
-   * 
+   *
    * <p>The {@code parent} can be set to {@code null} if the {@link PartialBuilder#getParent()}
    * method will not be used.
    *
@@ -134,7 +138,7 @@ public class Parameters implements FormattedParameter {
 
   /**
    * Create a new {@link Builder}.
-   * 
+   *
    * <p>This is a generic builder with no defaults that exposes the parameter API. It can be used to
    * construct partial or complete hit parameters.
    *
@@ -146,16 +150,16 @@ public class Parameters implements FormattedParameter {
 
   /**
    * A builder for {@link Parameters}.
-   * 
+   *
    * <p>Stores a typed-reference to the actual concrete builder class.
-   * 
+   *
    * <p>This implements the supported API but hides some methods as protected. Inheriting classes
    * are provided that expose the desired functionality.
-   * 
+   *
    * <p>Caution: The builder will not check for duplicate {@code name} tags. Thus is is possible to
    * misuse this builder to generate invalid URLs that have duplicates. The hit may not be correctly
    * processed by Google Analytics.
-   * 
+   *
    * @param <B> the [this] type of the class.
    * @see <a href="https://www.sitepoint.com/self-types-with-javas-generics/">Self Types with Java’s
    *      Generics</a>
@@ -167,7 +171,7 @@ public class Parameters implements FormattedParameter {
 
     /**
      * A reference to '{@code this}' cast to the appropriate {@code [this]} type.
-     * 
+     *
      * <p>This can be returned from any builder method, i.e. {@code return self; }
      */
     protected final B self;
@@ -211,7 +215,7 @@ public class Parameters implements FormattedParameter {
 
     /**
      * Adds a generic {@code name=value} formatted parameter.
-     * 
+     *
      * <p>This is provided to add support for any of the protocol parameters that are not explicitly
      * provided.
      *
@@ -237,9 +241,9 @@ public class Parameters implements FormattedParameter {
 
     /**
      * Adds the version.
-     * 
+     *
      * <p>Currently supports version 1.
-     * 
+     *
      * @return the builder
      * @see <a href="http://goo.gl/a8d4RP#v">Protocol Version</a>
      */
@@ -249,7 +253,7 @@ public class Parameters implements FormattedParameter {
 
     /**
      * Adds the tracking id.
-     * 
+     *
      * <p>The format is UA-XXXX-Y.
      *
      * @param trackingId the tracking id
@@ -263,7 +267,7 @@ public class Parameters implements FormattedParameter {
 
     /**
      * Adds the anonymize IP.
-     * 
+     *
      * <p>When present, the IP address of the sender will be anonymized.
      *
      * @param anonymizeIp the anonymize ip
@@ -288,7 +292,7 @@ public class Parameters implements FormattedParameter {
 
     /**
      * Adds the queue time.
-     * 
+     *
      * <p>The value represents the time delta (in milliseconds) between when the hit being reported
      * occurred and the time the hit was sent.
      *
@@ -303,7 +307,7 @@ public class Parameters implements FormattedParameter {
     /**
      * Adds the cache buster parameter. This can be used to prevent caching of URLs when using the
      * HTTP GET protocol.
-     * 
+     *
      * <p>It should be added as the last parameter in the URL.
      *
      * @return the builder
@@ -319,9 +323,9 @@ public class Parameters implements FormattedParameter {
 
     /**
      * Adds the client id.
-     * 
+     *
      * <p>This field is required if User ID (uid) is not specified in the request.
-     * 
+     *
      * <p>The value of this field should be a random UUID (version 4) as described in <a
      * href="http://www.ietf.org/rfc/rfc4122.txt">RFC 4122</a>.
      *
@@ -336,7 +340,7 @@ public class Parameters implements FormattedParameter {
 
     /**
      * Adds the client id.
-     * 
+     *
      * <p>This field is required if User ID (uid) is not specified in the request.
      *
      * @param clientId the client id
@@ -349,9 +353,9 @@ public class Parameters implements FormattedParameter {
 
     /**
      * Adds the user id.
-     * 
+     *
      * <p>This field is required if Client ID (cid) is not specified in the request.
-     * 
+     *
      * <p>It must not itself be PII (personally identifiable information).
      *
      * @param userId the user id
@@ -532,7 +536,7 @@ public class Parameters implements FormattedParameter {
     /**
      * Use this parameter to send the full URL (document location) of the page on which content
      * resides.
-     * 
+     *
      * <p>For 'pageview' hits, either dl or both dh and dp have to be specified for the hit to be
      * valid.
      *
@@ -548,7 +552,7 @@ public class Parameters implements FormattedParameter {
 
     /**
      * Specifies the hostname from which content was hosted.
-     * 
+     *
      * <p>For 'pageview' hits, either dl or both dh and dp have to be specified for the hit to be
      * valid.
      *
@@ -563,7 +567,7 @@ public class Parameters implements FormattedParameter {
 
     /**
      * The path portion of the page URL. Should begin with '/'.
-     * 
+     *
      * <p>For 'pageview' hits, either dl or both dh and dp have to be specified for the hit to be
      * valid.
      *
@@ -595,7 +599,7 @@ public class Parameters implements FormattedParameter {
     /**
      * This parameter is optional on web properties, and required on mobile properties for
      * screenview hits, where it is used for the 'Screen Name' of the screenview hit.
-     * 
+     *
      * <p>Required for screenview hit type.
      *
      * @param screenName the screen name
@@ -636,7 +640,7 @@ public class Parameters implements FormattedParameter {
 
     /**
      * Adds the application name.
-     * 
+     *
      * <p>This field is required for any hit that has app related data (i.e., app version, app ID,
      * or app installer ID).
      *
@@ -691,7 +695,7 @@ public class Parameters implements FormattedParameter {
 
     /**
      * Adds the event category.
-     * 
+     *
      * <p>Required for event hit type. Specifies the event category. Must not be empty.
      *
      * @param eventCategory the event category
@@ -707,7 +711,7 @@ public class Parameters implements FormattedParameter {
 
     /**
      * Adds the event action.
-     * 
+     *
      * <p>Required for event hit type. Specifies the event category. Must not be empty.
      *
      * @param eventAction the event action
@@ -734,7 +738,7 @@ public class Parameters implements FormattedParameter {
 
     /**
      * Adds the event value.
-     * 
+     *
      * <p>Values must be non-negative.
      *
      * @param eventValue the event value
@@ -767,7 +771,7 @@ public class Parameters implements FormattedParameter {
      * Adds the user timing category.
      *
      * <p>Required for a timing hit.
-     * 
+     *
      * @param userTimingCategory the user timing category
      * @return the builder
      * @see <a href="http://goo.gl/a8d4RP#utc">User timing category</a>
@@ -779,7 +783,7 @@ public class Parameters implements FormattedParameter {
 
     /**
      * Adds the user timing variable name.
-     * 
+     *
      * <p>Required for a timing hit.
      *
      * @param userTimingVariableName the user timing variable name
@@ -795,7 +799,7 @@ public class Parameters implements FormattedParameter {
      * Adds the user timing time.
      *
      * <p>Required for a timing hit.
-     * 
+     *
      * @param userTimingTime the user timing time
      * @return the builder
      * @see <a href="http://goo.gl/a8d4RP#utt">User timing time</a>
@@ -986,10 +990,10 @@ public class Parameters implements FormattedParameter {
   // @formatter:off
   /**
    * A builder for {@link Parameters} required for every hit.
-   * 
+   *
    * <p>This is a special builder that ensures that:
-   * 
-   * <ul> 
+   *
+   * <ul>
    * <li>The protocol version is set (required for all hits).
    * <li>The tracking Id is set (required for all hits).
    * <li>The client Id can be added only once.
@@ -998,7 +1002,7 @@ public class Parameters implements FormattedParameter {
    * </ul>
    *
    * <p>Note: Either the client Id or user Id are required for all hits.
-   * 
+   *
    * <p>This builder should be used to construct parameters that are sent with every hit.
    */
   // @formatter:on
@@ -1062,21 +1066,21 @@ public class Parameters implements FormattedParameter {
   // @formatter:off
   /**
    * A builder for {@link Parameters} that are in addition to the parameters required for every hit.
-   * 
+   *
    * <p>This is a special builder that ensures that the following methods do nothing:
-   * 
-   * <ul> 
+   *
+   * <ul>
    * <li>{@link #addVersion()}
    * <li>{@link #addTrackingId(String)}
    * <li>{@link #addClientId(String)}
-   * <li>{@link #addClientId(UUID)} 
+   * <li>{@link #addClientId(UUID)}
    * <li>{@link #addUserId(String)}
    * </ul>
-   * 
-   * <p>This builder should be used to construct a partial subset of parameters that are sent in 
-   * addition to the required protocol parameters version, tracking Id, client Id and/or user Id 
+   *
+   * <p>This builder should be used to construct a partial subset of parameters that are sent in
+   * addition to the required protocol parameters version, tracking Id, client Id and/or user Id
    * parameters.
-   * 
+   *
    * <p>Provides a utility method that allows the builder to return it's parent.
    *
    * @param <P> the type of the parent
@@ -1125,7 +1129,7 @@ public class Parameters implements FormattedParameter {
 
     /**
      * Gets the parent.
-     * 
+     *
      * <p>The parent is set during construction allowing this builder to be chained.
      *
      * @return the parent
@@ -1137,13 +1141,13 @@ public class Parameters implements FormattedParameter {
 
   /**
    * A builder for {@link Parameters}.
-   * 
+   *
    * <p>This is a generic builder with no defaults that exposes the parameter API. It can be used to
    * construct partial or complete hit parameters.
-   * 
+   *
    * <p>Note that other specialised builders are provided that add restrictions to prevent common
    * misuse cases.
-   * 
+   *
    * @see RequiredBuilder
    * @see PartialBuilder
    */
@@ -1159,14 +1163,14 @@ public class Parameters implements FormattedParameter {
 
   /**
    * A builder for {@link Parameters} for a <strong>single</strong> Google Analytics hit.
-   * 
+   *
    * <p>This is a special builder that ensures that the hit type is set and a timestamp of the hit
    * is recorded.
-   * 
+   *
    * <p>No restrictions are made on the parameter API so the builder can be used to create a
    * complete hit or partial hit to be combined with the required parameters: version; tracking Id;
    * client/user Id.
-   * 
+   *
    * <p>The abstract class provides a method to send the hit so should be extended with an
    * implementation that handles the send request.
    *
@@ -1179,7 +1183,7 @@ public class Parameters implements FormattedParameter {
 
     /**
      * Creates a new hit builder.
-     * 
+     *
      * <p>The provided formatted parameter is added as the first parameter if it is not null. It can
      * be used to specify parameters that are required for each hit.
      *
@@ -1208,7 +1212,7 @@ public class Parameters implements FormattedParameter {
 
     /**
      * Send the hit.
-     * 
+     *
      * <p>Note: The implementation of the send method is dependent on the sub-class.
      *
      * @return the result

@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
@@ -64,7 +65,7 @@ Measurement protocol to collect usage information about a Java application.
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.build.timestamp.format>yyyy/MM/dd HH:mm</maven.build.timestamp.format>
     <build.date>${maven.build.timestamp}</build.date>
-    <license.licenseName>gpl_v3</license.licenseName>
+    <license.licenseName>mit</license.licenseName>
     <license.copyrightOwners>Alex Herbert</license.copyrightOwners>
     <license.projectName>${project.description}</license.projectName>
     <!-- Versions -->
@@ -256,6 +257,9 @@ Measurement protocol to collect usage information about a Java application.
           <addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
           <canUpdateDescription>true</canUpdateDescription>
           <canUpdateCopyright>true</canUpdateCopyright>
+          <excludes>
+            <exclude>**/main/resources/checkstyle/checkstyle.xml</exclude>
+          </excludes>
         </configuration>
       </plugin>
       <plugin>
@@ -520,7 +524,8 @@ Measurement protocol to collect usage information about a Java application.
                 <goals>
                   <goal>check</goal>
                 </goals>
-                <!-- Currently the same as the jacoco profile but halts on failure -->
+                <!-- Currently the same as the jacoco profile but halts on 
+                  failure -->
                 <configuration>
                   <rules>
                     <rule>
