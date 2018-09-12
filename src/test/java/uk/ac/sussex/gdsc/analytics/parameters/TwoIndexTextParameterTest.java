@@ -37,32 +37,39 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class OneIndexTextParameterTest {
+public class TwoIndexTextParameterTest {
   @SuppressWarnings("unused")
   @Test
   public void testConstructor() {
-    ParameterSpecification spec = TestUtils.newTextParameterSpecification("test_", 0);
-    int index = 1;
+    ParameterSpecification spec = TestUtils.newTextParameterSpecification("test_test_", 0);
+    int index1 = 1;
+    int index2 = 2;
     String value = "test";
     Assertions.assertThrows(NullPointerException.class, () -> {
-      new OneIndexTextParameter(spec, index, null);
+      new TwoIndexTextParameter(spec, index1, index2, null);
     });
     Assertions.assertThrows(NullPointerException.class, () -> {
-      new OneIndexTextParameter((ParameterSpecification) null, 1, value);
+      new TwoIndexTextParameter((ParameterSpecification) null, index1, index2, value);
     });
     Assertions.assertThrows(IllegalArgumentException.class, () -> {
-      new OneIndexTextParameter(spec, 0, value);
+      new TwoIndexTextParameter(spec, 0, index2, value);
+    });
+    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+      new TwoIndexTextParameter(spec, index1, 0, value);
     });
 
-    ProtocolSpecification spec2 = ProtocolSpecification.CUSTOM_DIMENSION;
+    ProtocolSpecification spec2 = ProtocolSpecification.PRODUCT_CUSTOM_DIMENSION;
     Assertions.assertThrows(NullPointerException.class, () -> {
-      new OneIndexTextParameter(spec2, index, null);
+      new TwoIndexTextParameter(spec2, index1, index2, null);
     });
     Assertions.assertThrows(NullPointerException.class, () -> {
-      new OneIndexTextParameter((ProtocolSpecification) null, 1, value);
+      new TwoIndexTextParameter((ProtocolSpecification) null, index1, index2, value);
     });
     Assertions.assertThrows(IllegalArgumentException.class, () -> {
-      new OneIndexTextParameter(spec2, 0, value);
+      new TwoIndexTextParameter(spec2, 0, index2, value);
+    });
+    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+      new TwoIndexTextParameter(spec2, index1, 0, value);
     });
   }
 
@@ -71,18 +78,25 @@ public class OneIndexTextParameterTest {
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (int i = 0; i < 5; i++) {
       String name = TestUtils.randomName(rg, 3);
-      int index = 1 + rg.nextInt(20);
+      String name2 = TestUtils.randomName(rg, 3);
+      int index1 = 1 + rg.nextInt(20);
+      int index2 = 1 + rg.nextInt(20);
       String value = TestUtils.randomName(rg, 3);
-      OneIndexTextParameter param = new OneIndexTextParameter(
-          TestUtils.newTextParameterSpecification(name + "_", 0), index, value);
-      Assertions.assertEquals(String.format("%s%d=%s", name, index, value), param.format());
+      TwoIndexTextParameter param = new TwoIndexTextParameter(
+          TestUtils.newTextParameterSpecification(name + "_" + name2 + "_", 0), index1, index2,
+          value);
+      Assertions.assertEquals(String.format("%s%d%s%d=%s", name, index1, name2, index2, value),
+          param.format());
       // Repeat as this checks the cache version is the same
-      Assertions.assertEquals(String.format("%s%d=%s", name, index, value), param.format());
-      Assertions.assertEquals(index, param.getIndex());
+      Assertions.assertEquals(String.format("%s%d%s%d=%s", name, index1, name2, index2, value),
+          param.format());
+      Assertions.assertEquals(index1, param.getIndex1());
+      Assertions.assertEquals(index2, param.getIndex2());
       Assertions.assertEquals(value, param.getValue());
 
-      param = new OneIndexTextParameter(ProtocolSpecification.CUSTOM_DIMENSION, index, value);
-      Assertions.assertEquals(String.format("cd%d=%s", index, value), param.format());
+      param =
+          new TwoIndexTextParameter(ProtocolSpecification.PRODUCT_CUSTOM_DIMENSION, index1, index2, value);
+      Assertions.assertEquals(String.format("pr%dcd%d=%s", index1, index2, value), param.format());
       Assertions.assertEquals(value, param.getValue());
     }
   }

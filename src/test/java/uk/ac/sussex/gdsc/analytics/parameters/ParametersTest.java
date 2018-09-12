@@ -148,12 +148,27 @@ public class ParametersTest {
 
   @Test
   public void testPartialBuilder() throws MalformedURLException {
+    // Test empty methods
+    // @formatter:off
+    String emptyHit =
+    Parameters.newPartialBuilder(this)
+              .addTrackingId(trackingId)
+              .addVersion()
+              .addClientId(clientId)
+              .addClientId(UUID.fromString(clientId))
+              .addUserId(userId)
+              .build().format();
+    // @formatter:on
+    Assertions.assertThat(emptyHit).isEmpty();
+
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (int i = 0; i < 5; i++) {
+      // Test can add others
       String applicationName = TestUtils.randomName(rg, 3);
       String documentTitle = TestUtils.randomName(rg, 3);
       // @formatter:off
       PartialBuilder<?> builder = Parameters.newPartialBuilder(this);
+      // Test getParent()
       Assertions.assertThat(this).isSameAs(builder.getParent());
       URL url = createURL(builder.addApplicationName(applicationName)
                                  .addDocumentTitle(documentTitle)

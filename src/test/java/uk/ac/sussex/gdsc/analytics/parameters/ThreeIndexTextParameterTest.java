@@ -37,32 +37,46 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class OneIndexTextParameterTest {
+public class ThreeIndexTextParameterTest {
   @SuppressWarnings("unused")
   @Test
   public void testConstructor() {
-    ParameterSpecification spec = TestUtils.newTextParameterSpecification("test_", 0);
-    int index = 1;
+    ParameterSpecification spec = TestUtils.newTextParameterSpecification("test_test_test_", 0);
+    int index1 = 1;
+    int index2 = 2;
+    int index3 = 3;
     String value = "test";
     Assertions.assertThrows(NullPointerException.class, () -> {
-      new OneIndexTextParameter(spec, index, null);
+      new ThreeIndexTextParameter(spec, index1, index2, index3, null);
     });
     Assertions.assertThrows(NullPointerException.class, () -> {
-      new OneIndexTextParameter((ParameterSpecification) null, 1, value);
+      new ThreeIndexTextParameter((ParameterSpecification) null, index1, index2, index3, value);
     });
     Assertions.assertThrows(IllegalArgumentException.class, () -> {
-      new OneIndexTextParameter(spec, 0, value);
+      new ThreeIndexTextParameter(spec, 0, index2, index3, value);
+    });
+    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+      new ThreeIndexTextParameter(spec, index1, 0, index3, value);
+    });
+    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+      new ThreeIndexTextParameter(spec, index1, index2, 0, value);
     });
 
-    ProtocolSpecification spec2 = ProtocolSpecification.CUSTOM_DIMENSION;
+    ProtocolSpecification spec2 = ProtocolSpecification.PRODUCT_IMPRESSION_CUSTOM_DIMENSION;
     Assertions.assertThrows(NullPointerException.class, () -> {
-      new OneIndexTextParameter(spec2, index, null);
+      new ThreeIndexTextParameter(spec2, index1, index2, index3, null);
     });
     Assertions.assertThrows(NullPointerException.class, () -> {
-      new OneIndexTextParameter((ProtocolSpecification) null, 1, value);
+      new ThreeIndexTextParameter((ProtocolSpecification) null, index1, index2, index3, value);
     });
     Assertions.assertThrows(IllegalArgumentException.class, () -> {
-      new OneIndexTextParameter(spec2, 0, value);
+      new ThreeIndexTextParameter(spec2, 0, index2, index3, value);
+    });
+    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+      new ThreeIndexTextParameter(spec2, index1, 0, index3, value);
+    });
+    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+      new ThreeIndexTextParameter(spec2, index1, index2, 0, value);
     });
   }
 
@@ -70,19 +84,32 @@ public class OneIndexTextParameterTest {
   public void testFormat() {
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (int i = 0; i < 5; i++) {
-      String name = TestUtils.randomName(rg, 3);
-      int index = 1 + rg.nextInt(20);
+      String name1 = TestUtils.randomName(rg, 3);
+      String name2 = TestUtils.randomName(rg, 3);
+      String name3 = TestUtils.randomName(rg, 3);
+      int index1 = 1 + rg.nextInt(20);
+      int index2 = 1 + rg.nextInt(20);
+      int index3 = 1 + rg.nextInt(20);
       String value = TestUtils.randomName(rg, 3);
-      OneIndexTextParameter param = new OneIndexTextParameter(
-          TestUtils.newTextParameterSpecification(name + "_", 0), index, value);
-      Assertions.assertEquals(String.format("%s%d=%s", name, index, value), param.format());
+      ThreeIndexTextParameter param = new ThreeIndexTextParameter(
+          TestUtils.newTextParameterSpecification(name1 + "_" + name2 + "_" + name3 + "_", 0),
+          index1, index2, index3, value);
+      Assertions.assertEquals(
+          String.format("%s%d%s%d%s%d=%s", name1, index1, name2, index2, name3, index3, value),
+          param.format());
       // Repeat as this checks the cache version is the same
-      Assertions.assertEquals(String.format("%s%d=%s", name, index, value), param.format());
-      Assertions.assertEquals(index, param.getIndex());
+      Assertions.assertEquals(
+          String.format("%s%d%s%d%s%d=%s", name1, index1, name2, index2, name3, index3, value),
+          param.format());
+      Assertions.assertEquals(index1, param.getIndex1());
+      Assertions.assertEquals(index2, param.getIndex2());
+      Assertions.assertEquals(index3, param.getIndex3());
       Assertions.assertEquals(value, param.getValue());
 
-      param = new OneIndexTextParameter(ProtocolSpecification.CUSTOM_DIMENSION, index, value);
-      Assertions.assertEquals(String.format("cd%d=%s", index, value), param.format());
+      param = new ThreeIndexTextParameter(ProtocolSpecification.PRODUCT_IMPRESSION_CUSTOM_DIMENSION,
+          index1, index2, index3, value);
+      Assertions.assertEquals(String.format("il%dpi%dcd%d=%s", index1, index2, index3, value),
+          param.format());
       Assertions.assertEquals(value, param.getValue());
     }
   }

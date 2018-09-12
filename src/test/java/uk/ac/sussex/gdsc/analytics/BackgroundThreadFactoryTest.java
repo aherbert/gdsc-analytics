@@ -29,24 +29,40 @@
 
 package uk.ac.sussex.gdsc.analytics;
 
-import java.util.concurrent.TimeUnit;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+/**
+ * This class exists to determine what happens when there is no Internet connection. This can be
+ * simulated by disconnecting the host (e.g. turn WiFi off; disconnect LAN; etc.) then running the
+ * test manually.
+ */
 @SuppressWarnings("javadoc")
-public class DispatchFutureTest {
+public class BackgroundThreadFactoryTest {
+
+  @SuppressWarnings("unused")
   @Test
-  public void testProperties() {
-    for (DispatchStatus status : DispatchStatus.values()) {
-      DispatchFuture future = new DispatchFuture(status);
-      Assertions.assertEquals(status, future.getStatus());
-      Assertions.assertEquals(status, future.get());
-      Assertions.assertEquals(status, future.get(1000, TimeUnit.SECONDS));
-      // Already done so cancel is false
-      Assertions.assertFalse(future.cancel(true));
-      Assertions.assertFalse(future.isCancelled());
-      Assertions.assertTrue(future.isDone());
+  public void testConstructor() {
+    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+      new BackgroundThreadFactory(Thread.MIN_PRIORITY - 1);
+    });
+    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+      new BackgroundThreadFactory(Thread.MAX_PRIORITY + 1);
+    });
+  }
+
+  @Test
+  public void testNewThread() {
+    Runnable runnable = new Runnable() {
+      @Override
+      public void run() {
+        // Do nothing
+      }
+    };
+    for (int p = Thread.MIN_PRIORITY; p <= Thread.MAX_PRIORITY; p++) {
+      Thread thread = new BackgroundThreadFactory(p).newThread(runnable);
+      Assertions.assertEquals(p, thread.getPriority());
+      Assertions.assertTrue(thread.isDaemon());
     }
   }
 }

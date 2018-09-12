@@ -37,32 +37,25 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class OneIndexTextParameterTest {
+public class OneIndexNumberParameterTest {
   @SuppressWarnings("unused")
   @Test
   public void testConstructor() {
-    ParameterSpecification spec = TestUtils.newTextParameterSpecification("test_", 0);
+    ParameterSpecification spec = TestUtils.newNumberParameterSpecification("Test_");
     int index = 1;
-    String value = "test";
     Assertions.assertThrows(NullPointerException.class, () -> {
-      new OneIndexTextParameter(spec, index, null);
-    });
-    Assertions.assertThrows(NullPointerException.class, () -> {
-      new OneIndexTextParameter((ParameterSpecification) null, 1, value);
+      new OneIndexNumberParameter((ParameterSpecification) null, index, 0);
     });
     Assertions.assertThrows(IllegalArgumentException.class, () -> {
-      new OneIndexTextParameter(spec, 0, value);
+      new OneIndexNumberParameter(spec, 0, 0);
     });
 
-    ProtocolSpecification spec2 = ProtocolSpecification.CUSTOM_DIMENSION;
+    ProtocolSpecification spec2 = ProtocolSpecification.CUSTOM_METRIC;
     Assertions.assertThrows(NullPointerException.class, () -> {
-      new OneIndexTextParameter(spec2, index, null);
-    });
-    Assertions.assertThrows(NullPointerException.class, () -> {
-      new OneIndexTextParameter((ProtocolSpecification) null, 1, value);
+      new OneIndexNumberParameter((ProtocolSpecification) null, index, 0);
     });
     Assertions.assertThrows(IllegalArgumentException.class, () -> {
-      new OneIndexTextParameter(spec2, 0, value);
+      new OneIndexNumberParameter(spec2, 0, 0);
     });
   }
 
@@ -71,18 +64,18 @@ public class OneIndexTextParameterTest {
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (int i = 0; i < 5; i++) {
       String name = TestUtils.randomName(rg, 3);
-      int index = 1 + rg.nextInt(20);
-      String value = TestUtils.randomName(rg, 3);
-      OneIndexTextParameter param = new OneIndexTextParameter(
-          TestUtils.newTextParameterSpecification(name + "_", 0), index, value);
-      Assertions.assertEquals(String.format("%s%d=%s", name, index, value), param.format());
-      // Repeat as this checks the cache version is the same
+      int index = 1 + rg.nextInt(200);
+      double value = rg.nextDouble();
+
+      OneIndexNumberParameter param = new OneIndexNumberParameter(
+          TestUtils.newNumberParameterSpecification(name + "_"), index, value);
       Assertions.assertEquals(String.format("%s%d=%s", name, index, value), param.format());
       Assertions.assertEquals(index, param.getIndex());
       Assertions.assertEquals(value, param.getValue());
 
-      param = new OneIndexTextParameter(ProtocolSpecification.CUSTOM_DIMENSION, index, value);
-      Assertions.assertEquals(String.format("cd%d=%s", index, value), param.format());
+      param = new OneIndexNumberParameter(ProtocolSpecification.CUSTOM_METRIC, index, value);
+      Assertions.assertEquals(String.format("cm%d=%s", index, value), param.format());
+      Assertions.assertEquals(index, param.getIndex());
       Assertions.assertEquals(value, param.getValue());
     }
   }

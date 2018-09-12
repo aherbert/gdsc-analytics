@@ -29,6 +29,8 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
+import java.util.Objects;
+
 /**
  * A generic text parameter for a {@link ParameterSpecification} with 2 indexes.
  */
@@ -57,7 +59,7 @@ public class TwoIndexTextParameter extends TwoIndexParameter {
       String value) {
     super(specification, index1, index2);
     ParameterUtils.compatibleValueType(REQUIRED, specification);
-    this.value = value;
+    this.value = Objects.requireNonNull(value, "Value");
   }
 
   /**
@@ -74,7 +76,7 @@ public class TwoIndexTextParameter extends TwoIndexParameter {
       String value) {
     super(specification, index1, index2);
     ParameterUtils.compatibleValueType(REQUIRED, specification);
-    this.value = value;
+    this.value = Objects.requireNonNull(value, "Value");
   }
 
   /**
