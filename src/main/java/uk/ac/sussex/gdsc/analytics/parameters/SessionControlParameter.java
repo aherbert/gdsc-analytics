@@ -29,6 +29,8 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
+import java.util.Objects;
+
 /**
  * Implements the {@link FormattedParameter} interface for {@link SessionControl}.
  *
@@ -36,10 +38,14 @@ package uk.ac.sussex.gdsc.analytics.parameters;
  */
 public final class SessionControlParameter implements FormattedParameter {
   /** The session start parameter. */
-  public static final SessionControlParameter START =
-      new SessionControlParameter(SessionControl.START);
+  public static final SessionControlParameter START;
   /** The session end parameter. */
-  public static final SessionControlParameter END = new SessionControlParameter(SessionControl.END);
+  public static final SessionControlParameter END;
+
+  static {
+    START = new SessionControlParameter(SessionControl.START);
+    END = new SessionControlParameter(SessionControl.END);
+  }
 
   /**
    * The formatted parameter string used for the {@link FormattedParameter} interface.
@@ -52,17 +58,34 @@ public final class SessionControlParameter implements FormattedParameter {
    * @param sessionControl the session control
    */
   private SessionControlParameter(SessionControl sessionControl) {
-    //@formmater:off
+    // @formatter:off
     final StringBuilder sb = new StringBuilder()
         .append(ProtocolSpecification.SESSION_CONTROL.getNameFormat())
         .append(Constants.EQUAL)
         .append(sessionControl.toString());
-    //@formmater:on
+    // @formatter:on
     chars = ParameterUtils.getChars(sb);
   }
 
   @Override
   public StringBuilder formatTo(StringBuilder sb) {
     return sb.append(chars);
+  }
+
+  /**
+   * Creates the session control parameter
+   *
+   * @param sessionControl the session control type
+   * @return the session control parameter
+   */
+  public static SessionControlParameter create(SessionControl sessionControl) {
+    Objects.requireNonNull(sessionControl, "Session control is null");
+    switch (sessionControl) {
+      case END:
+        return END;
+      case START:
+      default:
+        return START;
+    }
   }
 }

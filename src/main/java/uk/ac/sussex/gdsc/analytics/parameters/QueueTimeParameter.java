@@ -43,7 +43,7 @@ public class QueueTimeParameter extends NoIndexParameter {
   private final long timestamp;
 
   /**
-   * Creates a new instance.using the provide timestamp to mark when the hit occurred.
+   * Creates a new instance using the provided timestamp to mark when the hit occurred.
    *
    * @param timestamp the timestamp
    */

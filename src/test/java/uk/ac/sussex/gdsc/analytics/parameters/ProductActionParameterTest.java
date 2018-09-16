@@ -56,4 +56,15 @@ public class ProductActionParameterTest {
     // Make sure we cover all the values
     Assertions.assertEquals(ProductAction.values().length, count);
   }
+
+  @Test
+  public void testCreate() {
+    for (ProductAction pa : ProductAction.values()) {
+      Assertions
+          .assertTrue(ProductActionParameter.create(pa).format().endsWith("=" + pa.toString()));
+    }
+    Assertions.assertThrows(NullPointerException.class, () -> {
+      ProductActionParameter.create(null);
+    });
+  }
 }

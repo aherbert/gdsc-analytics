@@ -44,4 +44,15 @@ public class SessionControlParameterTest {
     // Make sure we cover all the values
     Assertions.assertEquals(SessionControl.values().length, count);
   }
+
+  @Test
+  public void testCreate() {
+    for (SessionControl sc : SessionControl.values()) {
+      Assertions
+          .assertTrue(SessionControlParameter.create(sc).format().endsWith("=" + sc.toString()));
+    }
+    Assertions.assertThrows(NullPointerException.class, () -> {
+      SessionControlParameter.create(null);
+    });
+  }
 }

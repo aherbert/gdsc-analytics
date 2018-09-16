@@ -29,6 +29,8 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
+import java.util.Objects;
+
 /**
  * Implements the {@link FormattedParameter} interface for {@link HitType}.
  *
@@ -36,21 +38,32 @@ package uk.ac.sussex.gdsc.analytics.parameters;
  */
 public final class HitTypeParameter implements FormattedParameter {
   /** The pageview hit-type. */
-  public static final HitTypeParameter PAGEVIEW = new HitTypeParameter(HitType.PAGEVIEW);
+  public static final HitTypeParameter PAGEVIEW;
   /** The screenview hit-type. */
-  public static final HitTypeParameter SCREENVIEW = new HitTypeParameter(HitType.SCREENVIEW);
+  public static final HitTypeParameter SCREENVIEW;
   /** The event hit-type. */
-  public static final HitTypeParameter EVENT = new HitTypeParameter(HitType.EVENT);
+  public static final HitTypeParameter EVENT;
   /** The transaction hit-type. */
-  public static final HitTypeParameter TRANSACTION = new HitTypeParameter(HitType.TRANSACTION);
+  public static final HitTypeParameter TRANSACTION;
   /** The item hit-type. */
-  public static final HitTypeParameter ITEM = new HitTypeParameter(HitType.ITEM);
+  public static final HitTypeParameter ITEM;
   /** The social hit-type. */
-  public static final HitTypeParameter SOCIAL = new HitTypeParameter(HitType.SOCIAL);
+  public static final HitTypeParameter SOCIAL;
   /** The exception hit-type. */
-  public static final HitTypeParameter EXCEPTION = new HitTypeParameter(HitType.EXCEPTION);
+  public static final HitTypeParameter EXCEPTION;
   /** The timing hit-type. */
-  public static final HitTypeParameter TIMING = new HitTypeParameter(HitType.TIMING);
+  public static final HitTypeParameter TIMING;
+
+  static {
+    PAGEVIEW = new HitTypeParameter(HitType.PAGEVIEW);
+    SCREENVIEW = new HitTypeParameter(HitType.SCREENVIEW);
+    EVENT = new HitTypeParameter(HitType.EVENT);
+    TRANSACTION = new HitTypeParameter(HitType.TRANSACTION);
+    ITEM = new HitTypeParameter(HitType.ITEM);
+    SOCIAL = new HitTypeParameter(HitType.SOCIAL);
+    EXCEPTION = new HitTypeParameter(HitType.EXCEPTION);
+    TIMING = new HitTypeParameter(HitType.TIMING);
+  }
 
   /**
    * The formatted parameter string used for the {@link FormattedParameter} interface.
@@ -61,17 +74,46 @@ public final class HitTypeParameter implements FormattedParameter {
    * Creates a new instance.
    */
   private HitTypeParameter(HitType hitType) {
-    //@formmater:off
+    // @formatter:off
     final StringBuilder sb = new StringBuilder()
         .append(ProtocolSpecification.HIT_TYPE.getNameFormat())
         .append(Constants.EQUAL)
         .append(hitType.toString());
-    //@formmater:on
+    // @formatter:on
     chars = ParameterUtils.getChars(sb);
   }
 
   @Override
   public StringBuilder formatTo(StringBuilder sb) {
     return sb.append(chars);
+  }
+
+  /**
+   * Creates the hit type parameter
+   *
+   * @param hitType the hit type
+   * @return the hit type parameter
+   */
+  public static HitTypeParameter create(HitType hitType) {
+    Objects.requireNonNull(hitType, "Hit type is null");
+    switch (hitType) {
+      case EVENT:
+        return EVENT;
+      case EXCEPTION:
+        return EXCEPTION;
+      case ITEM:
+        return ITEM;
+      case PAGEVIEW:
+        return PAGEVIEW;
+      case SCREENVIEW:
+        return SCREENVIEW;
+      case SOCIAL:
+        return SOCIAL;
+      case TIMING:
+        return TIMING;
+      case TRANSACTION:
+      default:
+        return TRANSACTION;
+    }
   }
 }

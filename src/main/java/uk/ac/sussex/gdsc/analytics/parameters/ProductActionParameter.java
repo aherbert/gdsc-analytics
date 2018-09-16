@@ -29,35 +29,41 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
+import java.util.Objects;
+
 /**
- * Implements the {@link FormattedParameter} interface for {@link SessionControl}.
+ * Implements the {@link FormattedParameter} interface for {@link ProductAction}.
  *
  * @see <a href="http://goo.gl/a8d4RP#pa">Product Action</a>
  */
 public final class ProductActionParameter implements FormattedParameter {
   /** The detail product action parameter. */
-  public static final ProductActionParameter DETAIL =
-      new ProductActionParameter(ProductAction.DETAIL);
+  public static final ProductActionParameter DETAIL;
   /** The click product action parameter. */
-  public static final ProductActionParameter CLICK =
-      new ProductActionParameter(ProductAction.CLICK);
+  public static final ProductActionParameter CLICK;
   /** The add product action parameter. */
-  public static final ProductActionParameter ADD = new ProductActionParameter(ProductAction.ADD);
+  public static final ProductActionParameter ADD;
   /** The remove product action parameter. */
-  public static final ProductActionParameter REMOVE =
-      new ProductActionParameter(ProductAction.REMOVE);
+  public static final ProductActionParameter REMOVE;
   /** The checkout product action parameter. */
-  public static final ProductActionParameter CHECKOUT =
-      new ProductActionParameter(ProductAction.CHECKOUT);
+  public static final ProductActionParameter CHECKOUT;
   /** The checkout option product action parameter. */
-  public static final ProductActionParameter CHECKOUT_OPTION =
-      new ProductActionParameter(ProductAction.CHECKOUT_OPTION);
+  public static final ProductActionParameter CHECKOUT_OPTION;
   /** The purchase product action parameter. */
-  public static final ProductActionParameter PURCHASE =
-      new ProductActionParameter(ProductAction.PURCHASE);
+  public static final ProductActionParameter PURCHASE;
   /** The refund product action parameter. */
-  public static final ProductActionParameter REFUND =
-      new ProductActionParameter(ProductAction.REFUND);
+  public static final ProductActionParameter REFUND;
+
+  static {
+    DETAIL = new ProductActionParameter(ProductAction.DETAIL);
+    CLICK = new ProductActionParameter(ProductAction.CLICK);
+    ADD = new ProductActionParameter(ProductAction.ADD);
+    REMOVE = new ProductActionParameter(ProductAction.REMOVE);
+    CHECKOUT = new ProductActionParameter(ProductAction.CHECKOUT);
+    CHECKOUT_OPTION = new ProductActionParameter(ProductAction.CHECKOUT_OPTION);
+    PURCHASE = new ProductActionParameter(ProductAction.PURCHASE);
+    REFUND = new ProductActionParameter(ProductAction.REFUND);
+  }
 
   /**
    * The formatted parameter string used for the {@link FormattedParameter} interface.
@@ -70,17 +76,46 @@ public final class ProductActionParameter implements FormattedParameter {
    * @param productAction the product action
    */
   private ProductActionParameter(ProductAction productAction) {
-    //@formmater:off
+    // @formatter:off
     final StringBuilder sb = new StringBuilder()
         .append(ProtocolSpecification.PRODUCT_ACTION.getNameFormat())
         .append(Constants.EQUAL)
         .append(productAction.toString());
-    //@formmater:on
+    // @formatter:on
     chars = ParameterUtils.getChars(sb);
   }
 
   @Override
   public StringBuilder formatTo(StringBuilder sb) {
     return sb.append(chars);
+  }
+
+  /**
+   * Creates the product action parameter.
+   *
+   * @param productAction the product action
+   * @return the product action parameter
+   */
+  public static ProductActionParameter create(ProductAction productAction) {
+    Objects.requireNonNull(productAction, "Product action is null");
+    switch (productAction) {
+      case ADD:
+        return ADD;
+      case CHECKOUT:
+        return CHECKOUT;
+      case CHECKOUT_OPTION:
+        return CHECKOUT_OPTION;
+      case CLICK:
+        return CLICK;
+      case DETAIL:
+        return DETAIL;
+      case PURCHASE:
+        return PURCHASE;
+      case REFUND:
+        return REFUND;
+      case REMOVE:
+      default:
+        return REMOVE;
+    }
   }
 }

@@ -675,7 +675,7 @@ public class GoogleAnalyticsClient {
     final HitBuilder<Future<DispatchStatus>> builder =
         new GoogleAnalyticsHitBuilder(hitType, session.getTimeStamp());
     if (isNew) {
-      builder.addSessionControl(SessionControlParameter.START);
+      builder.add(SessionControlParameter.START);
       builder.add(sessionParameters);
     }
     return builder;

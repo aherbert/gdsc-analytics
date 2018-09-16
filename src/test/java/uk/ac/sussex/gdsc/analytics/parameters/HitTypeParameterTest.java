@@ -57,4 +57,14 @@ public class HitTypeParameterTest {
     // Make sure we cover all the values
     Assertions.assertEquals(HitType.values().length, count);
   }
+
+  @Test
+  public void testCreate() {
+    for (HitType ht : HitType.values()) {
+      Assertions.assertTrue(HitTypeParameter.create(ht).format().endsWith("=" + ht.toString()));
+    }
+    Assertions.assertThrows(NullPointerException.class, () -> {
+      HitTypeParameter.create(null);
+    });
+  }
 }

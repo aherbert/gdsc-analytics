@@ -29,7 +29,6 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
-import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -166,9 +165,6 @@ public class Parameters implements FormattedParameter {
    */
   public static class ParametersBuilder<B extends ParametersBuilder<B>> {
 
-    /** The forward slash character '/'. */
-    private static final char FORWARDSLASH = '/';
-
     /**
      * A reference to '{@code this}' cast to the appropriate {@code [this]} type.
      *
@@ -291,17 +287,33 @@ public class Parameters implements FormattedParameter {
     }
 
     /**
-     * Adds the queue time.
+     * Adds the queue time using the provided timestamp (in milliseconds) to mark when the hit
+     * occurred.
+     * 
+     * <p>The queue time will be dynamically generated as the time delta (in milliseconds) between
+     * when the hit being reported occurred and the time the hit was sent. The later time is when
+     * the hit is created using {@link #build()}.
      *
-     * <p>The value represents the time delta (in milliseconds) between when the hit being reported
-     * occurred and the time the hit was sent.
-     *
-     * @param queueTime the queue time
+     * @param timestamp the timestamp
      * @return the builder
      * @see <a href="http://goo.gl/a8d4RP#qt">Queue Time</a>
      */
-    public B addQueueTime(int queueTime) {
-      return addParameter(new QueueTimeParameter(queueTime));
+    public B addQueueTime(long timestamp) {
+      return addParameter(new QueueTimeParameter(timestamp));
+    }
+
+    /**
+     * Adds the queue time using the current time (in milliseconds) to mark when the hit occurred.
+     * 
+     * <p>The queue time will be dynamically generated as the time delta (in milliseconds) between
+     * when the hit being reported occurred and the time the hit was sent. The later time is when
+     * the hit is created using {@link #build()}.
+     *
+     * @return the builder
+     * @see <a href="http://goo.gl/a8d4RP#qt">Queue Time</a>
+     */
+    public B addQueueTime() {
+      return addQueueTime(System.currentTimeMillis());
     }
 
     /**
@@ -379,8 +391,8 @@ public class Parameters implements FormattedParameter {
      * @return the builder
      * @see <a href="http://goo.gl/a8d4RP#sc">Session Control</a>
      */
-    public B addSessionControl(SessionControlParameter sessionControl) {
-      return addParameter(Objects.requireNonNull(sessionControl, "Session control is null"));
+    public B addSessionControl(SessionControl sessionControl) {
+      return addParameter(SessionControlParameter.create(sessionControl));
     }
 
     ////////////////////////////////////////////////////////
@@ -402,22 +414,6 @@ public class Parameters implements FormattedParameter {
     public B addScreenResolution(int width, int height) {
       return addParameter(
           new ResolutionParameter(ProtocolSpecification.SCREEN_RESOLUTION, width, height));
-    }
-
-    /**
-     * Adds the screen resolution using system information.
-     *
-     * @return the builder
-     * @see <a href="http://goo.gl/a8d4RP#sr">Screen Resolution</a>
-     * @see SystemUtils#getScreenSize()
-     */
-    public B addScreenResolution() {
-      final Dimension d = SystemUtils.getScreenSize();
-      if (d != null) {
-        addParameter(
-            new ResolutionParameter(ProtocolSpecification.SCREEN_RESOLUTION, d.width, d.height));
-      }
-      return self;
     }
 
     /**
@@ -513,8 +509,8 @@ public class Parameters implements FormattedParameter {
      * @return the builder
      * @see <a href="http://goo.gl/a8d4RP#t">Hit type</a>
      */
-    public B addHitType(HitTypeParameter hitType) {
-      return addParameter(Objects.requireNonNull(hitType, "Hit type is null"));
+    public B addHitType(HitType hitType) {
+      return addParameter(HitTypeParameter.create(hitType));
     }
 
     /**
@@ -545,7 +541,6 @@ public class Parameters implements FormattedParameter {
      * @see <a href="http://goo.gl/a8d4RP#dl">Document Location Url</a>
      */
     public B addDocumentLocationUrl(String documentLocationUrl) {
-      // TODO - dedicated parameter for this to prefix with '/'
       return addParameter(new NoIndexTextParameter(ProtocolSpecification.DOCUMENT_LOCATION_URL,
           documentLocationUrl));
     }
@@ -558,7 +553,7 @@ public class Parameters implements FormattedParameter {
      *
      * @param documentHostName the document host name
      * @return the builder
-     * @see <a href="http://goo.gl/a8d4RP#dl">Document Host Name</a>
+     * @see <a href="http://goo.gl/a8d4RP#dh">Document Host Name</a>
      */
     public B addDocumentHostName(String documentHostName) {
       return addParameter(
@@ -577,7 +572,7 @@ public class Parameters implements FormattedParameter {
      */
     public B addDocumentPath(String documentPath) {
       ParameterUtils.requireNotEmpty(documentPath, "Document path is empty");
-      if (documentPath.charAt(0) != FORWARDSLASH) {
+      if (documentPath.charAt(0) != Constants.FORWARD_SLASH) {
         throw new IllegalArgumentException("Document path should begin with '/'");
       }
       return addParameter(
@@ -937,7 +932,7 @@ public class Parameters implements FormattedParameter {
      *
      * @param exceptionFatal the exception fatal
      * @return the builder
-     * @see <a href="http://goo.gl/a8d4RP#exd">Is Exception Fatal</a>
+     * @see <a href="http://goo.gl/a8d4RP#exf">Is Exception Fatal</a>
      */
     public B addIsExceptionFatal(boolean exceptionFatal) {
       return addParameter(
@@ -1198,7 +1193,7 @@ public class Parameters implements FormattedParameter {
       if (formattedParameter != null) {
         add(formattedParameter);
       }
-      addHitType(hitType);
+      add(hitType);
     }
 
     /**
