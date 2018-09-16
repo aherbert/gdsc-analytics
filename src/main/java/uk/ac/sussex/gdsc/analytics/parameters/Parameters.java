@@ -29,8 +29,6 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.UUID;
@@ -166,14 +164,29 @@ public class Parameters implements FormattedParameter {
   public static class ParametersBuilder<B extends ParametersBuilder<B>> {
 
     /**
+     * The initial list size.
+     * 
+     * <p>This must not be zero otherwise doubling the size will fail.
+     */
+    private static final int INITIAL_LIST_SIZE = 8;
+
+    /**
      * A reference to '{@code this}' cast to the appropriate {@code [this]} type.
      *
      * <p>This can be returned from any builder method, i.e. {@code return self; }
      */
     protected final B self;
 
-    /** The list. */
-    private final List<FormattedParameter> list = new ArrayList<>();
+    /**
+     * The list.
+     * 
+     * <p>This is implemented as a direct array for efficiency over using an ArrayList<> which has
+     * fast-fail concurrent modification checks on all add operations.
+     */
+    private FormattedParameter[] list = new FormattedParameter[INITIAL_LIST_SIZE];
+
+    /** The size of the list. */
+    private int size = 0;
 
     /**
      * Create a new builder.
@@ -185,9 +198,33 @@ public class Parameters implements FormattedParameter {
       self = (B) selfType.cast(this);
     }
 
+    /**
+     * Adds the parameter to the list.
+     *
+     * @param parameter the parameter
+     * @return the builder
+     */
     private B addParameter(FormattedParameter parameter) {
-      list.add(parameter);
+      if (list.length == size) {
+        list = copyList(list, size, size * 2);
+      }
+      list[size++] = parameter;
       return self;
+    }
+
+    /**
+     * Copy the list.
+     *
+     * @param list the list
+     * @param size the size
+     * @param capacity the capacity
+     * @return the copy
+     */
+    private static FormattedParameter[] copyList(FormattedParameter[] list, int size,
+        int capacity) {
+      final FormattedParameter[] newList = new FormattedParameter[capacity];
+      System.arraycopy(list, 0, newList, 0, size);
+      return newList;
     }
 
     /**
@@ -196,7 +233,7 @@ public class Parameters implements FormattedParameter {
      * @return the parameters
      */
     public Parameters build() {
-      return new Parameters(list.toArray(new FormattedParameter[list.size()]));
+      return new Parameters(copyList(list, size, size));
     }
 
     /**

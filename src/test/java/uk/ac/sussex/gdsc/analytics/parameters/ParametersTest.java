@@ -38,12 +38,14 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.Locale;
 import java.util.UUID;
 import java.util.function.Consumer;
 
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.simple.RandomSource;
+import org.assertj.core.api.AbstractUrlAssert;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -378,6 +380,26 @@ public class ParametersTest {
       Assertions.assertThat(url).hasParameter(name, value);
     } else {
       Assertions.assertThat(url).hasParameter(name);
+    }
+  }
+
+  @Test
+  public void testBuilderWithManyParameters() throws MalformedURLException {
+    final Builder builder = Parameters.newBuilder();
+    final int size = 100;
+    ArrayList<String> names = new ArrayList<>(size);
+    ArrayList<String> values = new ArrayList<>(size);
+    for (int i = 0; i < size; i++) {
+      final String name = "name" + i;
+      final String value = "value" + i;
+      builder.add(name, value);
+      names.add(name);
+      values.add(value);
+    }
+    final URL url = createURL(builder.build());
+    AbstractUrlAssert<?> a = Assertions.assertThat(url);
+    for (int i = 0; i < size; i++) {
+      a.hasParameter(names.get(i), values.get(i));
     }
   }
 
