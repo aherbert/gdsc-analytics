@@ -36,6 +36,11 @@ import java.util.EnumMap;
  */
 public final class IndexReplacerFactory {
 
+  /** The constant 1. */
+  private static final int ONE = 1;
+  /** The constant 2. */
+  private static final int TWO = 2;
+  
   /** Cache replacers for all the parameters. */
   private static final EnumMap<ProtocolSpecification, IndexReplacer> map =
       new EnumMap<>(ProtocolSpecification.class);
@@ -74,10 +79,10 @@ public final class IndexReplacerFactory {
     if (specification.getNumberOfIndexes() == 0) {
       return new NoIndexReplacer(specification);
     }
-    if (specification.getNumberOfIndexes() == 1) {
+    if (specification.getNumberOfIndexes() == ONE) {
       return new OneIndexReplacer(specification);
     }
-    if (specification.getNumberOfIndexes() == 2) {
+    if (specification.getNumberOfIndexes() == TWO) {
       return new TwoIndexReplacer(specification);
     }
     // The API does not support more than 3 indexes

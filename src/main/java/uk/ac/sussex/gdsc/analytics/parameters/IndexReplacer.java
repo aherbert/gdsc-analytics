@@ -137,7 +137,6 @@ public class IndexReplacer {
     if (numberOfIndexes != indexes.length) {
       throw new IncorrectCountException(numberOfIndexes, indexes.length);
     }
-    // No formats should have the index at the start, i.e. length0 == 0.
     sb.append(format, 0, ranges[0]);
     for (int i = 0, j = 1; i < numberOfIndexes; i++, j += 2) {
       sb.append(indexes[i]).append(format, ranges[j], ranges[j + 1]);

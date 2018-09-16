@@ -44,6 +44,12 @@ public class DefaultHttpUrlConnectionCallback implements HttpUrlConnectionCallba
   /** The buffer size when reading the input stream. */
   private static final int BUFFER_SIZE = 1024;
 
+  /** Used to reset the content type */
+  private static final String UNKNOWN_CONTENT_TYPE = null;
+
+  /** Used to reset the bytes */
+  private static final byte[] NO_BYTES = null;
+
   /** The response code. */
   private int responseCode;
 
@@ -108,7 +114,7 @@ public class DefaultHttpUrlConnectionCallback implements HttpUrlConnectionCallba
     contentType = connection.getContentType();
 
     // Read byte data assuming UTF-8.
-    try (final InputStream inputStream = connection.getInputStream()) {
+    try (InputStream inputStream = connection.getInputStream()) {
       final ByteArrayOutputStream buffer = new ByteArrayOutputStream(BUFFER_SIZE);
       int readCount;
       final byte[] data = new byte[BUFFER_SIZE];
@@ -125,7 +131,7 @@ public class DefaultHttpUrlConnectionCallback implements HttpUrlConnectionCallba
    */
   public void reset() {
     responseCode = 0;
-    contentType = null;
-    bytes = null;
+    contentType = UNKNOWN_CONTENT_TYPE;
+    bytes = NO_BYTES;
   }
 }

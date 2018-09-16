@@ -39,7 +39,7 @@ import java.util.Locale;
 public class UserLanguageParameter extends NoIndexTextParameter {
 
   /**
-   * Creates a new instance using the specified locale
+   * Creates a new instance using the specified locale.
    *
    * @param locale the locale
    */

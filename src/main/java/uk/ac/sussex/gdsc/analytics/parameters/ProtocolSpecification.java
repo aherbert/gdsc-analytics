@@ -363,7 +363,7 @@ public enum ProtocolSpecification implements ParameterSpecification {
    * @param maxLength the max length
    * @param supportedHitTypes the supported hit types
    */
-  private ProtocolSpecification(String formalName, String nameFormat, ValueType valueType, int maxLength,
+  ProtocolSpecification(String formalName, String nameFormat, ValueType valueType, int maxLength,
       HitType... supportedHitTypes) {
     this.formalName = formalName;
     this.nameFormat = nameFormat;

@@ -105,12 +105,12 @@ abstract class TwoIndexParameter extends BaseParameter {
   protected StringBuilder appendNameEquals(StringBuilder sb) {
     TwoIndexReplacer replacer = this.indexReplacer;
     if (replacer == null) {
-      // Use a cache of the defined protocol formats
-      if (protocolSpecification != null) {
+      if (protocolSpecification == null) {
+        replacer = new TwoIndexReplacer(getParameterSpecification().getNameFormat());
+      } else {
+        // Use a cache of the defined protocol formats
         replacer =
             (TwoIndexReplacer) IndexReplacerFactory.createIndexReplacer(protocolSpecification);
-      } else {
-        replacer = new TwoIndexReplacer(getParameterSpecification().getNameFormat());
       }
       indexReplacer = replacer;
     }

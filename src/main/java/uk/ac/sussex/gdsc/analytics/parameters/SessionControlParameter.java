@@ -73,7 +73,7 @@ public final class SessionControlParameter implements FormattedParameter {
   }
 
   /**
-   * Creates the session control parameter
+   * Creates the session control parameter.
    *
    * @param sessionControl the session control type
    * @return the session control parameter

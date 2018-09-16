@@ -164,9 +164,7 @@ public class DefaultHitDispatcher implements HitDispatcher {
     if (isDisabled()) {
       return DispatchStatus.DISABLED;
     }
-    if (hit == null) {
-      throw new NullPointerException("Hit was null");
-    }
+    Objects.requireNonNull(hit, "Hit was null");
     HttpURLConnection connection = null;
     try {
       connection = connectionProvider.openConnection(url, proxy);

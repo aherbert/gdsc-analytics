@@ -26,6 +26,7 @@
  * THE SOFTWARE.
  * #L%
  */
+
 package uk.ac.sussex.gdsc.analytics;
 
 /**

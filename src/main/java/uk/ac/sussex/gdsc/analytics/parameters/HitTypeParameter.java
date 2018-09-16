@@ -89,7 +89,7 @@ public final class HitTypeParameter implements FormattedParameter {
   }
 
   /**
-   * Creates the hit type parameter
+   * Creates the hit type parameter.
    *
    * @param hitType the hit type
    * @return the hit type parameter
