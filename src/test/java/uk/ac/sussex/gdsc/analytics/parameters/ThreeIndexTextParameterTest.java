@@ -41,11 +41,12 @@ public class ThreeIndexTextParameterTest {
   @SuppressWarnings("unused")
   @Test
   public void testConstructor() {
-    ParameterSpecification spec = TestUtils.newTextParameterSpecification("test_test_test_", 0);
-    int index1 = 1;
-    int index2 = 2;
-    int index3 = 3;
-    String value = "test";
+    final ParameterSpecification spec =
+        TestUtils.newTextParameterSpecification("test_test_test_", 0);
+    final int index1 = 1;
+    final int index2 = 2;
+    final int index3 = 3;
+    final String value = "test";
     Assertions.assertThrows(NullPointerException.class, () -> {
       new ThreeIndexTextParameter(spec, index1, index2, index3, null);
     });
@@ -62,7 +63,7 @@ public class ThreeIndexTextParameterTest {
       new ThreeIndexTextParameter(spec, index1, index2, 0, value);
     });
 
-    ProtocolSpecification spec2 = ProtocolSpecification.PRODUCT_IMPRESSION_CUSTOM_DIMENSION;
+    final ProtocolSpecification spec2 = ProtocolSpecification.PRODUCT_IMPRESSION_CUSTOM_DIMENSION;
     Assertions.assertThrows(NullPointerException.class, () -> {
       new ThreeIndexTextParameter(spec2, index1, index2, index3, null);
     });
@@ -84,13 +85,13 @@ public class ThreeIndexTextParameterTest {
   public void testFormat() {
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (int i = 0; i < 5; i++) {
-      String name1 = TestUtils.randomName(rg, 3);
-      String name2 = TestUtils.randomName(rg, 3);
-      String name3 = TestUtils.randomName(rg, 3);
-      int index1 = 1 + rg.nextInt(20);
-      int index2 = 1 + rg.nextInt(20);
-      int index3 = 1 + rg.nextInt(20);
-      String value = TestUtils.randomName(rg, 3);
+      final String name1 = TestUtils.randomName(rg, 3);
+      final String name2 = TestUtils.randomName(rg, 3);
+      final String name3 = TestUtils.randomName(rg, 3);
+      final int index1 = 1 + rg.nextInt(20);
+      final int index2 = 1 + rg.nextInt(20);
+      final int index3 = 1 + rg.nextInt(20);
+      final String value = TestUtils.randomName(rg, 3);
       ThreeIndexTextParameter param = new ThreeIndexTextParameter(
           TestUtils.newTextParameterSpecification(name1 + "_" + name2 + "_" + name3 + "_", 0),
           index1, index2, index3, value);

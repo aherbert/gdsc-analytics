@@ -44,8 +44,8 @@ public class OneIndexCurrencyParameterTest {
   @SuppressWarnings("unused")
   @Test
   public void testConstructor() {
-    ParameterSpecification spec = TestUtils.newCurrencyParameterSpecification("Test_");
-    int index = 1;
+    final ParameterSpecification spec = TestUtils.newCurrencyParameterSpecification("Test_");
+    final int index = 1;
     Assertions.assertThrows(NullPointerException.class, () -> {
       new OneIndexCurrencyParameter(spec, null, index, 0);
     });
@@ -56,7 +56,7 @@ public class OneIndexCurrencyParameterTest {
       new OneIndexCurrencyParameter(spec, Locale.getDefault(), 0, 0);
     });
 
-    ProtocolSpecification spec2 = ProtocolSpecification.PRODUCT_PRICE;
+    final ProtocolSpecification spec2 = ProtocolSpecification.PRODUCT_PRICE;
     Assertions.assertThrows(NullPointerException.class, () -> {
       new OneIndexCurrencyParameter(spec2, null, index, 0);
     });
@@ -71,14 +71,14 @@ public class OneIndexCurrencyParameterTest {
   @Test
   public void testFormat() {
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
-    for (Locale locale : new Locale[] {Locale.getDefault(), Locale.FRANCE}) {
+    for (final Locale locale : new Locale[] {Locale.getDefault(), Locale.FRANCE}) {
       for (int i = 0; i < 5; i++) {
-        String name = TestUtils.randomName(rg, 3);
-        int index = 1 + rg.nextInt(200);
-        double value = rg.nextDouble();
+        final String name = TestUtils.randomName(rg, 3);
+        final int index = 1 + rg.nextInt(200);
+        final double value = rg.nextDouble();
 
-        NumberFormat formatter = NumberFormat.getCurrencyInstance(locale);
-        String valueString = formatter.format(value);
+        final NumberFormat formatter = NumberFormat.getCurrencyInstance(locale);
+        final String valueString = formatter.format(value);
 
         OneIndexCurrencyParameter param = new OneIndexCurrencyParameter(
             TestUtils.newCurrencyParameterSpecification(name + "_"), locale, index, value);

@@ -168,7 +168,7 @@ public final class ParameterUtils {
   static void compatibleValueType(ValueType expected, ParameterSpecification specification) {
     // Text is compatible with any other type
     if (expected != ValueType.TEXT) {
-      ValueType observed = specification.getValueType();
+      final ValueType observed = specification.getValueType();
       if (expected != observed) {
         throw new IncorrectValueTypeException(expected, observed, specification.getFormalName());
       }

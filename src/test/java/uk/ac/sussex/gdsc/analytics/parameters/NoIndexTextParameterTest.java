@@ -60,8 +60,8 @@ public class NoIndexTextParameterTest {
   public void testFormat() {
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (int i = 0; i < 5; i++) {
-      String name = TestUtils.randomName(rg, 3);
-      String value = TestUtils.randomName(rg, 3);
+      final String name = TestUtils.randomName(rg, 3);
+      final String value = TestUtils.randomName(rg, 3);
       NoIndexTextParameter param =
           new NoIndexTextParameter(TestUtils.newTextParameterSpecification(name), value);
       Assertions.assertEquals(String.format("%s=%s", name, value), param.format());

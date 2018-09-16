@@ -40,7 +40,7 @@ public class TrackingIdParameterTest {
     Assertions.assertThrows(NullPointerException.class, () -> {
       new TrackingIdParameter(null);
     });
-    for (String trackingId : new String[] {" UA-1234-6", "", "hgkh", "12345", "ABC"}) {
+    for (final String trackingId : new String[] {" UA-1234-6", "", "hgkh", "12345", "ABC"}) {
       Assertions.assertThrows(NullPointerException.class, () -> {
         new TrackingIdParameter(null);
       });
@@ -49,7 +49,7 @@ public class TrackingIdParameterTest {
 
   @Test
   public void testFormat() {
-    for (String trackingId : new String[] {"UA-1234-6", "UA-123456789-6"}) {
+    for (final String trackingId : new String[] {"UA-1234-6", "UA-123456789-6"}) {
       Assertions.assertEquals(String.format("tid=%s", trackingId),
           new TrackingIdParameter(trackingId).format());
     }

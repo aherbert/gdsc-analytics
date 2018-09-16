@@ -45,8 +45,8 @@ public class FormatterParameterTest {
   public void testAppendTo() {
     // When nothing is added
     {
-      FormattedParameter fp = (sb) -> sb;
-      StringBuilder sb = new StringBuilder();
+      final FormattedParameter fp = (sb) -> sb;
+      final StringBuilder sb = new StringBuilder();
       Assertions.assertEquals("", fp.appendTo(sb).toString());
       Assertions.assertEquals("", fp.appendTo(sb).toString());
     }
@@ -55,8 +55,8 @@ public class FormatterParameterTest {
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (int i = 0; i < 5; i++) {
       final String name = TestUtils.randomName(rg, 10);
-      FormattedParameter fp = (sb) -> sb.append(name);
-      StringBuilder sb = new StringBuilder();
+      final FormattedParameter fp = (sb) -> sb.append(name);
+      final StringBuilder sb = new StringBuilder();
       Assertions.assertEquals(name, fp.appendTo(sb).toString());
       // When something is added an '&' character is used to separate them
       Assertions.assertEquals(name + "&" + name, fp.appendTo(sb).toString());
@@ -91,8 +91,8 @@ public class FormatterParameterTest {
     for (int i = 0; i < 5; i++) {
       final String name = TestUtils.randomName(rg, 10);
       fp = (sb) -> sb.append(name);
-      String appendToString = callFormatTo(fp);
-      String formatString = fp.format();
+      final String appendToString = callFormatTo(fp);
+      final String formatString = fp.format();
       Assertions.assertEquals(name, fp.format());
       fp2 = fp.freeze();
       Assertions.assertNotSame(fp, fp2);
@@ -104,11 +104,11 @@ public class FormatterParameterTest {
 
   @Test
   public void testEmpty() {
-    FormattedParameter fp = FormattedParameter.empty();
+    final FormattedParameter fp = FormattedParameter.empty();
     Assertions.assertEquals("", callFormatTo(fp));
     Assertions.assertEquals("", fp.format());
     Assertions.assertSame(fp, fp.freeze());
-    FormattedParameter fp2 = FormattedParameter.empty();
+    final FormattedParameter fp2 = FormattedParameter.empty();
     Assertions.assertNotSame(fp, fp2);
   }
 

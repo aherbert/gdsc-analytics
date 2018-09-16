@@ -60,11 +60,11 @@ public class ParameterSpecificationTest {
     // Don't support null
     Assertions.assertEquals(false, spec.isSupported(null));
     // Support all
-    for (HitType ht : HitType.values()) {
+    for (final HitType ht : HitType.values()) {
       Assertions.assertTrue(spec.isSupported(ht));
     }
 
-    HitType[] supported = new HitType[] {HitType.EVENT};
+    final HitType[] supported = new HitType[] {HitType.EVENT};
     spec = new ParameterSpecification() {
 
       @Override
@@ -91,11 +91,11 @@ public class ParameterSpecificationTest {
     Assertions.assertArrayEquals(supported, spec.getSupportedHitTypes());
     Assertions.assertEquals(2, spec.getNumberOfIndexes());
     Assertions.assertEquals(false, spec.isSupported(null));
-    for (HitType ht : HitType.values()) {
+    for (final HitType ht : HitType.values()) {
       Assertions.assertEquals(ht == HitType.EVENT, spec.isSupported(ht));
     }
 
-    HitType[] supported2 = new HitType[] {HitType.EVENT, HitType.ITEM};
+    final HitType[] supported2 = new HitType[] {HitType.EVENT, HitType.ITEM};
     spec = new ParameterSpecification() {
 
       @Override
@@ -120,7 +120,7 @@ public class ParameterSpecificationTest {
     };
     Assertions.assertArrayEquals(supported2, spec.getSupportedHitTypes());
     Assertions.assertEquals(false, spec.isSupported(null));
-    for (HitType ht : HitType.values()) {
+    for (final HitType ht : HitType.values()) {
       Assertions.assertEquals(ht == HitType.EVENT || ht == HitType.ITEM, spec.isSupported(ht));
     }
 
@@ -151,7 +151,7 @@ public class ParameterSpecificationTest {
     // Don't support null
     Assertions.assertEquals(false, spec.isSupported(null));
     // Support all
-    for (HitType ht : HitType.values()) {
+    for (final HitType ht : HitType.values()) {
       Assertions.assertTrue(spec.isSupported(ht));
     }
   }

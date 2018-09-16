@@ -41,10 +41,10 @@ public class TwoIndexTextParameterTest {
   @SuppressWarnings("unused")
   @Test
   public void testConstructor() {
-    ParameterSpecification spec = TestUtils.newTextParameterSpecification("test_test_", 0);
-    int index1 = 1;
-    int index2 = 2;
-    String value = "test";
+    final ParameterSpecification spec = TestUtils.newTextParameterSpecification("test_test_", 0);
+    final int index1 = 1;
+    final int index2 = 2;
+    final String value = "test";
     Assertions.assertThrows(NullPointerException.class, () -> {
       new TwoIndexTextParameter(spec, index1, index2, null);
     });
@@ -58,7 +58,7 @@ public class TwoIndexTextParameterTest {
       new TwoIndexTextParameter(spec, index1, 0, value);
     });
 
-    ProtocolSpecification spec2 = ProtocolSpecification.PRODUCT_CUSTOM_DIMENSION;
+    final ProtocolSpecification spec2 = ProtocolSpecification.PRODUCT_CUSTOM_DIMENSION;
     Assertions.assertThrows(NullPointerException.class, () -> {
       new TwoIndexTextParameter(spec2, index1, index2, null);
     });
@@ -77,11 +77,11 @@ public class TwoIndexTextParameterTest {
   public void testFormat() {
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (int i = 0; i < 5; i++) {
-      String name = TestUtils.randomName(rg, 3);
-      String name2 = TestUtils.randomName(rg, 3);
-      int index1 = 1 + rg.nextInt(20);
-      int index2 = 1 + rg.nextInt(20);
-      String value = TestUtils.randomName(rg, 3);
+      final String name = TestUtils.randomName(rg, 3);
+      final String name2 = TestUtils.randomName(rg, 3);
+      final int index1 = 1 + rg.nextInt(20);
+      final int index2 = 1 + rg.nextInt(20);
+      final String value = TestUtils.randomName(rg, 3);
       TwoIndexTextParameter param = new TwoIndexTextParameter(
           TestUtils.newTextParameterSpecification(name + "_" + name2 + "_", 0), index1, index2,
           value);
@@ -94,8 +94,8 @@ public class TwoIndexTextParameterTest {
       Assertions.assertEquals(index2, param.getIndex2());
       Assertions.assertEquals(value, param.getValue());
 
-      param =
-          new TwoIndexTextParameter(ProtocolSpecification.PRODUCT_CUSTOM_DIMENSION, index1, index2, value);
+      param = new TwoIndexTextParameter(ProtocolSpecification.PRODUCT_CUSTOM_DIMENSION, index1,
+          index2, value);
       Assertions.assertEquals(String.format("pr%dcd%d=%s", index1, index2, value), param.format());
       Assertions.assertEquals(value, param.getValue());
     }

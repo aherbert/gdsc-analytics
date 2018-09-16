@@ -62,13 +62,13 @@ public class NoIndexCurrencyParameterTest {
   @Test
   public void testFormat() {
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
-    for (Locale locale : new Locale[] {Locale.getDefault(), Locale.FRANCE}) {
+    for (final Locale locale : new Locale[] {Locale.getDefault(), Locale.FRANCE}) {
       for (int i = 0; i < 5; i++) {
-        String name = TestUtils.randomName(rg, 3);
-        double value = rg.nextDouble();
+        final String name = TestUtils.randomName(rg, 3);
+        final double value = rg.nextDouble();
 
-        NumberFormat formatter = NumberFormat.getCurrencyInstance(locale);
-        String valueString = formatter.format(value);
+        final NumberFormat formatter = NumberFormat.getCurrencyInstance(locale);
+        final String valueString = formatter.format(value);
 
         NoIndexCurrencyParameter param = new NoIndexCurrencyParameter(
             TestUtils.newCurrencyParameterSpecification(name), locale, value);

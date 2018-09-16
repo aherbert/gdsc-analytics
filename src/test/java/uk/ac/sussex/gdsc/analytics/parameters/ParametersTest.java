@@ -58,7 +58,7 @@ public class ParametersTest {
   @Test
   public void testRequiredBuilder() throws MalformedURLException {
     // @formatter:off
-    URL url = createURL(Parameters.newRequiredBuilder(trackingId)
+    final URL url = createURL(Parameters.newRequiredBuilder(trackingId)
                                   .build());
     Assertions.assertThat(url)
     .hasParameter("v", "1")
@@ -81,7 +81,7 @@ public class ParametersTest {
     .hasNoParameter("uid")
     ;
 
-    UUID uuid = UUID.fromString(clientId2);
+    final UUID uuid = UUID.fromString(clientId2);
     Assertions.assertThat(
         createURL(Parameters.newRequiredBuilder(trackingId)
                             .addClientId(uuid).build()))
@@ -133,7 +133,7 @@ public class ParametersTest {
         .isInstanceOf(IllegalArgumentException.class);
 
     // Duplicate client id
-    UUID uuid = UUID.fromString(clientId2);
+    final UUID uuid = UUID.fromString(clientId2);
     Assertions.assertThatThrownBy(() -> Parameters
         .newRequiredBuilder(trackingId)
         .addClientId(uuid)
@@ -160,7 +160,7 @@ public class ParametersTest {
   public void testPartialBuilder() throws MalformedURLException {
     // Test empty methods
     // @formatter:off
-    String emptyHit =
+    final String emptyHit =
     Parameters.newPartialBuilder(this)
               .addTrackingId(trackingId)
               .addVersion()
@@ -174,13 +174,13 @@ public class ParametersTest {
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (int i = 0; i < 5; i++) {
       // Test can add others
-      String applicationName = TestUtils.randomName(rg, 3);
-      String documentTitle = TestUtils.randomName(rg, 3);
+      final String applicationName = TestUtils.randomName(rg, 3);
+      final String documentTitle = TestUtils.randomName(rg, 3);
       // @formatter:off
-      PartialBuilder<?> builder = Parameters.newPartialBuilder(this);
+      final PartialBuilder<?> builder = Parameters.newPartialBuilder(this);
       // Test getParent()
       Assertions.assertThat(this).isSameAs(builder.getParent());
-      URL url = createURL(builder.addApplicationName(applicationName)
+      final URL url = createURL(builder.addApplicationName(applicationName)
                                  .addDocumentTitle(documentTitle)
                                  // These should be ignored
                                  .addVersion()
@@ -205,11 +205,11 @@ public class ParametersTest {
   public void testBuilder() throws MalformedURLException {
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (int i = 0; i < 5; i++) {
-      String applicationName = TestUtils.randomName(rg, 3);
-      String documentTitle = TestUtils.randomName(rg, 3);
-      String userId = TestUtils.randomName(rg, 3);
+      final String applicationName = TestUtils.randomName(rg, 3);
+      final String documentTitle = TestUtils.randomName(rg, 3);
+      final String userId = TestUtils.randomName(rg, 3);
       // @formatter:off
-      URL url = createURL(Parameters.newBuilder()
+      final URL url = createURL(Parameters.newBuilder()
                                     .addApplicationName(applicationName)
                                     .addDocumentTitle(documentTitle)
                                     .addUserId(userId)
@@ -229,150 +229,151 @@ public class ParametersTest {
     for (int i = 0; i < 3; i++) {
       // General
       testApi((t) -> t.addVersion(), "v", "1");
-      String trackingId = "UA-0000-" + i;
+      final String trackingId = "UA-0000-" + i;
       testApi((t) -> t.addTrackingId(trackingId), "tid", trackingId);
-      boolean anonymizeIp = rg.nextBoolean();
+      final boolean anonymizeIp = rg.nextBoolean();
       testApi((t) -> t.addAnonymizeIp(anonymizeIp), "aip", (anonymizeIp) ? "1" : "0");
-      String dataSource = TestUtils.randomName(rg, 3);
+      final String dataSource = TestUtils.randomName(rg, 3);
       testApi((t) -> t.addDataSource(dataSource), "ds", dataSource);
       testApi((t) -> t.addQueueTime(System.currentTimeMillis()), "qt", null);
       testApi((t) -> t.addQueueTime(), "qt", null);
       testApi((t) -> t.addCacheBuster(), "z", null);
 
       // User
-      String clientId = "00112233-4455-6677-8899-aabbccddeef" + Integer.toString(rg.nextInt(10));
+      final String clientId =
+          "00112233-4455-6677-8899-aabbccddeef" + Integer.toString(rg.nextInt(10));
       testApi((t) -> t.addClientId(clientId), "cid", clientId);
       testApi((t) -> t.addClientId(UUID.fromString(clientId)), "cid", clientId);
-      String userId = TestUtils.randomName(rg, 3);
+      final String userId = TestUtils.randomName(rg, 3);
       testApi((t) -> t.addUserId(userId), "uid", userId);
 
       // Session
-      boolean start = rg.nextBoolean();
-      SessionControl sessionControl = (start) ? SessionControl.START : SessionControl.END;
+      final boolean start = rg.nextBoolean();
+      final SessionControl sessionControl = (start) ? SessionControl.START : SessionControl.END;
       testApi((t) -> t.addSessionControl(sessionControl), "sc", (start) ? "start" : "end");
 
       // System Info
-      int width = rg.nextInt(2048);
-      int height = rg.nextInt(1440);
-      String resolution = String.format("%dx%d", width, height);
+      final int width = rg.nextInt(2048);
+      final int height = rg.nextInt(1440);
+      final String resolution = String.format("%dx%d", width, height);
       testApi((t) -> t.addScreenResolution(width, height), "sr", resolution);
       testApi((t) -> t.addViewportSize(width, height), "vp", resolution);
-      String documentEncoding = TestUtils.randomName(rg, 3);
+      final String documentEncoding = TestUtils.randomName(rg, 3);
       testApi((t) -> t.addDocumentEncoding(documentEncoding), "de", documentEncoding);
-      String screenColorDepth = TestUtils.randomName(rg, 3);
+      final String screenColorDepth = TestUtils.randomName(rg, 3);
       testApi((t) -> t.addScreenColors(screenColorDepth), "sd", screenColorDepth);
-      Locale locale = Locale.FRENCH;
+      final Locale locale = Locale.FRENCH;
       testApi((t) -> t.addUserLanguage(locale), "ul", locale.toLanguageTag());
       testApi((t) -> t.addUserLanguage(), "ul", Locale.getDefault().toLanguageTag());
-      boolean javaEnabled = rg.nextBoolean();
+      final boolean javaEnabled = rg.nextBoolean();
       testApi((t) -> t.addJavaEnabled(javaEnabled), "je", (javaEnabled) ? "1" : "0");
-      String flashVersion = TestUtils.randomName(rg, 3);
+      final String flashVersion = TestUtils.randomName(rg, 3);
       testApi((t) -> t.addFlashVersion(flashVersion), "fl", flashVersion);
 
       // Hit
-      HitType hitType = HitType.values()[rg.nextInt(HitType.values().length)];
+      final HitType hitType = HitType.values()[rg.nextInt(HitType.values().length)];
       testApi((t) -> t.addHitType(hitType), "t", hitType.toString());
-      boolean nonInteractive = rg.nextBoolean();
+      final boolean nonInteractive = rg.nextBoolean();
       testApi((t) -> t.addNonInteractionHit(nonInteractive), "ni", (nonInteractive) ? "1" : "0");
 
       // Content Information
-      String documentHostName = "www." + TestUtils.randomName(rg, 3) + ".com";
-      String documentPath = TestUtils.randomPath(rg, 10);
-      String documentLocationUrl = "http://www.abc.com/" + documentPath;
+      final String documentHostName = "www." + TestUtils.randomName(rg, 3) + ".com";
+      final String documentPath = TestUtils.randomPath(rg, 10);
+      final String documentLocationUrl = "http://www.abc.com/" + documentPath;
       testApi((t) -> t.addDocumentLocationUrl(documentLocationUrl), "dl", documentLocationUrl);
       testApi((t) -> t.addDocumentHostName(documentHostName), "dh", documentHostName);
       testApi((t) -> t.addDocumentPath(documentPath), "dp", documentPath);
-      String documentTitle = TestUtils.randomName(rg, 3);
+      final String documentTitle = TestUtils.randomName(rg, 3);
       testApi((t) -> t.addDocumentTitle(documentTitle), "dt", documentTitle);
-      String screenName = TestUtils.randomName(rg, 3);
+      final String screenName = TestUtils.randomName(rg, 3);
       testApi((t) -> t.addScreenName(screenName), "cd", screenName);
-      int groupIndex = 1 + rg.nextInt(200);
-      String contentGroup = TestUtils.randomName(rg, 3);
+      final int groupIndex = 1 + rg.nextInt(200);
+      final String contentGroup = TestUtils.randomName(rg, 3);
       testApi((t) -> t.addContentGroup(groupIndex, contentGroup), "cg" + groupIndex, contentGroup);
-      String linkId = TestUtils.randomName(rg, 3);
+      final String linkId = TestUtils.randomName(rg, 3);
       testApi((t) -> t.addLinkeId(linkId), "linkid", linkId);
 
       // App Tracking
-      String applicationName = TestUtils.randomName(rg, 3);
+      final String applicationName = TestUtils.randomName(rg, 3);
       testApi((t) -> t.addApplicationName(applicationName), "an", applicationName);
-      String applicationId = TestUtils.randomName(rg, 3);
+      final String applicationId = TestUtils.randomName(rg, 3);
       testApi((t) -> t.addApplicationId(applicationId), "aid", applicationId);
-      String applicationVersion = TestUtils.randomName(rg, 3);
+      final String applicationVersion = TestUtils.randomName(rg, 3);
       testApi((t) -> t.addApplicationVersion(applicationVersion), "av", applicationVersion);
-      String applicationInstallerId = TestUtils.randomName(rg, 3);
+      final String applicationInstallerId = TestUtils.randomName(rg, 3);
       testApi((t) -> t.addApplicationInstallerId(applicationInstallerId), "aiid",
           applicationInstallerId);
 
       // Event Tracking
-      String eventCategory = TestUtils.randomName(rg, 3);
+      final String eventCategory = TestUtils.randomName(rg, 3);
       testApi((t) -> t.addEventCategory(eventCategory), "ec", eventCategory);
-      String eventAction = TestUtils.randomName(rg, 3);
+      final String eventAction = TestUtils.randomName(rg, 3);
       testApi((t) -> t.addEventAction(eventAction), "ea", eventAction);
-      String eventLabel = TestUtils.randomName(rg, 3);
+      final String eventLabel = TestUtils.randomName(rg, 3);
       testApi((t) -> t.addEventLabel(eventLabel), "el", eventLabel);
-      int eventValue = rg.nextInt(1000);
+      final int eventValue = rg.nextInt(1000);
       testApi((t) -> t.addEventValue(eventValue), "ev", Integer.toString(eventValue));
 
       // Timing
       // testApi((t) -> t.add, "", );
-      String userTimingCategory = TestUtils.randomName(rg, 3);
+      final String userTimingCategory = TestUtils.randomName(rg, 3);
       testApi((t) -> t.addUserTimingCategory(userTimingCategory), "utc", userTimingCategory);
-      String userTimingVariableName = TestUtils.randomName(rg, 3);
+      final String userTimingVariableName = TestUtils.randomName(rg, 3);
       testApi((t) -> t.addUserTimingVariableName(userTimingVariableName), "utv",
           userTimingVariableName);
-      int userTimingTime = rg.nextInt(1000);
+      final int userTimingTime = rg.nextInt(1000);
       testApi((t) -> t.addUserTimingTime(userTimingTime), "utt", Integer.toString(userTimingTime));
-      String userTimingLabel = TestUtils.randomName(rg, 3);
+      final String userTimingLabel = TestUtils.randomName(rg, 3);
       testApi((t) -> t.addUserTimingLabel(userTimingLabel), "utl", userTimingLabel);
-      int pageLoadTime = rg.nextInt(1000);
+      final int pageLoadTime = rg.nextInt(1000);
       testApi((t) -> t.addPageLoadTime(pageLoadTime), "plt", Integer.toString(pageLoadTime));
-      int dnsTime = rg.nextInt(1000);
+      final int dnsTime = rg.nextInt(1000);
       testApi((t) -> t.addDnsTime(dnsTime), "dns", Integer.toString(dnsTime));
-      int pageDownloadTime = rg.nextInt(1000);
+      final int pageDownloadTime = rg.nextInt(1000);
       testApi((t) -> t.addPageDownloadTime(pageDownloadTime), "pdt",
           Integer.toString(pageDownloadTime));
-      int redirectResponseTime = rg.nextInt(1000);
+      final int redirectResponseTime = rg.nextInt(1000);
       testApi((t) -> t.addRedirectResponseTime(redirectResponseTime), "rrt",
           Integer.toString(redirectResponseTime));
-      int tcpConnectTime = rg.nextInt(1000);
+      final int tcpConnectTime = rg.nextInt(1000);
       testApi((t) -> t.addTcpConnectTime(tcpConnectTime), "tcp", Integer.toString(tcpConnectTime));
-      int serverResponseTime = rg.nextInt(1000);
+      final int serverResponseTime = rg.nextInt(1000);
       testApi((t) -> t.addServerResponseTime(serverResponseTime), "srt",
           Integer.toString(serverResponseTime));
-      int domInteractiveTime = rg.nextInt(1000);
+      final int domInteractiveTime = rg.nextInt(1000);
       testApi((t) -> t.addDomInteractiveTime(domInteractiveTime), "dit",
           Integer.toString(domInteractiveTime));
-      int contentLoadTime = rg.nextInt(1000);
+      final int contentLoadTime = rg.nextInt(1000);
       testApi((t) -> t.addContentLoadTime(contentLoadTime), "clt",
           Integer.toString(contentLoadTime));
 
       // Exceptions
-      String exceptionDescription = TestUtils.randomName(rg, 3);
+      final String exceptionDescription = TestUtils.randomName(rg, 3);
       testApi((t) -> t.addExceptionDescription(exceptionDescription), "exd", exceptionDescription);
-      boolean exceptionFatal = rg.nextBoolean();
+      final boolean exceptionFatal = rg.nextBoolean();
       testApi((t) -> t.addIsExceptionFatal(exceptionFatal), "exf", (exceptionFatal) ? "1" : "0");
 
       // Custom Dimensions/Metrics
-      int dimIndex = 1 + rg.nextInt(200);
-      String dimValue = TestUtils.randomName(rg, 3);
+      final int dimIndex = 1 + rg.nextInt(200);
+      final String dimValue = TestUtils.randomName(rg, 3);
       testApi((t) -> t.addCustomDimension(dimIndex, dimValue), "cd" + dimIndex, dimValue);
-      int metIndex = 1 + rg.nextInt(200);
-      int metValue = rg.nextInt(1000);
+      final int metIndex = 1 + rg.nextInt(200);
+      final int metValue = rg.nextInt(1000);
       testApi((t) -> t.addCustomMetric(metIndex, metValue), "cm" + metIndex,
           Integer.toString(metValue));
 
       // Custom
-      String name = TestUtils.randomName(rg, 3);
-      String value = TestUtils.randomName(rg, 3);
+      final String name = TestUtils.randomName(rg, 3);
+      final String value = TestUtils.randomName(rg, 3);
       testApi((t) -> t.add(name, value), name, value);
     }
   }
 
   private static void testApi(Consumer<Builder> fun, String name, String value)
       throws MalformedURLException {
-    Builder builder = Parameters.newBuilder();
+    final Builder builder = Parameters.newBuilder();
     fun.accept(builder);
-    URL url = createURL(builder.build());
+    final URL url = createURL(builder.build());
     if (value != null) {
       Assertions.assertThat(url).hasParameter(name, value);
     } else {
@@ -385,23 +386,24 @@ public class ParametersTest {
 
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (int i = 0; i < 5; i++) {
-      long currentTime = System.currentTimeMillis() - rg.nextInt(1000);
-      HitBuilder<URL> builder = new HitBuilder<URL>(null, HitTypeParameter.PAGEVIEW, currentTime) {
-        @Override
-        public URL send() {
-          try {
-            return createURL(build());
-          } catch (MalformedURLException ex) {
-            Assertions.fail(ex.getMessage());
-            return null; // For the Java compiler
-          }
-        }
-      };
+      final long currentTime = System.currentTimeMillis() - rg.nextInt(1000);
+      final HitBuilder<URL> builder =
+          new HitBuilder<URL>(null, HitTypeParameter.PAGEVIEW, currentTime) {
+            @Override
+            public URL send() {
+              try {
+                return createURL(build());
+              } catch (final MalformedURLException ex) {
+                Assertions.fail(ex.getMessage());
+                return null; // For the Java compiler
+              }
+            }
+          };
       Assertions.assertThat(builder.getTimestamp()).isEqualTo(currentTime);
-      String documentPath = TestUtils.randomPath(rg, 10);
-      String documentTitle = TestUtils.randomName(rg, 3);
+      final String documentPath = TestUtils.randomPath(rg, 10);
+      final String documentTitle = TestUtils.randomName(rg, 3);
       // @formatter:off
-      URL url = builder.addDocumentPath(documentPath)
+      final URL url = builder.addDocumentPath(documentPath)
                        .addDocumentTitle(documentTitle)
                        .send();
       Assertions.assertThat(url)
@@ -430,11 +432,11 @@ public class ParametersTest {
       return null;
     }
     i += string.length() + 1;
-    int i2 = query.indexOf('&', i + string.length());
-    String param = (i2 == -1) ? query.substring(i) : query.substring(i, i2);
+    final int i2 = query.indexOf('&', i + string.length());
+    final String param = (i2 == -1) ? query.substring(i) : query.substring(i, i2);
     try {
       return URLDecoder.decode(param, "UTF-8");
-    } catch (UnsupportedEncodingException ex) {
+    } catch (final UnsupportedEncodingException ex) {
       Assertions.fail(ex.getMessage());
       return null; // For the Java compiler
     }

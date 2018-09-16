@@ -44,7 +44,7 @@ public class IndexReplacerTest {
     });
 
     // Handle null char sequence
-    IndexReplacer replacer = new IndexReplacer((CharSequence) null);
+    final IndexReplacer replacer = new IndexReplacer((CharSequence) null);
     Assertions.assertEquals(0, replacer.getNumberOfIndexes());
     Assertions.assertEquals("", replacer.getFormat());
   }
@@ -63,21 +63,21 @@ public class IndexReplacerTest {
     testReplaceTo("o_net_wothr_ee", "o7net100wothr116ee", 7, 100, 116);
 
     IncorrectCountException e = Assertions.assertThrows(IncorrectCountException.class, () -> {
-      IndexReplacer replacer = new IndexReplacer("none");
+      final IndexReplacer replacer = new IndexReplacer("none");
       replacer.replaceTo(new StringBuilder(), 1);
     });
     Assertions.assertEquals(0, e.getExpected());
     Assertions.assertEquals(1, e.getObserved());
 
     e = Assertions.assertThrows(IncorrectCountException.class, () -> {
-      IndexReplacer replacer = new IndexReplacer("one_");
+      final IndexReplacer replacer = new IndexReplacer("one_");
       replacer.replaceTo(new StringBuilder());
     });
     Assertions.assertEquals(1, e.getExpected());
     Assertions.assertEquals(0, e.getObserved());
 
     e = Assertions.assertThrows(IncorrectCountException.class, () -> {
-      IndexReplacer replacer = new IndexReplacer("one_");
+      final IndexReplacer replacer = new IndexReplacer("one_");
       replacer.replaceTo(new StringBuilder(), 1, 2);
     });
     Assertions.assertEquals(1, e.getExpected());
@@ -85,7 +85,7 @@ public class IndexReplacerTest {
   }
 
   private static void testReplaceTo(String format, String expected, int... indexes) {
-    IndexReplacer replacer = new IndexReplacer(format);
+    final IndexReplacer replacer = new IndexReplacer(format);
     Assertions.assertEquals(indexes.length, replacer.getNumberOfIndexes());
     Assertions.assertEquals(format, replacer.getFormat());
     Assertions.assertEquals(expected, replacer.replaceTo(new StringBuilder(), indexes).toString());
@@ -95,12 +95,12 @@ public class IndexReplacerTest {
   @Test
   public void testXIndexReplacerThrows() {
     // Test different sizes
-    ArrayList<ProtocolSpecification> list = new ArrayList<>();
+    final ArrayList<ProtocolSpecification> list = new ArrayList<>();
     list.add(ProtocolSpecification.PROTOCOL_VERSION); // 0
     list.add(ProtocolSpecification.CUSTOM_DIMENSION); // 1
     list.add(ProtocolSpecification.PRODUCT_CUSTOM_DIMENSION); // 2
     list.add(ProtocolSpecification.PRODUCT_IMPRESSION_CUSTOM_DIMENSION); // 3
-    for (ProtocolSpecification spec : list) {
+    for (final ProtocolSpecification spec : list) {
       if (spec.getNumberOfIndexes() != 0) {
         Assertions.assertThrows(IncorrectCountException.class, () -> {
           new NoIndexReplacer(spec);
@@ -138,8 +138,8 @@ public class IndexReplacerTest {
 
   @Test
   public void testIndexReplacerFactory() {
-    for (ProtocolSpecification spec : ProtocolSpecification.values()) {
-      IndexReplacer r = IndexReplacerFactory.createIndexReplacer(spec);
+    for (final ProtocolSpecification spec : ProtocolSpecification.values()) {
+      final IndexReplacer r = IndexReplacerFactory.createIndexReplacer(spec);
       switch (spec.getNumberOfIndexes()) {
         case 0:
           Assertions.assertEquals(NoIndexReplacer.class, r.getClass());

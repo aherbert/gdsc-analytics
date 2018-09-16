@@ -66,7 +66,7 @@ abstract class NoIndexParameter extends BaseParameter {
       sb.append(getParameterSpecification().getNameFormat());
     } else {
       // Direct access to the char array
-      NoIndexReplacer replacer =
+      final NoIndexReplacer replacer =
           (NoIndexReplacer) IndexReplacerFactory.createIndexReplacer(protocolSpecification);
       replacer.replaceTo(sb);
     }

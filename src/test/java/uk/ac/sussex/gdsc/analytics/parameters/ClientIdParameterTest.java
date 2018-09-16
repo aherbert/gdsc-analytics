@@ -52,9 +52,9 @@ public class ClientIdParameterTest {
 
   @Test
   public void testFormat() {
-    String uuid1 = "123e4567-e89b-12d3-a456-426655440000";
-    String uuid2 = "00112233-4455-6677-8899-aabbccddeeff";
-    for (String clientId : new String[] {uuid1, uuid2}) {
+    final String uuid1 = "123e4567-e89b-12d3-a456-426655440000";
+    final String uuid2 = "00112233-4455-6677-8899-aabbccddeeff";
+    for (final String clientId : new String[] {uuid1, uuid2}) {
       Assertions.assertEquals(String.format("cid=%s", clientId),
           new ClientIdParameter(clientId).format());
       Assertions.assertEquals(String.format("cid=%s", clientId),

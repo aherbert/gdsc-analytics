@@ -50,12 +50,11 @@ public final class ProtocolVersionParameter implements FormattedParameter {
    * @param version the version
    */
   private ProtocolVersionParameter(ProtocolVersion version) {
-    //@formmater:off
-    final StringBuilder sb = new StringBuilder()
-        .append(ProtocolSpecification.PROTOCOL_VERSION.getNameFormat())
-        .append(Constants.EQUAL)
-        .append(version.getVersion());
-    //@formmater:off
+    // @formmater:off
+    final StringBuilder sb =
+        new StringBuilder().append(ProtocolSpecification.PROTOCOL_VERSION.getNameFormat())
+            .append(Constants.EQUAL).append(version.getVersion());
+    // @formmater:off
     chars = ParameterUtils.getChars(sb);
   }
 

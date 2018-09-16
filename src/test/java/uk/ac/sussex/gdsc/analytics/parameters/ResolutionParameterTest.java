@@ -40,9 +40,9 @@ public class ResolutionParameterTest {
   public void testFormat() {
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (int i = 0; i < 5; i++) {
-      int width = rg.nextInt(1920);
-      int height = rg.nextInt(1080);
-      ResolutionParameter rp =
+      final int width = rg.nextInt(1920);
+      final int height = rg.nextInt(1080);
+      final ResolutionParameter rp =
           new ResolutionParameter(ProtocolSpecification.SCREEN_RESOLUTION, width, height);
       Assertions.assertEquals(String.format("sr=%dx%d", width, height), rp.format());
       Assertions.assertEquals(width, rp.getWidth());

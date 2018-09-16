@@ -289,7 +289,7 @@ public class Parameters implements FormattedParameter {
     /**
      * Adds the queue time using the provided timestamp (in milliseconds) to mark when the hit
      * occurred.
-     * 
+     *
      * <p>The queue time will be dynamically generated as the time delta (in milliseconds) between
      * when the hit being reported occurred and the time the hit was sent. The later time is when
      * the hit is created using {@link #build()}.
@@ -304,7 +304,7 @@ public class Parameters implements FormattedParameter {
 
     /**
      * Adds the queue time using the current time (in milliseconds) to mark when the hit occurred.
-     * 
+     *
      * <p>The queue time will be dynamically generated as the time delta (in milliseconds) between
      * when the hit being reported occurred and the time the hit was sent. The later time is when
      * the hit is created using {@link #build()}.

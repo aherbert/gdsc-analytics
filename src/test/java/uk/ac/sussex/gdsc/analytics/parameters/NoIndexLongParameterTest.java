@@ -53,8 +53,8 @@ public class NoIndexLongParameterTest {
   public void testFormat() {
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (int i = 0; i < 5; i++) {
-      String name = TestUtils.randomName(rg, 3);
-      long value = rg.nextLong();
+      final String name = TestUtils.randomName(rg, 3);
+      final long value = rg.nextLong();
       NoIndexLongParameter param =
           new NoIndexLongParameter(TestUtils.newIntParameterSpecification(name), value);
       Assertions.assertEquals(String.format("%s=%d", name, value), param.format());

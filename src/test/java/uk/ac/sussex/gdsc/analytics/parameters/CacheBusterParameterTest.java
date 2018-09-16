@@ -56,28 +56,28 @@ public class CacheBusterParameterTest {
   public void testFormat() {
     // Create random strings to append
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
-    ArrayList<String> list = new ArrayList<>();
+    final ArrayList<String> list = new ArrayList<>();
     for (int i = 0; i < 5; i++) {
       list.add(TestUtils.randomName(rg, 3));
     }
     // This does not have to be thread safe but works anyway
     final AtomicInteger counter = new AtomicInteger();
-    CacheBusterParameter cb = new CacheBusterParameter((sb) -> {
+    final CacheBusterParameter cb = new CacheBusterParameter((sb) -> {
       return sb.append(list.get(counter.getAndIncrement()));
     });
     for (int i = 0; i < list.size(); i++) {
-      String s = cb.format();
+      final String s = cb.format();
       Assertions.assertEquals("z=" + list.get(i), s);
     }
   }
 
   @Test
   public void testGetDefaultInstance() {
-    CacheBusterParameter cb = CacheBusterParameter.getDefaultInstance();
-    Pattern pattern = Pattern.compile("^z=-?[0-9]+$");
-    HashSet<String> set = new HashSet<>();
+    final CacheBusterParameter cb = CacheBusterParameter.getDefaultInstance();
+    final Pattern pattern = Pattern.compile("^z=-?[0-9]+$");
+    final HashSet<String> set = new HashSet<>();
     for (int i = 0; i < 10; i++) {
-      String s = cb.format();
+      final String s = cb.format();
       Assertions.assertTrue(pattern.matcher(s).matches(), s);
       set.add(s);
     }

@@ -56,9 +56,11 @@ public final class UrlUtils {
   /**
    * The system property constant for the Google Analytics secure protocol component of the URL.
    *
-   * <p>If this is not set then the value defaults to {@link #DEFAULT_GOOGLE_ANALYTICS_SECURE_PROTOCOL}.
+   * <p>If this is not set then the value defaults to
+   * {@link #DEFAULT_GOOGLE_ANALYTICS_SECURE_PROTOCOL}.
    */
-  public static final String PROPERTY_GOOGLE_ANALYTICS_SECURE_PROTOCOL = "gdsc.analytics.secure.protocol";
+  public static final String PROPERTY_GOOGLE_ANALYTICS_SECURE_PROTOCOL =
+      "gdsc.analytics.secure.protocol";
   /**
    * The system property constant for the Google Analytics hostname component of the URL.
    *
@@ -122,8 +124,8 @@ public final class UrlUtils {
   static void refreshSystemProperties() {
     protocol =
         System.getProperty(PROPERTY_GOOGLE_ANALYTICS_PROTOCOL, DEFAULT_GOOGLE_ANALYTICS_PROTOCOL);
-    secureProtocol =
-        System.getProperty(PROPERTY_GOOGLE_ANALYTICS_SECURE_PROTOCOL, DEFAULT_GOOGLE_ANALYTICS_SECURE_PROTOCOL);
+    secureProtocol = System.getProperty(PROPERTY_GOOGLE_ANALYTICS_SECURE_PROTOCOL,
+        DEFAULT_GOOGLE_ANALYTICS_SECURE_PROTOCOL);
     hostname =
         System.getProperty(PROPERTY_GOOGLE_ANALYTICS_HOSTNAME, DEFAULT_GOOGLE_ANALYTICS_HOSTNAME);
     file = System.getProperty(PROPERTY_GOOGLE_ANALYTICS_FILE, DEFAULT_GOOGLE_ANALYTICS_FILE);

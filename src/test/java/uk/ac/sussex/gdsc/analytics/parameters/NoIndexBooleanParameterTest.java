@@ -53,8 +53,8 @@ public class NoIndexBooleanParameterTest {
   public void testFormat() {
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (int i = 0; i < 5; i++) {
-      String name = TestUtils.randomName(rg, 3);
-      boolean value = rg.nextBoolean();
+      final String name = TestUtils.randomName(rg, 3);
+      final boolean value = rg.nextBoolean();
       NoIndexBooleanParameter param =
           new NoIndexBooleanParameter(TestUtils.newBooleanParameterSpecification(name), value);
       Assertions.assertEquals(String.format("%s=%c", name, (value) ? '1' : '0'), param.format());

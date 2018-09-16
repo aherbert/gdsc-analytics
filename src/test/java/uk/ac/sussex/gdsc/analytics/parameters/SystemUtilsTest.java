@@ -51,10 +51,10 @@ public class SystemUtilsTest {
 
   @Test
   public void testGetScreenSize() {
-    boolean headless = GraphicsEnvironment.isHeadless();
-    Dimension d = SystemUtils.getScreenSize();
-    Dimension dw = SystemUtils.getScreenSize("Windows");
-    Dimension dl = SystemUtils.getScreenSize("Linux");
+    final boolean headless = GraphicsEnvironment.isHeadless();
+    final Dimension d = SystemUtils.getScreenSize();
+    final Dimension dw = SystemUtils.getScreenSize("Windows");
+    final Dimension dl = SystemUtils.getScreenSize("Linux");
     if (headless) {
       Assertions.assertNull(d);
       Assertions.assertNull(dw);

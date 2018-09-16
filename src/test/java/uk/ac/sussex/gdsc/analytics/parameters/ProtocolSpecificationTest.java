@@ -40,7 +40,7 @@ public class ProtocolSpecificationTest {
   public void testIsSupported() {
     // This never gets hit by the code but we should check it works
     Assertions.assertFalse(ProtocolSpecification.PROTOCOL_VERSION.isSupported(null));
-    for (HitType ht : HitType.values()) {
+    for (final HitType ht : HitType.values()) {
       Assertions.assertTrue(ProtocolSpecification.PROTOCOL_VERSION.isSupported(ht));
       Assertions.assertEquals(ht == HitType.EVENT,
           ProtocolSpecification.EVENT_ACTION.isSupported(ht));
@@ -50,9 +50,9 @@ public class ProtocolSpecificationTest {
   @Test
   public void testGetMaxLength() {
     // Just check there are different values
-    HashSet<Integer> set = new HashSet<>();
-    for (ProtocolSpecification spec : ProtocolSpecification.values()) {
-      int max = spec.getMaxLength();
+    final HashSet<Integer> set = new HashSet<>();
+    for (final ProtocolSpecification spec : ProtocolSpecification.values()) {
+      final int max = spec.getMaxLength();
       if (spec.getValueType() != ValueType.TEXT) {
         Assertions.assertEquals(0, max);
       }

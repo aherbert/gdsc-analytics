@@ -41,8 +41,8 @@ public class OneIndexIntParameterTest {
   @SuppressWarnings("unused")
   @Test
   public void testConstructor() {
-    ParameterSpecification spec = TestUtils.newIntParameterSpecification("Test_");
-    int index = 1;
+    final ParameterSpecification spec = TestUtils.newIntParameterSpecification("Test_");
+    final int index = 1;
     Assertions.assertThrows(NullPointerException.class, () -> {
       new OneIndexIntParameter((ParameterSpecification) null, index, 0);
     });
@@ -50,7 +50,7 @@ public class OneIndexIntParameterTest {
       new OneIndexIntParameter(spec, 0, 0);
     });
 
-    ProtocolSpecification spec2 = ProtocolSpecification.PRODUCT_QUANTITY;
+    final ProtocolSpecification spec2 = ProtocolSpecification.PRODUCT_QUANTITY;
     Assertions.assertThrows(NullPointerException.class, () -> {
       new OneIndexIntParameter((ProtocolSpecification) null, index, 0);
     });
@@ -63,9 +63,9 @@ public class OneIndexIntParameterTest {
   public void testFormat() {
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (int i = 0; i < 5; i++) {
-      String name = TestUtils.randomName(rg, 3);
-      int index = 1 + rg.nextInt(200);
-      int value = rg.nextInt();
+      final String name = TestUtils.randomName(rg, 3);
+      final int index = 1 + rg.nextInt(200);
+      final int value = rg.nextInt();
 
       OneIndexIntParameter param = new OneIndexIntParameter(
           TestUtils.newIntParameterSpecification(name + "_"), index, value);

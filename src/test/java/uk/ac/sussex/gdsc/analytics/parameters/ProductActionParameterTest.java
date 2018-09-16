@@ -59,7 +59,7 @@ public class ProductActionParameterTest {
 
   @Test
   public void testCreate() {
-    for (ProductAction pa : ProductAction.values()) {
+    for (final ProductAction pa : ProductAction.values()) {
       Assertions
           .assertTrue(ProductActionParameter.create(pa).format().endsWith("=" + pa.toString()));
     }

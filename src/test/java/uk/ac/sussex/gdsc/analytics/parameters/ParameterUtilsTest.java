@@ -48,7 +48,7 @@ public class ParameterUtilsTest {
 
   @BeforeAll
   public static void setup() {
-    UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
+    final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     message = TestUtils.randomName(rg, 30);
   }
 
@@ -93,14 +93,14 @@ public class ParameterUtilsTest {
 
   @Test
   public void testValidateTrackingId() {
-    String good = "UA-1234-5";
+    final String good = "UA-1234-5";
     ParameterUtils.validateTrackingId(good);
 
     Assertions.assertThrows(NullPointerException.class, () -> {
       ParameterUtils.validateTrackingId(null);
     });
 
-    for (String trackingId : new String[] {
+    for (final String trackingId : new String[] {
         // Just bad
         "bad", "asdfasdf",
         // Empty
@@ -118,7 +118,7 @@ public class ParameterUtilsTest {
       });
     }
 
-    for (String trackingId : new String[] {"UA-1234-5", "UA-1234567-0"}) {
+    for (final String trackingId : new String[] {"UA-1234-5", "UA-1234567-0"}) {
       ParameterUtils.validateTrackingId(trackingId);
     }
   }
@@ -126,23 +126,24 @@ public class ParameterUtilsTest {
   @Test
   public void testValidateCountWithParameterSpecification() {
     // Test different sizes
-    ArrayList<ProtocolSpecification> list = new ArrayList<>();
+    final ArrayList<ProtocolSpecification> list = new ArrayList<>();
     list.add(ProtocolSpecification.PROTOCOL_VERSION); // 0
     list.add(ProtocolSpecification.CUSTOM_DIMENSION); // 1
     list.add(ProtocolSpecification.PRODUCT_CUSTOM_DIMENSION); // 2
     list.add(ProtocolSpecification.PRODUCT_IMPRESSION_CUSTOM_DIMENSION); // 3
-    for (ProtocolSpecification spec : list) {
+    for (final ProtocolSpecification spec : list) {
       final int expected = spec.getNumberOfIndexes() + 1;
-      IncorrectCountException e = Assertions.assertThrows(IncorrectCountException.class, () -> {
-        ParameterUtils.validateCount(expected, spec);
-      });
+      final IncorrectCountException e =
+          Assertions.assertThrows(IncorrectCountException.class, () -> {
+            ParameterUtils.validateCount(expected, spec);
+          });
       Assertions.assertEquals(expected, e.getExpected());
       Assertions.assertEquals(spec.getNumberOfIndexes(), e.getObserved());
       Assertions.assertTrue(e.getMessage().contains("<" + expected + ">"));
       Assertions.assertTrue(e.getMessage().contains("<" + spec.getNumberOfIndexes() + ">"));
       Assertions.assertTrue(e.getMessage().contains(spec.getFormalName()));
     }
-    for (ProtocolSpecification spec : ProtocolSpecification.values()) {
+    for (final ProtocolSpecification spec : ProtocolSpecification.values()) {
       ParameterUtils.validateCount(spec.getNumberOfIndexes(), spec);
     }
   }
@@ -173,14 +174,14 @@ public class ParameterUtilsTest {
   @Test
   public void testCompatibleValueType() {
     // Test different types
-    ArrayList<ProtocolSpecification> list = new ArrayList<>();
+    final ArrayList<ProtocolSpecification> list = new ArrayList<>();
     list.add(ProtocolSpecification.CUSTOM_DIMENSION); // Text
     list.add(ProtocolSpecification.QUEUE_TIME); // Integer
     list.add(ProtocolSpecification.CUSTOM_METRIC); // Number
     list.add(ProtocolSpecification.PRODUCT_PRICE); // Currency
     list.add(ProtocolSpecification.IS_EXCEPTION_FATAL); // Boolean
     // All OK with text
-    for (ProtocolSpecification spec : list) {
+    for (final ProtocolSpecification spec : list) {
       ParameterUtils.compatibleValueType(ValueType.TEXT, spec);
     }
     // For now the others must be an exact match
@@ -189,7 +190,7 @@ public class ParameterUtilsTest {
       for (int j = 0; j < list.size(); j++) {
         final ProtocolSpecification spec2 = list.get(j);
         if (i != j) {
-          IncorrectValueTypeException e =
+          final IncorrectValueTypeException e =
               Assertions.assertThrows(IncorrectValueTypeException.class, () -> {
                 ParameterUtils.compatibleValueType(expected, spec2);
               });
@@ -206,7 +207,8 @@ public class ParameterUtilsTest {
     // without a detail message. Add a quick test here.
     final ValueType expected = ValueType.TEXT;
     final ValueType observed = ValueType.BOOLEAN;
-    IncorrectValueTypeException ex = new IncorrectValueTypeException(expected, observed, null);
+    final IncorrectValueTypeException ex =
+        new IncorrectValueTypeException(expected, observed, null);
     Assertions.assertTrue(ex.getMessage().contains("<" + expected + ">"));
     Assertions.assertTrue(ex.getMessage().contains("<" + observed + ">"));
   }
@@ -220,13 +222,13 @@ public class ParameterUtilsTest {
     testNextUnderscore("trailing_");
     testNextUnderscore("inter_nal");
     // Do all the format strings
-    for (ProtocolSpecification spec : ProtocolSpecification.values()) {
+    for (final ProtocolSpecification spec : ProtocolSpecification.values()) {
       testNextUnderscore(spec.getNameFormat().toString());
     }
   }
 
   private static void testNextUnderscore(String string) {
-    char[] chars = string.toCharArray();
+    final char[] chars = string.toCharArray();
     // Should function like indexOf
     int fromIndex = 0;
     int expected = string.indexOf(Constants.UNDERSCORE, fromIndex);
@@ -248,9 +250,9 @@ public class ParameterUtilsTest {
 
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (int i = 0; i < 5; i++) {
-      String name = TestUtils.randomName(rg, 5);
-      StringBuilder sb = new StringBuilder(name);
-      char[] expected = name.toCharArray();
+      final String name = TestUtils.randomName(rg, 5);
+      final StringBuilder sb = new StringBuilder(name);
+      final char[] expected = name.toCharArray();
       Assertions.assertArrayEquals(expected, ParameterUtils.getChars(sb));
     }
   }
@@ -262,9 +264,9 @@ public class ParameterUtilsTest {
 
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (int i = 0; i < 5; i++) {
-      String name = TestUtils.randomName(rg, 5);
-      StringBuilder sb = new StringBuilder(name);
-      char[] expected = name.toCharArray();
+      final String name = TestUtils.randomName(rg, 5);
+      final StringBuilder sb = new StringBuilder(name);
+      final char[] expected = name.toCharArray();
       Assertions.assertArrayEquals(expected, ParameterUtils.getChars(name));
       Assertions.assertArrayEquals(expected, ParameterUtils.getChars((CharSequence) sb));
     }
@@ -280,13 +282,13 @@ public class ParameterUtilsTest {
     testCountIndexes("trailing_");
     testCountIndexes("inter_nal");
     // Do all the format strings
-    for (ProtocolSpecification spec : ProtocolSpecification.values()) {
+    for (final ProtocolSpecification spec : ProtocolSpecification.values()) {
       testCountIndexes(spec.getNameFormat());
     }
   }
 
   private static void testCountIndexes(CharSequence format) {
-    String string = format.toString();
+    final String string = format.toString();
     int expected = 0;
     int index = string.indexOf(Constants.UNDERSCORE);
     while (index != -1) {
@@ -319,7 +321,7 @@ public class ParameterUtilsTest {
 
   @Test
   public void testACurrencyTo() {
-    Locale locale = Locale.UK;
+    final Locale locale = Locale.UK;
     // Add pence when not present
     Assertions.assertEquals("£0.00",
         ParameterUtils.appendCurrencyTo(new StringBuilder(), locale, 0).toString());

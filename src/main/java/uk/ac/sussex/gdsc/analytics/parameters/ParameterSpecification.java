@@ -134,7 +134,7 @@ public interface ParameterSpecification {
       return hitType != null;
     }
     // This assumes that supported hit types will never contain a null
-    for (HitType supported : supportedHitTypes) {
+    for (final HitType supported : supportedHitTypes) {
       if (supported == hitType) {
         return true;
       }

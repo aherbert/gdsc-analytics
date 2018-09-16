@@ -48,7 +48,7 @@ public class UserLanguageParameterTest {
   public void testFormat() {
     String value = Locale.getDefault().toLanguageTag();
     Assertions.assertEquals(String.format("ul=%s", value), new UserLanguageParameter().format());
-    for (Locale locale : new Locale[] {Locale.FRENCH, Locale.GERMAN, Locale.UK}) {
+    for (final Locale locale : new Locale[] {Locale.FRENCH, Locale.GERMAN, Locale.UK}) {
       value = locale.toLanguageTag();
       Assertions.assertEquals(String.format("ul=%s", value),
           new UserLanguageParameter(locale).format());

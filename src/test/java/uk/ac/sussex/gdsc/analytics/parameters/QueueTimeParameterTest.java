@@ -42,12 +42,12 @@ public class QueueTimeParameterTest {
   public void testFormat() {
     final long timestamp = System.currentTimeMillis();
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
-    Pattern pattern = Pattern.compile("^qt=-?[0-9]+$");
-    StringBuilder sb = new StringBuilder();
+    final Pattern pattern = Pattern.compile("^qt=-?[0-9]+$");
+    final StringBuilder sb = new StringBuilder();
     for (int i = 0; i < 3; i++) {
-      long stamp = timestamp - rg.nextInt(1000);
-      QueueTimeParameter qt = new QueueTimeParameter(stamp);
-      String s = qt.format();
+      final long stamp = timestamp - rg.nextInt(1000);
+      final QueueTimeParameter qt = new QueueTimeParameter(stamp);
+      final String s = qt.format();
       Assertions.assertTrue(pattern.matcher(s).matches(), s);
       Assertions.assertEquals(stamp, qt.getTimestamp());
       sb.setLength(0);

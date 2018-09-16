@@ -44,8 +44,8 @@ public class CustomParameterTest {
   @SuppressWarnings("unused")
   @Test
   public void testConstructor() {
-    String name = "name";
-    String value = "value";
+    final String name = "name";
+    final String value = "value";
     Assertions.assertThrows(NullPointerException.class, () -> {
       new CustomParameter(null, value);
     });
@@ -58,9 +58,9 @@ public class CustomParameterTest {
   public void testFormat() throws UnsupportedEncodingException {
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (int i = 0; i < 5; i++) {
-      String name = TestUtils.randomPath(rg, 5);
-      String value = TestUtils.randomPath(rg, 5);
-      CustomParameter cp = new CustomParameter(name, value);
+      final String name = TestUtils.randomPath(rg, 5);
+      final String value = TestUtils.randomPath(rg, 5);
+      final CustomParameter cp = new CustomParameter(name, value);
       Assertions.assertEquals(String.format("%s=%s", URLEncoder.encode(name, "utf-8"),
           URLEncoder.encode(value, "utf-8")), cp.format());
       Assertions.assertEquals(name, cp.getName());

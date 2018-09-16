@@ -47,7 +47,7 @@ public class SessionControlParameterTest {
 
   @Test
   public void testCreate() {
-    for (SessionControl sc : SessionControl.values()) {
+    for (final SessionControl sc : SessionControl.values()) {
       Assertions
           .assertTrue(SessionControlParameter.create(sc).format().endsWith("=" + sc.toString()));
     }

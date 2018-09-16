@@ -60,7 +60,7 @@ public class HitTypeParameterTest {
 
   @Test
   public void testCreate() {
-    for (HitType ht : HitType.values()) {
+    for (final HitType ht : HitType.values()) {
       Assertions.assertTrue(HitTypeParameter.create(ht).format().endsWith("=" + ht.toString()));
     }
     Assertions.assertThrows(NullPointerException.class, () -> {

@@ -41,10 +41,10 @@ public class TwoIndexIntParameterTest {
   @SuppressWarnings("unused")
   @Test
   public void testConstructor() {
-    ParameterSpecification spec = TestUtils.newIntParameterSpecification("test_test_");
-    int index1 = 1;
-    int index2 = 2;
-    int value = 3;
+    final ParameterSpecification spec = TestUtils.newIntParameterSpecification("test_test_");
+    final int index1 = 1;
+    final int index2 = 2;
+    final int value = 3;
     Assertions.assertThrows(NullPointerException.class, () -> {
       new TwoIndexIntParameter((ParameterSpecification) null, index1, index2, value);
     });
@@ -55,7 +55,7 @@ public class TwoIndexIntParameterTest {
       new TwoIndexIntParameter(spec, index1, 0, value);
     });
 
-    ProtocolSpecification spec2 = ProtocolSpecification.PRODUCT_CUSTOM_METRIC;
+    final ProtocolSpecification spec2 = ProtocolSpecification.PRODUCT_CUSTOM_METRIC;
     Assertions.assertThrows(NullPointerException.class, () -> {
       new TwoIndexIntParameter((ProtocolSpecification) null, index1, index2, value);
     });
@@ -71,11 +71,11 @@ public class TwoIndexIntParameterTest {
   public void testFormat() {
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (int i = 0; i < 5; i++) {
-      String name1 = TestUtils.randomName(rg, 3);
-      String name2 = TestUtils.randomName(rg, 3);
-      int index1 = 1 + rg.nextInt(20);
-      int index2 = 1 + rg.nextInt(20);
-      int value = rg.nextInt();
+      final String name1 = TestUtils.randomName(rg, 3);
+      final String name2 = TestUtils.randomName(rg, 3);
+      final int index1 = 1 + rg.nextInt(20);
+      final int index2 = 1 + rg.nextInt(20);
+      final int value = rg.nextInt();
       TwoIndexIntParameter param = new TwoIndexIntParameter(
           TestUtils.newIntParameterSpecification(name1 + "_" + name2 + "_"), index1, index2, value);
       Assertions.assertEquals(String.format("%s%d%s%d=%d", name1, index1, name2, index2, value),

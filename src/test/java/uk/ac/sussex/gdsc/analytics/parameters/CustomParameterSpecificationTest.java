@@ -41,10 +41,10 @@ public class CustomParameterSpecificationTest {
   @SuppressWarnings("unused")
   @Test
   public void testConstructor() {
-    String formalName = "formalName";
-    String nameFormat = "name";
-    ValueType valueType = ValueType.TEXT;
-    int maxLength = 0;
+    final String formalName = "formalName";
+    final String nameFormat = "name";
+    final ValueType valueType = ValueType.TEXT;
+    final int maxLength = 0;
     new CustomParameterSpecification(formalName, nameFormat, valueType, maxLength);
     Assertions.assertThrows(NullPointerException.class, () -> {
       new CustomParameterSpecification(null, nameFormat, valueType, maxLength);
@@ -60,11 +60,11 @@ public class CustomParameterSpecificationTest {
   @Test
   public void testProperties() {
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
-    for (ValueType valueType : ValueType.values()) {
-      String formalName = TestUtils.randomName(rg, 3);
-      String nameFormat = TestUtils.randomName(rg, 3);
-      int maxLength = rg.nextInt(100);
-      CustomParameterSpecification spec =
+    for (final ValueType valueType : ValueType.values()) {
+      final String formalName = TestUtils.randomName(rg, 3);
+      final String nameFormat = TestUtils.randomName(rg, 3);
+      final int maxLength = rg.nextInt(100);
+      final CustomParameterSpecification spec =
           new CustomParameterSpecification(formalName, nameFormat, valueType, maxLength);
       Assertions.assertEquals(formalName, spec.getFormalName());
       Assertions.assertEquals(nameFormat, spec.getNameFormat());
@@ -72,8 +72,8 @@ public class CustomParameterSpecificationTest {
       Assertions.assertEquals(maxLength, spec.getMaxLength());
     }
 
-    CustomParameterSpecification spec = new CustomParameterSpecification("", "", ValueType.TEXT, 0,
-        HitType.EVENT, HitType.EXCEPTION);
+    final CustomParameterSpecification spec = new CustomParameterSpecification("", "",
+        ValueType.TEXT, 0, HitType.EVENT, HitType.EXCEPTION);
     Assertions.assertArrayEquals(new HitType[] {HitType.EVENT, HitType.EXCEPTION},
         spec.getSupportedHitTypes());
   }

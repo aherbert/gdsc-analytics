@@ -41,11 +41,11 @@ public class ThreeIndexIntParameterTest {
   @SuppressWarnings("unused")
   @Test
   public void testConstructor() {
-    ParameterSpecification spec = TestUtils.newIntParameterSpecification("test_test_test_");
-    int index1 = 1;
-    int index2 = 2;
-    int index3 = 3;
-    int value = 4;
+    final ParameterSpecification spec = TestUtils.newIntParameterSpecification("test_test_test_");
+    final int index1 = 1;
+    final int index2 = 2;
+    final int index3 = 3;
+    final int value = 4;
     Assertions.assertThrows(NullPointerException.class, () -> {
       new ThreeIndexIntParameter((ParameterSpecification) null, index1, index2, index3, value);
     });
@@ -59,7 +59,7 @@ public class ThreeIndexIntParameterTest {
       new ThreeIndexIntParameter(spec, index1, index2, 0, value);
     });
 
-    ProtocolSpecification spec2 = ProtocolSpecification.PRODUCT_IMPRESSION_CUSTOM_METRIC;
+    final ProtocolSpecification spec2 = ProtocolSpecification.PRODUCT_IMPRESSION_CUSTOM_METRIC;
     Assertions.assertThrows(NullPointerException.class, () -> {
       new ThreeIndexIntParameter((ProtocolSpecification) null, index1, index2, index3, value);
     });
@@ -78,16 +78,16 @@ public class ThreeIndexIntParameterTest {
   public void testFormat() {
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (int i = 0; i < 5; i++) {
-      String name1 = TestUtils.randomName(rg, 3);
-      String name2 = TestUtils.randomName(rg, 3);
-      String name3 = TestUtils.randomName(rg, 3);
-      int index1 = 1 + rg.nextInt(20);
-      int index2 = 1 + rg.nextInt(20);
-      int index3 = 1 + rg.nextInt(20);
-      int value = rg.nextInt();
+      final String name1 = TestUtils.randomName(rg, 3);
+      final String name2 = TestUtils.randomName(rg, 3);
+      final String name3 = TestUtils.randomName(rg, 3);
+      final int index1 = 1 + rg.nextInt(20);
+      final int index2 = 1 + rg.nextInt(20);
+      final int index3 = 1 + rg.nextInt(20);
+      final int value = rg.nextInt();
       ThreeIndexIntParameter param = new ThreeIndexIntParameter(
-          TestUtils.newIntParameterSpecification(name1 + "_" + name2 + "_" + name3 + "_"),
-          index1, index2, index3, value);
+          TestUtils.newIntParameterSpecification(name1 + "_" + name2 + "_" + name3 + "_"), index1,
+          index2, index3, value);
       Assertions.assertEquals(
           String.format("%s%d%s%d%s%d=%d", name1, index1, name2, index2, name3, index3, value),
           param.format());

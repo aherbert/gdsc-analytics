@@ -41,9 +41,9 @@ public class OneIndexTextParameterTest {
   @SuppressWarnings("unused")
   @Test
   public void testConstructor() {
-    ParameterSpecification spec = TestUtils.newTextParameterSpecification("test_", 0);
-    int index = 1;
-    String value = "test";
+    final ParameterSpecification spec = TestUtils.newTextParameterSpecification("test_", 0);
+    final int index = 1;
+    final String value = "test";
     Assertions.assertThrows(NullPointerException.class, () -> {
       new OneIndexTextParameter(spec, index, null);
     });
@@ -54,7 +54,7 @@ public class OneIndexTextParameterTest {
       new OneIndexTextParameter(spec, 0, value);
     });
 
-    ProtocolSpecification spec2 = ProtocolSpecification.CUSTOM_DIMENSION;
+    final ProtocolSpecification spec2 = ProtocolSpecification.CUSTOM_DIMENSION;
     Assertions.assertThrows(NullPointerException.class, () -> {
       new OneIndexTextParameter(spec2, index, null);
     });
@@ -70,9 +70,9 @@ public class OneIndexTextParameterTest {
   public void testFormat() {
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (int i = 0; i < 5; i++) {
-      String name = TestUtils.randomName(rg, 3);
-      int index = 1 + rg.nextInt(20);
-      String value = TestUtils.randomName(rg, 3);
+      final String name = TestUtils.randomName(rg, 3);
+      final int index = 1 + rg.nextInt(20);
+      final String value = TestUtils.randomName(rg, 3);
       OneIndexTextParameter param = new OneIndexTextParameter(
           TestUtils.newTextParameterSpecification(name + "_", 0), index, value);
       Assertions.assertEquals(String.format("%s%d=%s", name, index, value), param.format());
