@@ -57,8 +57,8 @@ public class SessionTest {
 
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (int i = 0; i < 5; i++) {
-      long timeout = rg.nextLong(1000000L);
-      Session session = new Session(timeout);
+      final long timeout = rg.nextLong(1000000L);
+      final Session session = new Session(timeout);
       Assertions.assertEquals(0, session.getTimeStamp());
       Assertions.assertEquals(timeout, session.getTimeout());
       session.refresh();
@@ -66,7 +66,7 @@ public class SessionTest {
     }
 
     // 0 millisecond timeout
-    Session session = new Session(Session.ALWAYS_TIMEOUT);
+    final Session session = new Session(Session.ALWAYS_TIMEOUT);
     Assertions.assertFalse(session.hasExpired());
     Assertions.assertTrue(session.refresh());
     Assertions.assertTrue(session.hasExpired());

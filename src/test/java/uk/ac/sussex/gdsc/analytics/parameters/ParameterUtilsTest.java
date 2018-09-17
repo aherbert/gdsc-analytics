@@ -93,7 +93,7 @@ public class ParameterUtilsTest {
 
   @Test
   public void testValidateTrackingId() {
-    final String good = "UA-1234-5";
+    final String good = "UA-12345-6";
     ParameterUtils.validateTrackingId(good);
 
     Assertions.assertThrows(NullPointerException.class, () -> {
@@ -111,14 +111,16 @@ public class ParameterUtilsTest {
         good.toLowerCase(),
         // whitespace
         " " + good, good + " ",
-        // Extra digits
-        "U" + good, good + "9"}) {
+        // Extra characters
+        "U" + good, " " + good,
+        // Zero on the end
+        "UA-12345-0"}) {
       Assertions.assertThrows(IllegalArgumentException.class, () -> {
         ParameterUtils.validateTrackingId(trackingId);
       });
     }
 
-    for (final String trackingId : new String[] {"UA-1234-5", "UA-1234567-0"}) {
+    for (final String trackingId : new String[] {"UA-12345-6", "UA-1234567-123"}) {
       ParameterUtils.validateTrackingId(trackingId);
     }
   }

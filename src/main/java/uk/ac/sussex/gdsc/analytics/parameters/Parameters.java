@@ -57,8 +57,17 @@ public class Parameters implements FormattedParameter {
 
   @Override
   public StringBuilder formatTo(StringBuilder sb) {
-    for (final FormattedParameter fp : formattedParameters) {
-      sb = fp.appendTo(sb);
+    if (formattedParameters.length != 0) {
+      // The contract of formatTo is to assume the builder is empty.
+      // It may not be (e.g. for batch hits (one on each line)) so get the size
+      // and only add the '&' character when something has been added.
+      final int size = sb.length();
+      for (int i = 0; i < formattedParameters.length; i++) {
+        if (size != sb.length()) {
+          sb.append(Constants.AND);
+        }
+        formattedParameters[i].formatTo(sb);
+      }
     }
     return sb;
   }

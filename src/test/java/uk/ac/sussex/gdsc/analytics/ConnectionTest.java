@@ -29,8 +29,6 @@
 
 package uk.ac.sussex.gdsc.analytics;
 
-import uk.ac.sussex.gdsc.analytics.parameters.Parameters;
-
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
@@ -39,6 +37,8 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.junit.jupiter.api.Test;
 
 /**
  * This class exists to determine what happens when there is no Internet connection. This can be
@@ -49,7 +49,7 @@ import java.util.logging.Logger;
 public class ConnectionTest {
 
   // Do not use disabled as then there are test skipped warnings.
-  // @org.junit.jupiter.api.Test
+  @Test
   public void testConnection() {
     final Logger logger = Logger.getLogger(ConnectionTest.class.getName());
     HttpURLConnection connection = null;
@@ -71,69 +71,21 @@ public class ConnectionTest {
     }
   }
 
-  // @org.junit.jupiter.api.Test
-  public void testConnection2() throws IOException {
-    isInternetAvailable();
-  }
-
-  public static boolean isInternetAvailable() throws IOException {
+  @Test
+  public static boolean testInternetAvailable() throws IOException {
     return isHostAvailable("google.com") || isHostAvailable("amazon.com")
         || isHostAvailable("facebook.com") || isHostAvailable("apple.com");
   }
 
   private static boolean isHostAvailable(String hostName) throws IOException {
     try (Socket socket = new Socket()) {
-      int port = 80;
-      InetSocketAddress socketAddress = new InetSocketAddress(hostName, port);
+      final int port = 80;
+      final InetSocketAddress socketAddress = new InetSocketAddress(hostName, port);
       socket.connect(socketAddress, 3000);
       System.out.println(hostName);
       return true;
-    } catch (UnknownHostException unknownHost) {
+    } catch (final UnknownHostException unknownHost) {
       return false;
     }
-  }
-
-  @org.junit.jupiter.api.Test
-  public void testValidate() {
-    final String trackingId = "UA-12345-6"; // Your Google Analytics tracking ID
-    final String userId = "Anything";
-
-    final GoogleAnalyticsClient ga = GoogleAnalyticsClient.createBuilder(trackingId)
-        .setUserId(userId).setDebug(true).setSecure(true).build();
-
-    // Submit requests
-    String documentHostName = "www.abc.com";
-    String documentPath = "/path/within/application/";
-    Parameters parameters = ga.pageview(documentHostName, documentPath).build();
-    DefaultHttpUrlConnectionCallback content = new DefaultHttpUrlConnectionCallback();
-    DispatchStatus status = ga.getHitDispatcher().send(parameters.format(), 0, content);
-    System.out.println(status);
-    System.out.println(content.getResponseCode());
-    System.out.println(content.getContentType());
-    System.out.println(content.getBytesAsText());
-  }
-
-
-  /**
-   * Demo of using the tracker. This code is placed in the project README.md file.
-   */
-  //@formatter:off
-  public void demo() {
-    // Create the tracker
-    final String trackingId = "UA-12345-6"; // Your Google Analytics tracking ID
-    final String userId = "Anything";
-
-    final GoogleAnalyticsClient ga =
-        GoogleAnalyticsClient.createBuilder(trackingId)
-                             .setUserId(userId)
-                             .build();
-
-    // Submit requests
-    String documentHostName = "www.abc.com";
-    String documentPath = "/path/within/application/";
-    ga.pageview(documentHostName, documentPath).send();
-
-    // Shutdown
-    ga.getExecutorService().shutdown();
   }
 }

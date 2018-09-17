@@ -52,7 +52,7 @@ import org.junit.jupiter.api.Test;
 @SuppressWarnings("javadoc")
 public class ParametersTest {
 
-  private final String trackingId = "UA-1234-5";
+  private final String trackingId = "UA-12345-6";
   private final String clientId = "123e4567-e89b-12d3-a456-426655440000";
   private final String clientId2 = "00112233-4455-6677-8899-aabbccddeeff";
   private final String userId = "Mr. Test";
@@ -231,7 +231,7 @@ public class ParametersTest {
     for (int i = 0; i < 3; i++) {
       // General
       testApi((t) -> t.addVersion(), "v", "1");
-      final String trackingId = "UA-0000-" + i;
+      final String trackingId = "UA-12345-" + (i + 1);
       testApi((t) -> t.addTrackingId(trackingId), "tid", trackingId);
       final boolean anonymizeIp = rg.nextBoolean();
       testApi((t) -> t.addAnonymizeIp(anonymizeIp), "aip", (anonymizeIp) ? "1" : "0");
@@ -387,8 +387,8 @@ public class ParametersTest {
   public void testBuilderWithManyParameters() throws MalformedURLException {
     final Builder builder = Parameters.newBuilder();
     final int size = 100;
-    ArrayList<String> names = new ArrayList<>(size);
-    ArrayList<String> values = new ArrayList<>(size);
+    final ArrayList<String> names = new ArrayList<>(size);
+    final ArrayList<String> values = new ArrayList<>(size);
     for (int i = 0; i < size; i++) {
       final String name = "name" + i;
       final String value = "value" + i;
@@ -397,7 +397,7 @@ public class ParametersTest {
       values.add(value);
     }
     final URL url = createURL(builder.build());
-    AbstractUrlAssert<?> a = Assertions.assertThat(url);
+    final AbstractUrlAssert<?> a = Assertions.assertThat(url);
     for (int i = 0; i < size; i++) {
       a.hasParameter(names.get(i), values.get(i));
     }
@@ -437,9 +437,20 @@ public class ParametersTest {
     }
   }
 
-  // Add a test for all the supported parameters from each section in the Google reference.
+  @Test
+  public void testFormatTo() {
+    final Builder builder = Parameters.newBuilder();
+    Assertions.assertThat(builder.build().format()).isEmpty();
+    builder.add("name1", "value1");
+    Assertions.assertThat(builder.build().format()).isEqualTo("name1=value1");
+    builder.add("name2", "value2");
+    Assertions.assertThat(builder.build().format()).isEqualTo("name1=value1&name2=value2");
 
-
+    // Test if the builder is not empty. It should not add an & character
+    final StringBuilder sb = new StringBuilder("test");
+    builder.build().formatTo(sb);
+    Assertions.assertThat(sb.toString()).isEqualTo("testname1=value1&name2=value2");
+  }
 
   /**
    * Gets the parameter from the query string

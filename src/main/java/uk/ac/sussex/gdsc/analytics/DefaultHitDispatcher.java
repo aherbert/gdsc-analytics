@@ -83,7 +83,18 @@ public class DefaultHitDispatcher implements HitDispatcher {
    * @param url the url
    */
   public DefaultHitDispatcher(URL url) {
-    this(url, null);
+    this(url, null, null);
+  }
+
+  /**
+   * Create a new instance.
+   *
+   * @param url the url
+   * @param proxy the proxy (may be null)
+   */
+  public DefaultHitDispatcher(URL url, Proxy proxy) {
+    // New instances will have their own IO Exception
+    this(url, null, proxy, new AtomicReference<>());
   }
 
   /**
@@ -92,7 +103,7 @@ public class DefaultHitDispatcher implements HitDispatcher {
    * @param url the url
    * @param connectionProvider the connection provider (may be null)
    */
-  public DefaultHitDispatcher(URL url, HttpConnectionProvider connectionProvider) {
+  DefaultHitDispatcher(URL url, HttpConnectionProvider connectionProvider) {
     this(url, connectionProvider, null);
   }
 
@@ -103,7 +114,7 @@ public class DefaultHitDispatcher implements HitDispatcher {
    * @param connectionProvider the connection provider (may be null)
    * @param proxy the proxy (may be null)
    */
-  public DefaultHitDispatcher(URL url, HttpConnectionProvider connectionProvider, Proxy proxy) {
+  DefaultHitDispatcher(URL url, HttpConnectionProvider connectionProvider, Proxy proxy) {
     // New instances will have their own IO Exception
     this(url, connectionProvider, proxy, new AtomicReference<>());
   }
@@ -134,7 +145,7 @@ public class DefaultHitDispatcher implements HitDispatcher {
 
   /**
    * Gets a dispatcher configured to use the default connection to Google Analytics.
-   *
+   * 
    * <p>Any errors that occur when dispatching requests will be shared among all instances created
    * using this method. This ensures that if an error occurs connecting to the default URL then the
    * system will be disabled.
@@ -145,9 +156,26 @@ public class DefaultHitDispatcher implements HitDispatcher {
    * @see UrlUtils#getGoogleAnalyticsUrl(boolean, boolean)
    */
   public static DefaultHitDispatcher getDefault(boolean secure, boolean debug) {
+    return getDefault(secure, debug, null);
+  }
+
+  /**
+   * Gets a dispatcher configured to use the default connection to Google Analytics.
+   * 
+   * <p>Any errors that occur when dispatching requests will be shared among all instances created
+   * using this method. This ensures that if an error occurs connecting to the default URL then the
+   * system will be disabled.
+   *
+   * @param secure the secure
+   * @param debug the debug
+   * @param proxy the proxy (may be null)
+   * @return the default
+   * @see UrlUtils#getGoogleAnalyticsUrl(boolean, boolean)
+   */
+  public static DefaultHitDispatcher getDefault(boolean secure, boolean debug, Proxy proxy) {
     // This URL should be effectively final as it is set using System properties
     final URL url = UrlUtils.getGoogleAnalyticsUrl(secure, debug);
-    return new DefaultHitDispatcher(url, null, null, sharedIoException);
+    return new DefaultHitDispatcher(url, null, proxy, sharedIoException);
   }
 
   /**
@@ -215,13 +243,13 @@ public class DefaultHitDispatcher implements HitDispatcher {
 
       if (responseCode == HttpURLConnection.HTTP_OK) {
         if (logger.isLoggable(Level.FINE)) {
-          logger.log(Level.FINE, () -> String.format("Tracking success for url '%s'", request));
+          logger.log(Level.FINE, () -> String.format("Tracking success for hit '%s'", request));
         }
         // This is a success. All other returns are false.
         return DispatchStatus.COMPLETE;
       }
       logger.log(Level.WARNING, () -> String
-          .format("Error requesting url '%s', received response code %d", request, responseCode));
+          .format("Error sending hit '%s', received response code %d", request, responseCode));
     } catch (final UnknownHostException ex) {
       setLastIoException(ex);
       // Occurs when disconnected from the Internet so this is not severe
@@ -273,7 +301,7 @@ public class DefaultHitDispatcher implements HitDispatcher {
   public boolean start() {
     setLastIoException(null);
     disabled = false;
-    return isDisabled();
+    return true;
   }
 
   @Override

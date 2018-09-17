@@ -60,9 +60,9 @@ public class UrlUtilsTest {
     Assertions.assertEquals(UrlUtils.DEFAULT_GOOGLE_ANALYTICS_FILE, UrlUtils.getFile());
     Assertions.assertEquals(UrlUtils.DEFAULT_GOOGLE_ANALYTICS_DEBUG_FILE, UrlUtils.getDebugFile());
 
-    String hostname = "hostname";
-    String file = "/file";
-    String debugFile = "/debugFile";
+    final String hostname = "hostname";
+    final String file = "/file";
+    final String debugFile = "/debugFile";
     System.setProperty(UrlUtils.PROPERTY_GOOGLE_ANALYTICS_HOSTNAME, hostname);
     System.setProperty(UrlUtils.PROPERTY_GOOGLE_ANALYTICS_FILE, file);
     System.setProperty(UrlUtils.PROPERTY_GOOGLE_ANALYTICS_DEBUG_FILE, debugFile);

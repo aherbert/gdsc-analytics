@@ -38,8 +38,8 @@ import org.junit.jupiter.api.Test;
 public class DispatchFutureTest {
   @Test
   public void testProperties() {
-    for (DispatchStatus status : DispatchStatus.values()) {
-      DispatchFuture future = new DispatchFuture(status);
+    for (final DispatchStatus status : DispatchStatus.values()) {
+      final DispatchFuture future = new DispatchFuture(status);
       Assertions.assertEquals(status, future.getStatus());
       Assertions.assertEquals(status, future.get());
       Assertions.assertEquals(status, future.get(1000, TimeUnit.SECONDS));

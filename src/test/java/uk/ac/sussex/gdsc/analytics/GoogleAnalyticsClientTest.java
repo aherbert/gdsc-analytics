@@ -30,25 +30,42 @@
 package uk.ac.sussex.gdsc.analytics;
 
 import uk.ac.sussex.gdsc.analytics.GoogleAnalyticsClient.Builder;
+import uk.ac.sussex.gdsc.analytics.parameters.HitType;
+import uk.ac.sussex.gdsc.analytics.parameters.Parameters;
 import uk.ac.sussex.gdsc.analytics.parameters.Parameters.PartialBuilder;
 import uk.ac.sussex.gdsc.analytics.parameters.ProtocolVersionParameter;
 import uk.ac.sussex.gdsc.analytics.parameters.SessionControlParameter;
+import uk.ac.sussex.gdsc.analytics.parameters.UrlEncoderHelper;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.Proxy;
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class GoogleAnalyticsTrackerTest {
+public class GoogleAnalyticsClientTest {
 
-  private final String trackingId = "UA-1234-5";
-  private final String trackingId2 = "UA-4321-5";
+  private static final Logger logger = Logger.getLogger(GoogleAnalyticsClientTest.class.getName());
+  private static final Level debugLevel = Level.FINE;
+
+  private final String trackingId = "UA-12345-6";
+  private final String trackingId2 = "UA-54321-6";
   private final String clientId = "123e4567-e89b-12d3-a456-426655440000";
   private final String userId = "Mr. Test";
 
-  @SuppressWarnings("unused")
   @Test
   public void testBuilder() {
     // Can build with defaults
@@ -71,39 +88,46 @@ public class GoogleAnalyticsTrackerTest {
     builder.setUserId(userId);
     Assertions.assertEquals(userId, builder.getUserId());
 
-    int threadCount = builder.getThreadCount() + 1;
+    final int threadCount = builder.getThreadCount() + 1;
     builder.setThreadCount(threadCount);
     Assertions.assertEquals(threadCount, builder.getThreadCount());
 
-    int threadPriority = builder.getThreadPriority();
+    final int threadPriority = builder.getThreadPriority();
     builder.setThreadPriority(threadPriority);
     Assertions.assertEquals(threadPriority, builder.getThreadPriority());
 
     builder.setExecutorService(null);
-    ExecutorService executorService = builder.getOrCreateExecutorService();
+    final ExecutorService executorService = builder.getOrCreateExecutorService();
     Assertions.assertSame(executorService, builder.getOrCreateExecutorService());
     builder.setThreadCount(0);
     builder.setExecutorService(null);
-    ExecutorService executorService2 = builder.getOrCreateExecutorService();
+    final ExecutorService executorService2 = builder.getOrCreateExecutorService();
     Assertions.assertNotNull(executorService2);
     Assertions.assertNotSame(executorService, executorService2);
 
     builder.setHitDispatcher(null);
-    HitDispatcher hitDispatcher = builder.getOrCreateHitDispatcher();
+    final HitDispatcher hitDispatcher = builder.getOrCreateHitDispatcher();
     Assertions.assertSame(hitDispatcher, builder.getOrCreateHitDispatcher());
 
-    PartialBuilder<Builder> perHitParameters = builder.getOrCreatePerHitParameters();
+    // Build and test the client has the same settings
+    ga = builder.build();
+    Assertions.assertSame(hitDispatcher, ga.getHitDispatcher());
+    Assertions.assertSame(executorService2, ga.getExecutorService());
+
+    // Try setting parameters
+    final PartialBuilder<Builder> perHitParameters = builder.getOrCreatePerHitParameters();
     Assertions.assertSame(perHitParameters, builder.getOrCreatePerHitParameters());
     builder.setPerHitParameters(ProtocolVersionParameter.V1);
     Assertions.assertNotSame(perHitParameters, builder.getOrCreatePerHitParameters());
     Assertions.assertEquals("v=1", builder.getOrCreatePerHitParameters().build().format());
 
-    PartialBuilder<Builder> perSessionParameters = builder.getOrCreatePerSessionParameters();
+    final PartialBuilder<Builder> perSessionParameters = builder.getOrCreatePerSessionParameters();
     Assertions.assertSame(perSessionParameters, builder.getOrCreatePerSessionParameters());
     builder.setPerSessionParameters(SessionControlParameter.START);
     Assertions.assertNotSame(perSessionParameters, builder.getOrCreatePerSessionParameters());
     Assertions.assertEquals("sc=start", builder.getOrCreatePerSessionParameters().build().format());
 
+    // Note: Setting these will make the hit dispatcher null
     builder.setDebug(true);
     Assertions.assertTrue(builder.isDebug());
     builder.setDebug(true); // Just to make coverage
@@ -116,109 +140,367 @@ public class GoogleAnalyticsTrackerTest {
     builder.setSecure(false);
     Assertions.assertFalse(builder.isSecure());
 
-    long sessionTimeout = builder.getSessionTimeout() + 10;
+    final long sessionTimeout = builder.getSessionTimeout() + 10;
     builder.setSessionTimeout(sessionTimeout);
     Assertions.assertEquals(sessionTimeout, builder.getSessionTimeout());
 
-    // Build and test the client has the same settings
-
-    // Hit all edge cases of build
-
+    // Hit all edge cases of build by using the string client ID
+    builder.setClientId(clientId);
+    ga = builder.build();
   }
 
-  //
-  // @Test
-  // public void testProperties() {
-  // final ClientParameters cp = new ClientParameters(trackingId, clientId, applicationName);
-  //
-  // final GoogleAnalyticsClient tracker = new GoogleAnalyticsClient(cp);
-  //
-  // tracker.setDispatchMode(DispatchMode.SYNCHRONOUS);
-  // Assertions.assertEquals(DispatchMode.SYNCHRONOUS, tracker.getDispatchMode());
-  // Assertions.assertTrue(tracker.isSynchronous());
-  // Assertions.assertFalse(tracker.isAsynchronous());
-  // Assertions.assertFalse(tracker.isSingleThreaded());
-  // Assertions.assertFalse(tracker.isMultiThreaded());
-  //
-  // tracker.setDispatchMode(DispatchMode.SINGLE_THREAD);
-  // Assertions.assertEquals(DispatchMode.SINGLE_THREAD, tracker.getDispatchMode());
-  // Assertions.assertFalse(tracker.isSynchronous());
-  // Assertions.assertTrue(tracker.isAsynchronous());
-  // Assertions.assertTrue(tracker.isSingleThreaded());
-  // Assertions.assertFalse(tracker.isMultiThreaded());
-  //
-  // tracker.setDispatchMode(DispatchMode.MULTI_THREAD);
-  // Assertions.assertEquals(DispatchMode.MULTI_THREAD, tracker.getDispatchMode());
-  // Assertions.assertFalse(tracker.isSynchronous());
-  // Assertions.assertTrue(tracker.isAsynchronous());
-  // Assertions.assertFalse(tracker.isSingleThreaded());
-  // Assertions.assertTrue(tracker.isMultiThreaded());
-  //
-  // // Test default to single thread.
-  // tracker.setDispatchMode(null);
-  // Assertions.assertEquals(DispatchMode.SINGLE_THREAD, tracker.getDispatchMode());
-  // Assertions.assertFalse(tracker.isSynchronous());
-  // Assertions.assertTrue(tracker.isAsynchronous());
-  // Assertions.assertTrue(tracker.isSingleThreaded());
-  // Assertions.assertFalse(tracker.isMultiThreaded());
-  //
-  // // On by default
-  // Assertions.assertTrue(tracker.isIgnore());
-  // tracker.setIgnore(false);
-  // Assertions.assertFalse(tracker.isIgnore());
-  //
-  // // Off by default
-  // Assertions.assertFalse(tracker.isSecure());
-  // tracker.setSecure(true);
-  // Assertions.assertTrue(tracker.isSecure());
-  //
-  // // Test the properties of the client get invoked
-  // final boolean[] resetSession = new boolean[1];
-  // final boolean[] setAnonymised = new boolean[1];
-  // final ClientParameters fakeCP = new ClientParameters(trackingId, clientId, applicationName) {
-  // @Override
-  // public void resetSession() {
-  // resetSession[0] = true;
-  // }
-  //
-  // @Override
-  // public void setAnonymised(boolean anonymised) {
-  // setAnonymised[0] = true;
-  // }
-  // };
-  // new GoogleAnalyticsClient(fakeCP).resetSession();
-  // Assertions.assertTrue(resetSession[0]);
-  // new GoogleAnalyticsClient(fakeCP).setAnonymised(true);
-  // Assertions.assertTrue(setAnonymised[0]);
-  // }
-  //
-  // @Test
-  // public void testProxy() {
-  // GoogleAnalyticsClient.setProxy((Proxy) null);
-  // GoogleAnalyticsClient.setProxy(Proxy.NO_PROXY);
-  //
-  // // Test various proxy addresses
-  // // Valid
-  // Assertions.assertTrue(GoogleAnalyticsClient.setProxy("http://localhost:80"));
-  // Assertions.assertTrue(GoogleAnalyticsClient.setProxy("https://localhost:80"));
-  // Assertions.assertTrue(GoogleAnalyticsClient.setProxy("localhost:80"));
-  // Assertions.assertTrue(GoogleAnalyticsClient.setProxy("https://localhost:80/more/stuff"));
-  //
-  // // Invalid
-  // Assertions.assertFalse(GoogleAnalyticsClient.setProxy((String) null));
-  // Assertions.assertFalse(GoogleAnalyticsClient.setProxy(""));
-  // Assertions.assertFalse(GoogleAnalyticsClient.setProxy("localhost"));
-  // Assertions.assertFalse(GoogleAnalyticsClient.setProxy("http://localhost"));
-  // Assertions.assertFalse(GoogleAnalyticsClient.setProxy("http://localhost :80"));
-  //
-  // // Reset
-  // GoogleAnalyticsClient.setProxy(Proxy.NO_PROXY);
-  // }
-  //
-  // @Test
-  // public void testCompleteBackgroundTasksThrows() {
-  // Assertions.assertThrows(IllegalArgumentException.class, () -> {
-  // GoogleAnalyticsClient.completeBackgroundTasks(-1);
-  // });
-  // }
+  @Test
+  public void testProperties() {
+    final Builder builder = GoogleAnalyticsClient.createBuilder(trackingId);
+    final GoogleAnalyticsClient ga = builder.build();
+
+    ga.setIgnore(true);
+    Assertions.assertTrue(ga.isIgnore());
+    ga.setIgnore(false);
+    Assertions.assertFalse(ga.isIgnore());
+
+    Assertions.assertFalse(ga.isShutdown());
+    ga.getExecutorService().shutdown();
+    Assertions.assertTrue(ga.isShutdown());
+
+    Assertions.assertFalse(ga.isDisabled());
+    ga.getHitDispatcher().stop();
+    Assertions.assertTrue(ga.isDisabled());
+
+    // Test reset session
+    String hit = ga.exception().build().format();
+    Assertions.assertTrue(hit.contains("sc=start"));
+    hit = ga.exception().build().format();
+    Assertions.assertFalse(hit.contains("sc=start"));
+    ga.resetSession();
+    hit = ga.exception().build().format();
+    Assertions.assertTrue(hit.contains("sc=start"));
+  }
+
+  @Test
+  public void testHits() {
+    final Builder builder = GoogleAnalyticsClient.createBuilder(trackingId);
+    final GoogleAnalyticsClient ga = builder.build();
+
+    String hit;
+    for (final HitType hitType : HitType.values()) {
+      hit = ga.hit(hitType).build().format();
+      Assertions.assertTrue(hit.contains("t=" + hitType.toString()));
+    }
+
+    final String documentLocationUrl = "http://www.abc.com/test";
+    hit = ga.pageview(documentLocationUrl).build().format();
+    testContains(hit, "t=pageview");
+    testContains(hit, "dl=" + UrlEncoderHelper.encode(documentLocationUrl));
+
+    final String documentHostName = "www.abc.com";
+    final String documentPath = "/test";
+    hit = ga.pageview(documentHostName, documentPath).build().format();
+    testContains(hit, "t=pageview");
+    testContains(hit, "dh=" + documentHostName);
+    testContains(hit, "dp=" + UrlEncoderHelper.encode(documentPath));
+
+    final String screenName = "TestScreen";
+    hit = ga.screenview(screenName).build().format();
+    testContains(hit, "t=screenview");
+    testContains(hit, "cd=" + screenName);
+
+    final String eventCategory = "cat1";
+    final String eventAction = "act1";
+    final int eventValue = 44;
+    hit = ga.event(eventCategory, eventAction, eventValue).build().format();
+    testContains(hit, "t=event");
+    testContains(hit, "ec=" + eventCategory);
+    testContains(hit, "ea=" + eventAction);
+    testContains(hit, "ev=" + eventValue);
+
+    final String transactionId = "34657-ABC";
+    hit = ga.transaction(transactionId).build().format();
+    testContains(hit, "t=transaction");
+    testContains(hit, "ti=" + transactionId);
+
+    hit = ga.item(transactionId).build().format();
+    testContains(hit, "t=item");
+    testContains(hit, "ti=" + transactionId);
+
+    final String socialNetwork = "headbook";
+    final String socialAction = "like";
+    final String socialActionTarget = "friend";
+    hit = ga.social(socialNetwork, socialAction, socialActionTarget).build().format();
+    testContains(hit, "t=social");
+    testContains(hit, "sn=" + socialNetwork);
+    testContains(hit, "sa=" + socialAction);
+    testContains(hit, "st=" + socialActionTarget);
+
+    hit = ga.exception().build().format();
+    testContains(hit, "t=exception");
+
+    final String userTimingCategory = "test-timing";
+    final String userTimingVariableName = "testing";
+    final int userTimingTime = 76897979;
+    hit = ga.timing(userTimingCategory, userTimingVariableName, userTimingTime).build().format();
+    testContains(hit, "t=timing");
+    testContains(hit, "utc=" + userTimingCategory);
+    testContains(hit, "utv=" + userTimingVariableName);
+    testContains(hit, "utt=" + userTimingTime);
+  }
+
+  private static void testContains(String hit, String sequence) {
+    Assertions.assertTrue(hit.contains(sequence),
+        () -> String.format("%s missing %s", hit, sequence));
+  }
+
+  @Test
+  public void testSend() throws InterruptedException, ExecutionException {
+
+    // Create a dummy hit dispatcher that does nothing
+    final HitDispatcher hitDispatcher = new HitDispatcher() {
+
+      public boolean disabled;
+
+      @Override
+      public boolean stop() {
+        disabled = true;
+        return true;
+      }
+
+      @Override
+      public boolean start() {
+        disabled = false;
+        return true;
+      }
+
+      @Override
+      public DispatchStatus send(CharSequence hit, long timestamp,
+          HttpUrlConnectionCallback callback) {
+        // Do not connect. Just return as if it worked.
+        return DispatchStatus.COMPLETE;
+      }
+
+      @Override
+      public boolean isDisabled() {
+        return disabled;
+      }
+
+      @Override
+      public IOException getLastIoException() {
+        return null;
+      }
+    };
+
+    // Create a dummy executor service
+    final ExecutorService executorService = new ExecutorService() {
+
+      public boolean shutdown;
+
+      @Override
+      public void execute(Runnable command) {
+        // Do nothing
+      }
+
+      @Override
+      public <T> Future<T> submit(Runnable task, T result) {
+        return null;
+      }
+
+      @Override
+      public Future<?> submit(Runnable task) {
+        return null;
+      }
+
+      @Override
+      public <T> Future<T> submit(Callable<T> task) {
+        return new Future<T>() {
+
+          @Override
+          public boolean cancel(boolean mayInterruptIfRunning) {
+            return false;
+          }
+
+          @Override
+          public boolean isCancelled() {
+            return false;
+          }
+
+          @Override
+          public boolean isDone() {
+            return true;
+          }
+
+          @Override
+          public T get() throws ExecutionException {
+            // Run the task
+            try {
+              return task.call();
+            } catch (final Exception ex) {
+              throw new ExecutionException(ex);
+            }
+          }
+
+          @Override
+          public T get(long timeout, TimeUnit unit) {
+            return null;
+          }
+        };
+      }
+
+      @Override
+      public List<Runnable> shutdownNow() {
+        return null;
+      }
+
+      @Override
+      public void shutdown() {
+        shutdown = true;
+      }
+
+      @Override
+      public boolean isTerminated() {
+        return false;
+      }
+
+      @Override
+      public boolean isShutdown() {
+        return shutdown;
+      }
+
+      @Override
+      public <T> T invokeAny(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) {
+        return null;
+      }
+
+      @Override
+      public <T> T invokeAny(Collection<? extends Callable<T>> tasks) {
+        return null;
+      }
+
+      @Override
+      public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, long timeout,
+          TimeUnit unit) {
+        return null;
+      }
+
+      @Override
+      public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks) {
+        return null;
+      }
+
+      @Override
+      public boolean awaitTermination(long timeout, TimeUnit unit) {
+        return false;
+      }
+    };
+
+    final GoogleAnalyticsClient ga = GoogleAnalyticsClient.createBuilder(trackingId)
+        .setHitDispatcher(hitDispatcher).setExecutorService(executorService).build();
+
+    Assertions.assertEquals(DispatchStatus.COMPLETE, ga.exception().send().get());
+
+    executorService.shutdown();
+    Assertions.assertEquals(DispatchStatus.SHUTDOWN, ga.exception().send().get());
+
+    ga.getHitDispatcher().stop();
+    Assertions.assertEquals(DispatchStatus.DISABLED, ga.exception().send().get());
+
+    ga.setIgnore(true);
+    Assertions.assertEquals(DispatchStatus.IGNORED, ga.exception().send().get());
+  }
+
+  @Test
+  public void testSendUsingDebugServer()
+      throws InterruptedException, ExecutionException, TimeoutException {
+
+    GoogleAnalyticsClient ga =
+        GoogleAnalyticsClient.createBuilder(trackingId).setDebug(true).build();
+
+    // Submit requests. Use something that should be encoded.
+    final String documentHostName = "www.abc.com";
+    final String documentPath = "/path/within/application/";
+    DispatchStatus status =
+        ga.pageview(documentHostName, documentPath).send().get(2000, TimeUnit.MILLISECONDS);
+    Assertions.assertEquals(DispatchStatus.COMPLETE, status);
+
+    // Test using an explicit proxy
+    ga = GoogleAnalyticsClient.createBuilder(trackingId)
+        .setHitDispatcher(DefaultHitDispatcher.getDefault(true, true, Proxy.NO_PROXY)).build();
+    status = ga.pageview(documentHostName, documentPath).send().get(2000, TimeUnit.MILLISECONDS);
+    Assertions.assertEquals(DispatchStatus.COMPLETE, status);
+  }
+
+  @Test
+  public void testBuildUsingDebugServer() {
+
+    final HitDispatcher hitDispatcher = DefaultHitDispatcher.getDefault(true, true);
+    final GoogleAnalyticsClient ga =
+        GoogleAnalyticsClient.createBuilder(trackingId).setHitDispatcher(hitDispatcher).build();
+
+    final DefaultHttpUrlConnectionCallback content = new DefaultHttpUrlConnectionCallback();
+    final StringBuilder hit = new StringBuilder();
+
+    // Submit requests. Use something that should be encoded.
+    final String documentHostName = "www.abc.com";
+    final String documentPath = "/path/within/application/";
+    Parameters parameters = ga.pageview(documentHostName, documentPath).build();
+
+    // Single hit
+    parameters.formatTo(hit);
+    DispatchStatus status = hitDispatcher.send(hit, 0, content);
+    debugSend(content);
+    Assertions.assertEquals(DispatchStatus.COMPLETE, status);
+    Assertions.assertEquals(HttpURLConnection.HTTP_OK, content.getResponseCode());
+    Assertions.assertTrue(content.getContentType().contains("utf-8"));
+    Assertions.assertTrue(content.getBytesAsText().contains("\"valid\": true"));
+    Assertions.assertTrue(content.getBytesAsText().contains("Found 1 hit"));
+
+    // Batch hit. Just repeat the hit.
+    hit.append("\n");
+    parameters.formatTo(hit);
+    status = hitDispatcher.send(hit, 0, content);
+    debugSend(content);
+    Assertions.assertEquals(DispatchStatus.COMPLETE, status);
+    Assertions.assertEquals(HttpURLConnection.HTTP_OK, content.getResponseCode());
+    Assertions.assertTrue(content.getContentType().contains("utf-8"));
+    Assertions.assertTrue(content.getBytesAsText().contains("\"valid\": true"));
+    Assertions.assertTrue(content.getBytesAsText().contains("Found 2 hit"));
+
+    // Bad hit due to missing parameters
+    parameters = ga.hit(HitType.PAGEVIEW).build();
+    hit.setLength(0);
+    parameters.formatTo(hit);
+    status = hitDispatcher.send(hit, 0, content);
+    debugSend(content);
+    Assertions.assertEquals(DispatchStatus.COMPLETE, status);
+    Assertions.assertEquals(HttpURLConnection.HTTP_OK, content.getResponseCode());
+    Assertions.assertTrue(content.getContentType().contains("utf-8"));
+    Assertions.assertTrue(content.getBytesAsText().contains("\"valid\": false"));
+    Assertions.assertTrue(content.getBytesAsText().contains("Found 1 hit"));
+  }
+
+  private static void debugSend(DefaultHttpUrlConnectionCallback content) {
+    logger.log(debugLevel, () -> String.format("Response Code = %d%nResponse =%n%s",
+        content.getResponseCode(), content.getBytesAsText()));
+  }
+
+  /**
+   * Demo of using the tracker. This code is placed in the project README.md file.
+   */
+  //@formatter:off
+  void demo() {
+    // Create the tracker
+    final String trackingId = "UA-12345-6"; // Your Google Analytics tracking ID
+    final String userId = "Anything";
+
+    final GoogleAnalyticsClient ga =
+        GoogleAnalyticsClient.createBuilder(trackingId)
+                             .setUserId(userId)
+                             .build();
+
+    // Submit requests
+    final String documentHostName = "www.abc.com";
+    final String documentPath = "/path/within/application/";
+    ga.pageview(documentHostName, documentPath).send();
+
+    // Shutdown
+    ga.getExecutorService().shutdown();
+  }
 }

@@ -65,7 +65,7 @@ public class Session {
   /**
    * The timeout in milliseconds.
    */
-  private long timeout = 30 * 60000L;
+  private long timeout;
   /**
    * Timestamp of the session.
    */
@@ -84,7 +84,7 @@ public class Session {
    * @param timeout the timeout
    * @throws IllegalArgumentException If the timeout is negative
    */
-  public Session(long timeout) throws IllegalArgumentException {
+  public Session(long timeout) {
     setTimeout(timeout);
     reset();
   }
@@ -180,7 +180,7 @@ public class Session {
    * @param timeout the timeout to set
    * @throws IllegalArgumentException If the timeout is negative
    */
-  public void setTimeout(long timeout) throws IllegalArgumentException {
+  public void setTimeout(long timeout) {
     this.timeout = ParameterUtils.requirePositive(timeout, "Timeout must be positive");
   }
 }

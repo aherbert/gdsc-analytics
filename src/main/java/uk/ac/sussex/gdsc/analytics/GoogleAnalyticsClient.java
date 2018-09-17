@@ -30,13 +30,16 @@
 package uk.ac.sussex.gdsc.analytics;
 
 import uk.ac.sussex.gdsc.analytics.parameters.FormattedParameter;
+import uk.ac.sussex.gdsc.analytics.parameters.HitType;
 import uk.ac.sussex.gdsc.analytics.parameters.HitTypeParameter;
+import uk.ac.sussex.gdsc.analytics.parameters.NoIndexTextParameter;
 import uk.ac.sussex.gdsc.analytics.parameters.ParameterUtils;
 import uk.ac.sussex.gdsc.analytics.parameters.Parameters;
 import uk.ac.sussex.gdsc.analytics.parameters.Parameters.HitBuilder;
 import uk.ac.sussex.gdsc.analytics.parameters.Parameters.ParametersBuilder;
 import uk.ac.sussex.gdsc.analytics.parameters.Parameters.PartialBuilder;
 import uk.ac.sussex.gdsc.analytics.parameters.Parameters.RequiredBuilder;
+import uk.ac.sussex.gdsc.analytics.parameters.ProtocolSpecification;
 import uk.ac.sussex.gdsc.analytics.parameters.SessionControlParameter;
 
 import java.util.Objects;
@@ -60,11 +63,6 @@ import java.util.concurrent.ThreadFactory;
  * <p>The client manages the session of interaction with a configurable timeout.
  */
 public class GoogleAnalyticsClient {
-
-  // TODO -
-  // Do not resend all of client URL every time.
-  // Test against google debug server.
-  // Move mock test to integration tests.
 
   /**
    * Used when ignoring requests due to {@link DispatchStatus#IGNORED}.
@@ -138,7 +136,7 @@ public class GoogleAnalyticsClient {
     private PartialBuilder<Builder> perSessionParameters;
 
     /** The session timeout. */
-    private long sessionTimeout;
+    private long sessionTimeout = Session.DEFAULT_TIMEOUT;
 
     /** The secure flag. Set to true to use HTTPS. */
     private boolean secure;
@@ -251,7 +249,7 @@ public class GoogleAnalyticsClient {
      * @throws IllegalArgumentException if not a valid UUID
      * @see <a href="http://goo.gl/a8d4RP#cid">Client Id</a>
      */
-    public Builder setClientId(String clientId) throws IllegalArgumentException {
+    public Builder setClientId(String clientId) {
       this.clientId = clientId;
       return this;
     }
@@ -327,7 +325,7 @@ public class GoogleAnalyticsClient {
      * @return the builder
      * @throws IllegalArgumentException If the priority is not in the allowed range for a thread
      */
-    public Builder setThreadPriority(int priority) throws IllegalArgumentException {
+    public Builder setThreadPriority(int priority) {
       ArgumentUtils.validateThreadPriority(priority);
       this.threadPriority = priority;
       return this;
@@ -502,7 +500,7 @@ public class GoogleAnalyticsClient {
      * @return the builder
      * @throws IllegalArgumentException If the timeout is negative
      */
-    public Builder setSessionTimeout(long timeout) throws IllegalArgumentException {
+    public Builder setSessionTimeout(long timeout) {
       this.sessionTimeout = ParameterUtils.requirePositive(timeout, "Timeout must be positive");
       return this;
     }
@@ -687,9 +685,8 @@ public class GoogleAnalyticsClient {
    * @param hitType the hit type
    * @return the hit builder
    */
-  public HitBuilder<Future<DispatchStatus>> hit(HitTypeParameter hitType) {
-    Objects.requireNonNull(hitType);
-    return createHitBuilder(hitType);
+  public HitBuilder<Future<DispatchStatus>> hit(HitType hitType) {
+    return createHitBuilder(HitTypeParameter.create(hitType));
   }
 
   /**
@@ -761,9 +758,9 @@ public class GoogleAnalyticsClient {
    * @param transactionId the transaction id
    * @return the hit builder
    */
-  public HitBuilder<Future<DispatchStatus>> transaction(int transactionId) {
-    // TODO
-    return createHitBuilder(HitTypeParameter.TRANSACTION);
+  public HitBuilder<Future<DispatchStatus>> transaction(String transactionId) {
+    return createHitBuilder(HitTypeParameter.TRANSACTION)
+        .add(new NoIndexTextParameter(ProtocolSpecification.TRANSACTION_ID, transactionId));
   }
 
   /**
@@ -774,9 +771,9 @@ public class GoogleAnalyticsClient {
    * @param transactionId the transaction id
    * @return the hit builder
    */
-  public HitBuilder<Future<DispatchStatus>> item(int transactionId) {
-    // TODO
-    return createHitBuilder(HitTypeParameter.ITEM);
+  public HitBuilder<Future<DispatchStatus>> item(String transactionId) {
+    return createHitBuilder(HitTypeParameter.ITEM)
+        .add(new NoIndexTextParameter(ProtocolSpecification.TRANSACTION_ID, transactionId));
   }
 
   /**
@@ -791,8 +788,11 @@ public class GoogleAnalyticsClient {
    */
   public HitBuilder<Future<DispatchStatus>> social(String socialNetwork, String socialAction,
       String socialActionTarget) {
-    // TODO
-    return createHitBuilder(HitTypeParameter.SOCIAL);
+    return createHitBuilder(HitTypeParameter.SOCIAL)
+        .add(new NoIndexTextParameter(ProtocolSpecification.SOCIAL_NETWORK, socialNetwork))
+        .add(new NoIndexTextParameter(ProtocolSpecification.SOCIAL_ACTION, socialAction))
+        .add(new NoIndexTextParameter(ProtocolSpecification.SOCIAL_ACTION_TARGET,
+            socialActionTarget));
   }
 
   /**
@@ -938,10 +938,6 @@ public class GoogleAnalyticsClient {
    * @return true, if successful
    */
   private DispatchStatus dispatchRequest(Parameters parameters, long timestamp) {
-    // Check this again as it may occur after the request was queued
-    if (isDisabled()) {
-      return DispatchStatus.DISABLED;
-    }
     // Build the request
     final StringBuilder sb = new StringBuilder(HIT_BUFFER_SIZE);
     parameters.formatTo(sb);

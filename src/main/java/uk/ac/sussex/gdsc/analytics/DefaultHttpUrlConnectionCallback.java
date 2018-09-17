@@ -44,10 +44,10 @@ public class DefaultHttpUrlConnectionCallback implements HttpUrlConnectionCallba
   /** The buffer size when reading the input stream. */
   private static final int BUFFER_SIZE = 1024;
 
-  /** Used to reset the content type */
+  /** Used to reset the content type. */
   private static final String UNKNOWN_CONTENT_TYPE = null;
 
-  /** Used to reset the bytes */
+  /** Used to reset the bytes. */
   private static final byte[] NO_BYTES = null;
 
   /** The response code. */

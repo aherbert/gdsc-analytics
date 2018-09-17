@@ -53,14 +53,14 @@ public class BackgroundThreadFactoryTest {
 
   @Test
   public void testNewThread() {
-    Runnable runnable = new Runnable() {
+    final Runnable runnable = new Runnable() {
       @Override
       public void run() {
         // Do nothing
       }
     };
     for (int p = Thread.MIN_PRIORITY; p <= Thread.MAX_PRIORITY; p++) {
-      Thread thread = new BackgroundThreadFactory(p).newThread(runnable);
+      final Thread thread = new BackgroundThreadFactory(p).newThread(runnable);
       Assertions.assertEquals(p, thread.getPriority());
       Assertions.assertTrue(thread.isDaemon());
     }

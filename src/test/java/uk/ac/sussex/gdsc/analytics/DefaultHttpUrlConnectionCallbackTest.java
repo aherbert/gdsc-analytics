@@ -42,7 +42,7 @@ import org.mockito.Mockito;
 public class DefaultHttpUrlConnectionCallbackTest {
   @Test
   public void testProcess() throws IOException {
-    DefaultHttpUrlConnectionCallback callback = new DefaultHttpUrlConnectionCallback();
+    final DefaultHttpUrlConnectionCallback callback = new DefaultHttpUrlConnectionCallback();
 
     // Default properties
     Assertions.assertEquals(0, callback.getResponseCode());
@@ -80,7 +80,7 @@ public class DefaultHttpUrlConnectionCallbackTest {
 
     // Good content
     responseCode = HttpURLConnection.HTTP_OK;
-    String text = "This should be returned";
+    final String text = "This should be returned";
     bytes = text.getBytes(StandardCharsets.UTF_8);
     contentType = "blah; charset=utf-8";
     connection = Mockito.mock(HttpURLConnection.class);

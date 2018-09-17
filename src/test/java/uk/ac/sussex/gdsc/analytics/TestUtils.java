@@ -86,7 +86,7 @@ public class TestUtils {
    * @return the string
    */
   public static String randomName(UniformRandomProvider rg, int length) {
-    char[] chars = new char[length];
+    final char[] chars = new char[length];
     for (int i = 0; i < length; i++) {
       chars[i] = NAME_CHARS[rg.nextInt(NAME_CHARS.length)];
     }
@@ -101,7 +101,7 @@ public class TestUtils {
    * @return the string
    */
   public static String randomPath(UniformRandomProvider rg, int length) {
-    char[] chars = new char[length + 1];
+    final char[] chars = new char[length + 1];
     chars[0] = '/';
     for (int i = 1; i <= length; i++) {
       if (i % 3 == 0) {
