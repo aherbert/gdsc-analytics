@@ -7,11 +7,12 @@ use warnings;
 
 my $prog = basename($0);
 my $debug = 0;
+my $compact = 0;
 
 my $usage = "
-  Program to generate Java snippets from the Google Anayltics Measurement 
+  Program to generate Java snippets from the Google Anayltics Measurement
   Protocol parameter reference.
-  
+
   The reference should be of the format:
   key : name : description : required : type : length : supported : example
 
@@ -26,13 +27,16 @@ Options:
   -help     Print this help and exit
 
   -debug    Debug info
-  
+
+  -compact  Output the compact version
+
 ";
 
 my $help;
 GetOptions(
 	"help" => \$help,
 	"debug" => \$debug,
+  "compact" => \$compact,
 );
 
 die $usage if $help;
@@ -77,7 +81,7 @@ for (@data) {
             $upper =~ tr/a-z \-/A-Z__/;
             # Remove bad characters, e.g.: Is Exception Fatal?
             $upper =~ s/\?//;
-            $type = uc($type);
+            my $upperType = uc($type);
             my $supp = '';
             if ($supported ne 'all') {
                 for my $s (split /,/, $supported) {
@@ -86,14 +90,39 @@ for (@data) {
                     $supp .= ", HitType.$s";
                 }
             }
-            print OUT <<__END
+            # Compact version
+            if ($compact) {
+                print OUT <<__END
   \/\*\* \@see <a href= "http:\/\/goo.gl\/a8d4RP#$key">$name<\/a> \*\/
-  $upper("$name", "$key", ValueType.$type, $length$supp),
+  $upper("$name", "$key", ValueType.$upperType, $length$supp),
 __END
+            } else {
+                unless ($description =~ m/\.$/) {
+                    $description .= '.';
+                }
+                my $len = ($length) ? " (Max Length = $length)" : '';
+                print OUT <<__END
+  \/\*\*
+   \* $name ($key).
+   \*
+   \* <p>$required
+   \*
+   \* <p>$description
+   \*
+   \* <p>Value Type: $type$len.
+   \*
+   \* <p>Supported Hit Types: $supported.
+   \*
+   \* <p>Example usage: $example.
+   \*
+   \* \@see <a href= "http:\/\/goo.gl\/a8d4RP#$key">$name<\/a>
+   \*\/
+  $upper("$name", "$key", ValueType.$upperType, $length$supp),
+__END
+            }
     }
 }
 print OUT "  // $on\n";
 close OUT;
 
 ################################################################################
-
