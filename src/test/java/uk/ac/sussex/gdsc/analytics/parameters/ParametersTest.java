@@ -52,10 +52,10 @@ import org.junit.jupiter.api.Test;
 @SuppressWarnings("javadoc")
 public class ParametersTest {
 
-  String trackingId = "UA-1234-5";
-  String clientId = "123e4567-e89b-12d3-a456-426655440000";
-  String clientId2 = "00112233-4455-6677-8899-aabbccddeeff";
-  String userId = "Mr. Test";
+  private final String trackingId = "UA-1234-5";
+  private final String clientId = "123e4567-e89b-12d3-a456-426655440000";
+  private final String clientId2 = "00112233-4455-6677-8899-aabbccddeeff";
+  private final String userId = "Mr. Test";
 
   @Test
   public void testRequiredBuilder() throws MalformedURLException {

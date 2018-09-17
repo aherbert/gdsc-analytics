@@ -29,40 +29,103 @@
 
 package uk.ac.sussex.gdsc.analytics;
 
+import uk.ac.sussex.gdsc.analytics.GoogleAnalyticsClient.Builder;
+import uk.ac.sussex.gdsc.analytics.parameters.Parameters.PartialBuilder;
+import uk.ac.sussex.gdsc.analytics.parameters.ProtocolVersionParameter;
+import uk.ac.sussex.gdsc.analytics.parameters.SessionControlParameter;
+
+import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
 @SuppressWarnings("javadoc")
 public class GoogleAnalyticsTrackerTest {
-  private final String trackingId = "AAA-123-456";
-  private final String clientId = "Anything";
-  private final String applicationName = "Test";
 
-  // @SuppressWarnings("unused")
-  // @Test
-  // public void testConstructor() {
-  // final ClientParameters cp = new ClientParameters(trackingId, clientId, applicationName);
-  //
-  // GoogleAnalyticsClient tracker = new GoogleAnalyticsClient(cp);
-  // Assertions.assertNotNull(tracker);
-  // Assertions.assertTrue(tracker.isIgnore());
-  // Assertions.assertEquals(DispatchMode.SINGLE_THREAD, tracker.getDispatchMode());
-  //
-  // // Overloaded constructor
-  // final DispatchMode mode = DispatchMode.MULTI_THREAD;
-  // tracker = new GoogleAnalyticsClient(cp, mode);
-  // Assertions.assertEquals(mode, tracker.getDispatchMode());
-  //
-  // final DispatchMode mode2 = DispatchMode.SINGLE_THREAD;
-  // final MeasurementProtocolVersion version = MeasurementProtocolVersion.V_1;
-  // tracker = new GoogleAnalyticsClient(cp, mode2, version);
-  // Assertions.assertEquals(mode2, tracker.getDispatchMode());
-  //
-  // // Require some arguments (not dispatch mode)
-  // Assertions.assertThrows(NullPointerException.class, () -> {
-  // new GoogleAnalyticsClient(null, mode, version);
-  // });
-  // Assertions.assertThrows(NullPointerException.class, () -> {
-  // new GoogleAnalyticsClient(cp, mode, null);
-  // });
-  // }
+  private final String trackingId = "UA-1234-5";
+  private final String trackingId2 = "UA-4321-5";
+  private final String clientId = "123e4567-e89b-12d3-a456-426655440000";
+  private final String userId = "Mr. Test";
+
+  @SuppressWarnings("unused")
+  @Test
+  public void testBuilder() {
+    // Can build with defaults
+    Builder builder = GoogleAnalyticsClient.createBuilder(trackingId);
+    GoogleAnalyticsClient ga = builder.build();
+
+    // Test getters and setters
+    builder = GoogleAnalyticsClient.createBuilder(trackingId);
+
+    Assertions.assertEquals(trackingId, builder.getTrackingId());
+    builder.setTrackingId(trackingId2);
+    Assertions.assertEquals(trackingId2, builder.getTrackingId());
+
+    Assertions.assertNull(builder.getClientId());
+    builder.setClientId(clientId);
+    Assertions.assertEquals(clientId, builder.getClientId());
+    builder.setClientId(UUID.fromString(clientId));
+    Assertions.assertEquals(clientId, builder.getClientId());
+
+    builder.setUserId(userId);
+    Assertions.assertEquals(userId, builder.getUserId());
+
+    int threadCount = builder.getThreadCount() + 1;
+    builder.setThreadCount(threadCount);
+    Assertions.assertEquals(threadCount, builder.getThreadCount());
+
+    int threadPriority = builder.getThreadPriority();
+    builder.setThreadPriority(threadPriority);
+    Assertions.assertEquals(threadPriority, builder.getThreadPriority());
+
+    builder.setExecutorService(null);
+    ExecutorService executorService = builder.getOrCreateExecutorService();
+    Assertions.assertSame(executorService, builder.getOrCreateExecutorService());
+    builder.setThreadCount(0);
+    builder.setExecutorService(null);
+    ExecutorService executorService2 = builder.getOrCreateExecutorService();
+    Assertions.assertNotNull(executorService2);
+    Assertions.assertNotSame(executorService, executorService2);
+
+    builder.setHitDispatcher(null);
+    HitDispatcher hitDispatcher = builder.getOrCreateHitDispatcher();
+    Assertions.assertSame(hitDispatcher, builder.getOrCreateHitDispatcher());
+
+    PartialBuilder<Builder> perHitParameters = builder.getOrCreatePerHitParameters();
+    Assertions.assertSame(perHitParameters, builder.getOrCreatePerHitParameters());
+    builder.setPerHitParameters(ProtocolVersionParameter.V1);
+    Assertions.assertNotSame(perHitParameters, builder.getOrCreatePerHitParameters());
+    Assertions.assertEquals("v=1", builder.getOrCreatePerHitParameters().build().format());
+
+    PartialBuilder<Builder> perSessionParameters = builder.getOrCreatePerSessionParameters();
+    Assertions.assertSame(perSessionParameters, builder.getOrCreatePerSessionParameters());
+    builder.setPerSessionParameters(SessionControlParameter.START);
+    Assertions.assertNotSame(perSessionParameters, builder.getOrCreatePerSessionParameters());
+    Assertions.assertEquals("sc=start", builder.getOrCreatePerSessionParameters().build().format());
+
+    builder.setDebug(true);
+    Assertions.assertTrue(builder.isDebug());
+    builder.setDebug(true); // Just to make coverage
+    builder.setDebug(false);
+    Assertions.assertFalse(builder.isDebug());
+
+    builder.setSecure(true);
+    Assertions.assertTrue(builder.isSecure());
+    builder.setSecure(true); // Just to make coverage
+    builder.setSecure(false);
+    Assertions.assertFalse(builder.isSecure());
+
+    long sessionTimeout = builder.getSessionTimeout() + 10;
+    builder.setSessionTimeout(sessionTimeout);
+    Assertions.assertEquals(sessionTimeout, builder.getSessionTimeout());
+
+    // Build and test the client has the same settings
+
+    // Hit all edge cases of build
+
+  }
+
   //
   // @Test
   // public void testProperties() {
