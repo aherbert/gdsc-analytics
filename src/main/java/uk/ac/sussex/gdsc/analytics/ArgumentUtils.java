@@ -50,7 +50,7 @@ public final class ArgumentUtils {
    * @see Thread#MIN_PRIORITY
    * @see Thread#MAX_PRIORITY
    */
-  public static int validateThreadPriority(int priority) throws IllegalArgumentException {
+  public static int validateThreadPriority(int priority) {
     if (priority < Thread.MIN_PRIORITY || priority > Thread.MAX_PRIORITY) {
       throw new IllegalArgumentException("Invalid priority: " + priority);
     }

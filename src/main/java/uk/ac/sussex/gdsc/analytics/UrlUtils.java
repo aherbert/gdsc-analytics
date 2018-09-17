@@ -147,8 +147,7 @@ public final class UrlUtils {
    * @see #PROPERTY_GOOGLE_ANALYTICS_HOSTNAME
    * @see #PROPERTY_GOOGLE_ANALYTICS_FILE
    */
-  public static URL getGoogleAnalyticsUrl(boolean secure, boolean debug)
-      throws MalformedUrlRuntimeException {
+  public static URL getGoogleAnalyticsUrl(boolean secure, boolean debug) {
     try {
       String urlProtocol;
       String urlFile;

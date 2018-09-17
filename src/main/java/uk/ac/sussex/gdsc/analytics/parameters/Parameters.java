@@ -266,7 +266,7 @@ public class Parameters implements FormattedParameter {
      * @return the builder
      * @throws IllegalArgumentException if the name is empty
      */
-    public B add(String name, String value) throws IllegalArgumentException {
+    public B add(String name, String value) {
       ParameterUtils.requireNotEmpty(name, "name is empty");
       return addParameter(new CustomParameter(name, value));
     }
@@ -303,7 +303,7 @@ public class Parameters implements FormattedParameter {
      * @throws IllegalArgumentException if tracking ID is invalid
      * @see <a href="http://goo.gl/a8d4RP#tid">Tracking Id</a>
      */
-    public B addTrackingId(String trackingId) throws IllegalArgumentException {
+    public B addTrackingId(String trackingId) {
       return addParameter(new TrackingIdParameter(trackingId));
     }
 
@@ -744,7 +744,7 @@ public class Parameters implements FormattedParameter {
      * @throws IllegalArgumentException If the event category is empty
      * @see <a href="http://goo.gl/a8d4RP#ec">Event Category</a>
      */
-    public B addEventCategory(String eventCategory) throws IllegalArgumentException {
+    public B addEventCategory(String eventCategory) {
       ParameterUtils.requireNotEmpty(eventCategory, "Event category is empty");
       return addParameter(
           new NoIndexTextParameter(ProtocolSpecification.EVENT_CATEGORY, eventCategory));
@@ -760,7 +760,7 @@ public class Parameters implements FormattedParameter {
      * @throws IllegalArgumentException If the event action is empty
      * @see <a href="http://goo.gl/a8d4RP#ea">Event Action</a>
      */
-    public B addEventAction(String eventAction) throws IllegalArgumentException {
+    public B addEventAction(String eventAction) {
       ParameterUtils.requireNotEmpty(eventAction, "Event action is empty");
       return addParameter(
           new NoIndexTextParameter(ProtocolSpecification.EVENT_ACTION, eventAction));
@@ -787,7 +787,7 @@ public class Parameters implements FormattedParameter {
      * @throws IllegalArgumentException If the event value is negative
      * @see <a href="http://goo.gl/a8d4RP#ev">Event Value</a>
      */
-    public B addEventValue(int eventValue) throws IllegalArgumentException {
+    public B addEventValue(int eventValue) {
       ParameterUtils.requirePositive(eventValue, "Event value");
       return addParameter(new NoIndexIntParameter(ProtocolSpecification.EVENT_VALUE, eventValue));
     }
@@ -1068,7 +1068,7 @@ public class Parameters implements FormattedParameter {
     }
 
     @Override
-    public RequiredBuilder addClientId(String clientId) throws IllegalArgumentException {
+    public RequiredBuilder addClientId(String clientId) {
       if (hasClientId) {
         throw new IllegalArgumentException("Duplicate client Id");
       }
@@ -1086,7 +1086,7 @@ public class Parameters implements FormattedParameter {
     }
 
     @Override
-    public RequiredBuilder addUserId(String userId) throws IllegalArgumentException {
+    public RequiredBuilder addUserId(String userId) {
       if (hasUserId) {
         throw new IllegalArgumentException("Duplicate user Id");
       }
@@ -1154,7 +1154,7 @@ public class Parameters implements FormattedParameter {
     }
 
     @Override
-    public PartialBuilder<P> addClientId(String clientId) throws IllegalArgumentException {
+    public PartialBuilder<P> addClientId(String clientId) {
       return self;
     }
 
@@ -1164,7 +1164,7 @@ public class Parameters implements FormattedParameter {
     }
 
     @Override
-    public PartialBuilder<P> addUserId(String userId) throws IllegalArgumentException {
+    public PartialBuilder<P> addUserId(String userId) {
       return self;
     }
 
