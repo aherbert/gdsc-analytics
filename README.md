@@ -22,27 +22,27 @@ Functionality includes:
 Example:
 
 ```java
-import uk.ac.sussex.gdsc.analytics.GoogleAnalyticsTracker;
-import uk.ac.sussex.gdsc.analytics.GoogleAnalyticsTracker.*;
-
 // Create the tracker
-String trackingId = "AAA-123-456"; // Your Google Analytics tracking ID
-String clientId = "Anything";
-String applicationName = "Test";
+String trackingId = "UA-12345-6"; // Your Google Analytics tracking ID
+String userId = "Anything";
 
-ClientParameters cp = new ClientParameters(trackingId, clientId, applicationName);
-GoogleAnalyticsTracker tracker = new GoogleAnalyticsTracker(cp);
+GoogleAnalyticsClient ga =
+    GoogleAnalyticsClient.createBuilder(trackingId)
+                         .setUserId(userId)
+                         .build();
 
 // Submit requests
-RequestParameters rp = new RequestParameters(HitType.PAGEVIEW);
-rp.setDocumentPath("/path/within/application/");
-rp.setDocumentTitle("Test Page");
-tracker.makeCustomRequest(rp);
+String documentHostName = "www.abc.com";
+String documentPath = "/path/within/application/";
+ga.pageview(documentHostName, documentPath).send();
+
+// Shutdown
+ga.getExecutorService().shutdown();
 ```
 
 This would create a protocol parameter string of:
 
-        v=1&sc=start&tid=AAA-123-456&cid=Anything&an=Test&je=1&t=pageview&dp=%2Fpath%2Fwithin%2Fapplication%2F&dt=Test+Page&qt=0
+        v=1&sc=start&tid=UA-12345-6&cid=Anything&je=1&t=pageview&dh=www.abc.com&dp=%2Fpath%2Fwithin%2Fapplication%2F&qt=0
 
 See the [Measurement Protocol Parameter Reference Guide](https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters) for more details.
 
