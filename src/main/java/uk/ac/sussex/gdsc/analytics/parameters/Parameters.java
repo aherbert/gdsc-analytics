@@ -62,11 +62,11 @@ public class Parameters implements FormattedParameter {
       // It may not be (e.g. for batch hits (one on each line)) so get the size
       // and only add the '&' character when something has been added.
       final int size = sb.length();
-      for (int i = 0; i < formattedParameters.length; i++) {
+      for (final FormattedParameter param : formattedParameters) {
         if (size != sb.length()) {
           sb.append(Constants.AND);
         }
-        formattedParameters[i].formatTo(sb);
+        param.formatTo(sb);
       }
     }
     return sb;
@@ -174,7 +174,7 @@ public class Parameters implements FormattedParameter {
 
     /**
      * The initial list size.
-     * 
+     *
      * <p>This must not be zero otherwise doubling the size will fail.
      */
     private static final int INITIAL_LIST_SIZE = 8;
@@ -188,14 +188,14 @@ public class Parameters implements FormattedParameter {
 
     /**
      * The list.
-     * 
+     *
      * <p>This is implemented as a direct array for efficiency over using an ArrayList<> which has
      * fast-fail concurrent modification checks on all add operations.
      */
     private FormattedParameter[] list = new FormattedParameter[INITIAL_LIST_SIZE];
 
     /** The size of the list. */
-    private int size = 0;
+    private int size;
 
     /**
      * Create a new builder.

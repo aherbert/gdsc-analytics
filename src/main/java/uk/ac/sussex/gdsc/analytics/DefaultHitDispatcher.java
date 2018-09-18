@@ -68,7 +68,11 @@ public class DefaultHitDispatcher implements HitDispatcher {
   /** The connection provider. */
   private HttpConnectionProvider connectionProvider;
 
-  /** The disabled flag. */
+  /**
+   * The disabled flag.
+   *
+   * <p>This is volatile to allow multi-threaded application to all view the same state.
+   */
   private volatile boolean disabled;
 
   /**
@@ -145,7 +149,7 @@ public class DefaultHitDispatcher implements HitDispatcher {
 
   /**
    * Gets a dispatcher configured to use the default connection to Google Analytics.
-   * 
+   *
    * <p>Any errors that occur when dispatching requests will be shared among all instances created
    * using this method. This ensures that if an error occurs connecting to the default URL then the
    * system will be disabled.
@@ -161,7 +165,7 @@ public class DefaultHitDispatcher implements HitDispatcher {
 
   /**
    * Gets a dispatcher configured to use the default connection to Google Analytics.
-   * 
+   *
    * <p>Any errors that occur when dispatching requests will be shared among all instances created
    * using this method. This ensures that if an error occurs connecting to the default URL then the
    * system will be disabled.
@@ -195,6 +199,8 @@ public class DefaultHitDispatcher implements HitDispatcher {
     Objects.requireNonNull(hit, "Hit was null");
     HttpURLConnection connection = null;
     try {
+      // TODO - reduce the complexity of this method
+
       connection = connectionProvider.openConnection(url, proxy);
       connection.setRequestMethod("POST");
       connection.setDoOutput(true);
@@ -243,13 +249,13 @@ public class DefaultHitDispatcher implements HitDispatcher {
 
       if (responseCode == HttpURLConnection.HTTP_OK) {
         if (logger.isLoggable(Level.FINE)) {
-          logger.log(Level.FINE, () -> String.format("Tracking success for hit '%s'", request));
+          logger.log(Level.FINE, () -> String.format("Sent hit '%s'", request));
         }
         // This is a success. All other returns are false.
         return DispatchStatus.COMPLETE;
       }
       logger.log(Level.WARNING, () -> String
-          .format("Error sending hit '%s', received response code %d", request, responseCode));
+          .format("Failed to send hit '%s', received response code %d", request, responseCode));
     } catch (final UnknownHostException ex) {
       setLastIoException(ex);
       // Occurs when disconnected from the Internet so this is not severe
@@ -257,7 +263,7 @@ public class DefaultHitDispatcher implements HitDispatcher {
     } catch (final IOException ex) {
       setLastIoException(ex);
       // Log all others at a severe level
-      logger.log(Level.SEVERE, () -> String.format("Error making tracking request: %s : %s",
+      logger.log(Level.SEVERE, () -> String.format("Send error: %s : %s",
           ex.getClass().getSimpleName(), ex.getMessage()));
     } finally {
       if (connection != null) {

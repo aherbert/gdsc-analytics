@@ -35,6 +35,7 @@ import java.net.Proxy;
 import java.net.Proxy.Type;
 import java.net.SocketAddress;
 import java.net.URL;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -161,7 +162,7 @@ public final class UrlUtils {
       }
       return new URL(urlProtocol, hostname, urlFile);
     } catch (final MalformedURLException ex) {
-      logger.severe("Failed to create Google Analytics URL: " + ex.getMessage());
+      logger.log(Level.SEVERE, () -> "Failed to create Google Analytics URL: " + ex.getMessage());
       throw new MalformedUrlRuntimeException(ex);
     }
   }

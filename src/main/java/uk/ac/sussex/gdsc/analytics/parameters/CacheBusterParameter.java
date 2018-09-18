@@ -43,7 +43,7 @@ import java.util.function.UnaryOperator;
 public class CacheBusterParameter extends NoIndexParameter {
 
   /** The default instance. */
-  private static final CacheBusterParameter defaultInstance = new CacheBusterParameter();
+  private static final CacheBusterParameter DEFAULT_INSTANCE = new CacheBusterParameter();
 
   /** The random appender. */
   private final UnaryOperator<StringBuilder> randomAppender;
@@ -87,7 +87,7 @@ public class CacheBusterParameter extends NoIndexParameter {
    * @return the default instance
    */
   public static CacheBusterParameter getDefaultInstance() {
-    return defaultInstance;
+    return DEFAULT_INSTANCE;
   }
 
   @Override

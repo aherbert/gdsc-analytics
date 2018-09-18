@@ -108,6 +108,9 @@ public class GoogleAnalyticsClient {
    */
   public static final class Builder {
 
+    /** Used to reset the hit dispatcher when URL settings change. */
+    private static final HitDispatcher NO_HIT_DISPATCHER = null;
+
     /** The tracking id. */
     private String trackingId;
 
@@ -347,7 +350,7 @@ public class GoogleAnalyticsClient {
         final ThreadFactory tf = new BackgroundThreadFactory(getThreadPriority());
         final int localThreadCount = getThreadCount();
         if (localThreadCount > 0) {
-          es = Executors.newFixedThreadPool(localThreadCount);
+          es = Executors.newFixedThreadPool(localThreadCount, tf);
         } else {
           es = Executors.newCachedThreadPool(tf);
         }
@@ -532,7 +535,7 @@ public class GoogleAnalyticsClient {
      */
     public Builder setSecure(boolean secure) {
       if (secure != this.secure) {
-        hitDispatcher = null;
+        hitDispatcher = NO_HIT_DISPATCHER;
       }
       this.secure = secure;
       return this;
@@ -565,7 +568,7 @@ public class GoogleAnalyticsClient {
      */
     public Builder setDebug(boolean debug) {
       if (debug != this.debug) {
-        hitDispatcher = null;
+        hitDispatcher = NO_HIT_DISPATCHER;
       }
       this.debug = debug;
       return this;

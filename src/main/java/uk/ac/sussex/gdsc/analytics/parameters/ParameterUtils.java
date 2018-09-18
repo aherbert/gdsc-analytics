@@ -40,23 +40,23 @@ public final class ParameterUtils {
 
   //@formatter:off
   /**
-   * The pattern for the tracking Id.
-   * 
+   * The regular expression for the tracking Id.
+   *
    * <p>The documentation states that the tracking Id should be in the format UA-XXXX-Y.
-   * 
-   * <ul> 
+   *
+   * <ul>
    * <li>UA is assumed to be a prefix of 2 characters.
    * <li>XXXX is assumed to be a series of digits, at least 5 characters long.
    * <li>Y is assumed to be a sequence number starting from 1.
    * </ul>
-   * 
+   *
    * @see <a href= "http://goo.gl/a8d4RP#tid">Tracking ID / Web Property ID</a>
    */
   //@formatter:off
-  public static final String TRACKING_ID_PATTERN = "^[A-Z]{2}-[0-9]{5,}-[1-9][0-9]*$";
+  public static final String TRACKING_ID_REGEX = "^[A-Z]{2}-[0-9]{5,}-[1-9][0-9]*$";
 
   /** The compiled pattern for the tracking Id. */
-  private static final Pattern trackingIdPattern = Pattern.compile(TRACKING_ID_PATTERN);
+  private static final Pattern TRACKING_ID_PATTERN = Pattern.compile(TRACKING_ID_REGEX);
 
   /**
    * Use to indicate no position in a character array. Set to -1.
@@ -141,7 +141,7 @@ public final class ParameterUtils {
    * @see <a href="http://goo.gl/a8d4RP#tid">Tracking Id</a>
    */
   public static String validateTrackingId(String trackingId) {
-    if (!trackingIdPattern.matcher(trackingId).matches()) {
+    if (!TRACKING_ID_PATTERN.matcher(trackingId).matches()) {
       throw new IllegalArgumentException("Invalid tracking id: " + trackingId);
     }
     return trackingId;

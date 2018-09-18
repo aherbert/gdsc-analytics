@@ -45,9 +45,11 @@ public class IncorrectValueTypeException extends RuntimeException {
   /** The required index count. */
   private final ValueType observed;
 
-
   /** The detail message. */
   private final String detailMessage;
+
+  /** The message. */
+  private String message;
 
   /**
    * Instantiates a new incorrect index value type exception.
@@ -82,10 +84,18 @@ public class IncorrectValueTypeException extends RuntimeException {
 
   @Override
   public String getMessage() {
-    String msg =
-        String.format("Incorrect value type: expected <%s>, observed <%s>", expected, observed);
-    if (ParameterUtils.isNotEmpty(detailMessage)) {
-      msg += ": " + detailMessage;
+    String msg = message;
+    if (msg == null) {
+      //@formatter:off
+      final StringBuilder sb = new StringBuilder(
+          "Incorrect value type: expected <").append(expected).append('>')
+          .append("observed <").append(observed).append('>');
+      //@formatter:on
+      if (ParameterUtils.isNotEmpty(detailMessage)) {
+        sb.append(": ").append(detailMessage);
+      }
+      msg = sb.toString();
+      message = msg;
     }
     return msg;
   }
