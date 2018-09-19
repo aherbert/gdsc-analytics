@@ -137,6 +137,14 @@ String hit = Parameters.newRequiredBuilder(trackingId)
                        .format();
 ```
 
+Creates the following hit with the required version (v) and client Id (cid)
+parameters set:
+
+    v=1&tid=UA-12345-6&cid=0000-0000-0000-0000-0000&je=1&t=exception&exd=Something+went+wrong
+
+The client Id will be a random GUID. The Java enabled (je) parameter is also set
+(because it's Java).
+
 ### Note ###
 
 Support was added for parameters that will be of use from within a Java
@@ -185,6 +193,10 @@ String hit = Parameters.newRequiredBuilder(trackingId)
                        .format();
 ```
 
+Creates hit:
+
+    v=1&tid=UA-12345-6&cid=0000-0000-0000-0000-0000&je=1&t=item&ti=Trans.1&in=Item.2&pr23id=SKU.4567
+
 ### Custom Parameters ###
 
 The supported parameters are based on a snapshot of the
@@ -221,6 +233,8 @@ String hit = Parameters.newBuilder()
 Will create a hit:
 
     anything=some+text&myp44=123
+
+Note this is only a partial hit as the required parameters (v, tid, cid/uid) are missing.
 
 Maven Installation
 ------------------
@@ -266,7 +280,7 @@ similarity to version 1 other than the name.
 The code is used within the GDSC ImageJ plugins to collect minimal usage
 information whenever a plugin is run. This is done by identifying each
 ImageJ plugin using the [Document Path](http://goo.gl/a8d4RP#dp) hit parameter
-and using a `pageview` hit. The data is used to determine what parts of the
+and a `pageview` hit. The data is used to determine what parts of the
 code are important to the community.
 
 To comply with the
