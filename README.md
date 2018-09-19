@@ -1,13 +1,15 @@
-GDSC ImageJ Analytics
-=====================
+GDSC Analytics
+==============
 
 The GDSC Analytics package contains code to use the
 [Google Analytics Measurement Protocol](https://developers.google.com/analytics/devguides/collection/protocol/v1/)
-to collect usage information about a Java application.
+to collect usage information from a Java application.
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://travis-ci.com/aherbert/gdsc-analytics.svg?branch=master)](https://travis-ci.com/aherbert/gdsc-analytics)
 [![Coverage Status](https://coveralls.io/repos/github/aherbert/gdsc-analytics/badge.svg?branch=master)](https://coveralls.io/github/aherbert/gdsc-analytics?branch=master)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/aherbert/gdsc-analytics.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/aherbert/gdsc-analytics/alerts/)
+[![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/aherbert/gdsc-analytics.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/aherbert/gdsc-analytics/context:java)
 
 Features
 --------

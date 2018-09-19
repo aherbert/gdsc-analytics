@@ -17,7 +17,7 @@
   <description>Genome Damage and Stability Centre Analytics Package
 
 The GDSC Analytics package contains code to use the Google Analytics
-Measurement protocol to collect usage information about a Java application.
+Measurement protocol to collect usage information from a Java application.
 </description>
 
   <licenses>
@@ -28,7 +28,7 @@ Measurement protocol to collect usage information about a Java application.
     </license>
   </licenses>
 
-  <inceptionYear>2010</inceptionYear>
+  <inceptionYear>2016</inceptionYear>
   <issueManagement>
     <system>GitHub</system>
     <url>https://github.com/aherbert/gdsc-analytics/issues</url>
@@ -526,7 +526,7 @@ Measurement protocol to collect usage information about a Java application.
                 <goals>
                   <goal>check</goal>
                 </goals>
-                <!-- Currently the same as the jacoco profile but halts on 
+                <!-- Currently the same as the jacoco profile but halts on
                   failure -->
                 <configuration>
                   <rules>
