@@ -9,17 +9,19 @@ to collect usage information about a Java application.
 [![Coverage Status](https://coveralls.io/repos/github/aherbert/gdsc-analytics/badge.svg?branch=master)](https://coveralls.io/github/aherbert/gdsc-analytics?branch=master)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Functionality includes:
+Features
+--------
 
-- PageView and Event hit-types
-- Custom dimensions and metrics
-- Synchronous or asynchronous measurement requests
-- Configurable session timeout
-- Collection of basic client parameters (screen size, user language, user agent)
+- Builders to construct hit parameter strings
+- Java type-safe handling of each Protocol parameter `Value Type`
+- Configurable asynchronous requests using `java.util.concurrent.ExecutorService`
+- Minimal logging using `java.util.logging`
+- Configurable session handling
 - Graceful disabling when no Internet connection
-- Configurable logging
+- No external dependencies
 
-Example:
+Example
+-------
 
 ```java
 // Create the tracker
@@ -27,7 +29,7 @@ String trackingId = "UA-12345-6"; // Your Google Analytics tracking ID
 String userId = "Anything";
 
 GoogleAnalyticsClient ga =
-    GoogleAnalyticsClient.createBuilder(trackingId)
+    GoogleAnalyticsClient.newBuilder(trackingId)
                          .setUserId(userId)
                          .build();
 
@@ -35,17 +37,188 @@ GoogleAnalyticsClient ga =
 String documentHostName = "www.abc.com";
 String documentPath = "/path/within/application/";
 ga.pageview(documentHostName, documentPath).send();
-
-// Shutdown
-ga.getExecutorService().shutdown();
 ```
 
 This would create a protocol parameter string of:
 
-        v=1&sc=start&tid=UA-12345-6&cid=Anything&je=1&t=pageview&dh=www.abc.com&dp=%2Fpath%2Fwithin%2Fapplication%2F&qt=0
+    v=1&sc=start&tid=UA-12345-6&cid=Anything&je=1&t=pageview&dh=www.abc.com&dp=%2Fpath%2Fwithin%2Fapplication%2F&qt=0
 
-See the [Measurement Protocol Parameter Reference Guide](https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters) for more details.
+See the [Measurement Protocol Parameter Reference Guide](https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters)
+for more details.
 
+Asynchronous Measurements
+-------------------------
+
+The main functionality of the code is composed of creating a hit of `name=value`
+pairs and then sending the hit to Google Analytics.
+
+The only part that operates inline is storage of the parameter names and values.
+Storage is done using Java primitives in a type-safe manner. This effectively
+queues the hit for processing.
+
+An `ExecutorService` is used to perform the construction of the hit and the
+sending to Google Analytics in the background. Therefore the code has minimal
+run-time impact. The Queue Time parameter is used to ensure that hit times
+are collated correctly even if the hit is sent some time after the hit
+was queued.
+
+The default `ExecutorService` uses a single low priority thread. The service is
+configurable and can be shared.
+
+Parameter Caching
+-----------------
+
+Parameters that are the same with each hit can be cached at the hit or session
+level. For example if the host never changes:
+
+```java
+// Create the tracker
+String trackingId = "UA-12345-6"; // Your Google Analytics tracking ID
+String userId = "Anything";
+String documentHostName = "www.abc.com";
+
+GoogleAnalyticsClient ga =
+    GoogleAnalyticsClient.newBuilder(trackingId)
+                         .setUserId(userId)
+                         .getOrCreatePerHitParameters()
+                             .addDocumentHostName(documentHostName)
+                             .getParent()
+                         .build();
+
+// Submit requests
+String documentPath = "/path/within/application/";
+ga.hit(HitType.PAGEVIEW).addDocumentPath(documentPath).send();
+```
+
+Builder API
+-----------
+
+A Measurement Protocol hit is simply a set of `name=value` pairs separated by
+the `&` character:
+
+    v=1&t=event&tid=UA-12345-6&cid=Test&cd1=StartUp
+
+The Builder API allows adding named Measurement Protocol parameters to a
+collection. The parameters collection can be used to construct a protocol hit
+composed of `name=value` pairs.
+
+The following sections of the [Measurement Protocol Parameter Reference](https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters)
+are supported:
+
+Section|Support|
+--- | ---
+General|Full
+User|Full
+Session|Full
+Traffic Sources|-
+System Info|Full
+Hit|Full
+Content Information|Full
+App Tracking|Full
+Evenet Tracking|Full
+E-Commerce|-
+Enhanced E-Commerce|-
+Social Interactions|Full
+Timing|Full
+Exceptions|Full
+Custom Dimensions/Metrics|Full
+Content Experiments|Full
+
+Example:
+
+```java
+String trackingId = "UA-12345-6"; // Your Google Analytics tracking ID
+String hit = Parameters.newRequiredBuilder(trackingId)
+                       .addHitType(HitType.EXCEPTION)
+                       .addExceptionDescription("Something went wrong")
+                       .build()
+                       .format();
+```
+
+### Note ###
+
+Support was added for parameters that will be of use from within a Java
+application. Hence no support for the campaign functionality in the Traffic
+Sources section or any E-Commerce functionality.
+
+Core API
+--------
+
+The builder API is a user-friendly wrapper to an underlying API that provides
+type-safe support of the entire Measurement Protocol parameter reference. Thus
+any parameter can be added to a hit by adding a `FormattedParameter` to a
+builder using the appropriate `ProtocolSpecification`.
+
+The `ProtocolSpecification` enum contains all of the Measurement Protocol
+parameters and specifies the:
+
+- Formal Name
+- Name (for the `name=value` pair)
+- Value Type (for the `name=value` pair)
+- Number of indices in the name
+- Supported hit types
+
+Examples:
+
+- Queue Time : qt : integer : 0 : all
+- Custom Dimension : cd_ : text : 1 : all
+- Exception : exd : text : 0 : exception
+- Is Exception Fatal? : exf : boolean : 0 : exception
+
+It is expected that any `_` character in a parameter name is replaced with an
+index. The number of indexes within the protocol parameters is in the range
+`0-3` and type-safe parameter classes are provided for the entire specification
+to allow dynamic index replacement into a hit.
+
+Example:
+
+```java
+String trackingId = "UA-12345-6"; // Your Google Analytics tracking ID
+String hit = Parameters.newRequiredBuilder(trackingId)
+                       .addHitType(HitType.ITEM)
+                       .add(new NoIndexTextParameter(ProtocolSpecification.TRANSACTION_ID, "Trans.1"))
+                       .add(new NoIndexTextParameter(ProtocolSpecification.ITEM_NAME, "Item.2"))
+                       .add(new OneIndexTextParameter(ProtocolSpecification.PRODUCT_SKU, 23, "SKU.4567"))
+                       .build()
+                       .format();
+```
+
+### Custom Parameters ###
+
+The supported parameters are based on a snapshot of the
+[Measurement Protocol Parameter Reference](https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters).
+
+If the parameter reference changes then the API will be out-of-date. If this
+occurs then please provide feedback so the library can be updated.
+
+However it is possible to add any parameter to a set of parameters using either
+a generic `name=value` pair or a custom parameter specification:
+
+```java
+// Generic name=value pair
+String name = "anything";
+String value = "some text";
+
+// Custom indexed parameter
+String formalName = "My parameter";
+String nameFormat = "myp_"; // Underscore for the index
+ValueType valueType = ValueType.INTEGER;
+int maxLength = 0;
+ParameterSpecification specification = new CustomParameterSpecification(
+    formalName, nameFormat, valueType, maxLength);
+int index = 44;
+int value2 = 123;
+
+String hit = Parameters.newBuilder()
+    .add(name, value)
+    .add(new OneIndexIntParameter(specification, index, value2))
+    .build()
+    .format();
+```
+
+Will create a hit:
+
+    anything=some+text&myp44=123
 
 Maven Installation
 ------------------
@@ -70,19 +243,31 @@ on it.
 Background
 ----------
 
-This project is based on ideas from
+#### Origin ####
+
+This project originated using ideas from
 [JGoogleAnalyticsTracker](https://code.google.com/archive/p/jgoogleanalyticstracker/)
 by Daniel Murphy. A similar package is
-[JGoogleAnalytics](https://github.com/siddii/jgoogleanalytics) by Siddique Hameed.
-These projects dummied the GET request sent to Google Analytics by a web browser,
-i.e. used the legacy Google Analytics protocol.
+[JGoogleAnalytics](https://github.com/siddii/jgoogleanalytics) by Siddique
+Hameed. These projects dummied the GET request sent to Google Analytics by a web
+browser, i.e. used the legacy Google Analytics protocol.
 
 This code uses the new Analytics Measurement Protocol which is designed to
 allow any web connected device to measure user interaction via a HTTP POST
-request.
+request. Version 1 of the code was based on JGoogleAnalyticsTracker to send the
+formatted hits to Google analytics. Version 2 has been completely rewritten
+to use Java 1.8 features and add a comprehensive test suite. It shares no
+similarity to version 1 other than the name.
 
-The code is used within the GDSC ImageJ plugins to collect usage information
-whenever a plugin is run. To comply with the
+#### GDSC ImageJ plugins ####
+
+The code is used within the GDSC ImageJ plugins to collect minimal usage
+information whenever a plugin is run. This is done by identifying each
+ImageJ plugin using the [Document Path](http://goo.gl/a8d4RP#dp) hit parameter
+and using a `pageview` hit. The data is used to determine what parts of the free
+code are important to the community.
+
+To comply with the
 [General Data Protection Regulation (GDPR)](https://ico.org.uk/for-organisations/guide-to-the-general-data-protection-regulation-gdpr/):
 - All data collected is anonymous and cannot be linked to an individual
 - The GDSC ImageJ plugins allow tracking to be disabled
