@@ -43,7 +43,7 @@ ga.pageview(documentHostName, documentPath).send();
 
 This would create a protocol parameter string of:
 
-    v=1&sc=start&tid=UA-12345-6&cid=Anything&je=1&t=pageview&dh=www.abc.com&dp=%2Fpath%2Fwithin%2Fapplication%2F&qt=0
+    v=1&je=1&tid=UA-12345-6&uid=Anything&dh=www.abc.com&t=pageview&sc=start&&dp=%2Fpath%2Fwithin%2Fapplication%2F
 
 See the [Measurement Protocol Parameter Reference Guide](https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters)
 for more details.
@@ -140,10 +140,10 @@ String hit = Parameters.newRequiredBuilder(trackingId)
 Creates the following hit with the required version (v) and client Id (cid)
 parameters set:
 
-    v=1&tid=UA-12345-6&cid=0000-0000-0000-0000-0000&je=1&t=exception&exd=Something+went+wrong
+    v=1&je=1&tid=UA-12345-6&t=exception&exd=Something+went+wrong&cid=da51f86a-346d-4aa1-933a-4883887a34cb
 
-The client Id will be a random GUID. The Java enabled (je) parameter is also set
-(because it's Java).
+The client Id will automatically added using a random GUID. The Java enabled
+(je) parameter is also set (because it's Java).
 
 ### Note ###
 
@@ -195,7 +195,7 @@ String hit = Parameters.newRequiredBuilder(trackingId)
 
 Creates hit:
 
-    v=1&tid=UA-12345-6&cid=0000-0000-0000-0000-0000&je=1&t=item&ti=Trans.1&in=Item.2&pr23id=SKU.4567
+    v=1&je=1&tid=UA-12345-6&t=item&ti=Trans.1&in=Item.2&pr23id=SKU.4567&cid=1e96ab9f-bb03-4a9d-b4b3-dc31b7d01b51
 
 ### Custom Parameters ###
 
