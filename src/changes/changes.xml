@@ -55,7 +55,7 @@ The <action> type attribute can be add,update,fix,remove.
 This is a major release of GDSC Analytics.
 
 The code has been reengineered to allow automated testing.
-The API has had only minor changes to some method names.
+The API has been completely changed.
 
 The code now requires Java 8.
 ">
