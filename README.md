@@ -107,8 +107,8 @@ composed of `name=value` pairs.
 The following sections of the [Measurement Protocol Parameter Reference](https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters)
 are supported:
 
-Section|Support|
---- | ---
+Section|Support
+--- | :---:
 General|Full
 User|Full
 Session|Full
