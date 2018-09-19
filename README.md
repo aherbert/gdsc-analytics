@@ -137,13 +137,13 @@ String hit = Parameters.newRequiredBuilder(trackingId)
                        .format();
 ```
 
-Creates the following hit with the required version (v) and client Id (cid)
+Creates the following hit with the required version (`v`) and client Id (`cid`)
 parameters set:
 
     v=1&je=1&tid=UA-12345-6&t=exception&exd=Something+went+wrong&cid=da51f86a-346d-4aa1-933a-4883887a34cb
 
-The client Id will automatically added using a random GUID. The Java enabled
-(je) parameter is also set (because it's Java).
+The client Id will be automatically added using a random GUID. The Java enabled
+(`je`) parameter is also set (because it's Java).
 
 ### Note ###
 
@@ -170,10 +170,10 @@ parameters and specifies the:
 
 Examples:
 
-- Queue Time : qt : integer : 0 : all
-- Custom Dimension : cd_ : text : 1 : all
-- Exception : exd : text : 0 : exception
-- Is Exception Fatal? : exf : boolean : 0 : exception
+- Queue Time : `qt` : integer : 0 : all
+- Custom Dimension : `cd_` : text : 1 : all
+- Exception : `exd` : text : 0 : exception
+- Is Exception Fatal? : `exf` : boolean : 0 : exception
 
 It is expected that any `_` character in a parameter name is replaced with an
 index. The number of indexes within the protocol parameters is in the range
@@ -234,7 +234,7 @@ Will create a hit:
 
     anything=some+text&myp44=123
 
-Note this is only a partial hit as the required parameters (v, tid, cid/uid) are missing.
+Note this is only a partial hit as the required parameters (`v`, `tid`, `cid`/`uid`, `t`) are missing.
 
 Maven Installation
 ------------------
