@@ -29,10 +29,9 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
+import org.apache.commons.validator.routines.InetAddressValidator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import com.google.common.net.InetAddresses;
 
 @SuppressWarnings("javadoc")
 public class IpAddressUtilsTest {
@@ -86,6 +85,13 @@ public class IpAddressUtilsTest {
         // OK
         "0:0:0:0:0:0:0:0",
         "FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF",
+        // Leading zeros allowed
+        "01:0:0:0:0:0:0:0",
+        "0:01:0:0:0:0:0:0",
+        "0:0:0:0:0:0:0:01",
+        "00001:0:0:0:0:0:0:0",
+        "0:00001:0:0:0:0:0:0",
+        "0:0:0:0:0:0:0:00001",
         // Skip start
         "::FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF",
         "::FFFF:FFFF:FFFF:FFFF:FFFF:FFFF",
@@ -130,19 +136,23 @@ public class IpAddressUtilsTest {
         "0:0:0:0:0:0:0:G",
         "0:0:0:0:0:0:G:0",
         "G:0:0:0:0:0:0:0",
-        // Hex number too high
-        "0:0:0:0:0:0:0:70000",
-        "70000:0:0:0:0:0:0:0",
-        "0:0:0:0:70000:0:0:0",
+        // Hex number too high (10000 = FFFF + 1 in hex digits)
+        "0:0:0:0:0:0:0:10000",
+        "10000:0:0:0:0:0:0:0",
+        "0:0:0:0:10000:0:0:0",
         // Hex number too high before/after skip
-        "70000:0:0::0:0",
-        "0:0::0:70000",
+        "10000:0:0::0:0",
+        "0:0::0:10000",
         // Bad IPv4 address
         "::192.168.0.256",
     }) {
       //@formatter:on
-      // Use Guava to get the answer
-      boolean expected = InetAddresses.isInetAddress(ipAddress);
+      // Use Commons Validator to get the answer.
+      // This could use Guava (which is what the code is based on)
+      // e.g. InetAddresses.isInetAddress(ipAddress)
+      // but that allows "::0FFFF".
+      // This is a known bug: https://github.com/google/guava/issues/1604
+      boolean expected = InetAddressValidator.getInstance().isValid(ipAddress);
       Assertions.assertEquals(expected, IpAddressUtils.isIpAddress(ipAddress), ipAddress);
     }
   }

@@ -52,7 +52,7 @@
     <exclude name="TooManyMethods" />
     <exclude name="LawOfDemeter" />
     <exclude name="LoosePackageCoupling" />
-    <!-- Allow builders to be big --> 
+    <!-- Allow builders to be big -->
     <exclude name="ExcessiveClassLength" />
     <exclude name="ExcessivePublicCount" />
     <exclude name="GodClass" />

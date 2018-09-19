@@ -30,7 +30,6 @@
 package uk.ac.sussex.gdsc.analytics.parameters;
 
 import java.util.Arrays;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -46,7 +45,11 @@ public final class IpAddressUtils {
   private static final String IPV4_SINGLE_GROUP_REGEX =
       "(0|1\\d?\\d?|2[0-4]?\\d?|25[0-5]?|[3-9]\\d?)";
 
-  /** The regular expression for IPv4 address. */
+  /**
+   * The regular expression for an IPv4 address.
+   *
+   * <p>4 repeats of the 0-255 pattern separated by the '.' character.
+   */
   //@formatter:off
   public static final String IPV4_REGEX = "^"
       + IPV4_SINGLE_GROUP_REGEX + "\\."
@@ -55,11 +58,15 @@ public final class IpAddressUtils {
       + IPV4_SINGLE_GROUP_REGEX + "$";
   //@formatter:on
 
-  /** The compiled pattern for IPv4 address. */
+  /** The compiled pattern for an IPv4 address. */
   private static final Pattern IPV4_PATTERN = Pattern.compile(IPV4_REGEX);
 
-  /** Maximum value of an unsigned short. */
-  private static final int MAX_UNSIGNED_SHORT = 0xffff;
+  /**
+   * Maximum length of an unsigned short expressed using Hex (i.e. 0xFFFF = 4 characters).
+   *
+   * <p>This is the maximum allowed length of any part of an IPv6 address.
+   */
+  private static final int MAX_LENGTH_OF_UNSIGNED_SHORT = 4;
 
   /**
    * The '<strong>{@code .}</strong>' (dot) character.
@@ -73,8 +80,13 @@ public final class IpAddressUtils {
   /** Base 16 constant. */
   private static final int BASE_16 = 16;
 
-  /** Number of groups (separated by .) in an IPV4 address. */
-  private static final int IPV4_GROUPS = 4;
+  /**
+   * A fake entry for a valid IPv4 address as the last two parts of an IPv6 address.
+   *
+   * <p>This is used when validating IPv6 addresses that end in an IPv4 address, e.g. ::192.168.0.1
+   * would be changed to ::0:0 for validation as an IPv6 address.
+   */
+  private static final String VALID_IPV4_ADDRESS_AS_HEXTETS = "0:0";
 
   /** Min number of hex groups (separated by :) in an IPV6 address. */
   private static final int IPV6_MIN_PART_COUNT = 3;
@@ -117,15 +129,19 @@ public final class IpAddressUtils {
    * <li>::ffff:192.168.0.1 (IPv6 "IPv4 mapped" address)
    * </ul>
    *
-   * @param ipAddress the ip address
+   * @param ipAddress the IP address
    * @return true, if valid
    */
   //@formatter:on
   public static boolean isIpAddress(String ipAddress) {
-    // Based upon:
+    // Based upon Guava:
     // com.google.common.net.InetAddresses#ipStringToBytes
-    // Altered to use a regex for IPv4 address.
+    // Altered to use a regular expression for IPv4 address.
     // Altered to refactor the check for IPv6 address into methods.
+    // Also changed to not allow parts longer than 4 hex characters
+    // in an IPv6 address. For example Guava allows "::01000"
+    // but it should be "::1000".
+    // This is a known bug: https://github.com/google/guava/issues/1604
 
     // The string must contain only . : or hex digits
     boolean hasColon = false;
@@ -153,9 +169,23 @@ public final class IpAddressUtils {
     return false;
   }
 
+  /**
+   * Checks if the IP address is a valid IPv4 address:
+   *
+   * <pre>
+   * 0-255 . 0-255 . 0-255 . 0-255
+   * </pre>
+   *
+   * @param ipAddress the IP address
+   * @return true if valid
+   */
+  public static boolean isIpV4(String ipAddress) {
+    return IPV4_PATTERN.matcher(ipAddress).matches();
+  }
+
   //@formatter:off
   /**
-   * Checks if the IP address is a valid IPv6 address, e.g.:
+   * Checks if the IP address is a valid IPv6 address including those ending with a IPv4 address, e.g.:
    *
    * <ul>
    * <li>FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF (IPv6)
@@ -165,7 +195,7 @@ public final class IpAddressUtils {
    * <li>::ffff:192.168.0.1 (IPv6 "IPv4 mapped" address)
    * </ul>
    *
-   * @param ipAddress the ip address
+   * @param ipAddress the IP address
    * @param withIpV4 True if the last entry is potentially an IPv4 address
    * @return true, if valid
    */
@@ -177,40 +207,20 @@ public final class IpAddressUtils {
       // :::::x.x.x.x
       final int lastColon = ipAddress.lastIndexOf(COLON);
       // Check for a valid IPv4 address
-      final Matcher matcher = IPV4_PATTERN.matcher(ipAddress.substring(lastColon + 1));
-      if (!matcher.matches()) {
+      if (!isIpV4(ipAddress.substring(lastColon + 1))) {
         return false;
       }
-      // Convert the IPv4 to a pair of hex entries, e.g. FFFF:FFFF
-      // then add to the initial IPv6 section
-      return isIpV6(ipAddress.substring(0, lastColon + 1) + convertIpV4ToHex(matcher));
+      // Since the IP v4 address is valid just add a valid
+      // hex entry to the initial IPv6 section and test
+      // (i.e. the value of the IP v4 address it irrelevant).
+      return isIpV6(ipAddress.substring(0, lastColon + 1) + VALID_IPV4_ADDRESS_AS_HEXTETS);
     }
     return isIpV6(ipAddress);
   }
 
-  /**
-   * Convert an IPv4 address to hex using the groups from the matcher.
-   *
-   * <p>E.g. 255.255.255.255 = FFFF:FFFF
-   *
-   * @param matcher the pattern matcher for the IPv4 address
-   * @return the hex representation
-   */
-  private static String convertIpV4ToHex(Matcher matcher) {
-    final byte[] bytes = new byte[IPV4_GROUPS];
-    for (int i = 0; i < IPV4_GROUPS; i++) {
-      // Each value is in the range [0-255].
-      // No NumberFormatException is expected.
-      bytes[i] = (byte) (Integer.parseInt(matcher.group(i + 1)) & 0xff);
-    }
-    final String first = Integer.toHexString(((bytes[0] & 0xff) << 8) | (bytes[1] & 0xff));
-    final String second = Integer.toHexString(((bytes[2] & 0xff) << 8) | (bytes[3] & 0xff));
-    return first + ":" + second;
-  }
-
   //@formatter:off
   /**
-   * Checks if the IP address is a valid IPv6 address, e.g.:
+   * Checks if the IP address is a valid IPv6 address not including those ending with a IPv4 address, e.g.:
    *
    * <ul>
    * <li>FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF
@@ -224,7 +234,7 @@ public final class IpAddressUtils {
    * {@code com.google.common.net.InetAddresses#textToNumericFormatV6(string)}
    * to remove dependencies and return a simple true or false.
    *
-   * @param ipAddress the ip address
+   * @param ipAddress the IP address
    * @return true, if valid
    */
   //@formatter:on
@@ -235,8 +245,11 @@ public final class IpAddressUtils {
     // This involved moving nested statements to functions.
 
     // An address can have [2..8] colons, and N colons make N+1 parts.
-    // Note 8 colons only occurs when :: is at the start or end to 
+    // Note 8 colons only occurs when "::" is at the start or end to
     // denote a skip sequence.
+    // Less than 7 colons occurs when there is a skip sequence "::".
+    // Otherwise there should be 7 colons.
+    // There should only be 1 skip sequence.
     final String[] parts = splitIpV6(ipAddress);
     if (parts.length < IPV6_MIN_PART_COUNT || parts.length > IPV6_PART_COUNT + 1) {
       return false;
@@ -275,49 +288,12 @@ public final class IpAddressUtils {
   }
 
   /**
-   * Gets the number of parts before the ::.
-   *
-   * @param parts the parts
-   * @param skipIndex the skip index
-   * @return the parts before
-   */
-  private static int getPartsBefore(String[] parts, int skipIndex) {
-    int partsBefore = skipIndex;
-    // Check for a : at the start
-    if (parts[0].length() == 0) {
-      // ^: requires ^::
-      // Check there is only one part before the skip
-      if (partsBefore != ONE_PART) {
-        return BAD_INDEX;
-      }
-      // No need to check before
-      partsBefore = 0;
-    }
-    return partsBefore;
-  }
-
-  private static int getPartsAfter(String[] parts, int skipIndex) {
-    int partsAfter = parts.length - skipIndex - 1;
-    // Check for a : at the end
-    if (parts[parts.length - 1].length() == 0) {
-      // :$ requires ::$
-      // Check there is only one part after the skip
-      if (partsAfter != ONE_PART) {
-        return BAD_INDEX;
-      }
-      // No need to check after 
-      partsAfter = 0;
-    }
-    return partsAfter;
-  }
-
-  /**
    * Split the IP address using the colon character.
    *
    * <p>This is preferred over {@link String#split(String, int)} as that drops ending empty
    * segments.
    *
-   * @param ipAddress the ip address
+   * @param ipAddress the IP address
    * @return the string parts
    */
   private static String[] splitIpV6(String ipAddress) {
@@ -364,7 +340,6 @@ public final class IpAddressUtils {
     return skipIndex;
   }
 
-
   /**
    * Checks all the parts are valid for a complete IPv6 address.
    *
@@ -378,6 +353,7 @@ public final class IpAddressUtils {
     }
     return isValidCountUp(parts, IPV6_PART_COUNT);
   }
+
 
   /**
    * Checks all the parts are valid for {@code 0 <= i < count}.
@@ -414,31 +390,57 @@ public final class IpAddressUtils {
   /**
    * Check if the the hextet is above the maximum value for an unsigned short (0xFFFF).
    *
-   * @param ipPart the ip part
+   * @param ipPart the IP part
    * @return True if invalid
    */
   private static boolean isInvalidHextet(String ipPart) {
     // Note: we already verified that this string contains only hex digits.
-    try {
-      final int hextet = Integer.parseInt(ipPart, BASE_16);
-      return hextet > MAX_UNSIGNED_SHORT;
-    } catch (final NumberFormatException ex) {
-      // Invalid
-      return true;
-    }
+    // If it is empty then it is invalid (it should be '0').
+    // If it is above the length of FFFF it is invalid.
+    // Otherwise it must be in the range 0 to FFFF.
+    //
+    // Note that this does not allow e.g. 0FFFF in contrast to the original
+    // Guava code which just parsed it using Integer.parseInt and checked
+    // it was <= 0xFFFF. Many online web validators and Apache Commons Validator
+    // agree that "0FFFF" should not be allowed.
+    // This is a known bug: https://github.com/google/guava/issues/1604
+    return (ipPart.length() == 0 || ipPart.length() > MAX_LENGTH_OF_UNSIGNED_SHORT);
   }
 
   /**
-   * Checks if the IP address is a valid IPv4 address:
+   * Gets the number of parts before the ::.
    *
-   * <pre>
-   * 0-255 . 0-255 . 0-255 . 0-255
-   * </pre>
-   *
-   * @param ipAddress the ip address
-   * @return true if valid
+   * @param parts the parts
+   * @param skipIndex the skip index
+   * @return the parts before
    */
-  public static boolean isIpV4(String ipAddress) {
-    return IPV4_PATTERN.matcher(ipAddress).matches();
+  private static int getPartsBefore(String[] parts, int skipIndex) {
+    int partsBefore = skipIndex;
+    // Check for a : at the start
+    if (parts[0].length() == 0) {
+      // ^: requires ^::
+      // Check there is only one part before the skip
+      if (partsBefore != ONE_PART) {
+        return BAD_INDEX;
+      }
+      // No need to check before
+      partsBefore = 0;
+    }
+    return partsBefore;
+  }
+
+  private static int getPartsAfter(String[] parts, int skipIndex) {
+    int partsAfter = parts.length - skipIndex - 1;
+    // Check for a : at the end
+    if (parts[parts.length - 1].length() == 0) {
+      // :$ requires ::$
+      // Check there is only one part after the skip
+      if (partsAfter != ONE_PART) {
+        return BAD_INDEX;
+      }
+      // No need to check after
+      partsAfter = 0;
+    }
+    return partsAfter;
   }
 }
