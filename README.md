@@ -107,24 +107,24 @@ composed of `name=value` pairs.
 The following sections of the [Measurement Protocol Parameter Reference](https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters)
 are supported:
 
-Section|Support
---- | :---:
-General|Full
-User|Full
-Session|Full
-Traffic Sources|-
-System Info|Full
-Hit|Full
-Content Information|Full
-App Tracking|Full
-Evenet Tracking|Full
-E-Commerce|-
-Enhanced E-Commerce|-
-Social Interactions|Full
-Timing|Full
-Exceptions|Full
-Custom Dimensions/Metrics|Full
-Content Experiments|Full
+| Section | Support |
+| :- | :-: |
+| General | Full |
+| User | Full |
+| Session | Full |
+| Traffic Sources | - |
+| System Info | Full |
+| Hit | Full |
+| Content Information | Full |
+| App Tracking | Full |
+| Event Tracking | Full |
+| E-Commerce | - |
+| Enhanced E-Commerce | - |
+| Social Interactions | Full |
+| Timing | Full |
+| Exceptions | Full |
+| Custom Dimensions/Metrics | Full |
+| Content Experiments | Full |
 
 Example:
 
