@@ -53,6 +53,7 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -489,11 +490,57 @@ public class GoogleAnalyticsClientTest {
         content.getResponseCode(), content.getBytesAsText()));
   }
 
+  @Test
+  public void testDemos() throws InterruptedException {
+    final HitDispatcher hitDispatcher = new HitDispatcher() {
+      @Override
+      public DispatchStatus send(CharSequence hit, long timestamp,
+          HttpUrlConnectionCallback callback) {
+        logger.log(debugLevel, hit.toString());
+        return DispatchStatus.COMPLETE;
+      }
+
+      @Override
+      public IOException getLastIoException() {
+        return null;
+      }
+
+      @Override
+      public boolean isDisabled() {
+        return false;
+      }
+
+      @Override
+      public boolean start() {
+        return true;
+      }
+
+      @Override
+      public boolean stop() {
+        return true;
+      }
+    };
+
+    final ExecutorService executorService = Executors.newFixedThreadPool(1);
+
+    demo(executorService, hitDispatcher);
+    demo2(executorService, hitDispatcher);
+
+    executorService.shutdown();
+    executorService.awaitTermination(1000, TimeUnit.MILLISECONDS);
+
+    demo3();
+    demo4();
+    demo5();
+  }
+
   /**
    * Demo of using the tracker. This code is placed in the project README.md file.
+   * 
+   * @param executorService
    */
   //@formatter:off
-  void demo() {
+  private static void demo(ExecutorService executorService, HitDispatcher hitDispatcher) {
     // Create the tracker
     final String trackingId = "UA-12345-6"; // Your Google Analytics tracking ID
     final String userId = "Anything";
@@ -501,18 +548,17 @@ public class GoogleAnalyticsClientTest {
     final GoogleAnalyticsClient ga =
         GoogleAnalyticsClient.newBuilder(trackingId)
                              .setUserId(userId)
+                             .setExecutorService(executorService)
+                             .setHitDispatcher(hitDispatcher)
                              .build();
 
     // Submit requests
     final String documentHostName = "www.abc.com";
     final String documentPath = "/path/within/application/";
     ga.pageview(documentHostName, documentPath).send();
-
-    // Shutdown
-    ga.getExecutorService().shutdown();
   }
 
-  void demo2() {
+  private static void demo2(ExecutorService executorService, HitDispatcher hitDispatcher) {
     // Create the tracker
     final String trackingId = "UA-12345-6"; // Your Google Analytics tracking ID
     final String userId = "Anything";
@@ -524,18 +570,16 @@ public class GoogleAnalyticsClientTest {
                              .getOrCreatePerHitParameters()
                                  .addDocumentHostName(documentHostName)
                                  .getParent()
+                             .setExecutorService(executorService)
+                             .setHitDispatcher(hitDispatcher)
                              .build();
 
     // Submit requests
     final String documentPath = "/path/within/application/";
     ga.hit(HitType.PAGEVIEW).addDocumentPath(documentPath).send();
-
-    // Shutdown
-    ga.getExecutorService().shutdown();
   }
 
-  @SuppressWarnings("unused")
-  void demo3() {
+  private static void demo3() {
     // Create the tracker
     final String trackingId = "UA-12345-6"; // Your Google Analytics tracking ID
     final String hit = Parameters.newRequiredBuilder(trackingId)
@@ -543,10 +587,10 @@ public class GoogleAnalyticsClientTest {
         .addExceptionDescription("Something went wrong")
         .build()
         .format();
+    logger.log(debugLevel, hit);
   }
 
-  @SuppressWarnings("unused")
-  void demo4() {
+  private static void demo4() {
     // Create the tracker
     final String trackingId = "UA-12345-6"; // Your Google Analytics tracking ID
     final String hit = Parameters.newRequiredBuilder(trackingId)
@@ -556,10 +600,10 @@ public class GoogleAnalyticsClientTest {
         .add(new OneIndexTextParameter(ProtocolSpecification.PRODUCT_SKU, 23, "SKU.4567"))
         .build()
         .format();
+    logger.log(debugLevel, hit);
   }
 
-  @SuppressWarnings("unused")
-  void demo5() {
+  private static void demo5() {
     // Generic name=value pair
     final String name = "anything";
     final String value = "some text";
@@ -579,5 +623,6 @@ public class GoogleAnalyticsClientTest {
         .add(new OneIndexIntParameter(specification, index, value2))
         .build()
         .format();
+    logger.log(debugLevel, hit);
   }
 }
