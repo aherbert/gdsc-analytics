@@ -200,10 +200,10 @@ String name = "anything";
 String value = "some text";
 
 // Custom indexed parameter
-String formalName = "My parameter";
+String formalName = "My parameter"; // Used for error messages
 String nameFormat = "myp_"; // Underscore for the index
 ValueType valueType = ValueType.INTEGER;
-int maxLength = 0;
+int maxLength = 0; // Ignored for non-text types
 ParameterSpecification specification = new CustomParameterSpecification(
     formalName, nameFormat, valueType, maxLength);
 int index = 44;
@@ -264,7 +264,7 @@ similarity to version 1 other than the name.
 The code is used within the GDSC ImageJ plugins to collect minimal usage
 information whenever a plugin is run. This is done by identifying each
 ImageJ plugin using the [Document Path](http://goo.gl/a8d4RP#dp) hit parameter
-and using a `pageview` hit. The data is used to determine what parts of the free
+and using a `pageview` hit. The data is used to determine what parts of the
 code are important to the community.
 
 To comply with the

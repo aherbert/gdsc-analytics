@@ -74,7 +74,7 @@ public class TestUtils {
    * @return the google analytics client. builder
    */
   public static GoogleAnalyticsClient.Builder createBuilder(String trackingId) {
-    return GoogleAnalyticsClient.createBuilder(trackingId)
+    return GoogleAnalyticsClient.newBuilder(trackingId)
         .setExecutorService(defaultExecutorService);
   }
 

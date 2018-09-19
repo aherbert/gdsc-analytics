@@ -575,7 +575,6 @@ public class GoogleAnalyticsClient {
     }
   }
 
-  //@formatter:off
   /**
    * Builder for a <strong>single</strong> Google Analytics hit.
    *
@@ -587,11 +586,13 @@ public class GoogleAnalyticsClient {
     /**
      * Creates a new hit builder.
      *
+     * @param formattedParameter the formatted parameter
      * @param hitType the hit type
      * @param timestamp the timestamp
      */
-    private GoogleAnalyticsHitBuilder(HitTypeParameter hitType, long timestamp) {
-      super(clientParameters, hitType, timestamp);
+    public GoogleAnalyticsHitBuilder(FormattedParameter formattedParameter,
+        HitTypeParameter hitType, long timestamp) {
+      super(formattedParameter, hitType, timestamp);
     }
 
     /*
@@ -636,11 +637,9 @@ public class GoogleAnalyticsClient {
    * @param trackingId the tracking id
    * @return the builder
    * @throws IllegalArgumentException if tracking ID is invalid
-   * @see <a
-   *      href="http://goo.gl/a8d4RP#tid">Tracking
-   *      Id</a>
+   * @see <a href="http://goo.gl/a8d4RP#tid">Tracking Id</a>
    */
-  public static Builder createBuilder(String trackingId) {
+  public static Builder newBuilder(String trackingId) {
     return new Builder(trackingId);
   }
 
@@ -671,10 +670,10 @@ public class GoogleAnalyticsClient {
    * @return the hit builder
    */
   //@formatter:on
-  HitBuilder<Future<DispatchStatus>> createHitBuilder(HitTypeParameter hitType) {
+  HitBuilder<Future<DispatchStatus>> newHitBuilder(HitTypeParameter hitType) {
     final boolean isNew = session.refresh();
     final HitBuilder<Future<DispatchStatus>> builder =
-        new GoogleAnalyticsHitBuilder(hitType, session.getTimeStamp());
+        new GoogleAnalyticsHitBuilder(clientParameters, hitType, session.getTimeStamp());
     if (isNew) {
       builder.add(SessionControlParameter.START);
       builder.add(sessionParameters);
@@ -689,7 +688,7 @@ public class GoogleAnalyticsClient {
    * @return the hit builder
    */
   public HitBuilder<Future<DispatchStatus>> hit(HitType hitType) {
-    return createHitBuilder(HitTypeParameter.create(hitType));
+    return newHitBuilder(HitTypeParameter.create(hitType));
   }
 
   /**
@@ -702,7 +701,7 @@ public class GoogleAnalyticsClient {
    * @see ParametersBuilder#addDocumentLocationUrl(String)
    */
   public HitBuilder<Future<DispatchStatus>> pageview(String documentLocationUrl) {
-    return createHitBuilder(HitTypeParameter.PAGEVIEW).addDocumentLocationUrl(documentLocationUrl);
+    return newHitBuilder(HitTypeParameter.PAGEVIEW).addDocumentLocationUrl(documentLocationUrl);
   }
 
   /**
@@ -717,7 +716,7 @@ public class GoogleAnalyticsClient {
    * @see ParametersBuilder#addDocumentPath(String)
    */
   public HitBuilder<Future<DispatchStatus>> pageview(String documentHostName, String documentPath) {
-    return createHitBuilder(HitTypeParameter.PAGEVIEW).addDocumentHostName(documentHostName)
+    return newHitBuilder(HitTypeParameter.PAGEVIEW).addDocumentHostName(documentHostName)
         .addDocumentPath(documentPath);
   }
 
@@ -731,7 +730,7 @@ public class GoogleAnalyticsClient {
    * @see ParametersBuilder#addScreenName(String)
    */
   public HitBuilder<Future<DispatchStatus>> screenview(String screenName) {
-    return createHitBuilder(HitTypeParameter.SCREENVIEW).addScreenName(screenName);
+    return newHitBuilder(HitTypeParameter.SCREENVIEW).addScreenName(screenName);
   }
 
   /**
@@ -749,7 +748,7 @@ public class GoogleAnalyticsClient {
    */
   public HitBuilder<Future<DispatchStatus>> event(String eventCategory, String eventAction,
       int eventValue) {
-    return createHitBuilder(HitTypeParameter.EVENT).addEventCategory(eventCategory)
+    return newHitBuilder(HitTypeParameter.EVENT).addEventCategory(eventCategory)
         .addEventAction(eventAction).addEventValue(eventValue);
   }
 
@@ -762,7 +761,7 @@ public class GoogleAnalyticsClient {
    * @return the hit builder
    */
   public HitBuilder<Future<DispatchStatus>> transaction(String transactionId) {
-    return createHitBuilder(HitTypeParameter.TRANSACTION)
+    return newHitBuilder(HitTypeParameter.TRANSACTION)
         .add(new NoIndexTextParameter(ProtocolSpecification.TRANSACTION_ID, transactionId));
   }
 
@@ -772,11 +771,13 @@ public class GoogleAnalyticsClient {
    * <p>This is a utility function to set the required parameters.
    *
    * @param transactionId the transaction id
+   * @param itemName the item name
    * @return the hit builder
    */
-  public HitBuilder<Future<DispatchStatus>> item(String transactionId) {
-    return createHitBuilder(HitTypeParameter.ITEM)
-        .add(new NoIndexTextParameter(ProtocolSpecification.TRANSACTION_ID, transactionId));
+  public HitBuilder<Future<DispatchStatus>> item(String transactionId, String itemName) {
+    return newHitBuilder(HitTypeParameter.ITEM)
+        .add(new NoIndexTextParameter(ProtocolSpecification.TRANSACTION_ID, transactionId))
+        .add(new NoIndexTextParameter(ProtocolSpecification.ITEM_NAME, itemName));
   }
 
   /**
@@ -791,11 +792,8 @@ public class GoogleAnalyticsClient {
    */
   public HitBuilder<Future<DispatchStatus>> social(String socialNetwork, String socialAction,
       String socialActionTarget) {
-    return createHitBuilder(HitTypeParameter.SOCIAL)
-        .add(new NoIndexTextParameter(ProtocolSpecification.SOCIAL_NETWORK, socialNetwork))
-        .add(new NoIndexTextParameter(ProtocolSpecification.SOCIAL_ACTION, socialAction))
-        .add(new NoIndexTextParameter(ProtocolSpecification.SOCIAL_ACTION_TARGET,
-            socialActionTarget));
+    return newHitBuilder(HitTypeParameter.SOCIAL).addSocialNetwork(socialNetwork)
+        .addSocialAction(socialAction).addSocialActionTarget(socialActionTarget);
   }
 
   /**
@@ -808,7 +806,7 @@ public class GoogleAnalyticsClient {
    * @see ParametersBuilder#addIsExceptionFatal(boolean)
    */
   public HitBuilder<Future<DispatchStatus>> exception() {
-    return createHitBuilder(HitTypeParameter.EXCEPTION);
+    return newHitBuilder(HitTypeParameter.EXCEPTION);
   }
 
   /**
@@ -826,7 +824,7 @@ public class GoogleAnalyticsClient {
    */
   public HitBuilder<Future<DispatchStatus>> timing(String userTimingCategory,
       String userTimingVariableName, int userTimingTime) {
-    return createHitBuilder(HitTypeParameter.TIMING).addUserTimingCategory(userTimingCategory)
+    return newHitBuilder(HitTypeParameter.TIMING).addUserTimingCategory(userTimingCategory)
         .addUserTimingVariableName(userTimingVariableName).addUserTimingTime(userTimingTime);
   }
 

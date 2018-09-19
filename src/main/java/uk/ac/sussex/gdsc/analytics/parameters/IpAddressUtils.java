@@ -93,6 +93,11 @@ public final class IpAddressUtils {
   private static final int NO_INDEX = -1;
 
   /**
+   * Use to indicate one part. Set to 1.
+   */
+  private static final int ONE_PART = 1;
+
+  /**
    * No public construction.
    */
   private IpAddressUtils() {
@@ -140,7 +145,7 @@ public final class IpAddressUtils {
     }
 
     if (hasColon) {
-      return isIpV6(ipAddress, hasDot);
+      return isAnyIpV6(ipAddress, hasDot);
     }
     if (hasDot) {
       return isIpV4(ipAddress);
@@ -165,7 +170,7 @@ public final class IpAddressUtils {
    * @return true, if valid
    */
   //@formatter:on
-  private static boolean isIpV6(String ipAddress, boolean withIpV4) {
+  private static boolean isAnyIpV6(String ipAddress, boolean withIpV4) {
     // IPv6
     if (withIpV4) {
       // Contains IPv4 as the last entry:
@@ -226,11 +231,12 @@ public final class IpAddressUtils {
   private static boolean isIpV6(String ipAddress) {
     // Based upon:
     // com.google.common.net.InetAddresses#textToNumericFormatV6
-    // The code has been refactored to reduce Cognitive Complexity.
-    // See https://blog.sonarsource.com/cognitive-complexity-because-testability-understandability.
+    // The code has been refactored to reduce complexity.
     // This involved moving nested statements to functions.
 
     // An address can have [2..8] colons, and N colons make N+1 parts.
+    // Note 8 colons only occurs when :: is at the start or end to 
+    // denote a skip sequence.
     final String[] parts = splitIpV6(ipAddress);
     if (parts.length < IPV6_MIN_PART_COUNT || parts.length > IPV6_PART_COUNT + 1) {
       return false;
@@ -240,38 +246,69 @@ public final class IpAddressUtils {
     // This indicates that a run of zeroes has been skipped.
     final int skipIndex = getSkipIndex(parts);
     if (skipIndex == BAD_INDEX) {
+      // More than one skip control sequence
       return false;
     }
 
-    int partsHi; // Number of parts to copy from above/before the "::"
-    int partsLo; // Number of parts to copy from below/after the "::"
-    if (skipIndex >= 0) {
-      // If we found a "::", then check if it also covers the endpoints.
-      partsHi = skipIndex;
-      partsLo = parts.length - skipIndex - 1;
-      if (parts[0].length() == 0 && --partsHi != 0) {
-        return false; // ^: requires ^::
-      }
-      if (parts[parts.length - 1].length() == 0 && --partsLo != 0) {
-        return false; // :$ requires ::$
-      }
-    } else {
-      // Otherwise, allocate the entire address to partsHi. The endpoints
-      // could still be empty, but parseHextet() will check for that.
-      partsHi = parts.length;
-      partsLo = 0;
+    if (skipIndex == NO_INDEX) {
+      return isValidCompleteIpV6(parts);
+    }
+
+    final int partsBefore = getPartsBefore(parts, skipIndex);
+    if (partsBefore == BAD_INDEX) {
+      return false;
+    }
+
+    final int partsAfter = getPartsAfter(parts, skipIndex);
+    if (partsAfter == BAD_INDEX) {
+      return false;
     }
 
     // If we found a ::, then we must have skipped at least one part.
-    // Otherwise, we must have exactly the right number of parts.
-    final int partsSkipped = IPV6_PART_COUNT - (partsHi + partsLo);
-    // Note: This condition has been reversed from the original Guava version
-    if (skipIndex >= 0 ? partsSkipped < 1 : partsSkipped != 0) {
+    final int partsSkipped = IPV6_PART_COUNT - (partsBefore + partsAfter);
+    if (partsSkipped < ONE_PART) {
       return false;
     }
 
     // Now check the hextets in the parts before & after the skip ::
-    return isValidCountUp(parts, partsHi) && isValidCountDown(parts, partsLo);
+    return isValidCountUp(parts, partsBefore) && isValidCountDown(parts, partsAfter);
+  }
+
+  /**
+   * Gets the number of parts before the ::.
+   *
+   * @param parts the parts
+   * @param skipIndex the skip index
+   * @return the parts before
+   */
+  private static int getPartsBefore(String[] parts, int skipIndex) {
+    int partsBefore = skipIndex;
+    // Check for a : at the start
+    if (parts[0].length() == 0) {
+      // ^: requires ^::
+      // Check there is only one part before the skip
+      if (partsBefore != ONE_PART) {
+        return BAD_INDEX;
+      }
+      // No need to check before
+      partsBefore = 0;
+    }
+    return partsBefore;
+  }
+
+  private static int getPartsAfter(String[] parts, int skipIndex) {
+    int partsAfter = parts.length - skipIndex - 1;
+    // Check for a : at the end
+    if (parts[parts.length - 1].length() == 0) {
+      // :$ requires ::$
+      // Check there is only one part after the skip
+      if (partsAfter != ONE_PART) {
+        return BAD_INDEX;
+      }
+      // No need to check after 
+      partsAfter = 0;
+    }
+    return partsAfter;
   }
 
   /**
@@ -327,12 +364,27 @@ public final class IpAddressUtils {
     return skipIndex;
   }
 
+
+  /**
+   * Checks all the parts are valid for a complete IPv6 address.
+   *
+   * @param parts the parts
+   * @return true if valid
+   */
+  private static boolean isValidCompleteIpV6(final String[] parts) {
+    // We must have exactly the right number of parts.
+    if (parts.length != IPV6_PART_COUNT) {
+      return false;
+    }
+    return isValidCountUp(parts, IPV6_PART_COUNT);
+  }
+
   /**
    * Checks all the parts are valid for {@code 0 <= i < count}.
    *
    * @param parts the parts
    * @param count the count
-   * @return true if invalid
+   * @return true if valid
    */
   private static boolean isValidCountUp(final String[] parts, int count) {
     for (int i = 0; i < count; i++) {
@@ -348,7 +400,7 @@ public final class IpAddressUtils {
    *
    * @param parts the parts
    * @param count the count
-   * @return true if invalid
+   * @return true if valid
    */
   private static boolean isValidCountDown(final String[] parts, int count) {
     for (int i = count; i > 0; i--) {
@@ -384,7 +436,7 @@ public final class IpAddressUtils {
    * </pre>
    *
    * @param ipAddress the ip address
-   * @return true, if valid
+   * @return true if valid
    */
   public static boolean isIpV4(String ipAddress) {
     return IPV4_PATTERN.matcher(ipAddress).matches();

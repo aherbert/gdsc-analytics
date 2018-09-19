@@ -29,6 +29,7 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
+import java.util.EnumMap;
 import java.util.Objects;
 
 /**
@@ -37,6 +38,11 @@ import java.util.Objects;
  * @see <a href="http://goo.gl/a8d4RP#sc">Session Control</a>
  */
 public final class SessionControlParameter implements FormattedParameter {
+
+  /** Cache parameters for all the enum values. */
+  private static final EnumMap<SessionControl, SessionControlParameter> cache =
+      new EnumMap<>(SessionControl.class);
+
   /** The session start parameter. */
   public static final SessionControlParameter START;
   /** The session end parameter. */
@@ -80,12 +86,6 @@ public final class SessionControlParameter implements FormattedParameter {
    */
   public static SessionControlParameter create(SessionControl sessionControl) {
     Objects.requireNonNull(sessionControl, "Session control is null");
-    switch (sessionControl) {
-      case END:
-        return END;
-      case START:
-      default:
-        return START;
-    }
+    return cache.computeIfAbsent(sessionControl, SessionControlParameter::new);
   }
 }

@@ -40,9 +40,9 @@ public final class IndexReplacerFactory {
   private static final int ONE = 1;
   /** The constant 2. */
   private static final int TWO = 2;
-  
+
   /** Cache replacers for all the parameters. */
-  private static final EnumMap<ProtocolSpecification, IndexReplacer> map =
+  private static final EnumMap<ProtocolSpecification, IndexReplacer> cache =
       new EnumMap<>(ProtocolSpecification.class);
 
   /**
@@ -66,7 +66,7 @@ public final class IndexReplacerFactory {
    * @see ThreeIndexReplacer
    */
   public static IndexReplacer createIndexReplacer(ProtocolSpecification specification) {
-    return map.computeIfAbsent(specification, IndexReplacerFactory::newReplacer);
+    return cache.computeIfAbsent(specification, IndexReplacerFactory::newReplacer);
   }
 
   /**

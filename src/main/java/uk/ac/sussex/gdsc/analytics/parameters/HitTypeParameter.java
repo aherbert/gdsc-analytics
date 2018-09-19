@@ -29,6 +29,7 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
+import java.util.EnumMap;
 import java.util.Objects;
 
 /**
@@ -37,6 +38,10 @@ import java.util.Objects;
  * @see <a href="http://goo.gl/a8d4RP#t">Hit type</a>
  */
 public final class HitTypeParameter implements FormattedParameter {
+
+  /** Cache parameters for all the enum values. */
+  private static final EnumMap<HitType, HitTypeParameter> cache = new EnumMap<>(HitType.class);
+
   /** The pageview hit-type. */
   public static final HitTypeParameter PAGEVIEW;
   /** The screenview hit-type. */
@@ -96,24 +101,6 @@ public final class HitTypeParameter implements FormattedParameter {
    */
   public static HitTypeParameter create(HitType hitType) {
     Objects.requireNonNull(hitType, "Hit type is null");
-    switch (hitType) {
-      case EVENT:
-        return EVENT;
-      case EXCEPTION:
-        return EXCEPTION;
-      case ITEM:
-        return ITEM;
-      case PAGEVIEW:
-        return PAGEVIEW;
-      case SCREENVIEW:
-        return SCREENVIEW;
-      case SOCIAL:
-        return SOCIAL;
-      case TIMING:
-        return TIMING;
-      case TRANSACTION:
-      default:
-        return TRANSACTION;
-    }
+    return cache.computeIfAbsent(hitType, HitTypeParameter::new);
   }
 }

@@ -43,7 +43,7 @@
     <exclude name="AbstractNaming" />
     <exclude name="UselessParentheses" />
     <exclude name="AtLeastOneConstructor" />
-    <exclude name="GenericsNaming" />
+    <!-- <exclude name="GenericsNaming" /> -->
     <exclude name="OnlyOneReturn" />
     <!--  Allow builders to have setters that return something -->
     <exclude name="LinguisticNaming" />
@@ -51,8 +51,11 @@
   <rule ref="category/java/design.xml">
     <exclude name="TooManyMethods" />
     <exclude name="LawOfDemeter" />
-    <!-- <exclude name="NcssCount" /> -->
     <exclude name="LoosePackageCoupling" />
+    <!-- Allow builders to be big --> 
+    <exclude name="ExcessiveClassLength" />
+    <exclude name="ExcessivePublicCount" />
+    <exclude name="GodClass" />
   </rule>
   <rule ref="category/java/documentation.xml">
     <exclude name="CommentSize" />

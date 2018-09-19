@@ -322,7 +322,7 @@ public class ParameterUtilsTest {
   }
 
   @Test
-  public void testACurrencyTo() {
+  public void testAppendCurrencyTo() {
     final Locale locale = Locale.UK;
     // Add pence when not present
     Assertions.assertEquals("£0.00",
@@ -346,5 +346,31 @@ public class ParameterUtilsTest {
     Assertions.assertFalse(ParameterUtils.isNotEmpty(""));
     Assertions.assertTrue(ParameterUtils.isNotEmpty("h"));
     Assertions.assertTrue(ParameterUtils.isNotEmpty("hello"));
+  }
+
+  @Test
+  public void testValidatePath() {
+    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+      ParameterUtils.validatePath(null);
+    });
+    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+      ParameterUtils.validatePath("");
+    });
+    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+      ParameterUtils.validatePath("a");
+    });
+    ParameterUtils.validatePath("/");
+    ParameterUtils.validatePath("/file");
+  }
+
+  @Test
+  public void testValidateIpAddress() {
+    Assertions.assertThrows(NullPointerException.class, () -> {
+      ParameterUtils.validateIpAddress(null);
+    });
+    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+      ParameterUtils.validateIpAddress("0.0.0.256");
+    });
+    ParameterUtils.validateIpAddress("0.0.0.1");
   }
 }

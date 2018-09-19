@@ -52,7 +52,7 @@ public final class ParameterUtils {
    *
    * @see <a href= "http://goo.gl/a8d4RP#tid">Tracking ID / Web Property ID</a>
    */
-  //@formatter:off
+  //@formatter:on
   public static final String TRACKING_ID_REGEX = "^[A-Z]{2}-[0-9]{5,}-[1-9][0-9]*$";
 
   /** The compiled pattern for the tracking Id. */
@@ -145,6 +145,41 @@ public final class ParameterUtils {
       throw new IllegalArgumentException("Invalid tracking id: " + trackingId);
     }
     return trackingId;
+  }
+
+  /**
+   * Validate the path.
+   *
+   * <p>The path must begin with a '{@code /}' character.
+   *
+   * @param documentPath the document path
+   * @return the string
+   * @throws IllegalArgumentException If the path is not valid
+   * @see <a href="http://goo.gl/a8d4RP#dp">Document Path</a>
+   */
+  public static String validatePath(String documentPath) {
+    ParameterUtils.requireNotEmpty(documentPath, "Document path is empty");
+    if (documentPath.charAt(0) != Constants.FORWARD_SLASH) {
+      throw new IllegalArgumentException("Document path should begin with '/'");
+    }
+    return documentPath;
+  }
+
+  /**
+   * Validate the IP address.
+   *
+   * <p>This should be a valid IP address in IPv4 or IPv6 format.
+   *
+   * @param ipAddress the ip address
+   * @return the string
+   * @throws IllegalArgumentException If the IP address is not valid
+   * @see <a href="http://goo.gl/a8d4RP#uip">IP Override</a>
+   */
+  public static String validateIpAddress(String ipAddress) {
+    if (!IpAddressUtils.isIpAddress(ipAddress)) {
+      throw new IllegalArgumentException("Not a valid IP address: " + ipAddress);
+    }
+    return ipAddress;
   }
 
   /**
@@ -256,15 +291,16 @@ public final class ParameterUtils {
    * @see Constants#UNDERSCORE
    */
   public static int countIndexes(CharSequence nameFormat) {
-    int count = 0;
-    if (nameFormat != null) {
-      for (int i = nameFormat.length(); i-- > 0;) {
+    if (nameFormat != null && nameFormat.length() != 0) {
+      int count = 0;
+      for (int i = 0; i < nameFormat.length(); i++) {
         if (nameFormat.charAt(i) == Constants.UNDERSCORE) {
           count++;
         }
       }
+      return count;
     }
-    return count;
+    return 0;
   }
 
   /**
@@ -290,7 +326,7 @@ public final class ParameterUtils {
    * Append the currency value to the {@link StringBuilder}.
    *
    * <p>Current the format expected for Google Analytics current is unknown. This uses
-   * {@link NumberFormat#getCurrencyInstance()}.
+   * {@link NumberFormat#getCurrencyInstance(Locale)}.
    *
    * @param sb the string builder
    * @param locale the locale

@@ -107,6 +107,10 @@ public class FormatterParameterTest {
     final FormattedParameter fp = FormattedParameter.empty();
     Assertions.assertEquals("", callFormatTo(fp));
     Assertions.assertEquals("", fp.format());
+    final String text = "not-empty";
+    StringBuilder sb = new StringBuilder(text);
+    Assertions.assertSame(sb, fp.appendTo(sb));
+    Assertions.assertEquals(text, sb.toString());
     Assertions.assertSame(fp, fp.freeze());
     final FormattedParameter fp2 = FormattedParameter.empty();
     Assertions.assertNotSame(fp, fp2);

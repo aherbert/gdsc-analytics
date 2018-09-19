@@ -197,43 +197,33 @@ public class DefaultHitDispatcher implements HitDispatcher {
       return DispatchStatus.DISABLED;
     }
     Objects.requireNonNull(hit, "Hit was null");
-    HttpURLConnection connection = null;
     try {
-      // TODO - reduce the complexity of this method
-
-      connection = connectionProvider.openConnection(url, proxy);
+      final HttpURLConnection connection = connectionProvider.openConnection(url, proxy);
       connection.setRequestMethod("POST");
       connection.setDoOutput(true);
       connection.setUseCaches(false);
       connection.setRequestProperty("Content-Type",
           "application/x-www-form-urlencoded; charset=utf-8");
-      // Build the request
-      CharSequence request;
-      if (timestamp == 0) {
-        // No queue time offset
-        request = hit;
-      } else {
-        // Add the queue time offset
-        StringBuilder sb;
-        if (hit instanceof StringBuilder) {
-          sb = (StringBuilder) hit;
-        } else {
-          sb = new StringBuilder(hit);
-        }
-        QueueTimeParameter.appendTo(sb, timestamp);
-        request = sb;
-      }
+
+      final CharSequence request = addQueueTime(hit, timestamp);
+
       // Send the request
       final byte[] out = request.toString().getBytes(StandardCharsets.UTF_8);
-      final int length = out.length;
-      connection.setFixedLengthStreamingMode(length);
+      connection.setFixedLengthStreamingMode(out.length);
       connection.connect();
-      try (OutputStream os = connection.getOutputStream()) {
-        os.write(out);
-      }
-      final int responseCode = connection.getResponseCode();
-      if (callback != null) {
-        callback.process(connection);
+
+      // Once connected ensure that disconnect is called
+      int responseCode;
+      try {
+        try (OutputStream os = connection.getOutputStream()) {
+          os.write(out);
+        }
+        responseCode = connection.getResponseCode();
+        if (callback != null) {
+          callback.process(connection);
+        }
+      } finally {
+        connection.disconnect();
       }
 
       //////////////////////////////////////
@@ -248,30 +238,50 @@ public class DefaultHitDispatcher implements HitDispatcher {
       //////////////////////////////////////
 
       if (responseCode == HttpURLConnection.HTTP_OK) {
-        if (logger.isLoggable(Level.FINE)) {
-          logger.log(Level.FINE, () -> String.format("Sent hit '%s'", request));
-        }
-        // This is a success. All other returns are false.
+        logger.log(Level.FINE, () -> String.format("Sent hit '%s'", request));
+        // This is a success. All other returns are an error.
         return DispatchStatus.COMPLETE;
       }
       logger.log(Level.WARNING, () -> String
           .format("Failed to send hit '%s', received response code %d", request, responseCode));
     } catch (final UnknownHostException ex) {
       setLastIoException(ex);
-      // Occurs when disconnected from the Internet so this is not severe
+      // Occurs when there is no connection to the Internet so this is not severe
       logger.log(Level.WARNING, () -> String.format("Unknown host: %s", ex.getMessage()));
     } catch (final IOException ex) {
       setLastIoException(ex);
       // Log all others at a severe level
       logger.log(Level.SEVERE, () -> String.format("Send error: %s : %s",
           ex.getClass().getSimpleName(), ex.getMessage()));
-    } finally {
-      if (connection != null) {
-        connection.disconnect();
-      }
     }
     // Get here only on error
     return DispatchStatus.ERROR;
+  }
+
+  /**
+   * Adds the queue time to the hit.
+   *
+   * <p>If the timestamp is zero then this does nothing
+   *
+   * @param hit the hit
+   * @param timestamp the timestamp
+   * @return the updated hit
+   */
+  private static CharSequence addQueueTime(CharSequence hit, long timestamp) {
+    if (timestamp == 0) {
+      // No queue time offset
+      return hit;
+    }
+
+    // Add the queue time offset
+    StringBuilder sb;
+    if (hit instanceof StringBuilder) {
+      sb = (StringBuilder) hit;
+    } else {
+      sb = new StringBuilder(hit);
+    }
+    QueueTimeParameter.appendTo(sb, timestamp);
+    return sb;
   }
 
   /**

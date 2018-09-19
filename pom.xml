@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
@@ -73,6 +72,7 @@ Measurement protocol to collect usage information about a Java application.
     <org.junit.platform.version>1.2.0</org.junit.platform.version>
     <org.junit.version>4.12</org.junit.version>
     <commons-rng.version>1.1</commons-rng.version>
+    <guava.version>26.0-jre</guava.version>
     <org.jacoco.version>0.8.1</org.jacoco.version>
     <license-maven-plugin.version>1.16</license-maven-plugin.version>
     <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
@@ -524,8 +524,7 @@ Measurement protocol to collect usage information about a Java application.
                 <goals>
                   <goal>check</goal>
                 </goals>
-                <!-- Currently the same as the jacoco profile but halts on 
-                  failure -->
+                <!-- Currently the same as the jacoco profile but halts on failure -->
                 <configuration>
                   <rules>
                     <rule>
@@ -675,6 +674,12 @@ Measurement protocol to collect usage information about a Java application.
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-rng-simple</artifactId>
       <version>${commons-rng.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>${guava.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

@@ -29,8 +29,6 @@
 
 package uk.ac.sussex.gdsc.analytics;
 
-import uk.ac.sussex.gdsc.analytics.parameters.FormattedParameter;
-
 import java.io.IOException;
 
 /**
@@ -39,7 +37,9 @@ import java.io.IOException;
  * <p>Any errors should be caught and stored as an {@link IOException} to be retrieved using
  * {@link #getLastIoException()}.
  *
- * <p>The hit may be generated using {@link FormattedParameter#format()}.
+ * <p>The hit should conform to the format specified by the <a
+ * href="https://developers.google.com/analytics/devguides/collection/protocol/v1/">Google Analytics
+ * Measurement Protocol</a>.
  */
 public interface HitDispatcher {
 

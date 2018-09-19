@@ -253,6 +253,13 @@ public class ParametersTest {
       final boolean start = rg.nextBoolean();
       final SessionControl sessionControl = (start) ? SessionControl.START : SessionControl.END;
       testApi((t) -> t.addSessionControl(sessionControl), "sc", (start) ? "start" : "end");
+      final String ipAddress = "255.255.255." + (1 + rg.nextInt(255));
+      testApi((t) -> t.addIpOverride(ipAddress), "uip", ipAddress);
+      final String userAgent = TestUtils.randomName(rg, 3);
+      testApi((t) -> t.addUserAgentOverride(userAgent), "ua", userAgent);
+      final String geographicalLocation = TestUtils.randomName(rg, 3);
+      testApi((t) -> t.addGeographicalOverride(geographicalLocation), "geoid",
+          geographicalLocation);
 
       // System Info
       final int width = rg.nextInt(2048);
@@ -316,6 +323,14 @@ public class ParametersTest {
       final int eventValue = rg.nextInt(1000);
       testApi((t) -> t.addEventValue(eventValue), "ev", Integer.toString(eventValue));
 
+      // Social Interactions
+      final String socialNetwork = TestUtils.randomName(rg, 3);
+      testApi((t) -> t.addSocialNetwork(socialNetwork), "sn", socialNetwork);
+      final String socialAction = TestUtils.randomName(rg, 3);
+      testApi((t) -> t.addSocialAction(socialAction), "sa", socialAction);
+      final String socialActionTarget = TestUtils.randomName(rg, 3);
+      testApi((t) -> t.addSocialActionTarget(socialActionTarget), "st", socialActionTarget);
+
       // Timing
       // testApi((t) -> t.add, "", );
       final String userTimingCategory = TestUtils.randomName(rg, 3);
@@ -363,6 +378,12 @@ public class ParametersTest {
       final int metValue = rg.nextInt(1000);
       testApi((t) -> t.addCustomMetric(metIndex, metValue), "cm" + metIndex,
           Integer.toString(metValue));
+
+      // Content Experiments
+      final String experimentId = TestUtils.randomName(rg, 3);
+      testApi((t) -> t.addExperimentId(experimentId), "xid", experimentId);
+      final String experimentVariant = TestUtils.randomName(rg, 3);
+      testApi((t) -> t.addExperimentVariant(experimentVariant), "xvar", experimentVariant);
 
       // Custom
       final String name = TestUtils.randomName(rg, 3);

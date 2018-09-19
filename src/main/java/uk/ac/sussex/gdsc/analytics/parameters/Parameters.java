@@ -52,6 +52,8 @@ public class Parameters implements FormattedParameter {
    * @param formattedParameters the formatted parameters
    */
   private Parameters(FormattedParameter[] formattedParameters) {
+    // Note the input array is constructed by the builder using
+    // private methods so it can be stored directly.
     this.formattedParameters = formattedParameters;
   }
 
@@ -433,12 +435,65 @@ public class Parameters implements FormattedParameter {
     /**
      * Adds the session control.
      *
+     * <p>Used to control the session duration. A value of 'start' forces a new session to start
+     * with this hit and 'end' forces the current session to end with this hit.
+     *
      * @param sessionControl the session control
      * @return the builder
      * @see <a href="http://goo.gl/a8d4RP#sc">Session Control</a>
      */
     public B addSessionControl(SessionControl sessionControl) {
       return addParameter(SessionControlParameter.create(sessionControl));
+    }
+
+    /**
+     * Adds the IP override.
+     *
+     * <p>The IP address of the user. This should be a valid IP address in IPv4 or IPv6 format. It
+     * will always be anonymized just as though aip (anonymize IP) had been used.
+     *
+     * @param ipAddress the IP address
+     * @return the builder
+     * @throws IllegalArgumentException If not a valid IP address
+     * @see <a href="http://goo.gl/a8d4RP#uip">IP Override</a>
+     */
+    public B addIpOverride(String ipAddress) {
+      ParameterUtils.validateIpAddress(ipAddress);
+      return addParameter(new NoIndexTextParameter(ProtocolSpecification.IP_OVERRIDE, ipAddress));
+    }
+
+    /**
+     * Adds the user agent override.
+     *
+     * <p>The User Agent of the browser. Note that Google has libraries to identify real user
+     * agents. Hand crafting your own agent could break at any time.
+     *
+     * @param userAgent the user agent
+     * @return the builder
+     * @see <a href="http://goo.gl/a8d4RP#ua">User Agent Override</a>
+     */
+    public B addUserAgentOverride(String userAgent) {
+      return addParameter(
+          new NoIndexTextParameter(ProtocolSpecification.USER_AGENT_OVERRIDE, userAgent));
+    }
+
+    /**
+     * Adds the geographical override.
+     *
+     * <p>The geographical location of the user. The geographical ID should be a two letter country
+     * code or a criteria ID representing a city or region (see
+     * http://developers.google.com/analytics/devguides/collection/protocol/v1/geoid). This
+     * parameter takes precedent over any location derived from IP address, including the IP
+     * Override parameter. An invalid code will result in geographical dimensions to be set to '(not
+     * set)'.
+     *
+     * @param geographicalLocation the geographical location
+     * @return the builder
+     * @see <a href="http://goo.gl/a8d4RP#geoid">Geographical Override</a>
+     */
+    public B addGeographicalOverride(String geographicalLocation) {
+      return addParameter(new NoIndexTextParameter(ProtocolSpecification.GEOGRAPHICAL_OVERRIDE,
+          geographicalLocation));
     }
 
     ////////////////////////////////////////////////////////
@@ -617,10 +672,7 @@ public class Parameters implements FormattedParameter {
      * @see <a href="http://goo.gl/a8d4RP#dp">Document Path</a>
      */
     public B addDocumentPath(String documentPath) {
-      ParameterUtils.requireNotEmpty(documentPath, "Document path is empty");
-      if (documentPath.charAt(0) != Constants.FORWARD_SLASH) {
-        throw new IllegalArgumentException("Document path should begin with '/'");
-      }
+      ParameterUtils.validatePath(documentPath);
       return addParameter(
           new NoIndexTextParameter(ProtocolSpecification.DOCUMENT_PATH, documentPath));
     }
@@ -803,6 +855,42 @@ public class Parameters implements FormattedParameter {
     ////////////////////////////////////////////////////////
     // Social Interactions
     ////////////////////////////////////////////////////////
+
+    /**
+     * Adds the social network.
+     *
+     * @param socialNetwork the social network
+     * @return the builder
+     * @see <a href="http://goo.gl/a8d4RP#sn">Social Network</a>
+     */
+    public B addSocialNetwork(String socialNetwork) {
+      return addParameter(
+          new NoIndexTextParameter(ProtocolSpecification.SOCIAL_NETWORK, socialNetwork));
+    }
+
+    /**
+     * Adds the social action.
+     *
+     * @param socialAction the social action
+     * @return the builder
+     * @see <a href="http://goo.gl/a8d4RP#sa">Social Action</a>
+     */
+    public B addSocialAction(String socialAction) {
+      return addParameter(
+          new NoIndexTextParameter(ProtocolSpecification.SOCIAL_ACTION, socialAction));
+    }
+
+    /**
+     * Adds the social action target.
+     *
+     * @param socialActionTarget the social action target
+     * @return the builder
+     * @see <a href="http://goo.gl/a8d4RP#st">Social Action Target</a>
+     */
+    public B addSocialActionTarget(String socialActionTarget) {
+      return addParameter(
+          new NoIndexTextParameter(ProtocolSpecification.SOCIAL_ACTION_TARGET, socialActionTarget));
+    }
 
     ////////////////////////////////////////////////////////
     // Timing
@@ -1018,6 +1106,30 @@ public class Parameters implements FormattedParameter {
     ////////////////////////////////////////////////////////
     // Content Experiments
     ////////////////////////////////////////////////////////
+
+    /**
+     * Adds the experiment id.
+     *
+     * @param experimentId the experiment id
+     * @return the builder
+     * @see <a href="http://goo.gl/a8d4RP#xid">Experiment Id</a>
+     */
+    public B addExperimentId(String experimentId) {
+      return addParameter(
+          new NoIndexTextParameter(ProtocolSpecification.EXPERIMENT_ID, experimentId));
+    }
+
+    /**
+     * Adds the experiment variant.
+     *
+     * @param experimentVariant the experiment variant
+     * @return the builder
+     * @see <a href="http://goo.gl/a8d4RP#xvar">Experiment Variant</a>
+     */
+    public B addExperimentVariant(String experimentVariant) {
+      return addParameter(
+          new NoIndexTextParameter(ProtocolSpecification.EXPERIMENT_VARIANT, experimentVariant));
+    }
   }
 
   ////////////////////////////////////////////////////////

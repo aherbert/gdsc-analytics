@@ -29,6 +29,7 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
+import java.util.EnumMap;
 import java.util.Objects;
 
 /**
@@ -37,6 +38,11 @@ import java.util.Objects;
  * @see <a href="http://goo.gl/a8d4RP#pa">Product Action</a>
  */
 public final class ProductActionParameter implements FormattedParameter {
+
+  /** Cache parameters for all the enum values. */
+  private static final EnumMap<ProductAction, ProductActionParameter> cache =
+      new EnumMap<>(ProductAction.class);
+
   /** The detail product action parameter. */
   public static final ProductActionParameter DETAIL;
   /** The click product action parameter. */
@@ -98,24 +104,6 @@ public final class ProductActionParameter implements FormattedParameter {
    */
   public static ProductActionParameter create(ProductAction productAction) {
     Objects.requireNonNull(productAction, "Product action is null");
-    switch (productAction) {
-      case ADD:
-        return ADD;
-      case CHECKOUT:
-        return CHECKOUT;
-      case CHECKOUT_OPTION:
-        return CHECKOUT_OPTION;
-      case CLICK:
-        return CLICK;
-      case DETAIL:
-        return DETAIL;
-      case PURCHASE:
-        return PURCHASE;
-      case REFUND:
-        return REFUND;
-      case REMOVE:
-      default:
-        return REMOVE;
-    }
+    return cache.computeIfAbsent(productAction, ProductActionParameter::new);
   }
 }

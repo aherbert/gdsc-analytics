@@ -30,12 +30,19 @@
 package uk.ac.sussex.gdsc.analytics;
 
 import uk.ac.sussex.gdsc.analytics.GoogleAnalyticsClient.Builder;
+import uk.ac.sussex.gdsc.analytics.parameters.CustomParameterSpecification;
 import uk.ac.sussex.gdsc.analytics.parameters.HitType;
+import uk.ac.sussex.gdsc.analytics.parameters.NoIndexTextParameter;
+import uk.ac.sussex.gdsc.analytics.parameters.OneIndexIntParameter;
+import uk.ac.sussex.gdsc.analytics.parameters.OneIndexTextParameter;
+import uk.ac.sussex.gdsc.analytics.parameters.ParameterSpecification;
 import uk.ac.sussex.gdsc.analytics.parameters.Parameters;
 import uk.ac.sussex.gdsc.analytics.parameters.Parameters.PartialBuilder;
+import uk.ac.sussex.gdsc.analytics.parameters.ProtocolSpecification;
 import uk.ac.sussex.gdsc.analytics.parameters.ProtocolVersionParameter;
 import uk.ac.sussex.gdsc.analytics.parameters.SessionControlParameter;
 import uk.ac.sussex.gdsc.analytics.parameters.UrlEncoderHelper;
+import uk.ac.sussex.gdsc.analytics.parameters.ValueType;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -69,11 +76,11 @@ public class GoogleAnalyticsClientTest {
   @Test
   public void testBuilder() {
     // Can build with defaults
-    Builder builder = GoogleAnalyticsClient.createBuilder(trackingId);
+    Builder builder = GoogleAnalyticsClient.newBuilder(trackingId);
     GoogleAnalyticsClient ga = builder.build();
 
     // Test getters and setters
-    builder = GoogleAnalyticsClient.createBuilder(trackingId);
+    builder = GoogleAnalyticsClient.newBuilder(trackingId);
 
     Assertions.assertEquals(trackingId, builder.getTrackingId());
     builder.setTrackingId(trackingId2);
@@ -151,7 +158,7 @@ public class GoogleAnalyticsClientTest {
 
   @Test
   public void testProperties() {
-    final Builder builder = GoogleAnalyticsClient.createBuilder(trackingId);
+    final Builder builder = GoogleAnalyticsClient.newBuilder(trackingId);
     final GoogleAnalyticsClient ga = builder.build();
 
     ga.setIgnore(true);
@@ -179,7 +186,7 @@ public class GoogleAnalyticsClientTest {
 
   @Test
   public void testHits() {
-    final Builder builder = GoogleAnalyticsClient.createBuilder(trackingId);
+    final Builder builder = GoogleAnalyticsClient.newBuilder(trackingId);
     final GoogleAnalyticsClient ga = builder.build();
 
     String hit;
@@ -219,9 +226,11 @@ public class GoogleAnalyticsClientTest {
     testContains(hit, "t=transaction");
     testContains(hit, "ti=" + transactionId);
 
-    hit = ga.item(transactionId).build().format();
+    final String itemName = "Item-57";
+    hit = ga.item(transactionId, itemName).build().format();
     testContains(hit, "t=item");
     testContains(hit, "ti=" + transactionId);
+    testContains(hit, "in=" + itemName);
 
     final String socialNetwork = "headbook";
     final String socialAction = "like";
@@ -391,7 +400,7 @@ public class GoogleAnalyticsClientTest {
       }
     };
 
-    final GoogleAnalyticsClient ga = GoogleAnalyticsClient.createBuilder(trackingId)
+    final GoogleAnalyticsClient ga = GoogleAnalyticsClient.newBuilder(trackingId)
         .setHitDispatcher(hitDispatcher).setExecutorService(executorService).build();
 
     Assertions.assertEquals(DispatchStatus.COMPLETE, ga.exception().send().get());
@@ -410,8 +419,7 @@ public class GoogleAnalyticsClientTest {
   public void testSendUsingDebugServer()
       throws InterruptedException, ExecutionException, TimeoutException {
 
-    GoogleAnalyticsClient ga =
-        GoogleAnalyticsClient.createBuilder(trackingId).setDebug(true).build();
+    GoogleAnalyticsClient ga = GoogleAnalyticsClient.newBuilder(trackingId).setDebug(true).build();
 
     // Submit requests. Use something that should be encoded.
     final String documentHostName = "www.abc.com";
@@ -421,7 +429,7 @@ public class GoogleAnalyticsClientTest {
     Assertions.assertEquals(DispatchStatus.COMPLETE, status);
 
     // Test using an explicit proxy
-    ga = GoogleAnalyticsClient.createBuilder(trackingId)
+    ga = GoogleAnalyticsClient.newBuilder(trackingId)
         .setHitDispatcher(DefaultHitDispatcher.getDefault(true, true, Proxy.NO_PROXY)).build();
     status = ga.pageview(documentHostName, documentPath).send().get(2000, TimeUnit.MILLISECONDS);
     Assertions.assertEquals(DispatchStatus.COMPLETE, status);
@@ -432,7 +440,7 @@ public class GoogleAnalyticsClientTest {
 
     final HitDispatcher hitDispatcher = DefaultHitDispatcher.getDefault(true, true);
     final GoogleAnalyticsClient ga =
-        GoogleAnalyticsClient.createBuilder(trackingId).setHitDispatcher(hitDispatcher).build();
+        GoogleAnalyticsClient.newBuilder(trackingId).setHitDispatcher(hitDispatcher).build();
 
     final DefaultHttpUrlConnectionCallback content = new DefaultHttpUrlConnectionCallback();
     final StringBuilder hit = new StringBuilder();
@@ -491,7 +499,7 @@ public class GoogleAnalyticsClientTest {
     final String userId = "Anything";
 
     final GoogleAnalyticsClient ga =
-        GoogleAnalyticsClient.createBuilder(trackingId)
+        GoogleAnalyticsClient.newBuilder(trackingId)
                              .setUserId(userId)
                              .build();
 
@@ -502,5 +510,74 @@ public class GoogleAnalyticsClientTest {
 
     // Shutdown
     ga.getExecutorService().shutdown();
+  }
+
+  void demo2() {
+    // Create the tracker
+    final String trackingId = "UA-12345-6"; // Your Google Analytics tracking ID
+    final String userId = "Anything";
+    final String documentHostName = "www.abc.com";
+
+    final GoogleAnalyticsClient ga =
+        GoogleAnalyticsClient.newBuilder(trackingId)
+                             .setUserId(userId)
+                             .getOrCreatePerHitParameters()
+                                 .addDocumentHostName(documentHostName)
+                                 .getParent()
+                             .build();
+
+    // Submit requests
+    final String documentPath = "/path/within/application/";
+    ga.hit(HitType.PAGEVIEW).addDocumentPath(documentPath).send();
+
+    // Shutdown
+    ga.getExecutorService().shutdown();
+  }
+
+  @SuppressWarnings("unused")
+  void demo3() {
+    // Create the tracker
+    final String trackingId = "UA-12345-6"; // Your Google Analytics tracking ID
+    final String hit = Parameters.newRequiredBuilder(trackingId)
+        .addHitType(HitType.EXCEPTION)
+        .addExceptionDescription("Something went wrong")
+        .build()
+        .format();
+  }
+
+  @SuppressWarnings("unused")
+  void demo4() {
+    // Create the tracker
+    final String trackingId = "UA-12345-6"; // Your Google Analytics tracking ID
+    final String hit = Parameters.newRequiredBuilder(trackingId)
+        .addHitType(HitType.ITEM)
+        .add(new NoIndexTextParameter(ProtocolSpecification.TRANSACTION_ID, "Trans.1"))
+        .add(new NoIndexTextParameter(ProtocolSpecification.ITEM_NAME, "Item.2"))
+        .add(new OneIndexTextParameter(ProtocolSpecification.PRODUCT_SKU, 23, "SKU.4567"))
+        .build()
+        .format();
+  }
+
+  @SuppressWarnings("unused")
+  void demo5() {
+    // Generic name=value pair
+    final String name = "anything";
+    final String value = "some text";
+
+    // Custom indexed parameter
+    final String formalName = "My parameter";
+    final String nameFormat = "myp_"; // Underscore for the index
+    final ValueType valueType = ValueType.INTEGER;
+    final int maxLength = 0;
+    final ParameterSpecification specification = new CustomParameterSpecification(
+        formalName, nameFormat, valueType, maxLength);
+    final int index = 44;
+    final int value2 = 123;
+
+    final String hit = Parameters.newBuilder()
+        .add(name, value)
+        .add(new OneIndexIntParameter(specification, index, value2))
+        .build()
+        .format();
   }
 }

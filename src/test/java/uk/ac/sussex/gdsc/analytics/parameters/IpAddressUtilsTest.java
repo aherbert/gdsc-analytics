@@ -87,9 +87,11 @@ public class IpAddressUtilsTest {
         "0:0:0:0:0:0:0:0",
         "FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF",
         // Skip start
+        "::FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF",
         "::FFFF:FFFF:FFFF:FFFF:FFFF:FFFF",
         "::FFFF:FFFF:FFFF:FFFF:FFFF:",
         // Skip end
+        "FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF::",
         "FFFF:FFFF:FFFF:FFFF:FFFF:FFFF::",
         "FFFF:FFFF:FFFF:FFFF:FFFF::",
         // Skip middle

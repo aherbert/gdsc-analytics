@@ -86,7 +86,7 @@ public class DefaultHttpUrlConnectionCallback implements HttpUrlConnectionCallba
    * @see URLConnection#getInputStream()
    */
   public byte[] getBytes() {
-    return bytes;
+    return (bytes == null) ? null : bytes.clone();
   }
 
   /**
@@ -116,10 +116,11 @@ public class DefaultHttpUrlConnectionCallback implements HttpUrlConnectionCallba
     // Read byte data assuming UTF-8.
     try (InputStream inputStream = connection.getInputStream()) {
       final ByteArrayOutputStream buffer = new ByteArrayOutputStream(BUFFER_SIZE);
-      int readCount;
       final byte[] data = new byte[BUFFER_SIZE];
-      while ((readCount = inputStream.read(data, 0, data.length)) != -1) {
+      int readCount = inputStream.read(data, 0, data.length);
+      while (readCount != -1) {
         buffer.write(data, 0, readCount);
+        readCount = inputStream.read(data, 0, data.length);
       }
       buffer.flush();
       bytes = buffer.toByteArray();
