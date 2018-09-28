@@ -536,7 +536,7 @@ public class GoogleAnalyticsClientTest {
 
   /**
    * Demo of using the tracker. This code is placed in the project README.md file.
-   * 
+   *
    * @param executorService
    */
   //@formatter:off

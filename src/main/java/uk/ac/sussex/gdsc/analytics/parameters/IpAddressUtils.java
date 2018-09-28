@@ -185,7 +185,8 @@ public final class IpAddressUtils {
 
   //@formatter:off
   /**
-   * Checks if the IP address is a valid IPv6 address including those ending with a IPv4 address, e.g.:
+   * Checks if the IP address is a valid IPv6 address including those ending with a IPv4 address,
+   * e.g.:
    *
    * <ul>
    * <li>FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF (IPv6)
@@ -220,7 +221,8 @@ public final class IpAddressUtils {
 
   //@formatter:off
   /**
-   * Checks if the IP address is a valid IPv6 address not including those ending with a IPv4 address, e.g.:
+   * Checks if the IP address is a valid IPv6 address not including those ending with a IPv4 address,
+   * e.g.:
    *
    * <ul>
    * <li>FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF
