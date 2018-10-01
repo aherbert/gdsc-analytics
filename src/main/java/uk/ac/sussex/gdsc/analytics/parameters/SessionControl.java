@@ -52,11 +52,7 @@ public enum SessionControl {
     this.name = name;
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see java.lang.Enum#toString()
-   */
+  /** {@inheritDoc} */
   @Override
   public String toString() {
     return name;

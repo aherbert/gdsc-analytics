@@ -58,51 +58,31 @@ public class DispatchFuture implements Future<DispatchStatus> {
     return status;
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see java.util.concurrent.Future#cancel(boolean)
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean cancel(boolean mayInterruptIfRunning) {
     return false;
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see java.util.concurrent.Future#isCancelled()
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isCancelled() {
     return false;
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see java.util.concurrent.Future#isDone()
-   */
+  /** {@inheritDoc} */
   @Override
   public boolean isDone() {
     return true;
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see java.util.concurrent.Future#get()
-   */
+  /** {@inheritDoc} */
   @Override
   public DispatchStatus get() {
     return getStatus();
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see java.util.concurrent.Future#get(long, java.util.concurrent.TimeUnit)
-   */
+  /** {@inheritDoc} */
   @Override
   public DispatchStatus get(long timeout, TimeUnit unit) {
     return getStatus();

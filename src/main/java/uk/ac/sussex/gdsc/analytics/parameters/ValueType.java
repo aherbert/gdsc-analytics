@@ -58,11 +58,7 @@ public enum ValueType {
     this.name = super.toString().toLowerCase(Locale.getDefault());
   }
 
-  /*
-   * (non-Javadoc)
-   *
-   * @see java.lang.Enum#toString()
-   */
+  /** {@inheritDoc} */
   @Override
   public String toString() {
     return name;
