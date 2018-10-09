@@ -29,14 +29,14 @@
 
 package uk.ac.sussex.gdsc.analytics;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 @SuppressWarnings("javadoc")
 public class DefaultHttpUrlConnectionCallbackTest {
@@ -65,8 +65,8 @@ public class DefaultHttpUrlConnectionCallbackTest {
     Assertions.assertNull(callback.getBytesAsText());
 
     // Bad content
-    String contentType = "image/gif";
     connection = Mockito.mock(HttpURLConnection.class);
+    String contentType = "image/gif";
     Mockito.doReturn(responseCode).when(connection).getResponseCode();
     Mockito.doReturn(new ByteArrayInputStream(bytes)).when(connection).getInputStream();
     Mockito.doReturn(contentType).when(connection).getContentType();
@@ -79,11 +79,11 @@ public class DefaultHttpUrlConnectionCallbackTest {
     Assertions.assertNull(callback.getBytesAsText());
 
     // Good content
+    connection = Mockito.mock(HttpURLConnection.class);
     responseCode = HttpURLConnection.HTTP_OK;
     final String text = "This should be returned";
     bytes = text.getBytes(StandardCharsets.UTF_8);
     contentType = "blah; charset=utf-8";
-    connection = Mockito.mock(HttpURLConnection.class);
     Mockito.doReturn(responseCode).when(connection).getResponseCode();
     Mockito.doReturn(new ByteArrayInputStream(bytes)).when(connection).getInputStream();
     Mockito.doReturn(contentType).when(connection).getContentType();

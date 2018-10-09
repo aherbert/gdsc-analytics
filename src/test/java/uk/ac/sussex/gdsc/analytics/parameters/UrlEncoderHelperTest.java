@@ -29,16 +29,14 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
-import uk.ac.sussex.gdsc.analytics.parameters.UnsupportedEncodingRuntimeException;
-import uk.ac.sussex.gdsc.analytics.parameters.UrlEncoderHelper;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
 public class UrlEncoderHelperTest {
@@ -116,12 +114,12 @@ public class UrlEncoderHelperTest {
     Assertions.assertEquals(string, decode(encoded));
   }
 
-  private void testEncode(char c) throws Exception {
-    testEncode(new String(new char[] {c}));
+  private void testEncode(char ch) throws Exception {
+    testEncode(new String(new char[] {ch}));
   }
 
-  private static String decode(String s) throws Exception {
-    return URLDecoder.decode(s, "UTF-8");
+  private static String decode(String string) throws Exception {
+    return URLDecoder.decode(string, "UTF-8");
   }
 
   @Test

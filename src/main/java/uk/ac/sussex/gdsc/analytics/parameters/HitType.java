@@ -64,7 +64,6 @@ public enum HitType {
     this.name = name;
   }
 
-  /** {@inheritDoc} */
   @Override
   public String toString() {
     return name;

@@ -29,6 +29,10 @@
 
 package uk.ac.sussex.gdsc.analytics;
 
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -39,10 +43,6 @@ import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 /**
  * This uses the mockito framework to test the dispatch of requests.
@@ -77,9 +77,9 @@ public class DefaultHitDispatcherTest {
   private static URL createUrl() {
     try {
       return new URL("http", "www.abc.com", "/file");
-    } catch (final MalformedURLException e) {
-      e.printStackTrace();
-      Assertions.fail(e.getMessage());
+    } catch (final MalformedURLException ex) {
+      ex.printStackTrace();
+      Assertions.fail(ex.getMessage());
     }
     return null; // For the compiler
   }
@@ -202,7 +202,7 @@ public class DefaultHitDispatcherTest {
   }
 
   @Test
-  public void testSendWithIOException() throws IOException {
+  public void testSendWithIoException() throws IOException {
 
     final IOException exception = new IOException("Test failed getOutputStream");
 

@@ -44,6 +44,9 @@ import uk.ac.sussex.gdsc.analytics.parameters.SessionControlParameter;
 import uk.ac.sussex.gdsc.analytics.parameters.UrlEncoderHelper;
 import uk.ac.sussex.gdsc.analytics.parameters.ValueType;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
@@ -60,9 +63,6 @@ import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 @SuppressWarnings("javadoc")
 public class GoogleAnalyticsClientTest {
 
@@ -78,7 +78,7 @@ public class GoogleAnalyticsClientTest {
   public void testBuilder() {
     // Can build with defaults
     Builder builder = GoogleAnalyticsClient.newBuilder(trackingId);
-    GoogleAnalyticsClient ga = builder.build();
+    builder.build();
 
     // Test getters and setters
     builder = GoogleAnalyticsClient.newBuilder(trackingId);
@@ -118,7 +118,7 @@ public class GoogleAnalyticsClientTest {
     Assertions.assertSame(hitDispatcher, builder.getOrCreateHitDispatcher());
 
     // Build and test the client has the same settings
-    ga = builder.build();
+    GoogleAnalyticsClient ga = builder.build();
     Assertions.assertSame(hitDispatcher, ga.getHitDispatcher());
     Assertions.assertSame(executorService2, ga.getExecutorService());
 
@@ -534,11 +534,10 @@ public class GoogleAnalyticsClientTest {
     demo5();
   }
 
-  /**
-   * Demo of using the tracker. This code is placed in the project README.md file.
-   *
-   * @param executorService
-   */
+  /////////////////////////////////////////////////////////////////////////////////
+  // Demo of using the tracker. This code is placed in the project README.md file.
+  /////////////////////////////////////////////////////////////////////////////////
+
   //@formatter:off
   private static void demo(ExecutorService executorService, HitDispatcher hitDispatcher) {
     // Create the tracker

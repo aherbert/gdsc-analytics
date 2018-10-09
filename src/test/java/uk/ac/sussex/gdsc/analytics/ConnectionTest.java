@@ -29,6 +29,8 @@
 
 package uk.ac.sussex.gdsc.analytics;
 
+import org.junit.jupiter.api.Test;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
@@ -37,8 +39,6 @@ import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import org.junit.jupiter.api.Test;
 
 /**
  * This class exists to determine what happens when there is no Internet connection. This can be

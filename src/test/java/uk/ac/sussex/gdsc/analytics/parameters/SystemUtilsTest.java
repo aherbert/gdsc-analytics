@@ -29,11 +29,11 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
-import java.awt.Dimension;
-import java.awt.GraphicsEnvironment;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.awt.Dimension;
+import java.awt.GraphicsEnvironment;
 
 @SuppressWarnings("javadoc")
 public class SystemUtilsTest {

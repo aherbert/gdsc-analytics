@@ -58,31 +58,26 @@ public class DispatchFuture implements Future<DispatchStatus> {
     return status;
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean cancel(boolean mayInterruptIfRunning) {
     return false;
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isCancelled() {
     return false;
   }
 
-  /** {@inheritDoc} */
   @Override
   public boolean isDone() {
     return true;
   }
 
-  /** {@inheritDoc} */
   @Override
   public DispatchStatus get() {
     return getStatus();
   }
 
-  /** {@inheritDoc} */
   @Override
   public DispatchStatus get(long timeout, TimeUnit unit) {
     return getStatus();

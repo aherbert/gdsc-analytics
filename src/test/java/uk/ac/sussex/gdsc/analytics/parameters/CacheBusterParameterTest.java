@@ -31,15 +31,15 @@ package uk.ac.sussex.gdsc.analytics.parameters;
 
 import uk.ac.sussex.gdsc.analytics.TestUtils;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.regex.Pattern;
-
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.simple.RandomSource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Pattern;
 
 @SuppressWarnings("javadoc")
 public class CacheBusterParameterTest {

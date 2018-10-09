@@ -29,10 +29,10 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
-import java.util.ArrayList;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
 
 @SuppressWarnings("javadoc")
 public class IndexReplacerTest {
@@ -62,26 +62,26 @@ public class IndexReplacerTest {
     testReplaceTo("_one_two_three", "6one99two115three", 6, 99, 115);
     testReplaceTo("o_net_wothr_ee", "o7net100wothr116ee", 7, 100, 116);
 
-    IncorrectCountException e = Assertions.assertThrows(IncorrectCountException.class, () -> {
+    IncorrectCountException ex = Assertions.assertThrows(IncorrectCountException.class, () -> {
       final IndexReplacer replacer = new IndexReplacer("none");
       replacer.replaceTo(new StringBuilder(), 1);
     });
-    Assertions.assertEquals(0, e.getExpected());
-    Assertions.assertEquals(1, e.getObserved());
+    Assertions.assertEquals(0, ex.getExpected());
+    Assertions.assertEquals(1, ex.getObserved());
 
-    e = Assertions.assertThrows(IncorrectCountException.class, () -> {
+    ex = Assertions.assertThrows(IncorrectCountException.class, () -> {
       final IndexReplacer replacer = new IndexReplacer("one_");
       replacer.replaceTo(new StringBuilder());
     });
-    Assertions.assertEquals(1, e.getExpected());
-    Assertions.assertEquals(0, e.getObserved());
+    Assertions.assertEquals(1, ex.getExpected());
+    Assertions.assertEquals(0, ex.getObserved());
 
-    e = Assertions.assertThrows(IncorrectCountException.class, () -> {
+    ex = Assertions.assertThrows(IncorrectCountException.class, () -> {
       final IndexReplacer replacer = new IndexReplacer("one_");
       replacer.replaceTo(new StringBuilder(), 1, 2);
     });
-    Assertions.assertEquals(1, e.getExpected());
-    Assertions.assertEquals(2, e.getObserved());
+    Assertions.assertEquals(1, ex.getExpected());
+    Assertions.assertEquals(2, ex.getObserved());
   }
 
   private static void testReplaceTo(String format, String expected, int... indexes) {

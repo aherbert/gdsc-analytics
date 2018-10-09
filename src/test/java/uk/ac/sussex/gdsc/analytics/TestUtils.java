@@ -33,37 +33,34 @@ import uk.ac.sussex.gdsc.analytics.parameters.CustomParameterSpecification;
 import uk.ac.sussex.gdsc.analytics.parameters.ParameterSpecification;
 import uk.ac.sussex.gdsc.analytics.parameters.ValueType;
 
+import org.apache.commons.rng.UniformRandomProvider;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.apache.commons.rng.UniformRandomProvider;
-
 /**
- * Contains utilities for testing
+ * Contains utilities for testing.
  */
-public class TestUtils {
+public final class TestUtils {
 
   private static final char[] NAME_CHARS;
+  private static ExecutorService defaultExecutorService;
 
   static {
     NAME_CHARS = new char[36];
-    int i = 0;
+    int index = 0;
     for (char c = 'a'; c <= 'z'; c++) {
-      NAME_CHARS[i++] = c;
+      NAME_CHARS[index++] = c;
     }
     for (char c = '0'; c <= '9'; c++) {
-      NAME_CHARS[i++] = c;
+      NAME_CHARS[index++] = c;
     }
-  }
 
-  private TestUtils() {}
-
-  private static ExecutorService defaultExecutorService;
-  static {
     defaultExecutorService =
         Executors.newFixedThreadPool(1, new BackgroundThreadFactory(Thread.NORM_PRIORITY));
   }
 
+  private TestUtils() {}
 
   /**
    * Creates the builder with the given tracking Id.
@@ -74,8 +71,7 @@ public class TestUtils {
    * @return the google analytics client. builder
    */
   public static GoogleAnalyticsClient.Builder createBuilder(String trackingId) {
-    return GoogleAnalyticsClient.newBuilder(trackingId)
-        .setExecutorService(defaultExecutorService);
+    return GoogleAnalyticsClient.newBuilder(trackingId).setExecutorService(defaultExecutorService);
   }
 
   /**

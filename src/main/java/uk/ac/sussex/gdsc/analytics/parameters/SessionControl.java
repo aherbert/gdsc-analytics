@@ -52,7 +52,6 @@ public enum SessionControl {
     this.name = name;
   }
 
-  /** {@inheritDoc} */
   @Override
   public String toString() {
     return name;

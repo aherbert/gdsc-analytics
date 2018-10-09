@@ -31,15 +31,15 @@ package uk.ac.sussex.gdsc.analytics.parameters;
 
 import uk.ac.sussex.gdsc.analytics.TestUtils;
 
-import java.util.ArrayList;
-import java.util.Locale;
-
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.simple.RandomSource;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.Locale;
 
 @SuppressWarnings("javadoc")
 public class ParameterUtilsTest {
@@ -152,21 +152,21 @@ public class ParameterUtilsTest {
 
   @Test
   public void testValidateCount() {
-    IncorrectCountException e;
-    e = Assertions.assertThrows(IncorrectCountException.class, () -> {
+    IncorrectCountException ex;
+    ex = Assertions.assertThrows(IncorrectCountException.class, () -> {
       ParameterUtils.validateCount(1, 2);
     });
-    Assertions.assertEquals(1, e.getExpected());
-    Assertions.assertEquals(2, e.getObserved());
-    Assertions.assertTrue(e.getMessage().contains("<1>"));
-    Assertions.assertTrue(e.getMessage().contains("<2>"));
-    e = Assertions.assertThrows(IncorrectCountException.class, () -> {
+    Assertions.assertEquals(1, ex.getExpected());
+    Assertions.assertEquals(2, ex.getObserved());
+    Assertions.assertTrue(ex.getMessage().contains("<1>"));
+    Assertions.assertTrue(ex.getMessage().contains("<2>"));
+    ex = Assertions.assertThrows(IncorrectCountException.class, () -> {
       ParameterUtils.validateCount(2, 1);
     });
-    Assertions.assertEquals(2, e.getExpected());
-    Assertions.assertEquals(1, e.getObserved());
-    Assertions.assertTrue(e.getMessage().contains("<1>"));
-    Assertions.assertTrue(e.getMessage().contains("<2>"));
+    Assertions.assertEquals(2, ex.getExpected());
+    Assertions.assertEquals(1, ex.getObserved());
+    Assertions.assertTrue(ex.getMessage().contains("<1>"));
+    Assertions.assertTrue(ex.getMessage().contains("<2>"));
 
     for (int i = 0; i < 5; i++) {
       ParameterUtils.validateCount(i, i);
