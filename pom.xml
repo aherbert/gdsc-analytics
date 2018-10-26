@@ -29,6 +29,11 @@ Measurement protocol to collect usage information from a Java application.
   </licenses>
 
   <inceptionYear>2016</inceptionYear>
+  <scm>
+    <connection>scm:git:http://github.com/aherbert/gdsc-analytics.git</connection>
+    <developerConnection>scm:git:https://github.com/aherbert/gdsc-analytics.git</developerConnection>
+    <url>https://github.com/aherbert/gdsc-analytics</url>
+  </scm>
   <issueManagement>
     <system>GitHub</system>
     <url>https://github.com/aherbert/gdsc-analytics/issues</url>
@@ -37,11 +42,16 @@ Measurement protocol to collect usage information from a Java application.
     <system>Travis CI</system>
     <url>https://travis-ci.com/aherbert/gdsc-analytics</url>
   </ciManagement>
-  <scm>
-    <connection>scm:git:git://github.com/aherbert/gdsc-analytics.git</connection>
-    <developerConnection>scm:git:ssh://github.com/aherbert/gdsc-analytics.git</developerConnection>
-    <url>https://github.com/aherbert/gdsc-analytics</url>
-  </scm>
+  <distributionManagement>
+    <snapshotRepository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+    </snapshotRepository>
+    <repository>
+      <id>ossrh</id>
+      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+    </repository>
+  </distributionManagement>
 
   <developers>
     <developer>
@@ -84,7 +94,7 @@ Measurement protocol to collect usage information from a Java application.
     <assertj-core.version>3.11.0</assertj-core.version>
     <mockito-core.version>2.21.0</mockito-core.version>
     <spotbugs.version>3.1.6</spotbugs.version>
-    <pmd.version>6.7.0</pmd.version>
+    <pmd.version>6.8.0</pmd.version>
     <!-- Maven -->
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
@@ -690,16 +700,5 @@ Measurement protocol to collect usage information from a Java application.
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <distributionManagement>
-    <snapshotRepository>
-      <id>ossrh</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-    </snapshotRepository>
-    <repository>
-      <id>ossrh</id>
-      <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-    </repository>
-  </distributionManagement>
 
 </project>
