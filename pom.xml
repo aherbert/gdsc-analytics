@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
@@ -233,6 +232,8 @@ Measurement protocol to collect usage information from a Java application.
             <!-- Set JUL Formatting -->
             <java.util.logging.SimpleFormatter.format><![CDATA[%4$-7s %2$s %5$s%6$s%n]]></java.util.logging.SimpleFormatter.format>
           </systemPropertyVariables>
+          <!-- Fix for OpenJDK 8 now validating class-path attributes in Jar manifests. See https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=912333#63 -->
+          <useSystemClassLoader>false</useSystemClassLoader>
         </configuration>
         <dependencies>
           <dependency>
@@ -540,8 +541,7 @@ Measurement protocol to collect usage information from a Java application.
                 <goals>
                   <goal>check</goal>
                 </goals>
-                <!-- Currently the same as the jacoco profile but halts on
-                  failure -->
+                <!-- Currently the same as the jacoco profile but halts on failure -->
                 <configuration>
                   <rules>
                     <rule>
