@@ -306,14 +306,6 @@ Measurement protocol to collect usage information from a Java application.
           <failOnViolation>false</failOnViolation>
           <printFailingErrors>false</printFailingErrors>
         </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>check</goal>
-              <goal>cpd-check</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
       <plugin>
         <groupId>com.github.spotbugs</groupId>
