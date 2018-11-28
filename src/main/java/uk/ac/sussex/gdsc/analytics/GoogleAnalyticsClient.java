@@ -708,12 +708,15 @@ public class GoogleAnalyticsClient {
    * Creates the {@link HitBuilder} for a pageview hit.
    *
    * <p>This is a utility function to set the required parameters.
+   * 
+   * <p>The document path should begin with a '/' character.
    *
    * @param documentHostName the document host name
    * @param documentPath the document path
    * @return the hit builder
    * @see ParametersBuilder#addDocumentHostName(String)
    * @see ParametersBuilder#addDocumentPath(String)
+   * @throws IllegalArgumentException if the path is not valid
    */
   public HitBuilder<Future<DispatchStatus>> pageview(String documentHostName, String documentPath) {
     return newHitBuilder(HitTypeParameter.PAGEVIEW).addDocumentHostName(documentHostName)
@@ -736,20 +739,20 @@ public class GoogleAnalyticsClient {
   /**
    * Creates the {@link HitBuilder} for an event hit.
    *
-   * <p>This is a utility function to set the required parameters.
+   * <p>This is a utility function to set the required parameters. The event label and/or value can
+   * be set on the returned builder.
    *
    * @param eventCategory the event category
    * @param eventAction the event action
-   * @param eventValue the event value
    * @return the hit builder
    * @see ParametersBuilder#addEventCategory(String)
    * @see ParametersBuilder#addEventAction(String)
+   * @see ParametersBuilder#addEventLabel(String)
    * @see ParametersBuilder#addEventValue(int)
    */
-  public HitBuilder<Future<DispatchStatus>> event(String eventCategory, String eventAction,
-      int eventValue) {
+  public HitBuilder<Future<DispatchStatus>> event(String eventCategory, String eventAction) {
     return newHitBuilder(HitTypeParameter.EVENT).addEventCategory(eventCategory)
-        .addEventAction(eventAction).addEventValue(eventValue);
+        .addEventAction(eventAction);
   }
 
   /**

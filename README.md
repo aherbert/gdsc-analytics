@@ -98,7 +98,7 @@ Builder API
 A Measurement Protocol hit is simply a set of `name=value` pairs separated by
 the `&` character:
 
-    v=1&t=event&tid=UA-12345-6&cid=Test&cd1=StartUp
+    v=1&t=event&tid=UA-12345-6&uid=Test&cd1=StartUp
 
 The Builder API allows adding named Measurement Protocol parameters to a
 collection. The parameters collection can be used to construct a protocol hit

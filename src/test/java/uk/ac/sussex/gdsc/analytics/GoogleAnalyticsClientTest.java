@@ -215,12 +215,10 @@ public class GoogleAnalyticsClientTest {
 
     final String eventCategory = "cat1";
     final String eventAction = "act1";
-    final int eventValue = 44;
-    hit = ga.event(eventCategory, eventAction, eventValue).build().format();
+    hit = ga.event(eventCategory, eventAction).build().format();
     testContains(hit, "t=event");
     testContains(hit, "ec=" + eventCategory);
     testContains(hit, "ea=" + eventAction);
-    testContains(hit, "ev=" + eventValue);
 
     final String transactionId = "34657-ABC";
     hit = ga.transaction(transactionId).build().format();

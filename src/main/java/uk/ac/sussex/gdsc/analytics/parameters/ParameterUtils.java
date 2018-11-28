@@ -79,7 +79,7 @@ public final class ParameterUtils {
    * @throws IllegalArgumentException If the string is empty
    */
   public static String requireNotEmpty(String string, String message) {
-    if (string == null || string.length() == 0) {
+    if (string == null || string.isEmpty()) {
       throw new IllegalArgumentException(message);
     }
     return string;

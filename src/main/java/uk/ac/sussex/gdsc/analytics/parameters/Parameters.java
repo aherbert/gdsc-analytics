@@ -382,7 +382,7 @@ public class Parameters implements FormattedParameter {
     ////////////////////////////////////////////////////////
 
     /**
-     * Adds the client id.
+     * Adds the client id (cid).
      *
      * <p>This field is required if User ID (uid) is not specified in the request.
      *
@@ -399,7 +399,7 @@ public class Parameters implements FormattedParameter {
     }
 
     /**
-     * Adds the client id.
+     * Adds the client id (cid).
      *
      * <p>This field is required if User ID (uid) is not specified in the request.
      *
@@ -412,7 +412,7 @@ public class Parameters implements FormattedParameter {
     }
 
     /**
-     * Adds the user id.
+     * Adds the user id (uid).
      *
      * <p>This field is required if Client ID (cid) is not specified in the request.
      *

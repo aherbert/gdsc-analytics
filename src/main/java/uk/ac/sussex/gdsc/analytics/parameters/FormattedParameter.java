@@ -146,7 +146,7 @@ public interface FormattedParameter {
   /**
    * Create an empty {@link FormattedParameter}.
    *
-   * <p>The returned implementation will behave as if the parameters where the empty String
+   * <p>The returned implementation will behave as if the parameters were the empty String
    * {@code ""}.
    *
    * @return the empty parameters
