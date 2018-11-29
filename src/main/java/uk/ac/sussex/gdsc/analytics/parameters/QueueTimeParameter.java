@@ -68,9 +68,9 @@ public class QueueTimeParameter extends NoIndexParameter {
 
   /**
    * Append the queue time parameter to the provided {@link StringBuilder}.
-   * 
+   *
    * <p>The queue time parameter will be equal to {@code System.currentTimeMillis() - timestamp}.
-   * 
+   *
    * <p>This method should be used immediately prior to sending the hit, e.g. when constructing a
    * hit URL asynchronously.
    *

@@ -708,7 +708,7 @@ public class GoogleAnalyticsClient {
    * Creates the {@link HitBuilder} for a pageview hit.
    *
    * <p>This is a utility function to set the required parameters.
-   * 
+   *
    * <p>The document path should begin with a '/' character.
    *
    * @param documentHostName the document host name
