@@ -373,4 +373,21 @@ public class ParameterUtilsTest {
     });
     ParameterUtils.validateIpAddress("0.0.0.1");
   }
+
+  @Test
+  public void testAppendAndIfNotEmpty() {
+    final StringBuilder sb = new StringBuilder();
+    ParameterUtils.appendAndIfNotEmpty(sb);
+    Assertions.assertEquals("", sb.toString(), "Should not append to empty string builder");
+    sb.append("something");
+    // Test it keeps adding '&'. This is a simple method that does not check for '&'
+    // favouring speed over correctness. A URL get parameter string can be parsed if it contains
+    // multiple '&' characters, e.g. test=1&&&&another=2.
+    String expected = sb.toString();
+    for (int i = 0; i < 3; i++) {
+      ParameterUtils.appendAndIfNotEmpty(sb);
+      expected += "&";
+      Assertions.assertEquals(expected, sb.toString(), "Should append '&' to non-empty builder");
+    }
+  }
 }

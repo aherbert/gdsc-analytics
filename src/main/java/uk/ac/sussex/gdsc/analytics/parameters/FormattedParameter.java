@@ -79,10 +79,7 @@ public interface FormattedParameter {
    * @return the string builder
    */
   default StringBuilder appendTo(StringBuilder sb) {
-    if (sb.length() != 0) {
-      sb.append(Constants.AND);
-    }
-    return formatTo(sb);
+    return formatTo(ParameterUtils.appendAndIfNotEmpty(sb));
   }
 
   /**

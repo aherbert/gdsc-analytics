@@ -280,8 +280,7 @@ public class DefaultHitDispatcher implements HitDispatcher {
     } else {
       sb = new StringBuilder(hit);
     }
-    QueueTimeParameter.appendTo(sb, timestamp);
-    return sb;
+    return QueueTimeParameter.appendTo(sb, timestamp);
   }
 
   /**

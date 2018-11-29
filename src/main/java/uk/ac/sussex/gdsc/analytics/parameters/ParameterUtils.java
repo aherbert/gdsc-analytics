@@ -351,4 +351,23 @@ public final class ParameterUtils {
   public static boolean isNotEmpty(String string) {
     return string != null && string.length() > 0;
   }
+
+  /**
+   * Append the '<strong>{@code &}</strong>' (Ampersand) character if the string builder is not
+   * empty.
+   *
+   * <p>Note: This does not check if the last character is already '<strong>{@code &}</strong>'
+   * favouring speed over correctness.
+   *
+   * <p>This can be used to chain parameters onto an existing parameter string.
+   *
+   * @param sb the string builder
+   * @return the string builder
+   */
+  public static StringBuilder appendAndIfNotEmpty(StringBuilder sb) {
+    if (sb.length() != 0) {
+      sb.append(Constants.AND);
+    }
+    return sb;
+  }
 }
