@@ -98,9 +98,7 @@ Measurement protocol to collect usage information from a Java application.
     <mockito-core.version>2.21.0</mockito-core.version>
     <spotbugs.version>3.1.6</spotbugs.version>
     <pmd.version>6.8.0</pmd.version>
-    <nexus-staging-maven-plugin.version>1.6.7</nexus-staging-maven-plugin.version>
-    <build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
-    <!-- Maven -->
+    <!-- Maven plugins -->
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
@@ -118,6 +116,8 @@ Measurement protocol to collect usage information from a Java application.
     <maven-jxr-plugin.version>2.5</maven-jxr-plugin.version>
     <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
     <maven-deploy-plugin.version>3.0.0</maven-deploy-plugin.version>
+    <nexus-staging-maven-plugin.version>1.6.7</nexus-staging-maven-plugin.version>
+    <build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
     <!-- JaCoCo Checks -->
     <org.jacoco.class.covered>0.96</org.jacoco.class.covered>
     <org.jacoco.instruction.covered>0.8</org.jacoco.instruction.covered>
