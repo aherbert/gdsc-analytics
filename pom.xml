@@ -475,6 +475,8 @@ Measurement protocol to collect usage information from a Java application.
               <serverId>ossrh</serverId>
               <nexusUrl>https://oss.sonatype.org/</nexusUrl>
               <autoReleaseAfterClose>true</autoReleaseAfterClose>
+              <!-- Not required for snapshot -->
+              <skipStaging>true</skipStaging>
             </configuration>
           </plugin>
         </plugins>
