@@ -16,7 +16,7 @@ after_success:
 deploy:
   provider: script
   script:
-  - if grep '<version>.*SNAPSHOT</version>' pom.xml -q; then
+  - if grep --quiet '<version>.*SNAPSHOT</version>' pom.xml; then
       mvn deploy -P snapshot-release --settings $DEPLOY_DIR/settings.xml -DskipTests=true;
     fi
   skip_cleanup: true
