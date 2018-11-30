@@ -17,7 +17,7 @@ after_success:
 
 deploy:
   provider: script
-  script: $DEPLOY_DIR/publish.sh
+  script: mvn deploy -P snapshot-release --settings $DEPLOY_DIR/settings.xml -DskipTests=true
   skip_cleanup: true
   on:
     branch: master
