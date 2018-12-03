@@ -103,7 +103,6 @@ Measurement protocol to collect usage information from a Java application.
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
     <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
-    <maven-assembly-plugin.version>3.1.0</maven-assembly-plugin.version>
     <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
     <maven-surefire-plugin.version>2.22.0</maven-surefire-plugin.version>
     <maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
@@ -147,22 +146,6 @@ Measurement protocol to collect usage information from a Java application.
             <compilerArgs>
               <arg>-Xlint:all</arg>
             </compilerArgs>
-          </configuration>
-        </plugin>
-        <plugin>
-          <artifactId>maven-assembly-plugin</artifactId>
-          <version>${maven-assembly-plugin.version}</version>
-          <configuration>
-            <descriptorRefs>
-              <descriptorRef>jar-with-dependencies</descriptorRef>
-            </descriptorRefs>
-            <archive>
-              <manifest>
-                <addClasspath>true</addClasspath>
-                <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-                <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-              </manifest>
-            </archive>
           </configuration>
         </plugin>
         <plugin>
