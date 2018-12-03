@@ -91,7 +91,6 @@ Measurement protocol to collect usage information from a Java application.
     <org.jacoco.version>0.8.1</org.jacoco.version>
     <license-maven-plugin.version>1.16</license-maven-plugin.version>
     <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
-    <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
     <coveralls-maven-plugin.version>4.3.0</coveralls-maven-plugin.version>
     <commons-codec.version>1.11</commons-codec.version>
     <assertj-core.version>3.11.0</assertj-core.version>
