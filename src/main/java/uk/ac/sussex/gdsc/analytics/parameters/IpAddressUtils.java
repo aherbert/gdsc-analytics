@@ -62,7 +62,7 @@ public final class IpAddressUtils {
   private static final Pattern IPV4_PATTERN = Pattern.compile(IPV4_REGEX);
 
   /**
-   * Maximum length of an unsigned short expressed using Hex (i.e. 0xFFFF = 4 characters).
+   * Maximum length of an unsigned short expressed using Hex (0xFFFF = 4 characters).
    *
    * <p>This is the maximum allowed length of any part of an IPv6 address.
    */
@@ -118,7 +118,7 @@ public final class IpAddressUtils {
 
   //@formatter:off
   /**
-   * Checks if the IP address is a valid IPv4 or IPv6 address, e.g.:
+   * Checks if the IP address is a valid IPv4 or IPv6 address. For example:
    *
    * <ul>
    * <li>0-255 . 0-255 . 0-255 . 0-255 (IPv4)
@@ -170,7 +170,7 @@ public final class IpAddressUtils {
   }
 
   /**
-   * Checks if the IP address is a valid IPv4 address:
+   * Checks if the IP address is a valid IPv4 address. Validates the format:
    *
    * <pre>
    * 0-255 . 0-255 . 0-255 . 0-255
@@ -185,8 +185,8 @@ public final class IpAddressUtils {
 
   //@formatter:off
   /**
-   * Checks if the IP address is a valid IPv6 address including those ending with a IPv4 address,
-   * e.g.:
+   * Checks if the IP address is a valid IPv6 address including those ending with a IPv4 address.
+   * For example:
    *
    * <ul>
    * <li>FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF (IPv6)
@@ -222,7 +222,7 @@ public final class IpAddressUtils {
   //@formatter:off
   /**
    * Checks if the IP address is a valid IPv6 address not including those ending with a IPv4
-   * address, e.g.:
+   * address. For example:
    *
    * <ul>
    * <li>FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF
@@ -318,7 +318,7 @@ public final class IpAddressUtils {
   }
 
   /**
-   * Gets the skip index, i.e. the location in the parts array which is empty.
+   * Gets the skip index "::", the location in the parts array which is empty.
    *
    * <p>This ignores empty parts so the index is in the range 1 to parts.length - 2.
    *
