@@ -325,7 +325,7 @@ public final class ParameterUtils {
   /**
    * Append the currency value to the {@link StringBuilder}.
    *
-   * <p>Current the format expected for Google Analytics current is unknown. This uses
+   * <p>Note: The format expected for Google Analytics is unknown. This uses
    * {@link NumberFormat#getCurrencyInstance(Locale)}.
    *
    * @param sb the string builder
@@ -335,10 +335,6 @@ public final class ParameterUtils {
    */
   public static StringBuilder appendCurrencyTo(StringBuilder sb, Locale locale, double value) {
     final NumberFormat formatter = NumberFormat.getCurrencyInstance(locale);
-    // It is unclear what to pass for the field position when appending to a
-    // StringBuilder. The formatter uses package level classes that do nothing
-    // if you pass them to the format(double) method:
-    // Just call the default to get a string then copy the output.
     return sb.append(formatter.format(value));
   }
 
