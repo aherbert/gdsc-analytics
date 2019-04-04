@@ -185,8 +185,7 @@ public class GoogleAnalyticsClient {
           (perSessionParameters == null) ? FormattedParameter.empty()
               : perSessionParameters.build();
 
-      return new GoogleAnalyticsClient(clientParameters, sessionParameters, getSessionTimeout(),
-          getOrCreateExecutorService(), getOrCreateHitDispatcher());
+      return new GoogleAnalyticsClient(clientParameters, sessionParameters, this);
     }
 
     /**
@@ -611,21 +610,16 @@ public class GoogleAnalyticsClient {
    *
    * @param clientParameters The client parameters (sent with every hit)
    * @param sessionParameters The session parameters (resent with each new session)
-   * @param timeout the timeout
-   * @param executorService The executor service for dispatching background requests
-   * @param hitDispatcher the hit dispatcher
+   * @param builder the builder
    */
   private GoogleAnalyticsClient(FormattedParameter clientParameters,
-      FormattedParameter sessionParameters, long timeout, ExecutorService executorService,
-      HitDispatcher hitDispatcher) {
-    Objects.requireNonNull(clientParameters, "Client parameters");
-    Objects.requireNonNull(sessionParameters, "Session parameters");
-    this.executorService = Objects.requireNonNull(executorService, "Executor service");
-    this.hitDispatcher = Objects.requireNonNull(hitDispatcher, "Hit dispatcher");
-    // Generate state
-    this.clientParameters = clientParameters.freeze();
-    this.sessionParameters = sessionParameters.freeze();
-    session = new Session(timeout);
+      FormattedParameter sessionParameters, Builder builder) {
+    // Freeze the parameters
+    this.clientParameters = Objects.requireNonNull(clientParameters, "Client parameters").freeze();
+    this.sessionParameters = Objects.requireNonNull(sessionParameters, "Session parameters").freeze();
+    executorService = builder.getOrCreateExecutorService();
+    hitDispatcher = builder.getOrCreateHitDispatcher();
+    session = new Session(builder.getSessionTimeout());
   }
 
   /**
