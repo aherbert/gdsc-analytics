@@ -5,3 +5,4 @@
 /reference/*.htm*
 /reference/*.java
 /reference/*.txt
+/.checkstyle
