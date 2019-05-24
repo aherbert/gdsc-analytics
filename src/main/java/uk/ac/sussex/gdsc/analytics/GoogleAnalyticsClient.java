@@ -616,7 +616,8 @@ public class GoogleAnalyticsClient {
       FormattedParameter sessionParameters, Builder builder) {
     // Freeze the parameters
     this.clientParameters = Objects.requireNonNull(clientParameters, "Client parameters").freeze();
-    this.sessionParameters = Objects.requireNonNull(sessionParameters, "Session parameters").freeze();
+    this.sessionParameters =
+        Objects.requireNonNull(sessionParameters, "Session parameters").freeze();
     executorService = builder.getOrCreateExecutorService();
     hitDispatcher = builder.getOrCreateHitDispatcher();
     session = new Session(builder.getSessionTimeout());

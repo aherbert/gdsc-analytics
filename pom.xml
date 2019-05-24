@@ -95,7 +95,7 @@ Measurement protocol to collect usage information from a Java application.
     <assertj-core.version>3.11.0</assertj-core.version>
     <mockito-core.version>2.21.0</mockito-core.version>
     <spotbugs.version>3.1.6</spotbugs.version>
-    <checkstyle.version>8.18</checkstyle.version>
+    <checkstyle.version>8.20</checkstyle.version>
     <pmd.version>6.8.0</pmd.version>
     <!-- Maven plugins -->
     <maven.compiler.source>1.8</maven.compiler.source>
