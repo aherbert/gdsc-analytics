@@ -29,10 +29,9 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
+import java.util.UUID;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.util.UUID;
 
 @SuppressWarnings("javadoc")
 public class ClientIdParameterTest {

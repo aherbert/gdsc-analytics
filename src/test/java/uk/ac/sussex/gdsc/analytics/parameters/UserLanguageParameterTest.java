@@ -29,10 +29,9 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
+import java.util.Locale;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.util.Locale;
 
 @SuppressWarnings("javadoc")
 public class UserLanguageParameterTest {

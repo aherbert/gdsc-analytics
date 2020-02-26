@@ -52,7 +52,7 @@ Measurement protocol to collect usage information from a Java application.
     </repository>
     <site>
       <id>${project.artifactId}-site</id>
-      <url>file://${parent.dir}/mvn-repo</url>
+      <url>file://${basedir}/mvn-repo</url>
     </site>
   </distributionManagement>
 
@@ -95,7 +95,7 @@ Measurement protocol to collect usage information from a Java application.
     <assertj-core.version>3.11.0</assertj-core.version>
     <mockito-core.version>2.21.0</mockito-core.version>
     <spotbugs.version>3.1.6</spotbugs.version>
-    <checkstyle.version>8.20</checkstyle.version>
+    <checkstyle.version>8.29</checkstyle.version>
     <pmd.version>6.8.0</pmd.version>
     <!-- Maven plugins -->
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -109,7 +109,7 @@ Measurement protocol to collect usage information from a Java application.
     <maven-changes-plugin.version>2.12.1</maven-changes-plugin.version>
     <maven-site-plugin.version>3.7.1</maven-site-plugin.version>
     <maven-project-info-reports-plugin.version>3.0.0</maven-project-info-reports-plugin.version>
-    <maven-checkstyle-plugin.version>3.0.0</maven-checkstyle-plugin.version>
+    <maven-checkstyle-plugin.version>3.1.0</maven-checkstyle-plugin.version>
     <maven-pmd-plugin.version>3.10.0</maven-pmd-plugin.version>
     <maven-jxr-plugin.version>2.5</maven-jxr-plugin.version>
     <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
@@ -308,6 +308,7 @@ Measurement protocol to collect usage information from a Java application.
         <artifactId>maven-checkstyle-plugin</artifactId>
         <configuration>
           <configLocation>${basedir}/src/main/resources/checkstyle/checkstyle.xml</configLocation>
+          <suppressionsLocation>${basedir}/src/main/resources/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
           <encoding>UTF-8</encoding>
           <consoleOutput>true</consoleOutput>
           <failsOnError>true</failsOnError>
@@ -402,6 +403,7 @@ Measurement protocol to collect usage information from a Java application.
         <version>${maven-checkstyle-plugin.version}</version>
         <configuration>
           <configLocation>${basedir}/src/main/resources/checkstyle/checkstyle.xml</configLocation>
+          <suppressionsLocation>${basedir}/src/main/resources/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
           <encoding>UTF-8</encoding>
           <linkXRef>true</linkXRef>
           <enableRulesSummary>false</enableRulesSummary>

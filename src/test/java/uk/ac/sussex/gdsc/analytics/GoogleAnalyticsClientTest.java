@@ -29,24 +29,6 @@
 
 package uk.ac.sussex.gdsc.analytics;
 
-import uk.ac.sussex.gdsc.analytics.GoogleAnalyticsClient.Builder;
-import uk.ac.sussex.gdsc.analytics.parameters.CustomParameterSpecification;
-import uk.ac.sussex.gdsc.analytics.parameters.HitType;
-import uk.ac.sussex.gdsc.analytics.parameters.NoIndexTextParameter;
-import uk.ac.sussex.gdsc.analytics.parameters.OneIndexIntParameter;
-import uk.ac.sussex.gdsc.analytics.parameters.OneIndexTextParameter;
-import uk.ac.sussex.gdsc.analytics.parameters.ParameterSpecification;
-import uk.ac.sussex.gdsc.analytics.parameters.Parameters;
-import uk.ac.sussex.gdsc.analytics.parameters.Parameters.PartialBuilder;
-import uk.ac.sussex.gdsc.analytics.parameters.ProtocolSpecification;
-import uk.ac.sussex.gdsc.analytics.parameters.ProtocolVersionParameter;
-import uk.ac.sussex.gdsc.analytics.parameters.SessionControlParameter;
-import uk.ac.sussex.gdsc.analytics.parameters.UrlEncoderHelper;
-import uk.ac.sussex.gdsc.analytics.parameters.ValueType;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
@@ -62,6 +44,22 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import uk.ac.sussex.gdsc.analytics.GoogleAnalyticsClient.Builder;
+import uk.ac.sussex.gdsc.analytics.parameters.CustomParameterSpecification;
+import uk.ac.sussex.gdsc.analytics.parameters.HitType;
+import uk.ac.sussex.gdsc.analytics.parameters.NoIndexTextParameter;
+import uk.ac.sussex.gdsc.analytics.parameters.OneIndexIntParameter;
+import uk.ac.sussex.gdsc.analytics.parameters.OneIndexTextParameter;
+import uk.ac.sussex.gdsc.analytics.parameters.ParameterSpecification;
+import uk.ac.sussex.gdsc.analytics.parameters.Parameters;
+import uk.ac.sussex.gdsc.analytics.parameters.Parameters.PartialBuilder;
+import uk.ac.sussex.gdsc.analytics.parameters.ProtocolSpecification;
+import uk.ac.sussex.gdsc.analytics.parameters.ProtocolVersionParameter;
+import uk.ac.sussex.gdsc.analytics.parameters.SessionControlParameter;
+import uk.ac.sussex.gdsc.analytics.parameters.UrlEncoderHelper;
+import uk.ac.sussex.gdsc.analytics.parameters.ValueType;
 
 @SuppressWarnings("javadoc")
 public class GoogleAnalyticsClientTest {

@@ -29,10 +29,9 @@
 
 package uk.ac.sussex.gdsc.analytics;
 
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("javadoc")
 public class DispatchFutureTest {

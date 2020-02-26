@@ -29,6 +29,12 @@
 
 package uk.ac.sussex.gdsc.analytics;
 
+import java.util.Objects;
+import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.ThreadFactory;
 import uk.ac.sussex.gdsc.analytics.parameters.FormattedParameter;
 import uk.ac.sussex.gdsc.analytics.parameters.HitType;
 import uk.ac.sussex.gdsc.analytics.parameters.HitTypeParameter;
@@ -41,13 +47,6 @@ import uk.ac.sussex.gdsc.analytics.parameters.Parameters.PartialBuilder;
 import uk.ac.sussex.gdsc.analytics.parameters.Parameters.RequiredBuilder;
 import uk.ac.sussex.gdsc.analytics.parameters.ProtocolSpecification;
 import uk.ac.sussex.gdsc.analytics.parameters.SessionControlParameter;
-
-import java.util.Objects;
-import java.util.UUID;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ThreadFactory;
 
 /**
  * Send custom requests to Google Analytics using the <a href=

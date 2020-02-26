@@ -29,8 +29,6 @@
 
 package uk.ac.sussex.gdsc.analytics;
 
-import uk.ac.sussex.gdsc.analytics.parameters.QueueTimeParameter;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -42,6 +40,7 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import uk.ac.sussex.gdsc.analytics.parameters.QueueTimeParameter;
 
 /**
  * Sends hit requests to the Google Analytics server.

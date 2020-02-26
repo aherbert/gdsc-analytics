@@ -29,10 +29,9 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
+import java.util.ArrayList;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
 
 @SuppressWarnings("javadoc")
 public class IndexReplacerTest {

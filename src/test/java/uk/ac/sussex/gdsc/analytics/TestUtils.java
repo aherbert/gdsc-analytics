@@ -29,14 +29,12 @@
 
 package uk.ac.sussex.gdsc.analytics;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import org.apache.commons.rng.UniformRandomProvider;
 import uk.ac.sussex.gdsc.analytics.parameters.CustomParameterSpecification;
 import uk.ac.sussex.gdsc.analytics.parameters.ParameterSpecification;
 import uk.ac.sussex.gdsc.analytics.parameters.ValueType;
-
-import org.apache.commons.rng.UniformRandomProvider;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * Contains utilities for testing.

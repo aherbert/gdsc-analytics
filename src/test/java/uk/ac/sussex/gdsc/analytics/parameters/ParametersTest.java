@@ -29,17 +29,6 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
-import uk.ac.sussex.gdsc.analytics.TestUtils;
-import uk.ac.sussex.gdsc.analytics.parameters.Parameters.Builder;
-import uk.ac.sussex.gdsc.analytics.parameters.Parameters.HitBuilder;
-import uk.ac.sussex.gdsc.analytics.parameters.Parameters.PartialBuilder;
-
-import org.apache.commons.rng.UniformRandomProvider;
-import org.apache.commons.rng.simple.RandomSource;
-import org.assertj.core.api.AbstractUrlAssert;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -48,6 +37,15 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.UUID;
 import java.util.function.Consumer;
+import org.apache.commons.rng.UniformRandomProvider;
+import org.apache.commons.rng.simple.RandomSource;
+import org.assertj.core.api.AbstractUrlAssert;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
+import uk.ac.sussex.gdsc.analytics.TestUtils;
+import uk.ac.sussex.gdsc.analytics.parameters.Parameters.Builder;
+import uk.ac.sussex.gdsc.analytics.parameters.Parameters.HitBuilder;
+import uk.ac.sussex.gdsc.analytics.parameters.Parameters.PartialBuilder;
 
 @SuppressWarnings("javadoc")
 public class ParametersTest {

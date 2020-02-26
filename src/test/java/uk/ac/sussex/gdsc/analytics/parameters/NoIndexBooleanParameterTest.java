@@ -29,12 +29,11 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
-import uk.ac.sussex.gdsc.analytics.TestUtils;
-
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.simple.RandomSource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import uk.ac.sussex.gdsc.analytics.TestUtils;
 
 @SuppressWarnings("javadoc")
 public class NoIndexBooleanParameterTest {

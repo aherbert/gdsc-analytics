@@ -29,12 +29,11 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
+import java.util.regex.Pattern;
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.simple.RandomSource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.util.regex.Pattern;
 
 @SuppressWarnings("javadoc")
 public class QueueTimeParameterTest {

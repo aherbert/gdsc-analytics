@@ -29,14 +29,13 @@
 
 package uk.ac.sussex.gdsc.analytics;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 @SuppressWarnings("javadoc")
 public class DefaultHttpUrlConnectionCallbackTest {

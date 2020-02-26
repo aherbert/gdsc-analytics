@@ -29,14 +29,13 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
 public class UrlEncoderHelperTest {

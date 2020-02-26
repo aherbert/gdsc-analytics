@@ -29,10 +29,9 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
-import uk.ac.sussex.gdsc.analytics.TestUtils;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import uk.ac.sussex.gdsc.analytics.TestUtils;
 
 /**
  * This BaseParameter class is abstract. But has some functionality that can be tested with a dummy

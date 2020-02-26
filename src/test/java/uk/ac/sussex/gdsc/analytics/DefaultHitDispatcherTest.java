@@ -29,10 +29,6 @@
 
 package uk.ac.sussex.gdsc.analytics;
 
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -43,6 +39,9 @@ import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 /**
  * This uses the mockito framework to test the dispatch of requests.
