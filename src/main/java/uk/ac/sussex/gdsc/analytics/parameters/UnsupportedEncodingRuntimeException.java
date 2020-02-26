@@ -5,7 +5,7 @@
  * The GDSC Analytics package contains code to use the Google Analytics
  * Measurement protocol to collect usage information from a Java application.
  * %%
- * Copyright (C) 2016 - 2018 Alex Herbert
+ * Copyright (C) 2016 - 2020 Alex Herbert
  * %%
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
