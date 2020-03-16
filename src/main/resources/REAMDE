@@ -1,7 +1,0 @@
-Used for Java resources. 
-
-This file ensures that the directory can be added to the Git repository 
-since git does not support empty directories.
-
-The resources folder (even if empty) is required when building the project 
-using Eclipse.

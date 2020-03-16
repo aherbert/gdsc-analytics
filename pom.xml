@@ -307,8 +307,8 @@ Measurement protocol to collect usage information from a Java application.
       <plugin>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <configuration>
-          <configLocation>${basedir}/src/main/resources/checkstyle/checkstyle.xml</configLocation>
-          <suppressionsLocation>${basedir}/src/main/resources/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
+          <configLocation>${basedir}/src/conf/checkstyle/checkstyle.xml</configLocation>
+          <suppressionsLocation>${basedir}/src/conf/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
           <encoding>UTF-8</encoding>
           <consoleOutput>true</consoleOutput>
           <failsOnError>true</failsOnError>
@@ -332,7 +332,7 @@ Measurement protocol to collect usage information from a Java application.
           <skipEmptyReport>false</skipEmptyReport>
           <analysisCache>true</analysisCache>
           <rulesets>
-            <ruleset>${basedir}/src/main/resources/pmd/pmd-ruleset.xml</ruleset>
+            <ruleset>${basedir}/src/conf/pmd/pmd-ruleset.xml</ruleset>
           </rulesets>
           <failOnViolation>false</failOnViolation>
           <printFailingErrors>false</printFailingErrors>
@@ -345,7 +345,7 @@ Measurement protocol to collect usage information from a Java application.
         <configuration>
           <threshold>Normal</threshold>
           <effort>Default</effort>
-          <excludeFilterFile>${basedir}/src/main/resources/spotbugs/spotbugs-exclude-filter.xml</excludeFilterFile>
+          <excludeFilterFile>${basedir}/src/conf/spotbugs/spotbugs-exclude-filter.xml</excludeFilterFile>
         </configuration>
       </plugin>
       <!-- use of mvn release:prepeare release perform should use the nexus release profile -->
@@ -361,12 +361,6 @@ Measurement protocol to collect usage information from a Java application.
         </configuration>
       </plugin>
     </plugins>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-        <filtering>true</filtering>
-      </resource>
-    </resources>
   </build>
 
   <reporting>
@@ -402,8 +396,8 @@ Measurement protocol to collect usage information from a Java application.
         <artifactId>maven-checkstyle-plugin</artifactId>
         <version>${maven-checkstyle-plugin.version}</version>
         <configuration>
-          <configLocation>${basedir}/src/main/resources/checkstyle/checkstyle.xml</configLocation>
-          <suppressionsLocation>${basedir}/src/main/resources/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
+          <configLocation>${basedir}/src/conf/checkstyle/checkstyle.xml</configLocation>
+          <suppressionsLocation>${basedir}/src/conf/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
           <encoding>UTF-8</encoding>
           <linkXRef>true</linkXRef>
           <enableRulesSummary>false</enableRulesSummary>
@@ -425,7 +419,7 @@ Measurement protocol to collect usage information from a Java application.
           <skipEmptyReport>false</skipEmptyReport>
           <analysisCache>true</analysisCache>
           <rulesets>
-            <ruleset>${basedir}/src/main/resources/pmd/pmd-ruleset.xml</ruleset>
+            <ruleset>${basedir}/src/conf/pmd/pmd-ruleset.xml</ruleset>
           </rulesets>
         </configuration>
         <reportSets>
@@ -444,7 +438,7 @@ Measurement protocol to collect usage information from a Java application.
         <configuration>
           <threshold>Normal</threshold>
           <effort>Default</effort>
-          <excludeFilterFile>${basedir}/src/main/resources/spotbugs/spotbugs-exclude-filter.xml</excludeFilterFile>
+          <excludeFilterFile>${basedir}/src/conf/spotbugs/spotbugs-exclude-filter.xml</excludeFilterFile>
         </configuration>
         <reportSets>
           <reportSet>
