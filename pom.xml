@@ -115,6 +115,7 @@ Measurement protocol to collect usage information from a Java application.
     <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
     <nexus-staging-maven-plugin.version>1.6.7</nexus-staging-maven-plugin.version>
     <build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
+    <formatter-maven-plugin.version>2.11.0</formatter-maven-plugin.version>
     <!-- JaCoCo Checks -->
     <org.jacoco.class.covered>0.96</org.jacoco.class.covered>
     <org.jacoco.instruction.covered>0.8</org.jacoco.instruction.covered>
@@ -241,6 +242,11 @@ Measurement protocol to collect usage information from a Java application.
           <artifactId>nexus-staging-maven-plugin</artifactId>
           <version>${nexus-staging-maven-plugin.version}</version>
         </plugin>
+        <plugin>
+          <groupId>net.revelc.code.formatter</groupId>
+          <artifactId>formatter-maven-plugin</artifactId>
+          <version>${formatter-maven-plugin.version}</version>
+        </plugin>
       </plugins>
     </pluginManagement>
     <plugins>
@@ -302,6 +308,17 @@ Measurement protocol to collect usage information from a Java application.
           <excludes>
             <exclude>**/main/resources/checkstyle/checkstyle.xml</exclude>
           </excludes>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>net.revelc.code.formatter</groupId>
+        <artifactId>formatter-maven-plugin</artifactId>
+        <configuration>
+          <!-- Resource on the classpath.
+            This does not work so is specified by the property 'configfile' in the properties.
+            -->
+          <configFile>eclipse/eclipse-code-format.xml</configFile>
+          <overrideConfigCompilerVersion>true</overrideConfigCompilerVersion>
         </configuration>
       </plugin>
       <plugin>
