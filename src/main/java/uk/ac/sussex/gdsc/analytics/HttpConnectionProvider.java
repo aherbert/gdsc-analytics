@@ -52,8 +52,7 @@ interface HttpConnectionProvider {
    * @see URL#openConnection()
    * @see URL#openConnection(Proxy)
    */
-  default HttpURLConnection openConnection(URL url, Proxy proxy)
-      throws IOException {
+  default HttpURLConnection openConnection(URL url, Proxy proxy) throws IOException {
     return (HttpURLConnection) ((proxy == null) ? url.openConnection() : url.openConnection(proxy));
   }
 }
