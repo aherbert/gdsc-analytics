@@ -286,7 +286,7 @@ code are important to the community.
 To comply with the
 [General Data Protection Regulation (GDPR)](https://ico.org.uk/for-organisations/guide-to-the-general-data-protection-regulation-gdpr/):
 - All data collected is anonymous and cannot be linked to an individual
-- The GDSC ImageJ plugins allow tracking to be disabled
+- The GDSC ImageJ plugins allow tracking to be disabled (this is the default)
 
 Testing
 -------
