@@ -75,6 +75,8 @@ Measurement protocol to collect usage information from a Java application.
   </contributors>
 
   <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.build.timestamp.format>yyyy/MM/dd HH:mm</maven.build.timestamp.format>
     <build.date>${maven.build.timestamp}</build.date>
@@ -82,40 +84,42 @@ Measurement protocol to collect usage information from a Java application.
     <license.copyrightOwners>Alex Herbert</license.copyrightOwners>
     <license.projectName>${project.description}</license.projectName>
     <!-- Versions -->
-    <org.junit.jupiter.version>5.4.1</org.junit.jupiter.version>
-    <org.junit.platform.version>1.2.0</org.junit.platform.version>
-    <commons-rng.version>1.1</commons-rng.version>
-    <commons-validator.version>1.6</commons-validator.version>
-    <guava.version>26.0-jre</guava.version>
-    <org.jacoco.version>0.8.3</org.jacoco.version>
-    <license-maven-plugin.version>1.16</license-maven-plugin.version>
-    <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
-    <coveralls-maven-plugin.version>4.3.0</coveralls-maven-plugin.version>
+    <assertj-core.version>3.16.1</assertj-core.version>
+    <checkstyle.version>8.35</checkstyle.version>
     <commons-codec.version>1.11</commons-codec.version>
-    <assertj-core.version>3.11.0</assertj-core.version>
-    <mockito-core.version>2.21.0</mockito-core.version>
-    <spotbugs.version>3.1.6</spotbugs.version>
-    <checkstyle.version>8.29</checkstyle.version>
-    <pmd.version>6.8.0</pmd.version>
+    <commons-rng.version>1.3</commons-rng.version>
+    <commons-validator.version>1.7</commons-validator.version>
+    <coveralls-maven-plugin.version>4.3.0</coveralls-maven-plugin.version>
+    <guava.version>26.0-jre</guava.version>
+    <license-maven-plugin.version>2.0.0</license-maven-plugin.version>
+    <mockito-core.version>3.4.6</mockito-core.version>
+    <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
+    <org.jacoco.version>0.8.5</org.jacoco.version>
+    <org.junit.bom.version>5.7.0-M1</org.junit.bom.version>
+    <pmd.version>6.26.0</pmd.version>
+    <spotbugs.version>4.0.4</spotbugs.version>
     <!-- Maven plugins -->
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
-    <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
-    <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
-    <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
-    <maven-surefire-plugin.version>2.22.0</maven-surefire-plugin.version>
-    <maven-javadoc-plugin.version>3.0.1</maven-javadoc-plugin.version>
-    <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
+    <build-helper-maven-plugin.version>3.2.0</build-helper-maven-plugin.version>
+    <formatter-maven-plugin.version>2.12.1</formatter-maven-plugin.version>
     <maven-changes-plugin.version>2.12.1</maven-changes-plugin.version>
-    <maven-site-plugin.version>3.7.1</maven-site-plugin.version>
-    <maven-project-info-reports-plugin.version>3.0.0</maven-project-info-reports-plugin.version>
-    <maven-checkstyle-plugin.version>3.1.0</maven-checkstyle-plugin.version>
-    <maven-pmd-plugin.version>3.10.0</maven-pmd-plugin.version>
-    <maven-jxr-plugin.version>2.5</maven-jxr-plugin.version>
-    <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
-    <nexus-staging-maven-plugin.version>1.6.7</nexus-staging-maven-plugin.version>
-    <build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
-    <formatter-maven-plugin.version>2.11.0</formatter-maven-plugin.version>
+    <maven-checkstyle-plugin.version>3.1.1</maven-checkstyle-plugin.version>
+    <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
+    <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+    <maven-deploy-plugin.version>3.0.0-M1</maven-deploy-plugin.version>
+    <maven-enforcer-plugin.version>3.0.0-M3</maven-enforcer-plugin.version>
+    <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
+    <maven-install-plugin.version>3.0.0-M1</maven-install-plugin.version>
+    <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
+    <maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
+    <maven-jxr-plugin.version>3.0.0</maven-jxr-plugin.version>
+    <maven-pmd-plugin.version>3.13.0</maven-pmd-plugin.version>
+    <maven-project-info-reports-plugin.version>3.1.0</maven-project-info-reports-plugin.version>
+    <maven-release-plugin.version>3.0.0-M1</maven-release-plugin.version>
+    <maven-resources-plugin.version>3.2.0</maven-resources-plugin.version>
+    <maven-site-plugin.version>3.9.1</maven-site-plugin.version>
+    <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
+    <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
+    <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
     <!-- JaCoCo Checks -->
     <org.jacoco.class.covered>0.96</org.jacoco.class.covered>
     <org.jacoco.instruction.covered>0.8</org.jacoco.instruction.covered>
@@ -128,9 +132,11 @@ Measurement protocol to collect usage information from a Java application.
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter</artifactId>
-        <version>${org.junit.jupiter.version}</version>
+        <groupId>org.junit</groupId>
+        <artifactId>junit-bom</artifactId>
+        <version>${org.junit.bom.version}</version>
+        <scope>import</scope>
+        <type>pom</type>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -139,7 +145,6 @@ Measurement protocol to collect usage information from a Java application.
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.assertj</groupId>
@@ -251,6 +256,55 @@ Measurement protocol to collect usage information from a Java application.
     </pluginManagement>
     <plugins>
       <plugin>
+        <inherited>true</inherited>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>${maven-enforcer-plugin.version}</version>
+        <configuration>
+          <rules>
+            <requireMavenVersion>
+              <version>3.5.4</version>
+            </requireMavenVersion>
+            <requireJavaVersion>
+              <version>${maven.compiler.target}</version>
+            </requireJavaVersion>
+          </rules>
+          <fail>true</fail>
+        </configuration>
+        <executions>
+          <execution>
+            <id>enforce-maven-3</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>${maven-clean-plugin.version}</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven-compiler-plugin.version}</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-install-plugin</artifactId>
+        <version>${maven-install-plugin.version}</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>${maven-resources-plugin.version}</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <version>${maven-deploy-plugin.version}</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>${maven-jar-plugin.version}</version>
+      </plugin>
+      <plugin>
         <artifactId>maven-source-plugin</artifactId>
         <version>${maven-source-plugin.version}</version>
         <executions>
@@ -273,18 +327,6 @@ Measurement protocol to collect usage information from a Java application.
           <!-- Fix for OpenJDK 8 now validating class-path attributes in Jar manifests. See https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=912333#63 -->
           <useSystemClassLoader>false</useSystemClassLoader>
         </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-surefire-provider</artifactId>
-            <version>${org.junit.platform.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>${org.junit.jupiter.version}</version>
-          </dependency>
-        </dependencies>
       </plugin>
       <plugin>
         <artifactId>maven-javadoc-plugin</artifactId>
@@ -314,9 +356,7 @@ Measurement protocol to collect usage information from a Java application.
         <groupId>net.revelc.code.formatter</groupId>
         <artifactId>formatter-maven-plugin</artifactId>
         <configuration>
-          <!-- Resource on the classpath.
-            This does not work so is specified by the property 'configfile' in the properties.
-            -->
+          <!-- Resource on the classpath. This does not work so is specified by the property 'configfile' in the properties. -->
           <configFile>eclipse/eclipse-code-format.xml</configFile>
           <overrideConfigCompilerVersion>true</overrideConfigCompilerVersion>
         </configuration>
@@ -551,21 +591,6 @@ Measurement protocol to collect usage information from a Java application.
     </profile>
     <profile>
       <id>eclipse</id>
-      <dependencyManagement>
-        <dependencies>
-          <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>${org.junit.jupiter.version}</version>
-          </dependency>
-          <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-launcher</artifactId>
-            <version>${org.junit.platform.version}</version>
-            <scope>test</scope>
-          </dependency>
-        </dependencies>
-      </dependencyManagement>
       <dependencies>
         <dependency>
           <groupId>org.junit.jupiter</groupId>
