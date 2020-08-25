@@ -38,9 +38,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 @SuppressWarnings("javadoc")
-public class DefaultHttpUrlConnectionCallbackTest {
+class DefaultHttpUrlConnectionCallbackTest {
   @Test
-  public void testProcess() throws IOException {
+  void testProcess() throws IOException {
     final DefaultHttpUrlConnectionCallback callback = new DefaultHttpUrlConnectionCallback();
 
     // Default properties

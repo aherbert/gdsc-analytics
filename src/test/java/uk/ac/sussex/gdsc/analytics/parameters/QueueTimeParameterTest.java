@@ -36,9 +36,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class QueueTimeParameterTest {
+class QueueTimeParameterTest {
   @Test
-  public void testFormat() {
+  void testFormat() {
     final long timestamp = System.currentTimeMillis();
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     final Pattern pattern = Pattern.compile("^qt=-?[0-9]+$");

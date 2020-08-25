@@ -34,17 +34,17 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class UserLanguageParameterTest {
+class UserLanguageParameterTest {
   @SuppressWarnings("unused")
   @Test
-  public void testConstructor() {
+  void testConstructor() {
     Assertions.assertThrows(NullPointerException.class, () -> {
       new UserLanguageParameter(null);
     });
   }
 
   @Test
-  public void testFormat() {
+  void testFormat() {
     String value = Locale.getDefault().toLanguageTag();
     Assertions.assertEquals(String.format("ul=%s", value), new UserLanguageParameter().format());
     for (final Locale locale : new Locale[] {Locale.FRENCH, Locale.GERMAN, Locale.UK}) {

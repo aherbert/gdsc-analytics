@@ -48,7 +48,7 @@ import uk.ac.sussex.gdsc.analytics.parameters.Parameters.HitBuilder;
 import uk.ac.sussex.gdsc.analytics.parameters.Parameters.PartialBuilder;
 
 @SuppressWarnings("javadoc")
-public class ParametersTest {
+class ParametersTest {
 
   private final String trackingId = "UA-12345-6";
   private final String clientId = "123e4567-e89b-12d3-a456-426655440000";
@@ -56,7 +56,7 @@ public class ParametersTest {
   private final String userId = "Mr. Test";
 
   @Test
-  public void testRequiredBuilder() throws MalformedURLException {
+  void testRequiredBuilder() throws MalformedURLException {
     // @formatter:off
     final URL url = createUrl(Parameters.newRequiredBuilder(trackingId)
                                   .build());
@@ -116,7 +116,7 @@ public class ParametersTest {
   }
 
   @Test
-  public void testRequiredBuilderThrows() {
+  void testRequiredBuilderThrows() {
     // @formatter:off
     // Bad tracking Id
     Assertions.assertThatThrownBy(() -> Parameters
@@ -156,7 +156,7 @@ public class ParametersTest {
   }
 
   @Test
-  public void testPartialBuilder() throws MalformedURLException {
+  void testPartialBuilder() throws MalformedURLException {
     // Test empty methods
     // @formatter:off
     final String emptyHit =
@@ -201,7 +201,7 @@ public class ParametersTest {
   }
 
   @Test
-  public void testBuilder() throws MalformedURLException {
+  void testBuilder() throws MalformedURLException {
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (int i = 0; i < 5; i++) {
       final String applicationName = TestUtils.randomName(rg, 3);
@@ -223,7 +223,7 @@ public class ParametersTest {
   }
 
   @Test
-  public void testBuilderApi() throws MalformedURLException {
+  void testBuilderApi() throws MalformedURLException {
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (int i = 0; i < 3; i++) {
       // General
@@ -406,7 +406,7 @@ public class ParametersTest {
   }
 
   @Test
-  public void testBuilderWithManyParameters() throws MalformedURLException {
+  void testBuilderWithManyParameters() throws MalformedURLException {
     final Builder builder = Parameters.newBuilder();
     final int size = 100;
     final ArrayList<String> names = new ArrayList<>(size);
@@ -426,7 +426,7 @@ public class ParametersTest {
   }
 
   @Test
-  public void testHitBuilder() {
+  void testHitBuilder() {
 
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (int i = 0; i < 5; i++) {
@@ -460,7 +460,7 @@ public class ParametersTest {
   }
 
   @Test
-  public void testFormatTo() {
+  void testFormatTo() {
     final Builder builder = Parameters.newBuilder();
     Assertions.assertThat(builder.build().format()).isEmpty();
     builder.add("name1", "value1");

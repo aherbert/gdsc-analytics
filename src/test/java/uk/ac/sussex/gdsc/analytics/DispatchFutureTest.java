@@ -34,9 +34,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class DispatchFutureTest {
+class DispatchFutureTest {
   @Test
-  public void testProperties() {
+  void testProperties() {
     for (final DispatchStatus status : DispatchStatus.values()) {
       final DispatchFuture future = new DispatchFuture(status);
       Assertions.assertEquals(status, future.getStatus());

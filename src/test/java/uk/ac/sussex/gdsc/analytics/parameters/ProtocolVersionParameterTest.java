@@ -33,9 +33,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class ProtocolVersionParameterTest {
+class ProtocolVersionParameterTest {
   @Test
-  public void testFormat() {
+  void testFormat() {
     Assertions.assertEquals("v=1", ProtocolVersionParameter.V1.format());
   }
 }

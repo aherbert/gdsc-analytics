@@ -34,10 +34,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class ClientIdParameterTest {
+class ClientIdParameterTest {
   @SuppressWarnings("unused")
   @Test
-  public void testConstructor() {
+  void testConstructor() {
     Assertions.assertThrows(NullPointerException.class, () -> {
       new ClientIdParameter((String) null);
     });
@@ -50,7 +50,7 @@ public class ClientIdParameterTest {
   }
 
   @Test
-  public void testFormat() {
+  void testFormat() {
     final String uuid1 = "123e4567-e89b-12d3-a456-426655440000";
     final String uuid2 = "00112233-4455-6677-8899-aabbccddeeff";
     for (final String clientId : new String[] {uuid1, uuid2}) {

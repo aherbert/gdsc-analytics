@@ -33,10 +33,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class HitTypeParameterTest {
+class HitTypeParameterTest {
 
   @Test
-  public void testFormat() {
+  void testFormat() {
     int count = 0;
     Assertions.assertEquals("t=event", HitTypeParameter.EVENT.format());
     count++;
@@ -59,7 +59,7 @@ public class HitTypeParameterTest {
   }
 
   @Test
-  public void testCreate() {
+  void testCreate() {
     for (final HitType ht : HitType.values()) {
       Assertions.assertTrue(HitTypeParameter.create(ht).format().endsWith("=" + ht.toString()));
     }

@@ -47,17 +47,17 @@ import org.mockito.Mockito;
  * This uses the mockito framework to test the dispatch of requests.
  */
 @SuppressWarnings("javadoc")
-public class DefaultHitDispatcherTest {
+class DefaultHitDispatcherTest {
 
   @SuppressWarnings("unused")
   @Test
-  public void testConstructor() {
+  void testConstructor() {
     // Just test that null can be explicitly used for the proxy
     new DefaultHitDispatcher(createUrl(), (Proxy) null);
   }
 
   @Test
-  public void testProperties() {
+  void testProperties() {
     final DefaultHitDispatcher hitDispatcher = new DefaultHitDispatcher(createUrl());
 
     // Initialised OK
@@ -84,7 +84,7 @@ public class DefaultHitDispatcherTest {
   }
 
   @Test
-  public void testSend() throws IOException {
+  void testSend() throws IOException {
     final ByteArrayOutputStream out = new ByteArrayOutputStream(1024);
     final HttpURLConnection urlConnection = createHttpUrlConnection(HttpURLConnection.HTTP_OK, out);
     final HttpConnectionProvider provider = new HttpConnectionProvider() {
@@ -158,7 +158,7 @@ public class DefaultHitDispatcherTest {
   }
 
   @Test
-  public void testSendWithBadResponseCode() throws IOException {
+  void testSendWithBadResponseCode() throws IOException {
     final ByteArrayOutputStream out = new ByteArrayOutputStream(1024);
     final HttpURLConnection urlConnection =
         createHttpUrlConnection(HttpURLConnection.HTTP_INTERNAL_ERROR, out);
@@ -180,7 +180,7 @@ public class DefaultHitDispatcherTest {
   }
 
   @Test
-  public void testSendWithUnknownHostException() {
+  void testSendWithUnknownHostException() {
     final IOException exception = new UnknownHostException("Test failed openConnection");
     final HttpConnectionProvider provider = new HttpConnectionProvider() {
       @Override
@@ -201,7 +201,7 @@ public class DefaultHitDispatcherTest {
   }
 
   @Test
-  public void testSendWithIoException() throws IOException {
+  void testSendWithIoException() throws IOException {
 
     final IOException exception = new IOException("Test failed getOutputStream");
 

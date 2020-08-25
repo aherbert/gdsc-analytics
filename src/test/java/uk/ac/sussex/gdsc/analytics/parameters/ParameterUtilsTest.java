@@ -40,7 +40,7 @@ import org.junit.jupiter.api.Test;
 import uk.ac.sussex.gdsc.analytics.TestUtils;
 
 @SuppressWarnings("javadoc")
-public class ParameterUtilsTest {
+class ParameterUtilsTest {
 
   private static String message;
 
@@ -56,7 +56,7 @@ public class ParameterUtilsTest {
   }
 
   @Test
-  public void testRequireNotEmpty() {
+  void testRequireNotEmpty() {
     Assertions.assertEquals(message, Assertions.assertThrows(IllegalArgumentException.class, () -> {
       ParameterUtils.requireNotEmpty(null, message);
     }).getMessage());
@@ -66,7 +66,7 @@ public class ParameterUtilsTest {
   }
 
   @Test
-  public void testRequirePositive() {
+  void testRequirePositive() {
     Assertions.assertEquals(message, Assertions.assertThrows(IllegalArgumentException.class, () -> {
       ParameterUtils.requirePositive(-1, message);
     }).getMessage());
@@ -80,7 +80,7 @@ public class ParameterUtilsTest {
   }
 
   @Test
-  public void testRequireStrictlyPositive() {
+  void testRequireStrictlyPositive() {
     Assertions.assertEquals(message, Assertions.assertThrows(IllegalArgumentException.class, () -> {
       ParameterUtils.requireStrictlyPositive(0, message);
     }).getMessage());
@@ -90,7 +90,7 @@ public class ParameterUtilsTest {
   }
 
   @Test
-  public void testValidateTrackingId() {
+  void testValidateTrackingId() {
     final String good = "UA-12345-6";
     ParameterUtils.validateTrackingId(good);
 
@@ -124,7 +124,7 @@ public class ParameterUtilsTest {
   }
 
   @Test
-  public void testValidateCountWithParameterSpecification() {
+  void testValidateCountWithParameterSpecification() {
     // Test different sizes
     final ArrayList<ProtocolSpecification> list = new ArrayList<>();
     list.add(ProtocolSpecification.PROTOCOL_VERSION); // 0
@@ -149,7 +149,7 @@ public class ParameterUtilsTest {
   }
 
   @Test
-  public void testValidateCount() {
+  void testValidateCount() {
     IncorrectCountException ex;
     ex = Assertions.assertThrows(IncorrectCountException.class, () -> {
       ParameterUtils.validateCount(1, 2);
@@ -172,7 +172,7 @@ public class ParameterUtilsTest {
   }
 
   @Test
-  public void testCompatibleValueType() {
+  void testCompatibleValueType() {
     // Test different types
     final ArrayList<ProtocolSpecification> list = new ArrayList<>();
     list.add(ProtocolSpecification.CUSTOM_DIMENSION); // Text
@@ -214,7 +214,7 @@ public class ParameterUtilsTest {
   }
 
   @Test
-  public void testNextUnderscore() {
+  void testNextUnderscore() {
     // Edge cases
     testNextUnderscore("");
     testNextUnderscore("none");
@@ -243,7 +243,7 @@ public class ParameterUtilsTest {
   }
 
   @Test
-  public void testGetCharsWithStringBuilder() {
+  void testGetCharsWithStringBuilder() {
     Assertions.assertThrows(NullPointerException.class, () -> {
       ParameterUtils.getChars((StringBuilder) null);
     });
@@ -259,7 +259,7 @@ public class ParameterUtilsTest {
 
 
   @Test
-  public void testGetCharsWithCharSequence() {
+  void testGetCharsWithCharSequence() {
     Assertions.assertArrayEquals(new char[0], ParameterUtils.getChars((CharSequence) null));
 
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
@@ -273,7 +273,7 @@ public class ParameterUtilsTest {
   }
 
   @Test
-  public void testCountIndexes() {
+  void testCountIndexes() {
     // Edge cases
     Assertions.assertEquals(0, ParameterUtils.countIndexes(null), "null");
     testCountIndexes("");
@@ -299,7 +299,7 @@ public class ParameterUtilsTest {
   }
 
   @Test
-  public void testAppendNumberTo() {
+  void testAppendNumberTo() {
     // Negative integer
     Assertions.assertEquals("-1",
         ParameterUtils.appendNumberTo(new StringBuilder(), -1.0).toString());
@@ -320,7 +320,7 @@ public class ParameterUtilsTest {
   }
 
   @Test
-  public void testAppendCurrencyTo() {
+  void testAppendCurrencyTo() {
     final Locale locale = Locale.UK;
     // Add pence when not present
     Assertions.assertEquals("£0.00",
@@ -339,7 +339,7 @@ public class ParameterUtilsTest {
   }
 
   @Test
-  public void testIsNotEmpty() {
+  void testIsNotEmpty() {
     Assertions.assertFalse(ParameterUtils.isNotEmpty(null));
     Assertions.assertFalse(ParameterUtils.isNotEmpty(""));
     Assertions.assertTrue(ParameterUtils.isNotEmpty("h"));
@@ -347,7 +347,7 @@ public class ParameterUtilsTest {
   }
 
   @Test
-  public void testValidatePath() {
+  void testValidatePath() {
     Assertions.assertThrows(IllegalArgumentException.class, () -> {
       ParameterUtils.validatePath(null);
     });
@@ -362,7 +362,7 @@ public class ParameterUtilsTest {
   }
 
   @Test
-  public void testValidateIpAddress() {
+  void testValidateIpAddress() {
     Assertions.assertThrows(NullPointerException.class, () -> {
       ParameterUtils.validateIpAddress(null);
     });
@@ -373,7 +373,7 @@ public class ParameterUtilsTest {
   }
 
   @Test
-  public void testAppendAndIfNotEmpty() {
+  void testAppendAndIfNotEmpty() {
     final StringBuilder sb = new StringBuilder();
     ParameterUtils.appendAndIfNotEmpty(sb);
     Assertions.assertEquals("", sb.toString(), "Should not append to empty string builder");

@@ -38,7 +38,7 @@ import uk.ac.sussex.gdsc.analytics.TestUtils;
  * sub-class. .
  */
 @SuppressWarnings("javadoc")
-public class BaseParameterTest {
+class BaseParameterTest {
 
   private static class MockBaseParameter extends BaseParameter {
     public MockBaseParameter(ParameterSpecification specification) {
@@ -62,7 +62,7 @@ public class BaseParameterTest {
 
   @SuppressWarnings("unused")
   @Test
-  public void testConstructor() {
+  void testConstructor() {
     Assertions.assertThrows(NullPointerException.class, () -> {
       new MockBaseParameter((ParameterSpecification) null);
     });
@@ -72,7 +72,7 @@ public class BaseParameterTest {
   }
 
   @Test
-  public void testIsProtocolSpecification() {
+  void testIsProtocolSpecification() {
     MockBaseParameter param = new MockBaseParameter(ProtocolSpecification.PROTOCOL_VERSION);
     Assertions.assertTrue(param.isProtocolSpecification());
 

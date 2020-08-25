@@ -33,9 +33,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class SessionControlParameterTest {
+class SessionControlParameterTest {
   @Test
-  public void testFormat() {
+  void testFormat() {
     int count = 0;
     Assertions.assertEquals("sc=end", SessionControlParameter.END.format());
     count++;
@@ -46,7 +46,7 @@ public class SessionControlParameterTest {
   }
 
   @Test
-  public void testCreate() {
+  void testCreate() {
     for (final SessionControl sc : SessionControl.values()) {
       Assertions
           .assertTrue(SessionControlParameter.create(sc).format().endsWith("=" + sc.toString()));

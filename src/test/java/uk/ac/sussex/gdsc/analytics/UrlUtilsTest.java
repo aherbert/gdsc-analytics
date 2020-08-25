@@ -33,9 +33,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class UrlUtilsTest {
+class UrlUtilsTest {
   @Test
-  public void testProxy() {
+  void testProxy() {
     // Test various proxy addresses
     // Valid
     Assertions.assertNotNull(UrlUtils.getProxy("http://localhost:80"));
@@ -52,7 +52,7 @@ public class UrlUtilsTest {
   }
 
   @Test
-  public void testGetGoogleAnalyticsUrl() {
+  void testGetGoogleAnalyticsUrl() {
     Assertions.assertEquals(UrlUtils.DEFAULT_GOOGLE_ANALYTICS_PROTOCOL, UrlUtils.getProtocol());
     Assertions.assertEquals(UrlUtils.DEFAULT_GOOGLE_ANALYTICS_SECURE_PROTOCOL,
         UrlUtils.getSecureProtocol());

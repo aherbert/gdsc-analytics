@@ -33,9 +33,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class ParameterSpecificationTest {
+class ParameterSpecificationTest {
   @Test
-  public void testDefaultMethods() {
+  void testDefaultMethods() {
     ParameterSpecification spec = new ParameterSpecification() {
 
       @Override

@@ -34,9 +34,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class ProtocolSpecificationTest {
+class ProtocolSpecificationTest {
   @Test
-  public void testIsSupported() {
+  void testIsSupported() {
     // This never gets hit by the code but we should check it works
     Assertions.assertFalse(ProtocolSpecification.PROTOCOL_VERSION.isSupported(null));
     for (final HitType ht : HitType.values()) {
@@ -47,7 +47,7 @@ public class ProtocolSpecificationTest {
   }
 
   @Test
-  public void testGetMaxLength() {
+  void testGetMaxLength() {
     // Just check there are different values
     final HashSet<Integer> set = new HashSet<>();
     for (final ProtocolSpecification spec : ProtocolSpecification.values()) {

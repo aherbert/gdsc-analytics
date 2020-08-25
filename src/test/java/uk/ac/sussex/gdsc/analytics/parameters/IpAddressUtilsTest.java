@@ -34,10 +34,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class IpAddressUtilsTest {
+class IpAddressUtilsTest {
 
   @Test
-  public void testIsIpAddress() {
+  void testIsIpAddress() {
     //@formatter:off
     for (final String ipAddress : new String[] {
         // Just bad

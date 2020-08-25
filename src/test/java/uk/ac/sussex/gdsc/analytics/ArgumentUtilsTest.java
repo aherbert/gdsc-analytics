@@ -33,9 +33,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class ArgumentUtilsTest {
+class ArgumentUtilsTest {
   @Test
-  public void testValidateThreadPriority() {
+  void testValidateThreadPriority() {
     Assertions.assertThrows(IllegalArgumentException.class, () -> {
       ArgumentUtils.validateThreadPriority(Thread.MIN_PRIORITY - 1);
     });

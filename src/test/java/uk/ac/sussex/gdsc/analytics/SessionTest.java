@@ -35,9 +35,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class SessionTest {
+class SessionTest {
   @Test
-  public void testReset() {
+  void testReset() {
     final Session session = new Session();
     Assertions.assertTrue(session.refresh());
     Assertions.assertFalse(session.refresh());
@@ -47,7 +47,7 @@ public class SessionTest {
 
   @SuppressWarnings("unused")
   @Test
-  public void testTimeout() {
+  void testTimeout() {
     Assertions.assertThrows(IllegalArgumentException.class, () -> {
       new Session(-1);
     });

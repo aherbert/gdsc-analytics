@@ -33,10 +33,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class TrackingIdParameterTest {
+class TrackingIdParameterTest {
   @SuppressWarnings("unused")
   @Test
-  public void testConstructor() {
+  void testConstructor() {
     Assertions.assertThrows(NullPointerException.class, () -> {
       new TrackingIdParameter(null);
     });
@@ -49,7 +49,7 @@ public class TrackingIdParameterTest {
   }
 
   @Test
-  public void testFormat() {
+  void testFormat() {
     for (final String trackingId : new String[] {"UA-12345-6", "UA-123456789-6"}) {
       Assertions.assertEquals(String.format("tid=%s", trackingId),
           new TrackingIdParameter(trackingId).format());

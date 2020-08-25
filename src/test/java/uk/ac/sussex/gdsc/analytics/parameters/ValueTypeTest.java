@@ -33,9 +33,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class ValueTypeTest {
+class ValueTypeTest {
   @Test
-  public void testToString() {
+  void testToString() {
     int count = 0;
     Assertions.assertEquals("boolean", ValueType.BOOLEAN.toString());
     count++;

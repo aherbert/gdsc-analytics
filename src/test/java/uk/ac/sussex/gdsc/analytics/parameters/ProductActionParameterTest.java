@@ -33,9 +33,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class ProductActionParameterTest {
+class ProductActionParameterTest {
   @Test
-  public void testToString() {
+  void testToString() {
     int count = 0;
     Assertions.assertEquals("pa=add", ProductActionParameter.ADD.format());
     count++;
@@ -58,7 +58,7 @@ public class ProductActionParameterTest {
   }
 
   @Test
-  public void testCreate() {
+  void testCreate() {
     for (final ProductAction pa : ProductAction.values()) {
       Assertions
           .assertTrue(ProductActionParameter.create(pa).format().endsWith("=" + pa.toString()));

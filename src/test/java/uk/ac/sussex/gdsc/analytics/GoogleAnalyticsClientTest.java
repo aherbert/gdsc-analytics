@@ -62,7 +62,7 @@ import uk.ac.sussex.gdsc.analytics.parameters.UrlEncoderHelper;
 import uk.ac.sussex.gdsc.analytics.parameters.ValueType;
 
 @SuppressWarnings("javadoc")
-public class GoogleAnalyticsClientTest {
+class GoogleAnalyticsClientTest {
 
   private static final Logger logger = Logger.getLogger(GoogleAnalyticsClientTest.class.getName());
   private static final Level debugLevel = Level.FINE;
@@ -73,7 +73,7 @@ public class GoogleAnalyticsClientTest {
   private final String userId = "Mr. Test";
 
   @Test
-  public void testBuilder() {
+  void testBuilder() {
     // Can build with defaults
     Builder builder = GoogleAnalyticsClient.newBuilder(trackingId);
     builder.build();
@@ -156,7 +156,7 @@ public class GoogleAnalyticsClientTest {
   }
 
   @Test
-  public void testProperties() {
+  void testProperties() {
     final Builder builder = GoogleAnalyticsClient.newBuilder(trackingId);
     final GoogleAnalyticsClient ga = builder.build();
 
@@ -184,7 +184,7 @@ public class GoogleAnalyticsClientTest {
   }
 
   @Test
-  public void testHits() {
+  void testHits() {
     final Builder builder = GoogleAnalyticsClient.newBuilder(trackingId);
     final GoogleAnalyticsClient ga = builder.build();
 
@@ -257,7 +257,7 @@ public class GoogleAnalyticsClientTest {
   }
 
   @Test
-  public void testSend() throws InterruptedException, ExecutionException {
+  void testSend() throws InterruptedException, ExecutionException {
 
     // Create a dummy hit dispatcher that does nothing
     final HitDispatcher hitDispatcher = new HitDispatcher() {
@@ -413,7 +413,7 @@ public class GoogleAnalyticsClientTest {
   }
 
   @Test
-  public void testSendUsingDebugServer()
+  void testSendUsingDebugServer()
       throws InterruptedException, ExecutionException, TimeoutException {
 
     GoogleAnalyticsClient ga = GoogleAnalyticsClient.newBuilder(trackingId).setDebug(true).build();
@@ -433,7 +433,7 @@ public class GoogleAnalyticsClientTest {
   }
 
   @Test
-  public void testBuildUsingDebugServer() {
+  void testBuildUsingDebugServer() {
 
     final HitDispatcher hitDispatcher = DefaultHitDispatcher.getDefault(true, true);
     final GoogleAnalyticsClient ga =
@@ -487,7 +487,7 @@ public class GoogleAnalyticsClientTest {
   }
 
   @Test
-  public void testDemos() throws InterruptedException {
+  void testDemos() throws InterruptedException {
     final HitDispatcher hitDispatcher = new HitDispatcher() {
       @Override
       public DispatchStatus send(CharSequence hit, long timestamp,

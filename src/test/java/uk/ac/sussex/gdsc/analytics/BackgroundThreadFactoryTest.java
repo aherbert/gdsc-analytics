@@ -38,11 +38,11 @@ import org.junit.jupiter.api.Test;
  * test manually.
  */
 @SuppressWarnings("javadoc")
-public class BackgroundThreadFactoryTest {
+class BackgroundThreadFactoryTest {
 
   @SuppressWarnings("unused")
   @Test
-  public void testConstructor() {
+  void testConstructor() {
     Assertions.assertThrows(IllegalArgumentException.class, () -> {
       new BackgroundThreadFactory(Thread.MIN_PRIORITY - 1);
     });
@@ -52,7 +52,7 @@ public class BackgroundThreadFactoryTest {
   }
 
   @Test
-  public void testNewThread() {
+  void testNewThread() {
     final Runnable runnable = new Runnable() {
       @Override
       public void run() {

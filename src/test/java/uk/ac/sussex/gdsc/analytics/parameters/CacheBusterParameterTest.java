@@ -40,10 +40,10 @@ import org.junit.jupiter.api.Test;
 import uk.ac.sussex.gdsc.analytics.TestUtils;
 
 @SuppressWarnings("javadoc")
-public class CacheBusterParameterTest {
+class CacheBusterParameterTest {
   @SuppressWarnings("unused")
   @Test
-  public void testConstructor() {
+  void testConstructor() {
     Assertions.assertThrows(NullPointerException.class, () -> {
       new CacheBusterParameter(null);
     });
@@ -51,7 +51,7 @@ public class CacheBusterParameterTest {
 
 
   @Test
-  public void testFormat() {
+  void testFormat() {
     // Create random strings to append
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     final ArrayList<String> list = new ArrayList<>();
@@ -70,7 +70,7 @@ public class CacheBusterParameterTest {
   }
 
   @Test
-  public void testGetDefaultInstance() {
+  void testGetDefaultInstance() {
     final CacheBusterParameter cb = CacheBusterParameter.getDefaultInstance();
     final Pattern pattern = Pattern.compile("^z=-?[0-9]+$");
     final HashSet<String> set = new HashSet<>();

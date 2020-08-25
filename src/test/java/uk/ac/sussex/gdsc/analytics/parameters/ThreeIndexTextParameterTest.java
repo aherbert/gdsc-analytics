@@ -36,10 +36,10 @@ import org.junit.jupiter.api.Test;
 import uk.ac.sussex.gdsc.analytics.TestUtils;
 
 @SuppressWarnings("javadoc")
-public class ThreeIndexTextParameterTest {
+class ThreeIndexTextParameterTest {
   @SuppressWarnings("unused")
   @Test
-  public void testConstructor() {
+  void testConstructor() {
     final ParameterSpecification spec =
         TestUtils.newTextParameterSpecification("test_test_test_", 0);
     final int index1 = 1;
@@ -81,7 +81,7 @@ public class ThreeIndexTextParameterTest {
   }
 
   @Test
-  public void testFormat() {
+  void testFormat() {
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (int i = 0; i < 5; i++) {
       final String name1 = TestUtils.randomName(rg, 3);

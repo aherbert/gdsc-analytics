@@ -36,12 +36,12 @@ import org.junit.jupiter.api.Test;
 import uk.ac.sussex.gdsc.analytics.TestUtils;
 
 @SuppressWarnings("javadoc")
-public class FormatterParameterTest {
+class FormatterParameterTest {
 
   // Test the default methods
 
   @Test
-  public void testAppendTo() {
+  void testAppendTo() {
     // When nothing is added
     {
       final FormattedParameter fp = (sb) -> sb;
@@ -63,7 +63,7 @@ public class FormatterParameterTest {
   }
 
   @Test
-  public void testFormat() {
+  void testFormat() {
     // With empty
     FormattedParameter fp = (sb) -> sb;
     Assertions.assertEquals("", fp.format());
@@ -77,7 +77,7 @@ public class FormatterParameterTest {
   }
 
   @Test
-  public void testFreeze() {
+  void testFreeze() {
     // With empty
     FormattedParameter fp = (sb) -> sb;
     FormattedParameter fp2 = fp.freeze();
@@ -102,7 +102,7 @@ public class FormatterParameterTest {
   }
 
   @Test
-  public void testEmpty() {
+  void testEmpty() {
     final FormattedParameter fp = FormattedParameter.empty();
     Assertions.assertEquals("", callFormatTo(fp));
     Assertions.assertEquals("", fp.format());

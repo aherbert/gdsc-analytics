@@ -45,11 +45,11 @@ import org.junit.jupiter.api.Test;
  * test manually.
  */
 @SuppressWarnings("javadoc")
-public class ConnectionTest {
+class ConnectionTest {
 
   // Do not use disabled as then there are test skipped warnings.
   @Test
-  public void testConnection() {
+  void testConnection() {
     final Logger logger = Logger.getLogger(ConnectionTest.class.getName());
     HttpURLConnection connection = null;
     try {

@@ -38,10 +38,10 @@ import org.junit.jupiter.api.Test;
 import uk.ac.sussex.gdsc.analytics.TestUtils;
 
 @SuppressWarnings("javadoc")
-public class CustomParameterTest {
+class CustomParameterTest {
   @SuppressWarnings("unused")
   @Test
-  public void testConstructor() {
+  void testConstructor() {
     final String name = "name";
     final String value = "value";
     Assertions.assertThrows(NullPointerException.class, () -> {
@@ -53,7 +53,7 @@ public class CustomParameterTest {
   }
 
   @Test
-  public void testFormat() throws UnsupportedEncodingException {
+  void testFormat() throws UnsupportedEncodingException {
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (int i = 0; i < 5; i++) {
       final String name = TestUtils.randomPath(rg, 5);

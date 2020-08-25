@@ -36,10 +36,10 @@ import org.junit.jupiter.api.Test;
 import uk.ac.sussex.gdsc.analytics.TestUtils;
 
 @SuppressWarnings("javadoc")
-public class OneIndexNumberParameterTest {
+class OneIndexNumberParameterTest {
   @SuppressWarnings("unused")
   @Test
-  public void testConstructor() {
+  void testConstructor() {
     final ParameterSpecification spec = TestUtils.newNumberParameterSpecification("Test_");
     final int index = 1;
     Assertions.assertThrows(NullPointerException.class, () -> {
@@ -59,7 +59,7 @@ public class OneIndexNumberParameterTest {
   }
 
   @Test
-  public void testFormat() {
+  void testFormat() {
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (int i = 0; i < 5; i++) {
       final String name = TestUtils.randomName(rg, 3);

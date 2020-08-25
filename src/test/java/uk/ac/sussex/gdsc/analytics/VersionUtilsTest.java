@@ -33,9 +33,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class VersionUtilsTest {
+class VersionUtilsTest {
   @Test
-  public void testVersion() {
+  void testVersion() {
     Assertions.assertEquals(String.format("%d", VersionUtils.MAJOR), VersionUtils.VERSION_X);
     Assertions.assertEquals(String.format("%d.%d", VersionUtils.MAJOR, VersionUtils.MINOR),
         VersionUtils.VERSION_X_X);

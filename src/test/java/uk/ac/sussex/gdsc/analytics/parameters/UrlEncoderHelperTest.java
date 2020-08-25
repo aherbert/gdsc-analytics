@@ -38,13 +38,13 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class UrlEncoderHelperTest {
+class UrlEncoderHelperTest {
 
   private final Logger logger = Logger.getLogger(UrlEncoderHelperTest.class.getName());
   private final Level level = Level.FINE;
 
   @Test
-  public void testEncoder() throws Exception {
+  void testEncoder() throws Exception {
     // Create a string that should not be encoded
     final StringBuilder sb = new StringBuilder();
     for (char c = '0'; c <= '9'; c++) {
@@ -122,7 +122,7 @@ public class UrlEncoderHelperTest {
   }
 
   @Test
-  public void testEncoderThrows() {
+  void testEncoderThrows() {
     Assertions.assertThrows(UnsupportedEncodingRuntimeException.class, () -> {
       UrlEncoderHelper.urlEncode("test", "not UTF-8!");
     });

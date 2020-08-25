@@ -33,9 +33,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class SessionControlTest {
+class SessionControlTest {
   @Test
-  public void testToString() {
+  void testToString() {
     int count = 0;
     Assertions.assertEquals("start", SessionControl.START.toString());
     count++;

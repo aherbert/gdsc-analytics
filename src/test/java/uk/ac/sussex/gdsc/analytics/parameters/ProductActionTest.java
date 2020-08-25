@@ -33,9 +33,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class ProductActionTest {
+class ProductActionTest {
   @Test
-  public void testToString() {
+  void testToString() {
     int count = 0;
     Assertions.assertEquals("add", ProductAction.ADD.toString());
     count++;

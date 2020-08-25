@@ -36,10 +36,10 @@ import org.junit.jupiter.api.Test;
 import uk.ac.sussex.gdsc.analytics.TestUtils;
 
 @SuppressWarnings("javadoc")
-public class CustomParameterSpecificationTest {
+class CustomParameterSpecificationTest {
   @SuppressWarnings("unused")
   @Test
-  public void testConstructor() {
+  void testConstructor() {
     final String formalName = "formalName";
     final String nameFormat = "name";
     final ValueType valueType = ValueType.TEXT;
@@ -57,7 +57,7 @@ public class CustomParameterSpecificationTest {
   }
 
   @Test
-  public void testProperties() {
+  void testProperties() {
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (final ValueType valueType : ValueType.values()) {
       final String formalName = TestUtils.randomName(rg, 3);

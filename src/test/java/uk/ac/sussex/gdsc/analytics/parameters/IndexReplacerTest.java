@@ -34,10 +34,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("javadoc")
-public class IndexReplacerTest {
+class IndexReplacerTest {
   @SuppressWarnings("unused")
   @Test
-  public void testConstructor() {
+  void testConstructor() {
     Assertions.assertThrows(NullPointerException.class, () -> {
       new IndexReplacer((ProtocolSpecification) null);
     });
@@ -49,7 +49,7 @@ public class IndexReplacerTest {
   }
 
   @Test
-  public void testReplaceTo() {
+  void testReplaceTo() {
     testReplaceTo("none", "none");
     testReplaceTo("one_", "one5", 5);
     testReplaceTo("_one", "6one", 6);
@@ -92,7 +92,7 @@ public class IndexReplacerTest {
 
   @SuppressWarnings("unused")
   @Test
-  public void testXIndexReplacerThrows() {
+  void testXIndexReplacerThrows() {
     // Test different sizes
     final ArrayList<ProtocolSpecification> list = new ArrayList<>();
     list.add(ProtocolSpecification.PROTOCOL_VERSION); // 0
@@ -136,7 +136,7 @@ public class IndexReplacerTest {
   }
 
   @Test
-  public void testIndexReplacerFactory() {
+  void testIndexReplacerFactory() {
     for (final ProtocolSpecification spec : ProtocolSpecification.values()) {
       final IndexReplacer r = IndexReplacerFactory.createIndexReplacer(spec);
       switch (spec.getNumberOfIndexes()) {
@@ -160,7 +160,7 @@ public class IndexReplacerTest {
   }
 
   @Test
-  public void testXIndexReplacer() {
+  void testXIndexReplacer() {
     // Test different sizes
     NoIndexReplacer r0 = (NoIndexReplacer) IndexReplacerFactory
         .createIndexReplacer(ProtocolSpecification.PROTOCOL_VERSION);

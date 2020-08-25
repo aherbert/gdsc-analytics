@@ -38,10 +38,10 @@ import org.junit.jupiter.api.Test;
 import uk.ac.sussex.gdsc.analytics.TestUtils;
 
 @SuppressWarnings("javadoc")
-public class OneIndexCurrencyParameterTest {
+class OneIndexCurrencyParameterTest {
   @SuppressWarnings("unused")
   @Test
-  public void testConstructor() {
+  void testConstructor() {
     final ParameterSpecification spec = TestUtils.newCurrencyParameterSpecification("Test_");
     final int index = 1;
     Assertions.assertThrows(NullPointerException.class, () -> {
@@ -67,7 +67,7 @@ public class OneIndexCurrencyParameterTest {
   }
 
   @Test
-  public void testFormat() {
+  void testFormat() {
     final UniformRandomProvider rg = RandomSource.create(RandomSource.SPLIT_MIX_64);
     for (final Locale locale : new Locale[] {Locale.getDefault(), Locale.FRANCE}) {
       for (int i = 0; i < 5; i++) {
