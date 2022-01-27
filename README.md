@@ -8,6 +8,9 @@ to collect usage information from a Java application.
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Build Status](https://travis-ci.com/aherbert/gdsc-analytics.svg?branch=master)](https://travis-ci.com/aherbert/gdsc-analytics)
 [![Coverage Status](https://coveralls.io/repos/github/aherbert/gdsc-analytics/badge.svg?branch=master)](https://coveralls.io/github/aherbert/gdsc-analytics?branch=master)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/uk.ac.sussex.gdsc/gdsc-analytics/badge.svg)](https://maven-badges.herokuapp.com/maven-central/uk.ac.sussex.gdsc/gdsc-analytics/)
+[![Javadocs](https://javadoc.io/badge2/uk.ac.sussex.gdsc/gdsc-analytics/javadoc.svg)](https://javadoc.io/doc/uk.ac.sussex.gdsc/gdsc-analytics)
+
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/aherbert/gdsc-analytics.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/aherbert/gdsc-analytics/alerts/)
 [![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/aherbert/gdsc-analytics.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/aherbert/gdsc-analytics/context:java)
 
@@ -15,17 +18,17 @@ Features
 --------
 
 - Builders to construct hit parameter strings
-- Java type-safe handling of each Protocol parameter `Value Type`
+- Java type-safe handling of each protocol parameter `Value Type`
 - Configurable asynchronous requests using `java.util.concurrent.ExecutorService`
 - Minimal logging using `java.util.logging`
 - Configurable session handling
-- Graceful disabling when no Internet connection
+- Graceful disabling when no internet connection
 - No external dependencies
 
 Example
 -------
 
-```java
+```Java
 // Create the tracker
 String trackingId = "UA-12345-6"; // Your Google Analytics tracking ID
 String userId = "Anything";
@@ -73,7 +76,7 @@ Parameter Caching
 Parameters that are the same with each hit can be cached at the hit or session
 level. For example if the host never changes:
 
-```java
+```Java
 // Create the tracker
 String trackingId = "UA-12345-6"; // Your Google Analytics tracking ID
 String userId = "Anything";
@@ -128,7 +131,7 @@ are supported:
 
 Example:
 
-```java
+```Java
 String trackingId = "UA-12345-6"; // Your Google Analytics tracking ID
 String hit = Parameters.newRequiredBuilder(trackingId)
                        .addHitType(HitType.EXCEPTION)
@@ -150,6 +153,9 @@ The client Id will be automatically added using a random GUID. The Java enabled
 Support was added for parameters that will be of use from within a Java
 application. Hence no support for the campaign functionality in the Traffic
 Sources section or any E-Commerce functionality.
+
+Support was complete in 2018. Features may have been added to the protocol
+since that date (see also [Custom Parameters](#custom-parameters)).
 
 Core API
 --------
@@ -182,7 +188,7 @@ to allow dynamic index replacement into a hit.
 
 Example:
 
-```java
+```Java
 String trackingId = "UA-12345-6"; // Your Google Analytics tracking ID
 String hit = Parameters.newRequiredBuilder(trackingId)
                        .addHitType(HitType.ITEM)
@@ -208,7 +214,7 @@ occurs then please provide feedback so the library can be updated.
 However it is possible to add any parameter to a set of parameters using either
 a generic `name=value` pair or a custom parameter specification:
 
-```java
+```Java
 // Generic name=value pair
 String name = "anything";
 String value = "some text";
@@ -236,12 +242,15 @@ Will create a hit:
 
 Note this is only a partial hit as the required parameters (`v`, `tid`, `cid`/`uid`, `t`) are missing.
 
-Maven Installation
-------------------
+Installation
+------------
 
-This package is a library to be used used by other Java programs. It is only
-necessary to perform an install if you are building other packages that depend
-on it.
+This package is a library to be used used by other Java programs.
+The latest version is on Maven central:
+
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/uk.ac.sussex.gdsc/gdsc-analytics/badge.svg)](https://maven-badges.herokuapp.com/maven-central/uk.ac.sussex.gdsc/gdsc-analytics/)
+
+The package can be installed locally from the source.
 
 1. Clone the repository
 
