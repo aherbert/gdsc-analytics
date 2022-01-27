@@ -61,39 +61,23 @@ public final class UrlEncoderHelper {
 
   static {
 
-    // Copied from java.net.URLEncoder:
+    // Note:
+    // Encoding is done using java.net.URLEncoder.
+    // Build a look-up table to scan a String to check for any characters that require encoding.
+    // If none are present then no encoding is required. An exception is made for the space
+    // character that can be simply encoded using a '+' character.
 
-    /*
-     * The list of characters that are not encoded has been determined as follows:
-     *
-     * RFC 2396 states:
-     *
-     * Data characters that are allowed in a URI but do not have a reserved purpose are called
-     * unreserved. These include upper and lower case letters, decimal digits, and a limited set of
-     * punctuation marks and symbols.
-     *
-     * unreserved = alphanum | mark
-     *
-     * mark = "-" | "_" | "." | "!" | "~" | "*" | "'" | "(" | ")"
-     *
-     * Unreserved characters can be escaped without changing the semantics of the URI, but this
-     * should not be done unless the URI is being used in a context that does not allow the
-     * unescaped character to appear.
-     *
-     * Note:
-     *
-     * It appears that both Netscape and Internet Explorer escape all special characters from this
-     * list with the exception of "-", "_", ".", "*". While it is not clear why they are escaping
-     * the other characters, perhaps it is safest to assume that there might be contexts in which
-     * the others are unsafe if not escaped. Therefore, we will use the same list. It is also
-     * noteworthy that this is consistent with O'Reilly's "HTML: The Definitive Guide" (page 164).
-     *
-     * As a last note, Internet Explorer does not encode the "@" character which is clearly not
-     * unreserved according to the RFC. We are being consistent with the RFC in this matter, as is
-     * Netscape.
-     */
+    // From the URLEncoder javadoc:
+    // - The alphanumeric characters "a" through "z", "A" through "Z" and "0" through "9" remain the
+    // same.
+    // - The special characters ".", "-", "*", and "_" remain the same.
+    // - The space character " " is converted into a plus sign "+".
+    // - All other characters are unsafe and are first converted into one or more bytes using some
+    // encoding scheme. Then each byte is represented by the 3-character string "%xy", where xy is
+    // the two-digit hexadecimal representation of the byte. The recommended encoding scheme to use
+    // is UTF-8. However, for compatibility reasons, if an encoding is not specified, then the
+    // default encoding of the platform is used.
 
-    // The original code used a bitset but this has been switched here to an array
     NO_ENCODING = new boolean[ASCII_SIZE];
     for (int i = 'a'; i <= 'z'; i++) { // ASCII 97 - 122
       NO_ENCODING[i] = true;
