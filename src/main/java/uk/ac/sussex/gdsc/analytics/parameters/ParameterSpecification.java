@@ -113,8 +113,7 @@ public interface ParameterSpecification {
    * @see #isSupported(HitType)
    */
   default HitType[] getSupportedHitTypes() {
-    // Return of null is documented as allowed.
-    return new HitType[0];
+    return Constants.EMPTY_HIT_TYPE;
   }
 
   /**

@@ -75,6 +75,11 @@ public final class Constants {
   public static final char[] EMPTY_CHARS = new char[0];
 
   /**
+   * A zero length hit type array.
+   */
+  static final HitType[] EMPTY_HIT_TYPE = new HitType[0];
+
+  /**
    * No public construction.
    */
   private Constants() {

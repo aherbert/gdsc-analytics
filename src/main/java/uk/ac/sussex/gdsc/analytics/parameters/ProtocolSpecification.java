@@ -2010,7 +2010,8 @@ public enum ProtocolSpecification implements ParameterSpecification {
     this.nameFormat = nameFormat;
     this.valueType = valueType;
     this.maxLength = maxLength;
-    this.supportedHitTypes = supportedHitTypes.clone();
+    this.supportedHitTypes =
+        supportedHitTypes.length == 0 ? Constants.EMPTY_HIT_TYPE : supportedHitTypes.clone();
     this.numberOfIndexes = ParameterUtils.countIndexes(nameFormat);
   }
 
