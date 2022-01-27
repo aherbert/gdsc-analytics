@@ -119,7 +119,6 @@ Measurement protocol to collect usage information from a Java application.
     <maven-site-plugin.version>3.9.1</maven-site-plugin.version>
     <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
     <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
-    <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
     <!-- JaCoCo Checks -->
     <org.jacoco.class.covered>0.96</org.jacoco.class.covered>
     <org.jacoco.instruction.covered>0.8</org.jacoco.instruction.covered>
