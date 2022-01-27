@@ -1967,14 +1967,6 @@ public enum ProtocolSpecification implements ParameterSpecification {
    */
   EXPERIMENT_VARIANT("Experiment Variant", "xvar", ValueType.TEXT, 0),;
 
-  /**
-   * The character used to identify an index within the formalName format for the
-   * {@code formalName=value} parameter pair.
-   *
-   * <p>package scope to allow other classes to use the same value.
-   */
-  static final char INDEX_CHARACTER = '_';
-
   /** The formal name. */
   private final String formalName;
 
