@@ -186,12 +186,6 @@ public final class UrlEncoderHelper {
   public static boolean noEncodingRequired(char ch) {
     final int i = ch;
     // Char is unsigned so no need to check below zero.
-    boolean noEncoding;
-    if (i < NO_ENCODING.length) {
-      noEncoding = NO_ENCODING[i];
-    } else {
-      noEncoding = false;
-    }
-    return noEncoding;
+    return i < NO_ENCODING.length && NO_ENCODING[i];
   }
 }
