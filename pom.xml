@@ -400,7 +400,7 @@ Measurement protocol to collect usage information from a Java application.
           <excludeFilterFile>${basedir}/src/conf/spotbugs/spotbugs-exclude-filter.xml</excludeFilterFile>
         </configuration>
       </plugin>
-      <!-- use of mvn release:prepeare release perform should use the nexus release profile -->
+      <!-- use of mvn deploy should use the nexus release profile -->
       <plugin>
         <artifactId>maven-release-plugin</artifactId>
         <version>${maven-release-plugin.version}</version>
