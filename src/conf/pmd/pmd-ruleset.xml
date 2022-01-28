@@ -58,6 +58,8 @@
     <exclude name="OnlyOneReturn" />
     <!--  Allow builders to have setters that return something -->
     <exclude name="LinguisticNaming" />
+    <exclude name="UseUnderscoresInNumericLiterals" />
+    <exclude name="BooleanGetMethodName" />
   </rule>
   <rule ref="category/java/design.xml">
     <exclude name="TooManyMethods" />
@@ -73,6 +75,9 @@
   </rule>
   <rule ref="category/java/errorprone.xml">
     <exclude name="BeanMembersShouldSerialize" />
+    <!-- This rule is known to be poor with Java 5 and later:
+      https://github.com/pmd/pmd/issues/873 -->
+    <exclude name="DataflowAnomalyAnalysis" />
   </rule>
   <rule ref="category/java/multithreading.xml">
     <exclude name="DoNotUseThreads" />
@@ -80,6 +85,20 @@
   </rule>
   <rule ref="category/java/performance.xml">
     <!-- <exclude name="..." /> -->
+  </rule>
+
+  <rule ref="category/java/codestyle.xml/ClassNamingConventions">
+    <properties>
+      <!-- Do not require Utils/Helper suffix -->
+      <property name="violationSuppressXPath"
+        value="//ClassOrInterfaceDeclaration[@SimpleName='Constants']"/>
+    </properties>
+  </rule>
+  <rule ref="category/java/design.xml/DataClass">
+    <properties>
+      <property name="violationSuppressXPath"
+        value="//ClassOrInterfaceDeclaration[@SimpleName='CustomParameterSpecification']"/>
+    </properties>
   </rule>
 
 </ruleset>
