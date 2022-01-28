@@ -138,11 +138,8 @@ public class IndexReplacer {
       throw new IncorrectCountException(numberOfIndexes, indexes.length);
     }
     sb.append(format, 0, ranges[0]);
-    //@formatter:off
-    for (int i = 0,
-             j = 1; i < numberOfIndexes; i++, j += 2) {
-      //@formatter:on
-      sb.append(indexes[i]).append(format, ranges[j], ranges[j + 1]);
+    for (int i = 0; i < numberOfIndexes; i++) {
+      sb.append(indexes[i]).append(format, ranges[2 * i + 1], ranges[2 * i + 2]);
     }
     return sb;
   }
