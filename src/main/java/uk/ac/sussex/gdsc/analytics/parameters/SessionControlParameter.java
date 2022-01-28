@@ -40,7 +40,7 @@ import java.util.Objects;
 public final class SessionControlParameter implements FormattedParameter {
 
   /** Cache parameters for all the enum values. */
-  private static final EnumMap<SessionControl, SessionControlParameter> cache =
+  private static final EnumMap<SessionControl, SessionControlParameter> CACHE =
       new EnumMap<>(SessionControl.class);
 
   /** The session start parameter. */
@@ -86,6 +86,6 @@ public final class SessionControlParameter implements FormattedParameter {
    */
   public static SessionControlParameter create(SessionControl sessionControl) {
     Objects.requireNonNull(sessionControl, "Session control is null");
-    return cache.computeIfAbsent(sessionControl, SessionControlParameter::new);
+    return CACHE.computeIfAbsent(sessionControl, SessionControlParameter::new);
   }
 }

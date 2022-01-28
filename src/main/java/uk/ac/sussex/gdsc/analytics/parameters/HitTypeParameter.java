@@ -40,7 +40,7 @@ import java.util.Objects;
 public final class HitTypeParameter implements FormattedParameter {
 
   /** Cache parameters for all the enum values. */
-  private static final EnumMap<HitType, HitTypeParameter> cache = new EnumMap<>(HitType.class);
+  private static final EnumMap<HitType, HitTypeParameter> CACHE = new EnumMap<>(HitType.class);
 
   /** The pageview hit-type. */
   public static final HitTypeParameter PAGEVIEW;
@@ -101,6 +101,6 @@ public final class HitTypeParameter implements FormattedParameter {
    */
   public static HitTypeParameter create(HitType hitType) {
     Objects.requireNonNull(hitType, "Hit type is null");
-    return cache.computeIfAbsent(hitType, HitTypeParameter::new);
+    return CACHE.computeIfAbsent(hitType, HitTypeParameter::new);
   }
 }

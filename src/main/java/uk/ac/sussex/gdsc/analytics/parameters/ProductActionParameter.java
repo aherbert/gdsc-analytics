@@ -40,7 +40,7 @@ import java.util.Objects;
 public final class ProductActionParameter implements FormattedParameter {
 
   /** Cache parameters for all the enum values. */
-  private static final EnumMap<ProductAction, ProductActionParameter> cache =
+  private static final EnumMap<ProductAction, ProductActionParameter> CACHE =
       new EnumMap<>(ProductAction.class);
 
   /** The detail product action parameter. */
@@ -104,6 +104,6 @@ public final class ProductActionParameter implements FormattedParameter {
    */
   public static ProductActionParameter create(ProductAction productAction) {
     Objects.requireNonNull(productAction, "Product action is null");
-    return cache.computeIfAbsent(productAction, ProductActionParameter::new);
+    return CACHE.computeIfAbsent(productAction, ProductActionParameter::new);
   }
 }
