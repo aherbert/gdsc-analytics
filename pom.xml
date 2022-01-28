@@ -84,6 +84,7 @@ Measurement protocol to collect usage information from a Java application.
     <license.copyrightOwners>Alex Herbert</license.copyrightOwners>
     <license.projectName>${project.description}</license.projectName>
     <!-- Versions -->
+    <gdsc.bc.version>2.0</gdsc.bc.version>
     <assertj-core.version>3.16.1</assertj-core.version>
     <checkstyle.version>8.35</checkstyle.version>
     <commons-codec.version>1.11</commons-codec.version>
@@ -91,6 +92,7 @@ Measurement protocol to collect usage information from a Java application.
     <commons-validator.version>1.7</commons-validator.version>
     <coveralls-maven-plugin.version>4.3.0</coveralls-maven-plugin.version>
     <guava.version>26.0-jre</guava.version>
+    <japicmp.version>0.15.3</japicmp.version>
     <license-maven-plugin.version>2.0.0</license-maven-plugin.version>
     <mockito-core.version>3.4.6</mockito-core.version>
     <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
@@ -412,6 +414,49 @@ Measurement protocol to collect usage information from a Java application.
           <!-- <goals>deploy nexus-staging:release</goals> -->
         </configuration>
       </plugin>
+        <plugin>
+          <groupId>com.github.siom79.japicmp</groupId>
+          <artifactId>japicmp-maven-plugin</artifactId>
+          <version>${japicmp.version}</version>
+          <configuration>
+            <oldVersion>
+              <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>${project.artifactId}</artifactId>
+                <version>${gdsc.bc.version}</version>
+                <type>jar</type>
+             </dependency>
+            </oldVersion>
+            <newVersion>
+              <file>
+                <path>${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}</path>
+              </file>
+            </newVersion>
+            <parameter>
+              <onlyModified>true</onlyModified>
+              <breakBuildOnBinaryIncompatibleModifications>true</breakBuildOnBinaryIncompatibleModifications>
+              <!-- skip japicmp on "mvn site" - use "mvn package site" to include report -->
+              <ignoreMissingNewVersion>true</ignoreMissingNewVersion>
+              <reportOnlyFilename>true</reportOnlyFilename>
+              <overrideCompatibilityChangeParameters>
+                <overrideCompatibilityChangeParameter>
+                  <compatibilityChange>METHOD_NEW_DEFAULT</compatibilityChange>
+                  <binaryCompatible>true</binaryCompatible>
+                  <sourceCompatible>true</sourceCompatible>
+                  <semanticVersionLevel>PATCH</semanticVersionLevel>
+                </overrideCompatibilityChangeParameter>
+              </overrideCompatibilityChangeParameters>
+            </parameter>
+            </configuration>
+            <executions>
+              <execution>
+                <phase>verify</phase>
+                <goals>
+                  <goal>cmp</goal>
+                </goals>
+              </execution>
+            </executions>
+        </plugin>
     </plugins>
   </build>
 
@@ -503,6 +548,28 @@ Measurement protocol to collect usage information from a Java application.
       <plugin>
         <artifactId>maven-jxr-plugin</artifactId>
         <version>${maven-jxr-plugin.version}</version>
+      </plugin>
+      <plugin>
+        <groupId>com.github.siom79.japicmp</groupId>
+        <artifactId>japicmp-maven-plugin</artifactId>
+        <version>${japicmp.version}</version>
+        <configuration>
+          <parameter>
+            <onlyModified>true</onlyModified>
+            <breakBuildOnBinaryIncompatibleModifications>true</breakBuildOnBinaryIncompatibleModifications>
+            <!-- skip japicmp on "mvn site" - use "mvn package site" to include report -->
+            <ignoreMissingNewVersion>true</ignoreMissingNewVersion>
+            <reportOnlyFilename>true</reportOnlyFilename>
+            <overrideCompatibilityChangeParameters>
+              <overrideCompatibilityChangeParameter>
+                <compatibilityChange>METHOD_NEW_DEFAULT</compatibilityChange>
+                <binaryCompatible>true</binaryCompatible>
+                <sourceCompatible>true</sourceCompatible>
+                <semanticVersionLevel>PATCH</semanticVersionLevel>
+              </overrideCompatibilityChangeParameter>
+            </overrideCompatibilityChangeParameters>
+          </parameter>
+        </configuration>
       </plugin>
     </plugins>
   </reporting>
