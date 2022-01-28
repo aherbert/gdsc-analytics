@@ -83,6 +83,7 @@ Measurement protocol to collect usage information from a Java application.
     <license.licenseName>mit</license.licenseName>
     <license.copyrightOwners>Alex Herbert</license.copyrightOwners>
     <license.projectName>${project.description}</license.projectName>
+    <automatic.module.name>uk.ac.sussex.gdsc.analytics</automatic.module.name>
     <!-- Versions -->
     <gdsc.bc.version>2.0</gdsc.bc.version>
     <assertj-core.version>3.16.1</assertj-core.version>
@@ -209,6 +210,14 @@ Measurement protocol to collect usage information from a Java application.
         <plugin>
           <artifactId>maven-jar-plugin</artifactId>
           <version>${maven-jar-plugin.version}</version>
+          <configuration>
+            <archive combine.children="append">
+              <manifestEntries>
+                <!-- Java 9 -->
+                <Automatic-Module-Name>${automatic.module.name}</Automatic-Module-Name>
+              </manifestEntries>
+            </archive>
+          </configuration>
         </plugin>
         <plugin>
           <artifactId>maven-site-plugin</artifactId>
