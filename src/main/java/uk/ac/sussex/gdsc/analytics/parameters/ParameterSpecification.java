@@ -29,6 +29,8 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
+import java.util.EnumSet;
+
 /**
  * Defines a parameter specification for the Google Analytics Measurement Protocol.
  *
@@ -105,39 +107,35 @@ public interface ParameterSpecification {
   /**
    * Gets the supported hit types for the parameter.
    *
-   * <p>If null (or empty) then all types are supported. Otherwise the supported types are returned.
+   * <p>If the set is {@code null} then it can be assumed that all hit types are supported since
+   * supporting no hit types is not valid.
    *
-   * <p>The default is an empty array.
+   * <p>For convenience the default is a set of all hit types.
    *
    * @return the supported hit types
    * @see #isSupported(HitType)
    */
-  default HitType[] getSupportedHitTypes() {
-    return Constants.EMPTY_HIT_TYPE;
+  default EnumSet<HitType> getSupportedHitTypes() {
+    return Constants.ALL_OF_HIT_TYPE;
   }
 
   /**
    * Checks the hit type is supported.
    *
-   * <p>If the argument is {@code null} then this will return {@code false}. The exception to this
-   * is if the {@code null} hit type is present in the array returned from
-   * {@link #getSupportedHitTypes()}.
+   * <p>If the argument is {@code null} then this will return {@code false}.
+   *
+   * <p>The default method checks the hit type is present in the set returned from
+   * {@link #getSupportedHitTypes()}. If the set is {@code null} then it is assumed
+   * that all hit types are supported since supporting no hit types is not valid.
    *
    * @param hitType the hit type
    * @return true, if is supported
    */
   default boolean isSupported(HitType hitType) {
-    final HitType[] supportedHitTypes = getSupportedHitTypes();
-    if (supportedHitTypes == null || supportedHitTypes.length == 0) {
-      // Don't support the null hit type!
-      return hitType != null;
+    if (hitType == null) {
+      return false;
     }
-    // This assumes that supported hit types will never contain a null
-    for (final HitType supported : supportedHitTypes) {
-      if (supported == hitType) {
-        return true;
-      }
-    }
-    return false;
+    final EnumSet<HitType> supportedHitTypes = getSupportedHitTypes();
+    return supportedHitTypes == null || supportedHitTypes.contains(hitType);
   }
 }

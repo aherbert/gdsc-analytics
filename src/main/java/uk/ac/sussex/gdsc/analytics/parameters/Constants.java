@@ -29,6 +29,8 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
+import java.util.EnumSet;
+
 /**
  * Contains constants.
  */
@@ -74,9 +76,9 @@ final class Constants {
   static final char[] EMPTY_CHARS = new char[0];
 
   /**
-   * A zero length hit type array.
+   * A set of all the hit types.
    */
-  static final HitType[] EMPTY_HIT_TYPE = new HitType[0];
+  static final EnumSet<HitType> ALL_OF_HIT_TYPE = EnumSet.allOf(HitType.class);
 
   /**
    * No construction.

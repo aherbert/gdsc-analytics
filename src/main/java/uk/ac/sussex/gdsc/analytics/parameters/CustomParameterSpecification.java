@@ -29,6 +29,7 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
+import java.util.EnumSet;
 import java.util.Objects;
 
 /**
@@ -60,9 +61,9 @@ public class CustomParameterSpecification implements ParameterSpecification {
   /**
    * The supported hit types.
    *
-   * <p>If null then all types are supported
+   * <p>This is not null.
    */
-  private final HitType[] supportedHitTypes;
+  private final EnumSet<HitType> supportedHitTypes;
 
   /**
    * Instantiates a new custom parameter specification.
@@ -79,7 +80,12 @@ public class CustomParameterSpecification implements ParameterSpecification {
     this.nameFormat = Objects.requireNonNull(nameFormat, "Name format");
     this.valueType = Objects.requireNonNull(valueType, "Value type");
     this.maxLength = maxLength;
-    this.supportedHitTypes = supportedHitTypes.clone();
+    if (supportedHitTypes.length == 0) {
+      this.supportedHitTypes = Constants.ALL_OF_HIT_TYPE;
+    } else {
+      // Note: This adds the first type again from the array argument but the set is built correctly
+      this.supportedHitTypes = EnumSet.of(supportedHitTypes[0], supportedHitTypes);
+    }
     this.numberOfIndexes = ParameterUtils.countIndexes(nameFormat);
   }
 
@@ -109,7 +115,7 @@ public class CustomParameterSpecification implements ParameterSpecification {
   }
 
   @Override
-  public HitType[] getSupportedHitTypes() {
+  public EnumSet<HitType> getSupportedHitTypes() {
     return supportedHitTypes.clone();
   }
 }

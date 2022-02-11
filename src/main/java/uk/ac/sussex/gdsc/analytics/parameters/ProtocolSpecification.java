@@ -29,6 +29,8 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
+import java.util.EnumSet;
+
 /**
  * Defines parameters for the Google Analytics Measurement Protocol.
  *
@@ -1993,7 +1995,7 @@ public enum ProtocolSpecification implements ParameterSpecification {
    *
    * <p>If null then all types are supported
    */
-  private final HitType[] supportedHitTypes;
+  private final EnumSet<HitType> supportedHitTypes;
 
   /**
    * Creates a new instance.
@@ -2010,8 +2012,12 @@ public enum ProtocolSpecification implements ParameterSpecification {
     this.nameFormat = nameFormat;
     this.valueType = valueType;
     this.maxLength = maxLength;
-    this.supportedHitTypes =
-        supportedHitTypes.length == 0 ? Constants.EMPTY_HIT_TYPE : supportedHitTypes.clone();
+    if (supportedHitTypes.length == 0) {
+      this.supportedHitTypes = Constants.ALL_OF_HIT_TYPE;
+    } else {
+      // Note: This adds the first type again from the array argument but the set is built correctly
+      this.supportedHitTypes = EnumSet.of(supportedHitTypes[0], supportedHitTypes);
+    }
     this.numberOfIndexes = ParameterUtils.countIndexes(nameFormat);
   }
 
@@ -2042,8 +2048,13 @@ public enum ProtocolSpecification implements ParameterSpecification {
     return maxLength;
   }
 
+  /**
+   * Gets the supported hit types for the parameter.
+   *
+   * <p>This method returns a copy of the set. The returned set is never {@code null}.
+   */
   @Override
-  public HitType[] getSupportedHitTypes() {
+  public EnumSet<HitType> getSupportedHitTypes() {
     // This will not be null
     return supportedHitTypes.clone();
   }

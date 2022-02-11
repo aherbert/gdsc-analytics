@@ -29,6 +29,7 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
+import java.util.EnumSet;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -55,7 +56,7 @@ class ParameterSpecificationTest {
     };
     Assertions.assertEquals(0, spec.getMaxLength());
     Assertions.assertNotNull(spec.getSupportedHitTypes());
-    Assertions.assertEquals(0, spec.getSupportedHitTypes().length);
+    Assertions.assertEquals(EnumSet.allOf(HitType.class), spec.getSupportedHitTypes());
     Assertions.assertEquals(1, spec.getNumberOfIndexes());
     // Don't support null
     Assertions.assertEquals(false, spec.isSupported(null));
@@ -64,7 +65,7 @@ class ParameterSpecificationTest {
       Assertions.assertTrue(spec.isSupported(ht));
     }
 
-    final HitType[] supported = new HitType[] {HitType.EVENT};
+    final EnumSet<HitType> supported = EnumSet.of(HitType.EVENT);
     spec = new ParameterSpecification() {
 
       @Override
@@ -78,7 +79,7 @@ class ParameterSpecificationTest {
       }
 
       @Override
-      public HitType[] getSupportedHitTypes() {
+      public EnumSet<HitType> getSupportedHitTypes() {
         return supported;
       }
 
@@ -88,14 +89,14 @@ class ParameterSpecificationTest {
       }
     };
     Assertions.assertEquals(0, spec.getMaxLength());
-    Assertions.assertArrayEquals(supported, spec.getSupportedHitTypes());
+    Assertions.assertEquals(supported, spec.getSupportedHitTypes());
     Assertions.assertEquals(2, spec.getNumberOfIndexes());
     Assertions.assertEquals(false, spec.isSupported(null));
     for (final HitType ht : HitType.values()) {
       Assertions.assertEquals(ht == HitType.EVENT, spec.isSupported(ht));
     }
 
-    final HitType[] supported2 = new HitType[] {HitType.EVENT, HitType.ITEM};
+    final EnumSet<HitType> supported2 = EnumSet.of(HitType.EVENT, HitType.ITEM);
     spec = new ParameterSpecification() {
 
       @Override
@@ -109,7 +110,7 @@ class ParameterSpecificationTest {
       }
 
       @Override
-      public HitType[] getSupportedHitTypes() {
+      public EnumSet<HitType> getSupportedHitTypes() {
         return supported2;
       }
 
@@ -118,7 +119,7 @@ class ParameterSpecificationTest {
         return null;
       }
     };
-    Assertions.assertArrayEquals(supported2, spec.getSupportedHitTypes());
+    Assertions.assertEquals(supported2, spec.getSupportedHitTypes());
     Assertions.assertEquals(false, spec.isSupported(null));
     for (final HitType ht : HitType.values()) {
       Assertions.assertEquals(ht == HitType.EVENT || ht == HitType.ITEM, spec.isSupported(ht));
@@ -137,7 +138,7 @@ class ParameterSpecificationTest {
       }
 
       @Override
-      public HitType[] getSupportedHitTypes() {
+      public EnumSet<HitType> getSupportedHitTypes() {
         // Explicitly return null
         return null;
       }

@@ -29,6 +29,7 @@
 
 package uk.ac.sussex.gdsc.analytics.parameters;
 
+import java.util.EnumSet;
 import org.apache.commons.rng.UniformRandomProvider;
 import org.apache.commons.rng.simple.RandomSource;
 import org.junit.jupiter.api.Assertions;
@@ -73,7 +74,7 @@ class CustomParameterSpecificationTest {
 
     final CustomParameterSpecification spec = new CustomParameterSpecification("", "",
         ValueType.TEXT, 0, HitType.EVENT, HitType.EXCEPTION);
-    Assertions.assertArrayEquals(new HitType[] {HitType.EVENT, HitType.EXCEPTION},
+    Assertions.assertEquals(EnumSet.of(HitType.EVENT, HitType.EXCEPTION),
         spec.getSupportedHitTypes());
   }
 }
