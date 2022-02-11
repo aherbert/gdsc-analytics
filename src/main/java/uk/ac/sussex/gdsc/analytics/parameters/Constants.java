@@ -32,21 +32,20 @@ package uk.ac.sussex.gdsc.analytics.parameters;
 /**
  * Contains constants.
  */
-public final class Constants {
-
+final class Constants {
   /**
    * The '<strong>{@code =}</strong>' (Equal) character.
    *
    * <p>Used to to create a {@code name=value} pair for a URL.
    */
-  public static final char EQUAL = '=';
+  static final char EQUAL = '=';
 
   /**
    * The '<strong>{@code &}</strong>' (Ampersand) character.
    *
    * <p>Used to join {@code name=value} pairs for a URL, e.g. {@code name=value&name2=value2}.
    */
-  public static final char AND = '&';
+  static final char AND = '&';
 
   /**
    * The '<strong>{@code _}</strong>' (Underscore) character.
@@ -55,24 +54,24 @@ public final class Constants {
    * parameter pair, e.g. {@code cm_} where {@code _} is the index of the custom metric {@code cm}
    * parameter.
    */
-  public static final char UNDERSCORE = '_';
+  static final char UNDERSCORE = '_';
 
   /**
    * The '<strong>{@code /}</strong>' (forward slash) character.
    *
    * <p>The character required at the start of a document path for a URL.
    */
-  public static final char FORWARD_SLASH = '/';
+  static final char FORWARD_SLASH = '/';
 
   /**
    * The empty string "".
    */
-  public static final String EMPTY_STRING = "";
+  static final String EMPTY_STRING = "";
 
   /**
    * A zero length char array.
    */
-  public static final char[] EMPTY_CHARS = new char[0];
+  static final char[] EMPTY_CHARS = new char[0];
 
   /**
    * A zero length hit type array.
@@ -80,7 +79,7 @@ public final class Constants {
   static final HitType[] EMPTY_HIT_TYPE = new HitType[0];
 
   /**
-   * No public construction.
+   * No construction.
    */
   private Constants() {
     // Do nothing
