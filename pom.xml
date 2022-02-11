@@ -4,7 +4,7 @@
 
   <groupId>uk.ac.sussex.gdsc</groupId>
   <artifactId>gdsc-analytics</artifactId>
-  <version>2.1-SNAPSHOT</version>
+  <version>3.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>GDSC Analytics</name>
@@ -85,7 +85,7 @@ Measurement protocol to collect usage information from a Java application.
     <license.projectName>${project.description}</license.projectName>
     <automatic.module.name>uk.ac.sussex.gdsc.analytics</automatic.module.name>
     <!-- Versions -->
-    <gdsc.bc.version>2.0</gdsc.bc.version>
+    <gdsc.bc.version>3.0</gdsc.bc.version>
     <assertj-core.version>3.16.1</assertj-core.version>
     <checkstyle.version>8.35</checkstyle.version>
     <commons-codec.version>1.11</commons-codec.version>
@@ -427,6 +427,8 @@ Measurement protocol to collect usage information from a Java application.
           <artifactId>japicmp-maven-plugin</artifactId>
           <version>${japicmp.version}</version>
           <configuration>
+            <!-- Reinstate after 3.0 release -->
+            <skip>true</skip>
             <oldVersion>
               <dependency>
                 <groupId>${project.groupId}</groupId>
@@ -455,15 +457,15 @@ Measurement protocol to collect usage information from a Java application.
                 </overrideCompatibilityChangeParameter>
               </overrideCompatibilityChangeParameters>
             </parameter>
-            </configuration>
-            <executions>
-              <execution>
-                <phase>verify</phase>
-                <goals>
-                  <goal>cmp</goal>
-                </goals>
-              </execution>
-            </executions>
+          </configuration>
+          <executions>
+            <execution>
+              <phase>verify</phase>
+              <goals>
+                <goal>cmp</goal>
+              </goals>
+            </execution>
+          </executions>
         </plugin>
     </plugins>
   </build>
