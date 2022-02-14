@@ -427,8 +427,6 @@ Measurement protocol to collect usage information from a Java application.
           <artifactId>japicmp-maven-plugin</artifactId>
           <version>${japicmp.version}</version>
           <configuration>
-            <!-- Reinstate after 3.0 release -->
-            <skip>true</skip>
             <oldVersion>
               <dependency>
                 <groupId>${project.groupId}</groupId>
