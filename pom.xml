@@ -96,7 +96,7 @@ Measurement protocol to collect usage information from a Java application.
     <license-maven-plugin.version>2.0.0</license-maven-plugin.version>
     <mockito-core.version>3.4.6</mockito-core.version>
     <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
-    <org.jacoco.version>0.8.5</org.jacoco.version>
+    <org.jacoco.version>0.8.7</org.jacoco.version>
     <org.junit.bom.version>5.7.0-M1</org.junit.bom.version>
     <pmd.version>6.26.0</pmd.version>
     <spotbugs.version>4.0.4</spotbugs.version>
