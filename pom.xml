@@ -422,49 +422,49 @@ Measurement protocol to collect usage information from a Java application.
           <!-- <goals>deploy nexus-staging:release</goals> -->
         </configuration>
       </plugin>
-        <plugin>
-          <groupId>com.github.siom79.japicmp</groupId>
-          <artifactId>japicmp-maven-plugin</artifactId>
-          <version>${japicmp.version}</version>
-          <configuration>
-            <oldVersion>
-              <dependency>
-                <groupId>${project.groupId}</groupId>
-                <artifactId>${project.artifactId}</artifactId>
-                <version>${gdsc.bc.version}</version>
-                <type>jar</type>
-             </dependency>
-            </oldVersion>
-            <newVersion>
-              <file>
-                <path>${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}</path>
-              </file>
-            </newVersion>
-            <parameter>
-              <onlyModified>true</onlyModified>
-              <breakBuildOnBinaryIncompatibleModifications>true</breakBuildOnBinaryIncompatibleModifications>
-              <!-- skip japicmp on "mvn site" - use "mvn package site" to include report -->
-              <ignoreMissingNewVersion>true</ignoreMissingNewVersion>
-              <reportOnlyFilename>true</reportOnlyFilename>
-              <overrideCompatibilityChangeParameters>
-                <overrideCompatibilityChangeParameter>
-                  <compatibilityChange>METHOD_NEW_DEFAULT</compatibilityChange>
-                  <binaryCompatible>true</binaryCompatible>
-                  <sourceCompatible>true</sourceCompatible>
-                  <semanticVersionLevel>PATCH</semanticVersionLevel>
-                </overrideCompatibilityChangeParameter>
-              </overrideCompatibilityChangeParameters>
-            </parameter>
-          </configuration>
-          <executions>
-            <execution>
-              <phase>verify</phase>
-              <goals>
-                <goal>cmp</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
+      <plugin>
+        <groupId>com.github.siom79.japicmp</groupId>
+        <artifactId>japicmp-maven-plugin</artifactId>
+        <version>${japicmp.version}</version>
+        <configuration>
+          <oldVersion>
+            <dependency>
+              <groupId>${project.groupId}</groupId>
+              <artifactId>${project.artifactId}</artifactId>
+              <version>${gdsc.bc.version}</version>
+              <type>jar</type>
+           </dependency>
+          </oldVersion>
+          <newVersion>
+            <file>
+              <path>${project.build.directory}/${project.artifactId}-${project.version}.${project.packaging}</path>
+            </file>
+          </newVersion>
+          <parameter>
+            <onlyModified>true</onlyModified>
+            <breakBuildOnBinaryIncompatibleModifications>true</breakBuildOnBinaryIncompatibleModifications>
+            <!-- skip japicmp on "mvn site" - use "mvn package site" to include report -->
+            <ignoreMissingNewVersion>true</ignoreMissingNewVersion>
+            <reportOnlyFilename>true</reportOnlyFilename>
+            <overrideCompatibilityChangeParameters>
+              <overrideCompatibilityChangeParameter>
+                <compatibilityChange>METHOD_NEW_DEFAULT</compatibilityChange>
+                <binaryCompatible>true</binaryCompatible>
+                <sourceCompatible>true</sourceCompatible>
+                <semanticVersionLevel>PATCH</semanticVersionLevel>
+              </overrideCompatibilityChangeParameter>
+            </overrideCompatibilityChangeParameters>
+          </parameter>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>verify</phase>
+            <goals>
+              <goal>cmp</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
