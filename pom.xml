@@ -99,7 +99,7 @@ Measurement protocol to collect usage information from a Java application.
     <org.jacoco.version>0.8.7</org.jacoco.version>
     <org.junit.bom.version>5.7.0-M1</org.junit.bom.version>
     <pmd.version>6.26.0</pmd.version>
-    <spotbugs.version>4.0.4</spotbugs.version>
+    <spotbugs.version>4.6.0.0</spotbugs.version>
     <!-- Maven plugins -->
     <build-helper-maven-plugin.version>3.2.0</build-helper-maven-plugin.version>
     <formatter-maven-plugin.version>2.12.1</formatter-maven-plugin.version>

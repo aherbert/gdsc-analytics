@@ -36,4 +36,11 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="https://github.com/spotbugs/filter/3.0.0 https://raw.githubusercontent.com/spotbugs/spotbugs/3.1.0/spotbugs/etc/findbugsfilter.xsd">
 
+  <Match>
+    <!-- False positive introduced in v4.6.0.0. The returned object is thread safe. -->
+    <Class name="uk.ac.sussex.gdsc.analytics.parameters.CacheBusterParameter"/>
+    <Method name="getDefaultInstance"/>
+    <BugPattern name="MS_EXPOSE_REP"/>
+  </Match>
+
 </FindBugsFilter>
