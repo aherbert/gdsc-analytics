@@ -250,23 +250,18 @@ The latest version is on Maven central:
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/uk.ac.sussex.gdsc/gdsc-analytics/badge.svg)](https://maven-badges.herokuapp.com/maven-central/uk.ac.sussex.gdsc/gdsc-analytics/)
 
-The package can be installed locally from the source.
-
-1. Clone the repository
+The package can be installed locally from the source using Maven.
 
         git clone https://github.com/aherbert/gdsc-analytics.git
-
-2. Build the code and install using Maven
-
         cd gdsc-analytics
         mvn install
-
-	This will produce a gdsc-analytics-[VERSION].jar file in the local Maven
-	repository. You can now build the other packages that depend on this code.
 
 
 Background
 ----------
+
+Developed at the
+[Genome Damage and Stability Centre, University of Sussex](http://www.sussex.ac.uk/gdsc/).
 
 #### Origin ####
 
@@ -304,9 +299,3 @@ The code has been tested using:
 - [AssertJ](http://joel-costigliola.github.io/assertj/) for URL parameter testing
 - [Mockito](https://site.mockito.org/) for HTTP connection testing of all conditions including various mocked failures
 - [JUnit 5](https://junit.org/junit5/) for everything else
-
-###### Owner(s) ######
-Alex Herbert
-
-###### Institution ######
-[Genome Damage and Stability Centre, University of Sussex](http://www.sussex.ac.uk/gdsc/)
