@@ -134,7 +134,6 @@ public final class UrlUtils {
         DEFAULT_GOOGLE_ANALYTICS_DEBUG_FILE);
   }
 
-
   /**
    * Gets the Google Analytics URL.
    *

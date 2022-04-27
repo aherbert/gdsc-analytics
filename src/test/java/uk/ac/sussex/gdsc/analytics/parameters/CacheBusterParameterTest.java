@@ -49,7 +49,6 @@ class CacheBusterParameterTest {
     });
   }
 
-
   @Test
   void testFormat() {
     // Create random strings to append

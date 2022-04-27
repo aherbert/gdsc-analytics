@@ -155,7 +155,6 @@ public class Session {
     return (expireTime < 0) ? Long.MAX_VALUE : expireTime;
   }
 
-
   /**
    * Reset and start a new session.
    */

@@ -356,7 +356,6 @@ public final class IpAddressUtils {
     return isValidCountUp(parts, IPV6_PART_COUNT);
   }
 
-
   /**
    * Checks all the parts are valid for {@code 0 <= i < count}.
    *

@@ -257,7 +257,6 @@ class ParameterUtilsTest {
     }
   }
 
-
   @Test
   void testGetCharsWithCharSequence() {
     Assertions.assertArrayEquals(new char[0], ParameterUtils.getChars((CharSequence) null));
