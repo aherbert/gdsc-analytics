@@ -588,7 +588,7 @@ public class GoogleAnalyticsClient {
      * @param hitType the hit type
      * @param timestamp the timestamp
      */
-    public GoogleAnalyticsHitBuilder(FormattedParameter formattedParameter,
+    GoogleAnalyticsHitBuilder(FormattedParameter formattedParameter,
         HitTypeParameter hitType, long timestamp) {
       super(formattedParameter, hitType, timestamp);
     }
