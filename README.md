@@ -14,9 +14,23 @@ to collect usage information from a Java application.
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/aherbert/gdsc-analytics.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/aherbert/gdsc-analytics/alerts/)
 [![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/aherbert/gdsc-analytics.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/aherbert/gdsc-analytics/context:java)
 
+Google Universal Analytics is going away
+----------------------------------------
+
+The code is suitable for Google's Universal Analytics using the [Measurement Protocol](https://developers.google.com/analytics/devguides/collection/protocol/v1). This service will stop processing data in [July 2023](https://support.google.com/analytics/answer/11583528).
+
+The replacement service is the [Measurement Protocol (Google Analytics 4)](https://developers.google.com/analytics/devguides/collection/protocol/ga4).
+
+**Currently there is not a GA 4 client in this library**.
+
+Of note is the change of the HTTP data `Content-Type` from `application/x-www-form-urlencoded` to `application/json`. The former is easily created by appending URL encoded data to a string via a builder pattern to add parameters; the later is suitable for creation of event data using declaritive JavaScript statements which are readily converted using `JSON.stringify(...)`. The new measurement protocol is thus an improvement for JavaScript web clients, but not for a Java client.
+
+It is possible to create a Java client to generate the new HTTP data, although the simplicity of generating the data declaritively is not available in Java.
+
 Features
 --------
 
+- Support for Google Universal Analytics (to be decommissioned in July 2023)
 - Builders to construct hit parameter strings
 - Java type-safe handling of each protocol parameter `Value Type`
 - Configurable asynchronous requests using `java.util.concurrent.ExecutorService`
