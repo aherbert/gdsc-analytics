@@ -256,6 +256,32 @@ Will create a hit:
 
 Note this is only a partial hit as the required parameters (`v`, `tid`, `cid`/`uid`, `t`) are missing.
 
+GDPR
+----
+
+Applications with users located in the EU must comply with the
+[General Data Protection Regulation (GDPR)](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation).
+
+**Note this is not a replacement for legal advice.**
+
+The conditions of use for Google Analytics requires that any information sent is not personally identifiable thus cannot be linked to an individual. Breach of these conditions will result in deletion of both analytics data and the analytics account. Developers using this library should be aware of this condition and further regulations that may be imposed by GDPR.
+
+The library can be used with settings to secure the connection and anonymize the IP address:
+
+```Java
+String trackingId = "UA-12345-6"; // Your Google Analytics tracking ID
+String clientId = java.lang.UUID.randomUUID().toString();
+GoogleAnalyticsClient ga =
+    GoogleAnalyticsClient.newBuilder(trackingId)
+                         .setClientId(clientId)
+                         // Always use anonymised and secure connection.
+                         .getOrCreatePerHitParameters().addAnonymizeIp(true)
+                             .getParent()
+                         .setSecure(true)
+                         // ...
+                         .build();
+```
+
 Installation
 ------------
 
@@ -295,16 +321,14 @@ similarity to version 1 other than the name.
 
 #### GDSC ImageJ plugins ####
 
-The code is used within the GDSC ImageJ plugins to collect minimal usage
-information whenever a plugin is run. This is done by identifying each
-ImageJ plugin using the [Document Path](http://goo.gl/a8d4RP#dp) hit parameter
-and a `pageview` hit. The data is used to determine what parts of the
-code are important to the community.
+The code was previously used within the GDSC ImageJ plugins to collect minimal usage
+information whenever a plugin was run. **This functionality is no longer used.**
 
-To comply with the
-[General Data Protection Regulation (GDPR)](https://ico.org.uk/for-organisations/guide-to-the-general-data-protection-regulation-gdpr/):
-- All data collected is anonymous and cannot be linked to an individual
-- The GDSC ImageJ plugins allow tracking to be disabled (this is the default)
+Tracking was done by identifying each ImageJ plugin using the
+[Document Path](http://goo.gl/a8d4RP#dp) hit parameter and a `pageview` hit.
+The data showed that some plugins with minimal usage internally at the GDSC
+had an uptake by the community; thus although tracking is no longer used we
+continue to publish all plugins we develop in the hope that they are useful.
 
 Testing
 -------
