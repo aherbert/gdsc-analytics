@@ -98,7 +98,7 @@ Measurement protocol to collect usage information from a Java application.
     <nexus-staging-maven-plugin.version>1.6.12</nexus-staging-maven-plugin.version>
     <org.jacoco.version>0.8.7</org.jacoco.version>
     <org.junit.bom.version>5.7.0-M1</org.junit.bom.version>
-    <pmd.version>6.42.0</pmd.version>
+    <pmd.version>7.22.0</pmd.version>
     <spotbugs.version>4.6.0.0</spotbugs.version>
     <!-- Maven plugins -->
     <build-helper-maven-plugin.version>3.2.0</build-helper-maven-plugin.version>
